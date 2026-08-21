@@ -155,7 +155,7 @@ cmake --build --preset tests
 ctest --preset tests
 ```
 
-Miracle's production library does **not** depend on [Switch](https;//github.com/spwn02/Switch.git). Switch is used only to build Miracle's own tests.
+Miracle's production library does **not** depend on [Switch](https://github.com/spwn02/Switch.git). Switch is used only to build Miracle's own tests.
 
 # Configuration
 
@@ -173,7 +173,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the product boundary and 
 
 ## Contributing and security
 
-See [`CONTRIBUTING.md`](CONTRIBUTING,md) and [`SECURITY.md`](SECURITY.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
 
 ## License
 
