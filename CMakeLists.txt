@@ -190,7 +190,7 @@ target_sources(
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
 
-target_compile_options(Miracle PUBLIC -freflection)
+target_compile_options(Miracle PUBLIC ${miracle_public_compile_options})
 
 target_compile_options(
   Miracle
@@ -228,7 +228,14 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfigVersion.cmake"
         DESTINATION "${miracle_cmake_install_dir}")
 
+install(FILES LICENSE DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle")
+
+option(MIRACLE_BUILD_EXAMPLES "Build Miracle examples" OFF)
 option(MIRACLE_BUILD_TESTS "Build Miracle's self-test suite" OFF)
+
+if(MIRACLE_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
 
 if(MIRACLE_BUILD_TESTS)
   enable_testing()

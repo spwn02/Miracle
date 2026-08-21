@@ -44,6 +44,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "MIRACLE_OPTIMIZED": "AUTO",
+        "MIRACLE_BUILD_EXAMPLES": "ON",
         "MIRACLE_BUILD_TESTS": "ON"
       }
     }

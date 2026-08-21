@@ -6,7 +6,7 @@ using namespace Miracle;
 using namespace Switch;
 
 // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-namespace Tests::debug {
+namespace debug_tests {
 
 struct[[= debug::derive]] Vec2 {
   f32 x{}, y{};
@@ -202,5 +202,5 @@ enum class[[= debug::derive]] AliasedColor : u8 {
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 
 consteval {
-  discover<^^Tests::debug>();
+  discover<^^debug_tests>();
 }
