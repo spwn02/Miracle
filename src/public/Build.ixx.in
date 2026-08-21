@@ -1,0 +1,25 @@
+export module Miracle:Build;
+
+export namespace Miracle::build {
+
+enum class Platform : unsigned char {
+  Linux,
+  Windows,
+  MacOS,
+  IOS,
+  Android,
+  FreeBSD,
+  Unsupported,
+};
+
+enum class CpuArchitecture : unsigned char {
+  x86_64,
+  AArch64,
+  Unknown,
+};
+
+inline constexpr Platform platform = Platform::@MIRACLE_BUILD_PLATFORM@;
+inline constexpr CpuArchitecture architecture = CpuArchitecture::@MIRACLE_BUILD_ARCHITECTURE@;
+inline constexpr bool optimized = @MIRACLE_BUILD_OPTIMIZED@;
+
+} // namespace Miracle::build

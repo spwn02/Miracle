@@ -1,0 +1,44 @@
+@PACKAGE_INIT@
+
+set(Miracle_VERSION "@PROJECT_VERSION@")
+
+if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
+  set(Miracle_FOUND FALSE)
+  set(Miracle_NOT_FOUND_MESSAGE
+    "Miracle 0.1.0 currently requires a Ninja generator for C++26 module support."
+  )
+  return()
+endif()
+
+if(NOT 26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+  set(Miracle_FOUND FALSE)
+  set(Miracle_NOT_FOUND_MESSAGE
+    "Miracle requires CMake toolchain support for C++26 'import std;'."
+  )
+  return()
+endif()
+
+if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "@CMAKE_CXX_COMPILER_ID@")
+  set(Miracle_FOUND FALSE)
+  set(Miracle_NOT_FOUND_MESSAGE
+    "This Miracle package was built with @CMAKE_CXX_COMPILER_ID@, but the "
+    "consumer is using ${CMAKE_CXX_COMPILER_ID}. Rebuild Miracle with the "
+    "consumer toolchain or consume it from source."
+  )
+  return()
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
+  set(Miracle_FOUND FALSE)
+  set(Miracle_NOT_FOUND_MESSAGE
+    "Miracle requires GCC 16 or newer when consumed with GCC."
+  )
+  return()
+endif()
+
+if(NOT TARGET Miracle::Miracle)
+  include("${CMAKE_CURRENT_LIST_DIR}/MiracleTargets.cmake")
+endif()
+
+check_required_components(Miracle)
