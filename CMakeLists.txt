@@ -190,8 +190,6 @@ target_sources(
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
 
-target_compile_options(Miracle PUBLIC ${miracle_public_compile_options})
-
 target_compile_options(
   Miracle
   PUBLIC ${miracle_public_compile_options}

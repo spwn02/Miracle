@@ -18,7 +18,7 @@ A few principles guide the library:
 - **Use the standard library as machinery, not necessarily as the final vocabulary.** When C++ already has the right primitive, Miracle prefers a thin alias or composition over rebuilding it.
 - **Adopt good ideas regardless of language.** Rust is a major influence, but Miracle is still designed around C++26 modules, reflection, ranges, `std::expected`, RAII, and the rest of the modern C++ model.
 - **Keep the happy path compact.** Error handling and resource management should add correctness without drowning ordinary code in ceremony.
-- **Stay C++26-first.** Miracle does not carry a backwards-compatibility layer for older language modes when a modern facility expresses the design later.
+- **Stay C++26-first.** Miracle does not carry a backwards-compatibility layer for older language modes when a modern facility expresses the design better.
 
 In short, Miracle asks: *what would a modern C++ foundation library look like if it learned aggressively from Rust, while still embracing what C++26 is uniquely good at?* Miracle took the best of two worlds, and united them with an extremely simple API.
 
@@ -28,7 +28,7 @@ Several parts of Miracle deliberately borrow vocabulary or API ideas from the Ru
 
 - **`Result<T>` and `Error`** are inspired by Rust's `Result<T, E>` model and especially the application-oriented ergonomics of [`anyhow::Result<T>`](https://docs.rs/anyhow/latest/anyhow/type.Result.html). Miracle spells the common case as `Result<T>` and fixes the error side to `Miracle::Error`, implemented with `std::expected<T, Error>`.
 - **`bail`** follows the same intent and vocabulary as `anyhow::bail!`: make an early error return concise. Miracle expresses that idea as C++ rather than a macro.
-- **`Option<T>` and `None`** adopt Rust's `Option`/`None` vocabulary while remaining a thin aliases over `std::optional` and `std::nullopt`.
+- **`Option<T>` and `None`** adopt Rust's `Option`/`None` vocabulary while remaining thin aliases over `std::optional` and `std::nullopt`.
 - **`Vec<T>`, `String`, `usize`, and `isize`** intentionally use familiar Rust vocabulary where the corresponding C++ standard-library type already provides the required semantics. They remain aliases, not replacement containers or numeric types.
 - **`fs::OpenOptions`** is directly inspired by [`std::fs::OpenOptions`](https://doc.rust-lang.org/std/fs/struct.OpenOptions.html). Miracle exposes the same core intent - `read`, `write`, `append`, `truncate`, `create`, and `create_new` - and returns a fallible `Result<File>`.
 
@@ -74,7 +74,7 @@ auto main() -> int {
 }
 ```
 
-The same program lives [`examples/quickstart.cxx`](examples/quickstart.cxx) and is built by the `tests` preset.
+The same program lives in [`examples/quickstart.cxx`](examples/quickstart.cxx) and is built by the `tests` preset.
 
 ### Public module
 
@@ -161,7 +161,7 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 `MIRACLE_OPTIMIZED` accepts `AUTO`, `ON`, or `OFF`.
 
-`MIRACLE_WARNINGS_AS_ERROR=ON` applies only while compiling Miracle itself.
+`MIRACLE_WARNINGS_AS_ERRORS=ON` applies only while compiling Miracle itself.
 
 `MIRACLE_BUILD_EXAMPLES=ON` builds repository examples.
 
