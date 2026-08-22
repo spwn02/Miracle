@@ -38,14 +38,14 @@ More Rust-inspired APIs may appear over time where the model translates cleanly 
 
 Miracle currently targets:
 
-- C++26
+- the complete C++26-and-earlier language and standard-library model
 - CMake 4.4 or newer
 - Ninja
-- GCC 16 or newer as the verified ordinary-user compiler
-- a reflection-enabled Clang toolchain for development
-- toolchain support for C++26 `import std;`
+- the [`spwn02/clang-p2996:p2996`](https://github.com/spwn02/clang-p2996/tree/p2996) compiler and matching libc++ as the current reference toolchain
 
-The current CI baseline is Linux + GCC 16.
+`master` is intentionally free to adopt any standardized facility through C++26 as soon as it improves the design, even when mainstream compiler/library implementations have not caught up yet. GCC compatibility is developed separately and may trail `master`.
+
+See [`docs/compiler-support.md`](docs/compiler-support.md) for the compiler, branch, compatibility, and release policy.
 
 ### Quick start
 
@@ -171,6 +171,7 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
 
+See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
 ## Contributing and security
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).

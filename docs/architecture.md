@@ -33,6 +33,16 @@ The guiding rules are:
 
 This is why Miracle can intentionally look Rust-like in places without trying to become a Rust compatibility layer.
 
+## Language and toolchain philosophy
+
+`master` targets the complete standardized C++26-and-earlier capability set, not merely the subset implemented by today's compilers or the subset Miracle currently happens to use.
+
+Miracle may adopt any standardized facility through C++26 whenever it produces a better design. If the current reference toolchain lacks that facility, the preferred response is to implement or port the missing standard behavior into the toolchain rather than contrain `master` around an incomplete implementation.
+
+The current reference implementation is [`spwn02/clang-p2996:p2996`](https://github.com/spwn02/clang-p2996/tree/p2996) together with its matching libc++. GCC compatibility is a deferred implementation concern and may trail `master`.
+
+The complete branch and compiler policy is defined in [`compiler-support.md`](compiler-support.md).
+
 ## Influences and attribution
 
 Current deliberate Rust influences include:
@@ -80,3 +90,5 @@ Source checkout, FetchContent, and installed-package consumers all receive `Mira
 ## Compatibility
 
 Before 1.0, source and ABI compatibility may change between minor version. Breaking changes should be recorded in `CHANGELOG.md` and accompanied by focused tests.
+
+Compiler compatibility follows a separate rule: `master` defines the C++26-first product, while the non-release-bearing `gcc` compatibility line adapts that design to the capabilities available in GCC/libstdc++. Compatibility work flows from `master` toward `gcc`, not back into the primary architecture.
