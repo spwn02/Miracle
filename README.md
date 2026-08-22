@@ -172,6 +172,9 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
 
 See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
+
+See [`docs/reference-toolchain.md`](docs/reference-toolchain.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
+
 ## Contributing and security
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
