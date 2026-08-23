@@ -32,7 +32,7 @@ The current reference implementation is:
 
 ```text
 compiler:
-  https://github.com/swpn02/clang-p2996
+  https://github.com/spwn02/clang-p2996
   branch: p2996
 
 standard library:
@@ -61,7 +61,7 @@ gcc
 
 It is intentionally not named `gcc16`: the branch describes a compiler-family compatibility line and may span GCC 16, 17, 18, and later versions.
 
-The branch may trait `master` for an unlimited amount of time. It advances only as far as Miracle's public semantics can be represented faithfully with the capabilities available in GCC and libstdc++.
+The branch may trail `master` for an unlimited amount of time. It advances only as far as Miracle's public semantics can be represented faithfully with the capabilities available in GCC and libstdc++.
 
 Normal synchronization direction is:
 
@@ -80,13 +80,13 @@ The GCC branch adapts implementation details to compiler reality; it does not re
 Compatibility work follows these rules:
 
 1. Preserve Miracle's public concepts and observable semantics.
-2. Keep public spelling identical when the compiler can support if faithfully.
+2. Keep public spelling identical when the compiler can support it faithfully.
 3. Prefer internal implementation substitutions over public API divergence.
 4. Never inject replacement facilities into `namespace std`.
 5. Never introduce backwards-compatibility machinery into `master` solely because GCC/libstdc++ is incomplete.
-6. If a facility cannot be emulated faithfully, the `gcc` branch remains behind `master` commit that requires it.
+6. If a facility cannot be emulated faithfully, the `gcc` branch remains behind the `master` commit that requires it.
 7. Temporary compatibility code is deleted when the corresponding standard feature becomes sufficiently implemented.
-8. Compiler versions are hinds; actual capabilities determine support.
+8. Compiler versions are hints; actual capabilities determine support.
 
 For standard-library gaps such as `<hive>` and `<scope>`, a compatibility implementation is acceptable only when it preserves the semantics Miracle relies on and remains behind Miracle's own vocabulary/internal boundary. A fake or observably different implementation is worse than leaving the branch behind.
 
@@ -122,9 +122,25 @@ The compatibility branch is transitional infrastructure, not a permanent fork of
 
 ## Capability-driven support
 
-Compiler support will progressively move from vendor/version checks to focused capability probes.
+Compiler support is decided by executable capability probes rather than a compiler-version allowlist. `master` does not inject compiler-specific language or standard-library feature-enablement flags. Those belong to the selected toolchain, which must establish the complete C++26 mode before Miracle configures. Vendor checks in Miracle are limited to compiler-specific diagnostic policy; they do not decide whether a toolchain is accepted.
 
-Those probes should distinguish language and library capabilities, including reflection, parameter reflection, annotations, `import std`, and standard-library facilities used by the project.
+The current Miracle master revision probes:
+
+```text
+import_std
+reflection_core
+reflection_queries
+reflection_annotations
+reflection_static_storage
+expansion_statements
+std_vocabulary
+std_hive
+```
+
+The probes compile in one nested CMake build so the `std` module can be reused across checks. When the parent build uses a CMake toolchain file, the probe project reuses that same toolchain file without reconstructing or duplicating its compiler flags. Without a toolchain file, the probe project reuses the selected compiler and global C++ flags. This keeps implementation-specific mode selection at the toolchain boundary while testing the same effective C++26 environment as Miracle itself. Every failed target gets its own build log. Configuration also writes a machine-readable `MiracleCapabilities.json` into the Miracle build directory.
+
+These are the executable requirements of the current source revision, not an exhaustive C++26 conformance suite. `master` continues to target the complete standardized C++26-and-earlier model. When `master` adopts another standardized facility, its corresponding executable capability gate is added here.
+ 
 
 A compiler version alone must never be treated as proof that the required semantics are present.
 

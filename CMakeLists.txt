@@ -21,6 +21,7 @@ project(
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(cmake/Capabilities.cmake)
 
 if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
   message(
@@ -37,8 +38,8 @@ if(NOT 26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
       "the top-level project() call.")
 endif()
 
-set(miracle_public_compile_options)
-set(miracle_private_compile_options
+set(miracle_private_compile_options)
+set(miracle_gnu_clang_warning_options
     -Wall
     -Wextra
     -Wpedantic
@@ -48,16 +49,10 @@ set(miracle_private_compile_options
     -Wno-missing-designated-field-initializers)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
-    message(
-      FATAL_ERROR "Miracle requires GCC 16 or newer when building with GCC.")
-  endif()
-
-  list(APPEND miracle_public_compile_options -fmodules -freflection)
-
   list(
     APPEND
     miracle_private_compile_options
+    ${miracle_gnu_clang_warning_options}
     -Wconversion-null
     -Woverlength-strings
     -Wpointer-arith
@@ -65,24 +60,19 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     -Wvla)
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-  list(APPEND miracle_public_compile_options -freflection-latest)
-
   list(
     APPEND
     miracle_private_compile_options
+    ${miracle_gnu_clang_warning_options}
     -Woverlength-strings
     -Wpointer-arith
     -Wvarargs
     -Wvla
     -Wmodule-file-config-mismatch)
-
-else()
-  message(
-    FATAL_ERROR
-      "Miracle 0.1.0 currently supports GCC 16+ and reflection-enabled Clang. "
-      "Selected compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}."
-  )
 endif()
+unset(miracle_gnu_clang_warning_options)
+
+miracle_check_capabilities()
 
 option(MIRACLE_WARNINGS_AS_ERRORS
        "Treat warnings emitted while compiling Miracle itself as errors" OFF)
@@ -190,10 +180,7 @@ target_sources(
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
 
-target_compile_options(
-  Miracle
-  PUBLIC ${miracle_public_compile_options}
-  PRIVATE ${miracle_private_compile_options})
+target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 
 set(miracle_cmake_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/Miracle")
 
