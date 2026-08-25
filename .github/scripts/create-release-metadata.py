@@ -51,7 +51,7 @@ def main() -> None:
     metadata = {
         "schemaVersion": 1,
         "project": {
-            "nmae": args.project,
+            "name": args.project,
             "version": args.version,
             "tag": args.tag,
         },
@@ -77,11 +77,11 @@ def main() -> None:
     if dependencies:
         metadata["dependencies"] = dependencies
 
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(
-            json.dumps(metadata, indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
-        )
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(
+        json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 if __name__ == "__main__":

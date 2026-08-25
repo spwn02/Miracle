@@ -61,7 +61,23 @@ jobs:
         run: |
           set -euo pipefail
 
-          python3 .github/scripts/create-release-metadata.py --project Miracle --version "$PROJECT_VERSION" --tag "$GITHUB_REF_NAME" --source-repository "$GITHUB_REPOSITORY" --source-branch master --source-revision "$SOURCE_REVISION" --reference-repository "$REFERENCE_REPOSITORY" --reference-branch "$REFERENCE_BRANCH" --reference-snapshot "$REFERENCE_SNAPSHOT" --reference-revision "$REFERENCE_REVISION" --reference-asset "$REFERENCE_ASSET" --output build/release/release-metadata.json
+          metadata="$RUNNER_TEMP/release-metadata.json"
+          python3 .github/scripts/create-release-metadata.py \
+            --project Miracle \
+            --version "$PROJECT_VERSION" \
+            --tag "$GITHUB_REF_NAME" \
+            --source-repository "$GITHUB_REPOSITORY" \
+            --source-branch master \
+            --source-revision "$SOURCE_REVISION" \
+            --reference-repository "$REFERENCE_REPOSITORY" \
+            --reference-branch "$REFERENCE_BRANCH" \
+            --reference-snapshot "$REFERENCE_SNAPSHOT" \
+            --reference-revision "$REFERENCE_REVISION" \
+            --reference-asset "$REFERENCE_ASSET" \
+            --output "$metadata"
+
+          test -s "$metadata"
+          python3 -m json.tool "$metadata" >/dev/null
 
       - name: Create GitHub release
         shell: bash
@@ -76,4 +92,7 @@ jobs:
             release_args+=(--prerelease)
           fi
 
-          gh release create "$GITHUB_REF_NAME" build/release/release-metadata.json "${release_args[@]}"
+          gh release create \
+            "$GITHUB_REF_NAME" \
+            "$RUNNER_TEMP/release-metadata.json" \
+            "${release_args[@]}"
