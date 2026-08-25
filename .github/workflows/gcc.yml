@@ -1,0 +1,33 @@
+name: GCC compatibility
+
+on:
+  push:
+    branches: [gcc]
+  pull_request:
+    branches: [gcc]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gcc:
+    name: GCC compatibility
+    if: github.event_name != 'workflow_dispatch' || github.ref_name == 'gcc'
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+
+    steps:
+      - name: Install GCC toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          pacman -Syu --noconfirm --needed \
+            base-devel ca-certificates cmake git ninja
+
+      - uses: actions/checkout@v6
+
+      - name: Validate GCC compatibility
+        shell: bash
+        run: ./.github/scripts/validate-gcc.sh

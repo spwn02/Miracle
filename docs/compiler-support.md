@@ -90,6 +90,35 @@ Compatibility work follows these rules:
 
 For standard-library gaps such as `<hive>` and `<scope>`, a compatibility implementation is acceptable only when it preserves the semantics Miracle relies on and remains behind Miracle's own vocabulary/internal boundary. A fake or observably different implementation is worse than leaving the branch behind.
 
+## Automated GCC validation and synchronization
+
+The `gcc` line is continuously validated rather than advanced by assumption.
+
+Every push or pull request targeting `gcc` runs the GCC compatibility validator. The validator uses the GCC compatibility toolchain and checks the production/consumer contract that closes the current Miracle GCC support line:
+
+```text
+capability probes
+Miracle library + quickstart
+add_subdirectory consumer
+FetchContent consumer
+optimized Release build
+install + find_package consumer
+```
+
+Miracle's Switch-powered self-tests are intentionally not part of this lane. They add a second product/compiler surface beyond Miracle's production and consumer contract; Switch validates its own GCC self-test surface independently.
+
+Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. The candidate is validated with the same GCC validator before `gcc` is advanced. A merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push.
+
+This automation does not change the synchronization policy:
+
+```text
+master --> gcc
+```
+
+There is no automated `gcc --> master` path. Compiler-independent fixes discovered on `gcc` still move to `master` through an explicit normal fix or cherry-pick.
+
+The GitHub runner currently uses the current Arch Linux GCC/libstdc++ package. The executable capability probes, not the distro package version string, remain the acceptance criterion.
+
 ## Release policy
 
 Official Miracle releases are cut from:
