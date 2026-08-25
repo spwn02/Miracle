@@ -52,7 +52,6 @@ jobs:
 
           mkdir -p "$download_dir" "$install_dir"
 
-          for suffix in tar.zst manifest.json SHA256SUMS; do
           gh release download "$P2996_SNAPSHOT" \
             --repo spwn02/clang-cxx26 \
             --pattern "${P2996_ASSET}.tar.zst" \

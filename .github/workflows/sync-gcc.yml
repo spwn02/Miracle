@@ -57,7 +57,7 @@ jobs:
               set -euo pipefail
               pacman -Syu --noconfirm --needed \
                 base-devel ca-certificates cmake git ninja
-              ./.github/scripts/validate-gcc.sh
+              bash ./.github/scripts/validate-gcc.sh
             '
 
       - name: Advance gcc
