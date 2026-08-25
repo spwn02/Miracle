@@ -60,6 +60,23 @@ jobs:
               bash ./.github/scripts/validate-gcc.sh
             '
 
+      - name: Measure GCC convergence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 .github/scripts/report-gcc-convergence.py \
+            --master origin/master \
+            --gcc HEAD \
+            --output build/gcc-convergence.json
+
+      - name: Upload GCC convergence report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcc-sync-convergence-${{ github.run_id }}
+          path: build/gcc-convergence.json
+          if-no-files-found: error
+
       - name: Advance gcc
         shell: bash
         run: |

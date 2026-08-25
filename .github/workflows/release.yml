@@ -8,6 +8,13 @@ on:
 permissions:
   contents: read
 
+env:
+  REFERENCE_REPOSITORY: spwn02/clang-cxx26
+  REFERENCE_BRANCH: cxx26
+  REFERENCE_SNAPSHOT: p2996-2026.08.23.2
+  REFERENCE_REVISION: 60966cc65acc736637ffd4ba03951932e47f5042
+  REFERENCE_ASSET: clang-p2996-2026.08.23.2-linux-x86_64
+
 jobs:
   validate:
     uses: ./.github/workflows/ci.yml
@@ -19,10 +26,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Validate tag version
+      - name: Validate release provenance
         shell: bash
         run: |
+          set -euo pipefail
+
           version="$(sed -n 's/^[[:space:]]*VERSION[[:space:]]\+\([0-9][0-9.]*\).*/\1/p' CMakeLists.txt | head -n1)"
           case "$GITHUB_REF_NAME" in
             "v${version}"|"v${version}-"*) ;;
@@ -32,15 +43,37 @@ jobs:
               ;;
           esac
 
+          git fetch --no-tags origin master:refs/remotes/origin/master
+          source_revision="$(git rev-parse "${GITHUB_REF_NAME}^{commit}")"
+
+          if ! git merge-base --is-ancestor "$source_revision" origin/master; then
+            echo "::error::release tag '$GITHUB_REF_NAME' does not point to master history"
+            exit 1
+          fi
+
+          {
+            echo "PROJECT_VERSION=$version"
+            echo "SOURCE_REVISION=$source_revision"
+          } >> "$GITHUB_ENV"
+
+      - name: Write release provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 .github/scripts/create-release-metadata.py --project Miracle --version "$PROJECT_VERSION" --tag "$GITHUB_REF_NAME" --source-repository "$GITHUB_REPOSITORY" --source-branch master --source-revision "$SOURCE_REVISION" --reference-repository "$REFERENCE_REPOSITORY" --reference-branch "$REFERENCE_BRANCH" --reference-snapshot "$REFERENCE_SNAPSHOT" --reference-revision "$REFERENCE_REVISION" --reference-asset "$REFERENCE_ASSET" --output build/release/release-metadata.json
+
       - name: Create GitHub release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+
           release_args=(--verify-tag --generate-notes)
 
           if [[ "$GITHUB_REF_NAME" == *-* ]]; then
             release_args+=(--prerelease)
           fi
 
-          gh release create "$GITHUB_REF_NAME" "${release_args[@]}"
+          gh release create "$GITHUB_REF_NAME" build/release/release-metadata.json "${release_args[@]}"

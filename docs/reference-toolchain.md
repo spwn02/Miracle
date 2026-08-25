@@ -2,7 +2,7 @@
 
 This document defines the source-level identity and ownership contract of the C++26 reference toolchain used by this project.
 
-Binary packaging, immutable downloadable snapshots, checksums, and CI distribution are intentionally deferred to the next toolchain phase. This document defines what those artifacts must represent.
+Immutable binary snapshots, checksums, manifests, and CI distribution are implemented. This document defines the coherence and provenance contract those artifacts must preserve.
 
 ## Identity
 
@@ -10,17 +10,17 @@ The reference toolchain is developed in:
 
 ```text
 repository:
-  https://github.com/spwn02/clang-p2996
+  https://github.com/spwn02/clang-cxx26
 
 development branch:
-  p2996
+  cxx26
 ```
 
-The repository is a fork of the LLVM monorepo and builds on Bloomberg's Clang/P2996 implementation.
+The repository is an experimental LLVM fork with a broad C++26 scope. It preserves upstream LLVM history and the Bloomberg-originated reflection implementation; that provenance does not imply Bloomberg endorsement of the fork.
 
-The fork is maintained with a broader practical goal than proposal experimentation alone: provide a stable enough implementation of the complete C++26-and-earlier model for reflection-heavy real-world projects while progressively porting missing language and libc++ facilities as they are encountered.
+The current development line is being synchronized with LLVM/Clang 22 and continues to expand compiler, libc++, modules, and reflection support for real-world C++26 workloads.
 
-The `p2996` branch is a mutable development channel. It is not, by itself, an immutable release or CI dependency.
+The `cxx26` branch is a mutable development channel. It is not, by itself, an immutable release or CI dependency.
 
 ## One toolchain unit
 
@@ -47,7 +47,7 @@ Do not intentionally combine, for example:
 - the reference Clang frontend with unrelated system libstdc++;
 - libc++ headers from one fork revision with libc++ binaries from another;
 - module sources from one libc++ installation with headers from another;
-- a reference compiler snapshot with arbitrary newer `p2996` runtime components.
+- a reference compiler snapshot with arbitrary newer `cxx26` runtime components.
 
 C++ modules, reflection intrinsics, library feature macros, ABI configuration, and in-progress C++26 facilities make such mixes especially fragile.
 
@@ -69,7 +69,7 @@ When `master` needs a standardized feature that the fork does not yet provide, t
 standardized feature needed by master
               |
               v
-implement / port / stabilize it in clang-p2996 or its libc++
+implement / port / stabilize it in clang-cxx26 or its libc++
               |
               v
 validate the toolchain
@@ -136,35 +136,39 @@ or through a developer-owned `CMakeUserPresets.json` / CMake toolchain file.
 
 Checked-in project presets remain machine-independent.
 
-It is planned to make this selection reproducible for CI by defining immutable binary snapshots and a stable setup mechanism.
+CI selects an immutable binary snapshot and verifies its manifest and checksums before use. Local development may still select an explicitly built `cxx26` toolchain.
 
 ## Source channel versus snapshots
 
 Two identities must remain distinct:
 
 ```text
-p2996
+cxx26
   mutable development branch
 
-p2996-YYYY.MM.DD
-  immutable validated toolchain snapshot
+p2996-2026-08.23.2
+  current immutable validated snapshot
 ```
 
-If more than one snapshot is required on the same date, an additional monotonic suffix may be used:
+The current snapshot name predates the `clang-cxx26` rebrand. Published snapshot identifiers are immutable provenance; renaming the repository or broadening its scope never renames already-published artifacts. Future snapshots may adopt a new naming scheme without mutating historical ones.
 
-```text
-p2996-YYYY.MM.DD.2
-```
-
-The exact snapshot format will be implemented in the future, but these rules are locked now:
+The snapshot rules are:
 
 1. A snapshot identifies one exact source commit.
 2. Published snapshot bytes are immutable.
 3. Rebuilding different bytes requires a new snapshot identifier.
 4. Snapshot metadata records the source commit.
 5. Snapshot metadata records artifact checksums.
-6. CI and released library versions pin snapshots, never the moving `p2996` branch.
+6. CI and released library versions pin snapshots, never the moving `cxx26` branch.
 7. The development branch remains free to advance independently after a snapshot is published.
+
+The currently validated reference is:
+
+```text
+snapshot: p2996-2026.08.23.2
+source revision: 60966cc65acc736637ffd4ba03951932e47f5042
+asset: clang-p2996-2026.08.23.2-linux-x86_64
+```
 
 ## Validation scope
 
@@ -184,7 +188,7 @@ Additional hosts and targets may be added once the reference toolchain and proje
 A new reference snapshot should move through this validation direction:
 
 ```text
-clang-p2996 / libc++ candidate
+clang-cxx26 / libc++ candidate
           |
           v
 compiler + libc++ regression tests
@@ -215,17 +219,20 @@ Switch is particularly valuable here because its reflection-heavy discovery and 
 
 Official Miracle and Switch releases are built from `master`.
 
-While the reference implementation remains ahead of mainstream compiler support, release metadata should record the exact validated reference snapshot.
+Release workflows verify that the tag resolves to `master` history and attach deterministic `release-metadata.json`. The metadata records the exact project source commit together with the immutable validated reference snapshot, its source revision, and artifact identity.
 
-Conceptually:
+For the current reference:
 
 ```text
-Switch vX.Y.Z
-  reference toolchain: p2996-YYYY.MM.DD
-  source revision:     <toolchain commit>
+Miracle/Switch release
+  source branch:        master
+  reference repository: spwn02/clang-cxx26
+  development branch:  cxx26
+  reference snapshot:  p2996-2026.08.23.2
+  toolchain revision:   60966cc65acc736637ffd4ba03951932e47f5042
 ```
 
-The release does not vendor or redistribute compiler BMIs.
+The release does not vendor or redistribute compiler BMIs, and the non-release-bearing `gcc` compatibility branch never produces parallel release artifacts.
 
 ## BMI / PCM policy
 
@@ -243,7 +250,7 @@ That does not mean the project should describe it as disposable prototype infras
 
 The intended description is:
 
-> An actively maintained Clang/P2996 fork focused on stability, C++26 library coverage, and real-world reflection-heavy applications.
+> An actively maintained experimental LLVM/Clang C++26 fork focused on standards coverage, stability, and real-world reflection-heavy applications.
 
 Miracle, Switch, and Nyx use it for serious development and regression validation.
 
@@ -253,4 +260,4 @@ Claims such as "production-ready compiler" should be reserved until a substantia
 
 The fork owes its reflection foundation to Bloomberg's Clang/P2996 project and ultimately to LLVM/Clang/libc++.
 
-That provenance should remain explicit in compiler-facing documentation. Stability fixes, C++26 library work, and real-world regression coverage added in `spwn02/clang-p2996` extend that work rather than erase its origin.
+That provenance remains explicit even though the project is now `spwn02/clang-cxx26` and has progressed far beyond proposal-only work. The rebrand broadens scope; it does not erase the origin of the reflection implementation or imply Bloomberg endorsement.
