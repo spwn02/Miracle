@@ -36,6 +36,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -55,12 +56,17 @@ jobs:
 
       - name: Validate synchronization candidate on GCC
         shell: bash
-        run: ./.github/scripts/validate-gcc.sh
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          ./.github/scripts/validate-gcc.sh
 
       - name: Advance gcc
         shell: bash
         run: |
           set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+
           # Intentionally not forced. A concurrent gcc update rejects this push
           # instead of overwriting a newer compatibility result.
           git push origin HEAD:refs/heads/gcc

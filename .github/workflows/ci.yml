@@ -42,7 +42,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          release_base="https://github.com/spwn02/clang-p2996/releases/download/${P2996_SNAPSHOT}"
+          # The immutable p2996-named snapshot predates the clang-cxx26
+          # repository rebrand. Keep the snapshot identity pinned while
+          # downloading it from the repository's current canonical location.
+          release_base="https://github.com/spwn02/clang-cxx26/releases/download/${P2996_SNAPSHOT}"
           download_dir="$RUNNER_TEMP/p2996-download"
           install_dir="$RUNNER_TEMP/p2996-install"
 
