@@ -46,11 +46,11 @@ jobs:
           python3 .github/scripts/report-gcc-convergence.py \
             --master origin/master \
             --gcc HEAD \
-            --output build/gcc-convergence.json
+            --output "$RUNNER_TEMP/gcc-convergence.json"
 
       - name: Upload GCC convergence report
         uses: actions/upload-artifact@v4
         with:
           name: gcc-convergence-${{ github.run_id }}
-          path: build/gcc-convergence.json
+          path: ${{ runner.temp }}/gcc-convergence.json
           if-no-files-found: error
