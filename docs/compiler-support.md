@@ -28,18 +28,18 @@ not:
 
 ## Reference toolchain
 
-The current reference implementation is:
+The reference toolchain is developed in:
 
 ```text
 compiler:
-  https://github.com/spwn02/clang-p2996
-  branch: p2996
+  https://github.com/spwn02/clang-cxx26
+  branch: cxx26
 
 standard library:
   the matching libc++ tree from the same fork
 ```
 
-The fork builds on Bloomberg's Clang/P2996 work and is being extended with a focus on compiler stability, real-world reflection-heavy workloads, and progressively broader C++26 libc++ coverage.
+`clang-cxx26` preserves upstream LLVM history and the Bloomberg-originated reflection implementation while broadening the fork into a general C++26 toolchain. The current development line is being synchronized with LLVM/Clang 22.
 
 "Reference toolchain" does not mean Miracle is permanently tied to one compiler. It means this is the toolchain against which the complete `master` contract is currently validated.
 
@@ -47,7 +47,7 @@ Other toolchains become eligible for `master` support when they implement the re
 
 The compiler alone is not the reference unit: its matching libc++ headers, binaries, ABI runtime, and C++ module sources/metadata belong to the same validated toolchain build. Deliberately mixing components from unrelated toolchain revisions is unsupported.
 
-The `p2996` branch is the mutable source-development channel, not a CI/release pin. It is planned to introduce immutable `p2996-YYYY.MM.DD` toolchain snapshots. CI and releases will pin those snapshots rather than following the branch.
+The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly: the currently validated immutable reference remains the historical `p2996-2026.08.23.2` snapshot from source revision `60966cc65acc736637ffd4ba03951932e47f5042`. Its P2996-era name is immutable provenance, not the current scope of the compiler project.
 
 See [`reference-toolchain.md`](reference-toolchain.md) for the complete identity, provenance, selection, component-coherence, and snapshot contract.
 
@@ -119,6 +119,10 @@ There is no automated `gcc --> master` path. Compiler-independent fixes discover
 
 The GitHub runner currently uses the current Arch Linux GCC/libstdc++ package. The executable capability probes, not the distro package version string, remain the acceptance criterion.
 
+Every successful GCC validation also writes `gcc-convergence.json`, a machine-readable report of the complete `master`/`gcc` tree delta. The report records the exact revisions, merge base, graph distance, changed files, and line delta. Synchronization candidates produce the same report before `gcc` advances, so convergence evidence does not depend on a bot-authored push triggering a second workflow.
+
+An empty tree delta is a **promotion candidate**, not permission to delete the compatibility branch automatically.
+
 ## Release policy
 
 Official Miracle releases are cut from:
@@ -127,7 +131,13 @@ Official Miracle releases are cut from:
 master
 ```
 
-The `gcc` branch is non-release-bearing for now. There are no `-gcc`, `-gcc16` or parallel compatibility releases.
+A release tag must resolve to a commit contained in `master` history. The release workflow rejects a tag that points only to `gcc` or another side branch even when its version spelling is otherwise valid.
+
+Every GitHub release attaches `release-metadata.json`. The metadata records the exact Miracle source revision, the `master` release branch, the immutable reference-toolchain snapshot and source revision used by CI, and that `gcc` is explicitly non-release-bearing. Release metadata is deterministic and contains no wall-clock fields.
+
+The `gcc` branch is non-release-bearing. There are no `-gcc`, `-gcc16` or parallel compatibility releases.
+
+## GCC convergence and retirement
 
 The intended end state is convergence:
 
@@ -138,16 +148,27 @@ GCC/libstdc++ implementation improves
 compatibility delta shrinks
               |
               v
-GCC passes the master capability contract
+validated gcc tree matches master
+              |
+              v
+same GCC validator runs directly on master
               |
               v
 GCC joins master CI
               |
               v
-gcc branch is retired
+gcc branch is retired explicitly
 ```
 
-The compatibility branch is transitional infrastructure, not a permanent fork of the product.
+Retirement is deliberately gated:
+
+1. A green GCC validation must report `treeEqual: true` against `master`.
+2. The same GCC validator must then pass directly against the unmodified `master` tree.
+3. Reference-toolchain CI remains required; GCC supplements it rather than replacing it.
+4. At least one subsequent meaningful C++/build change on `master` must pass both the reference lane and the direct GCC lane without recreating a compatibility delta.
+5. Only then are the synchronization workflow and branch-specific GCC lane removed and the `gcc` branch deleted explicitly.
+
+No workflow force-pushes, rewrites, or automatically deletes `gcc`. The compatibility branch is transitional infrastructure, not a permanent fork or a second product line.
 
 ## Capability-driven support
 

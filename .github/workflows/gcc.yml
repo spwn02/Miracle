@@ -18,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Validate GCC compatibility
         shell: bash
@@ -34,3 +36,21 @@ jobs:
                 base-devel ca-certificates cmake git ninja
               bash ./.github/scripts/validate-gcc.sh
             '
+
+      - name: Measure GCC convergence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin master:refs/remotes/origin/master
+          python3 .github/scripts/report-gcc-convergence.py \
+            --master origin/master \
+            --gcc HEAD \
+            --output "$RUNNER_TEMP/gcc-convergence.json"
+
+      - name: Upload GCC convergence report
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcc-convergence-${{ github.run_id }}
+          path: ${{ runner.temp }}/gcc-convergence.json
+          if-no-files-found: error

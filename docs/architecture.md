@@ -37,9 +37,9 @@ This is why Miracle can intentionally look Rust-like in places without trying to
 
 `master` targets the complete standardized C++26-and-earlier capability set, not merely the subset implemented by today's compilers or the subset Miracle currently happens to use.
 
-Miracle may adopt any standardized facility through C++26 whenever it produces a better design. If the current reference toolchain lacks that facility, the preferred response is to implement or port the missing standard behavior into the toolchain rather than contrain `master` around an incomplete implementation.
+Miracle may adopt any standardized facility through C++26 whenever it produces a better design. If the current reference toolchain lacks that facility, the preferred response is to implement or port the missing standard behavior into the toolchain rather than constrain `master` around an incomplete implementation.
 
-The current reference implementation is [`spwn02/clang-p2996:p2996`](https://github.com/spwn02/clang-p2996/tree/p2996) together with its matching libc++. GCC compatibility is a deferred implementation concern and may trail `master`.
+The reference toolchain is developed in [`spwn02/clang-cxx26:cxx26`](https://github.com/spwn02/clang-cxx26/tree/cxx26) together with its matching libc++. CI currently remains pinned to the historical immutable `p2996-2026.08.23.2` snapshot while the development line advances with LLVM/Clang 22. GCC compatibility is a deferred implementation concern and may trail `master`.
 
 The complete branch and compiler policy is defined in [`compiler-support.md`](compiler-support.md).
 
