@@ -41,6 +41,11 @@ function(miracle_check_capabilities)
       std_vocabulary
       std_hive)
 
+  # These native capabilities may be supplied by a compatibility backend on this
+  # branch. They remain probed and reported so the backend has an explicit
+  # deletion condition when the toolchain catches up.
+  set(capability_compatibility_managed std_hive)
+
   set(capability_import_std_description
       "C++26 import std and standard-library module consumption")
   set(capability_reflection_core_description
@@ -349,8 +354,10 @@ auto main() -> int {
       set("MIRACLE_CAPABILITY_${capability_cache_name}"
           FALSE
           CACHE INTERNAL "Miracle capability ${name}" FORCE)
-      list(APPEND missing_capabilities
-           "${name}|${capability_${name}_description}|${capability_log}")
+      if(NOT name IN_LIST capability_compatibility_managed)
+        list(APPEND missing_capabilities
+             "${name}|${capability_${name}_description}|${capability_log}")
+      endif()
       message(STATUS "Miracle capability ${name}: no")
     endif()
 

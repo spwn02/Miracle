@@ -1,8 +1,6 @@
 module Miracle;
 
 import std;
-import :Types;
-import :Error;
 
 namespace Miracle {
 
@@ -62,8 +60,9 @@ static constexpr auto embed(const Error::Message &message) -> String {
 }
 
 static constexpr auto generateStyle(bool locations, bool colours) -> decltype(auto) {
-  return [locations, colours](const Pair<usize, Error::Message> &pair) constexpr -> String {
-    const auto &[idx, msg] = pair;
+  return [locations, colours](const auto &pair) constexpr -> String {
+    const auto &[idx, messageRef] = pair;
+    const Error::Message &msg = messageRef.get();
     String res{};
 
     String message{};
@@ -75,10 +74,11 @@ static constexpr auto generateStyle(bool locations, bool colours) -> decltype(au
 
     if (idx == 0) {
       StringView header{colours ? "Error: {}\n\n\033[33mCaused by:\033[0m" : "Error: {}\n\nCaused by:"};
-      res = std::format(std::runtime_format(header), message);
+      res = std::vformat(header, std::make_format_args(message));
     } else {
       StringView footer{colours ? "  \033[33m{:d}:\033[0m {}" : "  {:d}: {}"};
-      res = std::format(std::runtime_format(footer), idx - 1, message);
+      const usize cause = static_cast<usize>(idx - 1);
+      res = std::vformat(footer, std::make_format_args(cause, message));
     }
 
     return res;
@@ -92,7 +92,13 @@ auto Error::display(std::ostream &output, ErrorDisplayOptions options) const -> 
     return;
   }
 
-  output << (messages | std::views::reverse | std::views::enumerate |
+  Vec<Ref<const Message>> ordered;
+  ordered.reserve(messages.size());
+  std::ranges::transform(
+      messages, std::back_inserter(ordered), [](const Message &message) { return std::cref(message); });
+  std::ranges::reverse(ordered);
+
+  output << (ordered | std::views::enumerate |
              std::views::transform(generateStyle(options.locations, options.colours)) |
              std::views::join_with('\n') | std::ranges::to<String>());
 }

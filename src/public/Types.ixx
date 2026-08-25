@@ -1,6 +1,7 @@
 export module Miracle:Types;
 
 import std;
+export import :HiveBackend;
 
 export namespace Miracle {
 
@@ -57,6 +58,6 @@ template <class T, usize Capacity>
 using InplaceVec = std::inplace_vector<T, Capacity>;
 
 template <class T>
-using Hive = std::hive<T>;
+using Hive = HiveBackend<T>;
 
 } // namespace Miracle

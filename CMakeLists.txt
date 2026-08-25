@@ -74,6 +74,35 @@ unset(miracle_gnu_clang_warning_options)
 
 miracle_check_capabilities()
 
+set(miracle_hive_backend_source src/public/compat/HiveNative.ixx)
+
+if(MIRACLE_CAPABILITY_STD_HIVE)
+  message(STATUS "Miracle Hive backend: std::hive")
+else()
+  include(FetchContent)
+
+  # std::hive is not yet available in libstdc++ 16. Keep the compatibility
+  # backend pinned to one immutable upstream revision.
+  set(miracle_plf_hive_revision "a110d8b31c2cd3e496d06dcf59417229512e9dc6")
+  FetchContent_Declare(
+    plf_hive
+    GIT_REPOSITORY https://github.com/mattreecebentley/plf_hive.git
+    GIT_TAG "${miracle_plf_hive_revision}"
+    GIT_SHALLOW TRUE)
+  FetchContent_MakeAvailable(plf_hive)
+
+  if(NOT EXISTS "${plf_hive_SOURCE_DIR}/plf_hive.h")
+    message(
+      FATAL_ERROR
+        "Miracle's std_hive compatibility backend requires plf_hive.h, but "
+        "the pinned plf_hive source tree does not contain it.")
+  endif()
+
+  set(miracle_hive_backend_source src/public/compat/HivePlf.ixx)
+  message(
+    STATUS "Miracle Hive backend: plf::hive (${miracle_plf_hive_revision})")
+endif()
+
 option(MIRACLE_WARNINGS_AS_ERRORS
        "Treat warnings emitted while compiling Miracle itself as errors" OFF)
 
@@ -168,6 +197,7 @@ target_sources(
          FILES
          src/public/Miracle.ixx
          src/public/Types.ixx
+         "${miracle_hive_backend_source}"
          src/public/Error.ixx
          src/public/Fs.ixx
          src/public/Memory.ixx
@@ -179,6 +209,13 @@ target_sources(
          "${miracle_generated_dir}/Build.ixx"
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
+
+if(NOT MIRACLE_CAPABILITY_STD_HIVE)
+  target_include_directories(
+    Miracle SYSTEM
+    PUBLIC "$<BUILD_INTERFACE:${plf_hive_SOURCE_DIR}>"
+           "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Miracle/compat>")
+endif()
 
 target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 
@@ -212,6 +249,15 @@ install(
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfigVersion.cmake"
         DESTINATION "${miracle_cmake_install_dir}")
+
+if(NOT MIRACLE_CAPABILITY_STD_HIVE)
+  install(FILES "${plf_hive_SOURCE_DIR}/plf_hive.h"
+          DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Miracle/compat")
+  install(
+    FILES "${plf_hive_SOURCE_DIR}/LICENSE.md"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle/licenses"
+    RENAME plf_hive-LICENSE.md)
+endif()
 
 install(FILES LICENSE DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle")
 

@@ -47,27 +47,45 @@ inline constexpr bool is_debug_rename_v{};
 template <usize Size>
 inline constexpr bool is_debug_rename_v<DebugRename<Size>>{true};
 
-template <class T>
-concept DebuggableAggr = Miracle::meta::has_annotation<DebugDerive, ^^T>() and not Enum<T>;
+template <class Annotation, std::meta::info Info, usize Index = 0>
+consteval auto has_annotation_direct() -> bool {
+  constexpr usize count = static_cast<usize>(std::meta::annotations_of(Info).size());
+  if constexpr (Index == count) {
+    return false;
+  } else {
+    constexpr std::meta::info annotation = std::meta::annotations_of(Info)[Index];
+    if constexpr (std::meta::type_of(annotation) == ^^Annotation)
+      return true;
+
+    return has_annotation_direct<Annotation, Info, Index + 1>();
+  }
+}
 
 template <class T>
-concept DebuggableEnum = Miracle::meta::has_annotation<DebugDerive, ^^T>() and Enum<T>;
+concept DebuggableAggr = has_annotation_direct<DebugDerive, ^^T>() and not Enum<T>;
+
+template <class T>
+concept DebuggableEnum = has_annotation_direct<DebugDerive, ^^T>() and Enum<T>;
 
 template <std::meta::info Info>
 consteval auto debug_hidden() -> bool {
-  return Miracle::meta::has_annotation<DebugHide, Info>();
+  return has_annotation_direct<DebugHide, Info>();
 }
 
-template <std::meta::info Info>
+template <std::meta::info Info, usize Index = 0>
 consteval auto debug_name() -> StringView {
-  template for (constexpr std::meta::info annotation : meta::annotations<Info>) {
-    using Annotation = meta::TypeObject<annotation>;
+  constexpr usize count = static_cast<usize>(std::meta::annotations_of(Info).size());
+  if constexpr (Index == count) {
+    return meta::identifier<Info>;
+  } else {
+    constexpr std::meta::info annotation = std::meta::annotations_of(Info)[Index];
+    using Annotation = std::remove_cvref_t<typename[:std::meta::type_of(annotation):]>;
 
     if constexpr (is_debug_rename_v<Annotation>)
       return std::meta::extract<Annotation>(annotation).apply();
-  }
 
-  return meta::identifier<Info>;
+    return debug_name<Info, Index + 1>();
+  }
 }
 
 struct DebugMetadata {
@@ -81,28 +99,30 @@ constexpr auto debug_metadata() -> DebugMetadata {
   return DebugMetadata{
       .name = debug_name<Info>(),
       .skipped = debug_hidden<Info>(),
-      .preferred = meta::has_annotation<DebugPrefer, Info>(),
+      .preferred = has_annotation_direct<DebugPrefer, Info>(),
   };
 }
 
-template <Enum T>
-constexpr auto enum_name(T value) -> StringView {
-  StringView preferred{"<unnamed>"};
-
-  template for (constexpr std::meta::info enumerator : meta::enumerators<^^T>) {
+template <Enum T, usize Index = 0>
+constexpr auto enum_name(T value, StringView preferred = "<unnamed>") -> StringView {
+  constexpr usize count = static_cast<usize>(std::meta::enumerators_of(^^T).size());
+  if constexpr (Index == count) {
+    return preferred;
+  } else {
+    constexpr std::meta::info enumerator = std::meta::enumerators_of(^^T)[Index];
     constexpr DebugMetadata metadata = debug_metadata<enumerator>();
 
-    if constexpr (metadata.skipped)
-      continue;
+    if constexpr (not metadata.skipped) {
+      if ([:enumerator:] == std::remove_cvref_t<T>(value))
+        return metadata.name;
 
-    if ([:enumerator:] == std::remove_cvref_t<T>(value))
-      return metadata.name;
+      if constexpr (metadata.preferred)
+        preferred = metadata.name;
+    }
 
-    if constexpr (metadata.preferred)
-      preferred = metadata.name;
+    return enum_name<T, Index + 1>(value, preferred);
   }
 
-  return preferred;
 }
 
 template <class Obj>
@@ -111,7 +131,8 @@ constexpr auto format_fields(const Obj &obj, bool pretty = false, usize level = 
   const String indent_outer(pretty ? level * 2 : 0, ' ');
   const String indent_inner(pretty ? (level + 1) * 2 : 0, ' ');
 
-  template for (constexpr std::meta::info mem : meta::nsMembers<^^Obj, meta::AccessContext::unchecked()>) {
+  template for (constexpr std::meta::info mem : std::define_static_array(
+                    std::meta::nonstatic_data_members_of(^^Obj, meta::AccessContext::unchecked()))) {
     constexpr DebugMetadata metadata = debug_metadata<mem>();
     if constexpr (metadata.skipped)
       continue;

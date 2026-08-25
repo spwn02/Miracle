@@ -4,8 +4,6 @@ module;
 
 module Miracle;
 
-import :Memory;
-
 import std;
 
 namespace Miracle::memory {
