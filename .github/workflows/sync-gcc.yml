@@ -16,17 +16,8 @@ jobs:
   sync:
     name: Validate and advance gcc
     runs-on: ubuntu-latest
-    container:
-      image: archlinux:latest
 
     steps:
-      - name: Install GCC toolchain
-        shell: bash
-        run: |
-          set -euo pipefail
-          pacman -Syu --noconfirm --needed \
-            base-devel ca-certificates cmake git ninja
-
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -36,7 +27,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "$GITHUB_WORKSPACE"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -58,14 +48,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd "$GITHUB_WORKSPACE"
-          ./.github/scripts/validate-gcc.sh
+
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/workspace" \
+            --workdir /workspace \
+            archlinux:latest \
+            bash -lc '
+              set -euo pipefail
+              pacman -Syu --noconfirm --needed \
+                base-devel ca-certificates cmake git ninja
+              ./.github/scripts/validate-gcc.sh
+            '
 
       - name: Advance gcc
         shell: bash
         run: |
           set -euo pipefail
-          cd "$GITHUB_WORKSPACE"
 
           # Intentionally not forced. A concurrent gcc update rejects this push
           # instead of overwriting a newer compatibility result.
