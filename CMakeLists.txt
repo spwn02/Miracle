@@ -74,34 +74,26 @@ unset(miracle_gnu_clang_warning_options)
 
 miracle_check_capabilities()
 
-set(miracle_hive_backend_source src/public/compat/HiveNative.ixx)
+# Convert probe results once at configure time so generated C++ module facts do
+# not depend on preprocessor definitions or compiler/vendor checks.
+set(miracle_capability_names
+    import_std
+    reflection_core
+    reflection_queries
+    reflection_annotations
+    reflection_static_storage
+    expansion_statements
+    std_vocabulary
+    std_hive)
 
-if(MIRACLE_CAPABILITY_STD_HIVE)
-  message(STATUS "Miracle Hive backend: std::hive")
-else()
-  include(FetchContent)
-
-  # std::hive is not yet available in libstdc++ 16. Keep the compatibility
-  # backend pinned to one immutable upstream revision.
-  set(miracle_plf_hive_revision "a110d8b31c2cd3e496d06dcf59417229512e9dc6")
-  FetchContent_Declare(
-    plf_hive
-    GIT_REPOSITORY https://github.com/mattreecebentley/plf_hive.git
-    GIT_TAG "${miracle_plf_hive_revision}"
-    GIT_SHALLOW TRUE)
-  FetchContent_MakeAvailable(plf_hive)
-
-  if(NOT EXISTS "${plf_hive_SOURCE_DIR}/plf_hive.h")
-    message(
-      FATAL_ERROR
-        "Miracle's std_hive compatibility backend requires plf_hive.h, but "
-        "the pinned plf_hive source tree does not contain it.")
+foreach(name IN LISTS miracle_capability_names)
+  string(TOUPPER "${name}" capability_name)
+  if(MIRACLE_CAPABILITY_${capability_name})
+    set(MIRACLE_CAPABILITY_${capability_name}_CPP true)
+  else()
+    set(MIRACLE_CAPABILITY_${capability_name}_CPP false)
   endif()
-
-  set(miracle_hive_backend_source src/public/compat/HivePlf.ixx)
-  message(
-    STATUS "Miracle Hive backend: plf::hive (${miracle_plf_hive_revision})")
-endif()
+endforeach()
 
 option(MIRACLE_WARNINGS_AS_ERRORS
        "Treat warnings emitted while compiling Miracle itself as errors" OFF)
@@ -172,6 +164,9 @@ set(miracle_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_generated_dir}")
 configure_file(src/public/Build.ixx.in "${miracle_generated_dir}/Build.ixx"
                @ONLY NEWLINE_STYLE LF)
+configure_file(
+  src/public/Capabilities.ixx.in "${miracle_generated_dir}/Capabilities.ixx"
+  @ONLY NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -197,7 +192,7 @@ target_sources(
          FILES
          src/public/Miracle.ixx
          src/public/Types.ixx
-         "${miracle_hive_backend_source}"
+         src/public/StaticString.ixx
          src/public/Error.ixx
          src/public/Fs.ixx
          src/public/Memory.ixx
@@ -207,15 +202,9 @@ target_sources(
          src/public/meta/Bitflags.ixx
          src/public/meta/Debug.ixx
          "${miracle_generated_dir}/Build.ixx"
+         "${miracle_generated_dir}/Capabilities.ixx"
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
-
-if(NOT MIRACLE_CAPABILITY_STD_HIVE)
-  target_include_directories(
-    Miracle SYSTEM
-    PUBLIC "$<BUILD_INTERFACE:${plf_hive_SOURCE_DIR}>"
-           "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/Miracle/compat>")
-endif()
 
 target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 
@@ -250,15 +239,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/MiracleConfigVersion.cmake"
         DESTINATION "${miracle_cmake_install_dir}")
 
-if(NOT MIRACLE_CAPABILITY_STD_HIVE)
-  install(FILES "${plf_hive_SOURCE_DIR}/plf_hive.h"
-          DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/Miracle/compat")
-  install(
-    FILES "${plf_hive_SOURCE_DIR}/LICENSE.md"
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle/licenses"
-    RENAME plf_hive-LICENSE.md)
-endif()
-
 install(FILES LICENSE DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle")
 
 option(MIRACLE_BUILD_EXAMPLES "Build Miracle examples" OFF)
@@ -272,3 +252,8 @@ if(MIRACLE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
+
+# GCC-compatibility hive backend. Isolated in its own file and wired up via a
+# trailing include() so that syncing 'master' into this branch never has to
+# merge through it.
+include(cmake/GccCompat.cmake)

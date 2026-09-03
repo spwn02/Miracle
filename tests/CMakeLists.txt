@@ -8,7 +8,7 @@ if(NOT TARGET Switch::Switch)
   FetchContent_Declare(
     Switch
     GIT_REPOSITORY https://github.com/spwn02/Switch.git
-    GIT_TAG 2985cc7575f7ba458170684b3df25e4f5493204a
+    GIT_TAG 40bee47f558b0c762fdf20c722c0c97810ecab3c
     GIT_SHALLOW FALSE)
   FetchContent_MakeAvailable(Switch)
 endif()
@@ -21,8 +21,15 @@ if(NOT TARGET Switch::Switch)
       "FETCHCONTENT_SOURCE_DIR_SWITCH, or the standalone Switch repository.")
 endif()
 
-add_executable(MiracleTests main.cxx bitflags.cxx debug.cxx error.cxx fs.cxx
-                            reflection.cxx)
+add_executable(
+  MiracleTests
+  main.cxx
+  bitflags.cxx
+  debug.cxx
+  error.cxx
+  fs.cxx
+  reflection.cxx
+  static-string.cxx)
 
 target_compile_features(MiracleTests PRIVATE cxx_std_26)
 
