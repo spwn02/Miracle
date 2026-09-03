@@ -1,0 +1,31 @@
+export module Miracle:Capabilities;
+
+/// Compile-time facts established by Miracle's executable toolchain probes.
+export namespace Miracle::capability {
+
+/// C++26 `import std;` and standard-library module consumption are available.
+inline constexpr bool importStd = @MIRACLE_CAPABILITY_IMPORT_STD_CPP@;
+
+/// Core standardized C++26 reflection and splicing are available.
+inline constexpr bool reflectionCore = @MIRACLE_CAPABILITY_REFLECTION_CORE_CPP@;
+
+/// Reflection member/function query facilities used by Miracle are available.
+inline constexpr bool reflectionQueries = @MIRACLE_CAPABILITY_REFLECTION_QUERIES_CPP@;
+
+/// Standardized reflection annotations and extraction are available.
+inline constexpr bool reflectionAnnotations = @MIRACLE_CAPABILITY_REFLECTION_ANNOTATIONS_CPP@;
+
+/// Reflection static-storage promotion facilities are available.
+inline constexpr bool reflectionStaticStorage = 
+    @MIRACLE_CAPABILITY_REFLECTION_STATIC_STORAGE_CPP@;
+
+/// C++26 expansion statements are available.
+inline constexpr bool expansionStatements = @MIRACLE_CAPABILITY_EXPANSION_STATEMENTS_CPP@;
+
+/// The C++26 standard vocabulary currently required by Miracle is available.
+inline constexpr bool stdVocabulary = @MIRACLE_CAPABILITY_STD_VOCABULARY_CPP@;
+
+/// `std::hive` is available.
+inline constexpr bool stdHive = @MIRACLE_CAPABILITY_STD_HIVE_CPP@;
+
+} // namespace Miracle::capabilities

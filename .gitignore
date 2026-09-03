@@ -2,3 +2,4 @@
 /CMakeUserPresets.json
 /.*/
 !/.github/
+/contracts/

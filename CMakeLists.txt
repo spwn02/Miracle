@@ -74,6 +74,27 @@ unset(miracle_gnu_clang_warning_options)
 
 miracle_check_capabilities()
 
+# Convert probe results once at configure time so generated C++ module facts do
+# not depend on preprocessor definitions or compiler/vendor checks.
+set(miracle_capability_names
+    import_std
+    reflection_core
+    reflection_queries
+    reflection_annotations
+    reflection_static_storage
+    expansion_statements
+    std_vocabulary
+    std_hive)
+
+foreach(name IN LISTS miracle_capability_names)
+  string(TOUPPER "${name}" capability_name)
+  if(MIRACLE_CAPABILITY_${capability_name})
+    set(MIRACLE_CAPABILITY_${capability_name}_CPP true)
+  else()
+    set(MIRACLE_CAPABILITY_${capability_name}_CPP false)
+  endif()
+endforeach()
+
 option(MIRACLE_WARNINGS_AS_ERRORS
        "Treat warnings emitted while compiling Miracle itself as errors" OFF)
 
@@ -143,6 +164,9 @@ set(miracle_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_generated_dir}")
 configure_file(src/public/Build.ixx.in "${miracle_generated_dir}/Build.ixx"
                @ONLY NEWLINE_STYLE LF)
+configure_file(
+  src/public/Capabilities.ixx.in "${miracle_generated_dir}/Capabilities.ixx"
+  @ONLY NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -168,6 +192,7 @@ target_sources(
          FILES
          src/public/Miracle.ixx
          src/public/Types.ixx
+         src/public/StaticString.ixx
          src/public/Error.ixx
          src/public/Fs.ixx
          src/public/Memory.ixx
@@ -177,6 +202,7 @@ target_sources(
          src/public/meta/Bitflags.ixx
          src/public/meta/Debug.ixx
          "${miracle_generated_dir}/Build.ixx"
+         "${miracle_generated_dir}/Capabilities.ixx"
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
 
