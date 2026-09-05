@@ -3,7 +3,8 @@ IndentWidth: 2
 BreakBeforeBraces: Attach
 AllowShortIfStatementsOnASingleLine: false
 NamespaceIndentation: None
-FixNamespaceComments: false
+FixNamespaceComments: true
+ShortNamespaceLines: 0
 AllowAllConstructorInitializersOnNextLine: true
 BreakConstructorInitializers: BeforeComma
 AllowShortBlocksOnASingleLine: Never
