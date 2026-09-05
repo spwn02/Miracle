@@ -99,6 +99,7 @@ jobs:
 
           toolchain_root="$install_dir/clang-${CXX26_SNAPSHOT}"
           test -x "$toolchain_root/bin/clang++"
+          test -x "$toolchain_root/bin/clangd"
           test -f "$toolchain_root/share/clang-cxx26/toolchain.cmake"
           test -f "$toolchain_root/share/clang-cxx26/activate.sh"
 
