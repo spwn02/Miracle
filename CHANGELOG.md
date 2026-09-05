@@ -13,6 +13,10 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
 - Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
 
+### Changed
+
+- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.09.05` toolchain snapshot (`6c7ef6afbfd8456c964c7a2625b3ea2aaa7d613f`).
+
 ### Performance
 
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.

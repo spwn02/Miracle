@@ -39,7 +39,7 @@ standard library:
   the matching libc++ tree from the same fork
 ```
 
-`clang-cxx26` preserves upstream LLVM history and the Bloomberg-originated reflection implementation while broadening the fork into a general C++26 toolchain. The current development line is being synchronized with LLVM/Clang 22.
+`clang-cxx26` preserves upstream LLVM history and the Bloomberg-originated reflection implementation while broadening the fork into a general C++26 toolchain. The current development line is synchronized with LLVM/Clang 22.1.8.
 
 "Reference toolchain" does not mean Miracle is permanently tied to one compiler. It means this is the toolchain against which the complete `master` contract is currently validated.
 
@@ -47,7 +47,9 @@ Other toolchains become eligible for `master` support when they implement the re
 
 The compiler alone is not the reference unit: its matching libc++ headers, binaries, ABI runtime, and C++ module sources/metadata belong to the same validated toolchain build. Deliberately mixing components from unrelated toolchain revisions is unsupported.
 
-The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly: the currently validated immutable reference remains the historical `p2996-2026.08.23.2` snapshot from source revision `60966cc65acc736637ffd4ba03951932e47f5042`. Its P2996-era name is immutable provenance, not the current scope of the compiler project.
+The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.09.05`, built from source revision `6c7ef6afbfd8456c964c7a2625b3ea2aaa7d613f`.
+
+The historical `p2996-2026.08.23.2` snapshot remains immutable provenance for earlier releases, but it is no longer the current reference baseline.
 
 See [`reference-toolchain.md`](reference-toolchain.md) for the complete identity, provenance, selection, component-coherence, and snapshot contract.
 
@@ -107,7 +109,7 @@ install + find_package consumer
 
 Miracle's Switch-powered self-tests are intentionally not part of this lane. They add a second product/compiler surface beyond Miracle's production and consumer contract; Switch validates its own GCC self-test surface independently.
 
-Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. The candidate is validated with the same GCC validator before `gcc` is advanced. A merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push.
+Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. When both branches edit the same file, the existing `gcc` version wins because it contains the compiler-specific compatibility implementation; master-only commits and files are still imported. The candidate is validated with the same GCC validator before `gcc` is advanced. An unresolvable merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push, and the fetch is force-tolerant so amended or force-pushed `master` commits can recover a stale `gcc` tip.
 
 This automation does not change the synchronization policy:
 
@@ -187,7 +189,7 @@ std_vocabulary
 std_hive
 ```
 
-The probes compile in one nested CMake build so the `std` module can be reused across checks. When the parent build uses a CMake toolchain file, the probe project reuses that same toolchain file without reconstructing or duplicating its compiler flags. Without a toolchain file, the probe project reuses the selected compiler and global C++ flags. This keeps implementation-specific mode selection at the toolchain boundary while testing the same effective C++26 environment as Miracle itself. Every failed target gets its own build log. Configuration also writes a machine-readable `MiracleCapabilities.json` into the Miracle build directory.
+The probes compile in one nested CMake build so the `std` module can be reused across checks. Toolchain resolution follows the effective compiler environment: an explicit `MIRACLE_CAPABILITY_TOOLCHAIN_FILE` override first, then `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` for wrapper toolchains such as vcpkg, then the ordinary `CMAKE_TOOLCHAIN_FILE`. Without a toolchain file, the probe project reuses the selected compiler and global C++ flags. This keeps implementation-specific mode selection at the toolchain boundary while testing the same effective C++26 environment as Miracle itself. Every failed target gets its own build log. Configuration also writes a machine-readable `MiracleCapabilities.json` into the Miracle build directory.
 
 These are the executable requirements of the current source revision, not an exhaustive C++26 conformance suite. `master` continues to target the complete standardized C++26-and-earlier model. When `master` adopts another standardized facility, its corresponding executable capability gate is added here.
  
