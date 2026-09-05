@@ -109,7 +109,7 @@ install + find_package consumer
 
 Miracle's Switch-powered self-tests are intentionally not part of this lane. They add a second product/compiler surface beyond Miracle's production and consumer contract; Switch validates its own GCC self-test surface independently.
 
-Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. The candidate is validated with the same GCC validator before `gcc` is advanced. A merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push.
+Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. When both branches edit the same file, the existing `gcc` version wins because it contains the compiler-specific compatibility implementation; master-only commits and files are still imported. The candidate is validated with the same GCC validator before `gcc` is advanced. An unresolvable merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push, and the fetch is force-tolerant so amended or force-pushed `master` commits can recover a stale `gcc` tip.
 
 This automation does not change the synchronization policy:
 
