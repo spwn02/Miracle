@@ -22,6 +22,7 @@ project(
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(cmake/Capabilities.cmake)
+include(cmake/Features.cmake)
 
 if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
   message(
@@ -95,6 +96,15 @@ foreach(name IN LISTS miracle_capability_names)
   endif()
 endforeach()
 
+# Resolve build-selectable features before generated module configuration and
+# target source lists are created. Future facilities register their heavy module
+# sources through cmake/Features.cmake; For now it has no optional heavy feature
+# enabled by default.
+miracle_configure_build_features()
+
+miracle_compute_feature_build_identity(MIRACLE_FEATURE_BUILD_IDENTITY
+                                       ${miracle_capability_names})
+
 option(MIRACLE_WARNINGS_AS_ERRORS
        "Treat warnings emitted while compiling Miracle itself as errors" OFF)
 
@@ -167,6 +177,9 @@ configure_file(src/public/Build.ixx.in "${miracle_generated_dir}/Build.ixx"
 configure_file(
   src/public/Capabilities.ixx.in "${miracle_generated_dir}/Capabilities.ixx"
   @ONLY NEWLINE_STYLE LF)
+configure_file(
+  src/public/FeatureConfiguration.ixx.in
+  "${miracle_generated_dir}/FeatureConfiguration.ixx" @ONLY NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -193,6 +206,7 @@ target_sources(
          src/public/Miracle.ixx
          src/public/Types.ixx
          src/public/StaticString.ixx
+         src/public/Feature.ixx
          src/public/Error.ixx
          src/public/Fs.ixx
          src/public/Memory.ixx
@@ -203,8 +217,19 @@ target_sources(
          src/public/meta/Debug.ixx
          "${miracle_generated_dir}/Build.ixx"
          "${miracle_generated_dir}/Capabilities.ixx"
+         "${miracle_generated_dir}/FeatureConfiguration.ixx"
+         # "${MIRACLE_BUILD_FEATURE_SOURCES}"
   PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
+
+if(MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES)
+  target_link_libraries(Miracle
+                        PUBLIC ${MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES})
+endif()
+if(MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES)
+  target_link_libraries(Miracle
+                        PRIVATE ${MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES})
+endif()
 
 target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 

@@ -8,12 +8,19 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Added
 
+- Added the structural compile-time Feature engine with build/semantic descriptors, dependency/implication/conflict resolution, feature groups, capability requirements, canonical local sets, third-party metadata, and reflection-friendly requirements.
+- Added a build-system feature that omits disabled heavy module sources and dependencies and generates the typed configured `BuildFeatureSet`, capability universe, and build identity.
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
-- Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts for the upcoming Feature engine.
+- Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
 
 ### Performance
 
+- Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.
+
+### Diagnostics
+
+- Diagnosed duplicate features, missing build/dependency/capability requirements, complete dependency cycles, conflicts, disabled façades, and colliding build identifiers at compile time.
 
 ## 0.1.0-rc.1 - 2026-08-25
 

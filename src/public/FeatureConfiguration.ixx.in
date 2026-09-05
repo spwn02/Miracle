@@ -1,0 +1,38 @@
+export module Miracle:FeatureConfiguration;
+
+import :Feature;
+import :StaticString;
+
+export namespace Miracle::feature {
+
+/// Maximum build-feature universe compiled into this Miracle configuration.
+inline constexpr auto buildFeatures = buildSet<@MIRACLE_BUILD_FEATURE_ARGUMENTS@>;
+
+/// Capability universe detected by Miracle's executable toolchain probes.
+inline constexpr auto buildCapabilities = detectedCapabilities();
+
+/// Deterministic SHA-256 identity of build features plus capability results.
+/// Different configured universes therefore produce different module source/BMI
+/// identity instead of silently sharing incompatible feature configurations.
+inline constexpr auto buildIdentity = BasicStaticString{"@MIRACLE_FEATURE_BUILD_IDENTITY@"};
+
+/// Returns whether a build feature implementation is present globally.
+template <auto Feature>
+  requires FeatureValue<Feature>
+inline constexpr bool buildEnabled = buildFeatures.contains(Feature);
+
+/// Resolves selectors against this Miracle build's actual feature/capability
+/// universe and emits rich compile-time failure when configuration is invalid.
+template <auto... Requested, class CatalogType>
+  requires((FeatureValue<Requested> || FeatureGroupValue<Requested>) && ...)
+[[nodiscard]] consteval auto current(CatalogType) {
+  return CatalogType::template resolveWithCapabilities<buildFeatures, buildCapabilities, Requested...>();
+}
+
+/// Resolves the catalog's default-enabled features against the current build.
+template <class CatalogType>
+[[nodiscard]] consteval auto defaults(CatalogType) {
+  return CatalogType::template resolveDefaultsWithCapabilities<buildFeatures, buildCapabilities>();
+}
+
+} // namespace Miracle::feature

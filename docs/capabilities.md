@@ -42,15 +42,14 @@ C++ consumers therefore reason about ordinary types constants rather than:
 - duplicated compile probes;
 - public preprocessor configuration;
 
-This is the bootstrap bridge for the Feature engine implemented in the future. The Feature engine will add dependency/conflict/group reasoning and optional feature selection. For now it intentionally does not pretend those semantics already exist.
-
+This is the bootstrap bridge consumed by the Feature engine. Feature resolution adapts these facts into `feature::CapabilitySet` and combines them with dependency, conflict, group, and build-universe reasoning. See [`feature.md`](feature.md).
 
 ## Current master behavior
 
-The current pre-Feature Miracle source still requires the complete set of capabilities used by its existing public modules. A missing required probe therefore continues to fail configuration exactly as before.
+Existing pre-contract Miracle modules still require the capabilities their current implementations use. The Feature engine does not retroactively make legacy modules optional before their dedicated redesign phases. New build-selectable facilities can register capability requirements and heavy sources through the Feature engine now.
 
-This is deliberate: making reflection-backed modules optional before the Feature engine can consistently select their sources and dependencies would create a half-configured library. For now its only establishes the typed capability substrate; In the future it will consume it to implement real feature selection.
+A feature capability failure is therefore distinct from a capability that remains a hard requirement of an existing required module. The former is diagnosed by feature resolution; the latter continues to reject the selected toolchain during configuration.
 
 ## Build identity
 
-Capability results describe the exact configured Miracle build. They are generated from the same probe run as the build and are not recomputed in consuming translation units. Future configured FeatureSets will become part of the build/BMI identity on top of this substrate.
+Capability results describe the exact configured Miracle build. They are generated from the same probe run as the build and are not recomputed in consuming translation units. The generated `feature::buildIdentity` now hashes the canonical build-feature universe together with these capability results so incompatible configurations do not share the same generated module source identity.
