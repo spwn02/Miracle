@@ -18,7 +18,7 @@ development branch:
 
 The repository is an experimental LLVM fork with a broad C++26 scope. It preserves upstream LLVM history and the Bloomberg-originated reflection implementation; that provenance does not imply Bloomberg endorsement of the fork.
 
-The current development line is being synchronized with LLVM/Clang 22 and continues to expand compiler, libc++, modules, and reflection support for real-world C++26 workloads.
+The current development line is synchronized with LLVM/Clang 22.1.8 and continues to expand compiler, libc++, modules, and reflection support for real-world C++26 workloads.
 
 The `cxx26` branch is a mutable development channel. It is not, by itself, an immutable release or CI dependency.
 
@@ -127,9 +127,9 @@ The toolchain must be selected before the top-level CMake `project()` enables C+
 For local development this may be done through environment selection:
 
 ```bash
-CC=/path/to/reference/bin/clang \
-CXX=/path/to/reference/bin/clang++ \
-cmake --preset tests --fresh
+source /path/to/reference/share/clang-cxx26/activate.sh
+cmake --preset tests --fresh \
+  -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE"
 ```
 
 or through a developer-owned `CMakeUserPresets.json` / CMake toolchain file.
@@ -146,11 +146,13 @@ Two identities must remain distinct:
 cxx26
   mutable development branch
 
-p2996-2026-08.23.2
+cxx26-2026-09.04.1
   current immutable validated snapshot
 ```
 
-The current snapshot name predates the `clang-cxx26` rebrand. Published snapshot identifiers are immutable provenance; renaming the repository or broadening its scope never renames already-published artifacts. Future snapshots may adopt a new naming scheme without mutating historical ones.
+The historical `p2996-2026.08.23.2` snapshot predates the `clang-cxx26` rebrand and remains immutable provenance for releases that recorded it. It has been superseded as the current validation baseline, not renamed or rewritten.
+
+Current snapshots use the `cxx26-YYYY.MM.DD[.N]` identity established by the toolchain packager. Published snapshot identifiers remain immutable.
 
 The snapshot rules are:
 
@@ -227,9 +229,9 @@ For the current reference:
 Miracle/Switch release
   source branch:        master
   reference repository: spwn02/clang-cxx26
-  development branch:  cxx26
-  reference snapshot:  p2996-2026.08.23.2
-  toolchain revision:   60966cc65acc736637ffd4ba03951932e47f5042
+  development branch:   cxx26
+  reference snapshot:   cxx26-2026.09.04.1
+  toolchain revision:   543a397a185d3038ce505877a64e74b60b279887
 ```
 
 The release does not vendor or redistribute compiler BMIs, and the non-release-bearing `gcc` compatibility branch never produces parallel release artifacts.
