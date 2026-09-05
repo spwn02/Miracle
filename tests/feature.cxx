@@ -6,6 +6,7 @@ using namespace Miracle;
 using namespace Switch;
 
 // NOLINTBEGIN(readability-identifier-naming)
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 namespace {
 
 namespace featureTest {
@@ -201,6 +202,7 @@ static_assert(!feature::buildEnabled<gpu>);
 } // namespace featureTest
 
 } // namespace
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 // NOLINTEND(readability-identifier-naming)
 
 namespace FeatureTests {
