@@ -2,6 +2,17 @@ export module Miracle:Error;
 
 import std;
 import :Types;
+import :Diagnostic;
+
+namespace Miracle {
+
+// Declared in the same interface partition so reflection metadata is serialized for same-module
+// implementation units without coupling Diagnostic to Error.
+enum class[[= diagnostics]] ErrorDiagnosticCode : u8 {
+  Message = 1,
+};
+
+} // namespace Miracle
 
 export namespace Miracle {
 
@@ -70,16 +81,15 @@ using Result = std::expected<T, Error>;
 
 using bail = std::unexpected<Error>;
 auto todo(std::source_location loc = std::source_location::current()) -> bail;
-[[noreturn]] auto fatal(Error error, ErrorDisplayOptions options = {}) -> void;
-[[noreturn]] auto fatal(StringView message,
-    ErrorDisplayOptions options = {},
-    std::source_location location = std::source_location::current()) -> void;
+/// Converts the ordered Error message chain into a structured causal diagnostic.
+[[nodiscard]] auto diagnose(const Error &error) -> Diagnostic;
 
 } // namespace Miracle
 
 template <>
 struct std::formatter<Miracle::Error> : std::formatter<Miracle::String> {
-  constexpr auto format(Miracle::Error err, format_context &ctx) const -> std::format_context::iterator {
+  constexpr auto format(const Miracle::Error &err, format_context &ctx) const
+      -> std::format_context::iterator {
     return std::formatter<Miracle::String>::format(err.display(), ctx);
   }
 };

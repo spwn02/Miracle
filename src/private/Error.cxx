@@ -2,6 +2,7 @@ module Miracle;
 
 import std;
 import :Types;
+import :Diagnostic;
 import :Error;
 
 namespace Miracle {
@@ -109,12 +110,21 @@ auto todo(std::source_location loc) -> bail {
   return bail(message);
 }
 
-auto fatal(Error error, ErrorDisplayOptions options) -> void {
-  error.display(std::cerr, options);
-  std::terminate();
-}
-auto fatal(StringView message, ErrorDisplayOptions options, std::source_location location) -> void {
-  fatal({Error::Message{String{message}, location}}, options);
+[[nodiscard]] auto diagnose(const Error &error) -> Diagnostic {
+  if (error.messages.empty()) {
+    return Diagnostic::error(ErrorDiagnosticCode::Message).message("empty error");
+  }
+
+  auto iterator = error.messages.begin();
+  Diagnostic diagnostic =
+      Diagnostic::error(ErrorDiagnosticCode::Message, iterator->location).message(iterator->message);
+  ++iterator;
+  for (; iterator != error.messages.end(); ++iterator) {
+    diagnostic = Diagnostic::error(ErrorDiagnosticCode::Message, iterator->location)
+                     .message(iterator->message)
+                     .cause(std::move(diagnostic));
+  }
+  return diagnostic;
 }
 
 } // namespace Miracle

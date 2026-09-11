@@ -64,7 +64,11 @@ function(miracle_check_capabilities)
       reflection_static_storage
       expansion_statements
       std_vocabulary
-      std_hive)
+      std_hive
+      contracts
+      debugging
+      stacktrace
+      literal_utf8)
 
   set(capability_import_std_description
       "C++26 import std and standard-library module consumption")
@@ -81,6 +85,13 @@ function(miracle_check_capabilities)
   set(capability_std_vocabulary_description
       "expected, flat containers, and inplace_vector")
   set(capability_std_hive_description "C++26 std::hive")
+  set(capability_contracts_description "C++26 contracts violation inspection")
+  set(capability_debugging_description
+      "C++26 debugger detection and breakpoint support")
+  set(capability_stacktrace_description
+      "C++23 stacktrace capture exported by import std")
+  set(capability_literal_utf8_description
+      "UTF-8 ordinary string literal execution encoding")
 
   file(
     WRITE "${capability_source_dir}/import_std.cxx"
@@ -151,8 +162,8 @@ struct Marker final {
 [[= Marker{7}]]
 auto annotated() -> void;
 
-constexpr auto annotations =
-    std::define_static_array(std::meta::annotations_of(^^annotated));
+constexpr auto annotations = std::define_static_array(
+    std::meta::annotations_of_with_type(^^annotated, ^^Marker));
 
 static_assert(annotations.size() == 1);
 static_assert(std::meta::is_annotation(annotations.front()));
@@ -257,6 +268,62 @@ auto main() -> int {
   return values.size() == 1 && *values.begin() == 42 ? 0 : 1;
 }
 ]=])
+
+  file(
+    WRITE "${capability_source_dir}/contracts.cxx"
+    [=[
+import std;
+
+[[nodiscard]] auto inspect(const std::contracts::contract_violation &violation) -> bool {
+  static_cast<void>(violation.kind());
+  static_cast<void>(violation.semantic());
+  static_cast<void>(violation.detection_mode());
+  static_cast<void>(violation.location());
+  static_cast<void>(violation.comment());
+  static_cast<void>(violation.is_terminating());
+  return true;
+}
+
+auto main() -> int {
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/debugging.cxx"
+    [=[
+import std;
+
+auto main() -> int {
+  if (std::is_debugger_present()) {
+    std::breakpoint_if_debugging();
+  }
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/stacktrace.cxx"
+    [=[
+import std;
+
+auto main() -> int {
+  const auto trace = std::stacktrace::current();
+  static_cast<void>(trace);
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/literal_utf8.cxx"
+    [=[
+import std;
+
+static_assert(std::text_encoding::literal() == std::text_encoding::UTF8);
+
+auto main() -> int {
+  return 0;
+}]=])
 
   set(capability_targets)
   foreach(name IN LISTS capability_names)

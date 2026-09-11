@@ -21,6 +21,10 @@ reflectionStaticStorage
 expansionStatements
 stdVocabulary
 stdHive
+contracts
+debugging
+stacktrace
+literalUtf8
 ```
 
 Example:
@@ -42,7 +46,7 @@ C++ consumers therefore reason about ordinary types constants rather than:
 - duplicated compile probes;
 - public preprocessor configuration;
 
-This is the bootstrap bridge consumed by the Feature engine. Feature resolution adapts these facts into `feature::CapabilitySet` and combines them with dependency, conflict, group, and build-universe reasoning. See [`feature.md`](feature.md).
+This is the bootstrap bridge consumed by Miracle facilities. The Feature engine adapts the capability vocabulary it currently exposes into `feature::CapabilitySet` and combines those requirements with dependency, conflict, group, and build-universe reasoning. The generated capability facts may be broader than that feature-requirement vocabulary as new runtime foundations land. See [`feature.md`](feature.md).
 
 ## Current master behavior
 
@@ -53,3 +57,23 @@ A feature capability failure is therefore distinct from a capability that remain
 ## Build identity
 
 Capability results describe the exact configured Miracle build. They are generated from the same probe run as the build and are not recomputed in consuming translation units. The generated `feature::buildIdentity` now hashes the canonical build-feature universe together with these capability results so incompatible configurations do not share the same generated module source identity.
+
+## Diagnostics and panic capabilities
+
+Miracle currently adds four hard executable probes:
+
+```text
+contracts
+  std::contracts::contract_violation inspection, including kind, semantic, detection mode, location, comment, and terminating state
+
+debugging
+  std::is_debugger_present() and std::breakpoint_if_debugging()
+
+stacktrace
+  std::stacktrace::current() through `import std;`
+
+literalUtf8
+  std::text_encoding::literal() == std::text_encoding::UTF8
+```
+
+The reflection-annotation probe also calls `std::meta::annotations_of_with_type`; this is intentional because the Diagnostic code-domain implementation consumes the typed annotation query for alignment metadata. The probe is capability-based only—there are no compiler version allowlists.

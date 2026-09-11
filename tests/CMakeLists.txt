@@ -9,7 +9,9 @@ if(NOT TARGET Switch::Switch)
     Switch
     GIT_REPOSITORY https://github.com/spwn02/Switch.git
     GIT_TAG 341ccd8b08196a27108f5a583160d4d20346a5f7
-    GIT_SHALLOW FALSE)
+    GIT_SHALLOW FALSE
+    PATCH_COMMAND "${CMAKE_COMMAND}" "-DSOURCE_DIR=<SOURCE_DIR>" -P
+                  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-switch-panic.cmake")
   FetchContent_MakeAvailable(Switch)
 endif()
 
@@ -26,6 +28,7 @@ add_executable(
   main.cxx
   bitflags.cxx
   debug.cxx
+  diagnostic.cxx
   error.cxx
   fs.cxx
   reflection.cxx
@@ -49,6 +52,56 @@ file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tests")
 add_test(NAME Miracle.Tests COMMAND MiracleTests)
 set_tests_properties(Miracle.Tests PROPERTIES WORKING_DIRECTORY
                                               "${CMAKE_CURRENT_BINARY_DIR}")
+
+# Panic is terminal by contract, so each overload runs in its own subprocess.
+add_executable(MiraclePanicProbe panic-probe.cxx)
+target_compile_features(MiraclePanicProbe PRIVATE cxx_std_26)
+set_target_properties(
+  MiraclePanicProbe
+  PROPERTIES CXX_EXTENSIONS OFF
+             CXX_STANDARD_REQUIRED ON
+             CXX_SCAN_FOR_MODULES ON
+             CXX_MODULE_STD ON)
+target_link_libraries(MiraclePanicProbe PRIVATE Miracle::Miracle)
+
+function(miracle_add_panic_test name argument expected)
+  add_test(
+    NAME "Miracle.Panic.${name}"
+    COMMAND
+      "${CMAKE_COMMAND}" "-DPROGRAM=$<TARGET_FILE:MiraclePanicProbe>"
+      "-DARGUMENT=${argument}" "-DEXPECTED=${expected}" -P
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/expect-process.cmake")
+endfunction()
+
+miracle_add_panic_test(String 0 "error: string panic")
+miracle_add_panic_test(Error 1 "error: error panic")
+miracle_add_panic_test(Diagnostic 2 "error[P9]: diagnostic panic")
+miracle_add_panic_test(Trace 3 "stacktrace:")
+miracle_add_panic_test(RenderFallback 4 "panic: fallback panic")
+
+# Contract adaptation is exercised through a test-local standardized handler;
+# Miracle itself intentionally does not install the process-global handler yet.
+add_executable(MiracleContractProbe contract-probe.cxx)
+target_compile_features(MiracleContractProbe PRIVATE cxx_std_26)
+set_target_properties(
+  MiracleContractProbe
+  PROPERTIES CXX_EXTENSIONS OFF
+             CXX_STANDARD_REQUIRED ON
+             CXX_SCAN_FOR_MODULES ON
+             CXX_MODULE_STD ON)
+target_link_libraries(MiracleContractProbe PRIVATE Miracle::Miracle)
+function(miracle_add_contract_test name argument expected)
+  add_test(
+    NAME "Miracle.Contracts.${name}"
+    COMMAND
+      "${CMAKE_COMMAND}" "-DPROGRAM=$<TARGET_FILE:MiracleContractProbe>"
+      "-DARGUMENT=${argument}" "-DEXPECTED=${expected}" "-DEXPECTED_EXIT=42" -P
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/expect-process.cmake")
+endfunction()
+
+miracle_add_contract_test(Precondition 0 "error[CTR001]: value > 0")
+miracle_add_contract_test(Postcondition 1 "error[CTR002]: result : result > 0")
+miracle_add_contract_test(Assertion 2 "error[CTR003]: value > 0")
 
 # Build-bridge tests exercise feature registration/resolution without requiring
 # a compiler invocation, including negative cycle/conflict space.
@@ -122,3 +175,9 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   Conflict compile-fail/feature-conflict.cxx
   "feature conflict: `first` conflicts with `second`")
+miracle_add_compile_fail_test(
+  DiagnosticNegative compile-fail/diagnostic-negative.cxx
+  "because 'NegativeCode' does not satisfy 'DiagnosticCode'")
+miracle_add_compile_fail_test(
+  DiagnosticAlignWithoutPrefix compile-fail/diagnostic-align-without-prefix.cxx
+  "because 'InvalidAlignment' does not satisfy 'DiagnosticCode'")

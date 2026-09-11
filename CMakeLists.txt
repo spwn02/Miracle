@@ -85,7 +85,11 @@ set(miracle_capability_names
     reflection_static_storage
     expansion_statements
     std_vocabulary
-    std_hive)
+    std_hive
+    contracts
+    debugging
+    stacktrace
+    literal_utf8)
 
 foreach(name IN LISTS miracle_capability_names)
   string(TOUPPER "${name}" capability_name)
@@ -207,7 +211,9 @@ target_sources(
          src/public/Types.ixx
          src/public/StaticString.ixx
          src/public/Feature.ixx
+         src/public/Diagnostic.ixx
          src/public/Error.ixx
+         src/public/Panic.ixx
          src/public/Fs.ixx
          src/public/Memory.ixx
          src/public/Profiling.ixx
@@ -219,7 +225,8 @@ target_sources(
          "${miracle_generated_dir}/Capabilities.ixx"
          "${miracle_generated_dir}/FeatureConfiguration.ixx"
          # "${MIRACLE_BUILD_FEATURE_SOURCES}"
-  PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
+  PRIVATE src/private/Diagnostic.cxx src/private/Error.cxx
+          src/private/Panic.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
 
 if(MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES)
