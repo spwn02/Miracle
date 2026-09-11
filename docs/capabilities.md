@@ -7,7 +7,7 @@ Miracle validates its selected C++26 toolchain with executable capability probes
 `import Miracle;` re-exports the generated `Miracle:Capabilities` partition. Capability values live in:
 
 ```cpp
-Miracle::capability
+Miracle::capabilities
 ```
 
 and are `inline constexpr bool` values:
@@ -32,7 +32,7 @@ Example:
 ```cpp
 import Miracle;
 
-static_assert(Miracle::capability::reflectionCore);
+static_assert(Miracle::capabilities::reflectionCore);
 ```
 
 ## Why the values are generated

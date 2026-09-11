@@ -226,7 +226,7 @@ literal_utf8
   std::text_encoding::literal() == std::text_encoding::UTF8
 ```
 
-The reflection annotation probe additionally exercises `annotations_of_with_type`. The generated `Miracle::capability` partition exposes the resulting booleans; no compiler version checks participate in feature detection.
+The reflection annotation probe additionally exercises `annotations_of_with_type`. The generated `Miracle::capabilities` partition exposes the resulting booleans; no compiler version checks participate in feature detection.
 
 ## Complexity and allocation
 

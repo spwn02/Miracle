@@ -144,7 +144,7 @@ private:
     }();
     const usize lineEndFound = source.find('\n', begin);
     const usize lineEnd = lineEndFound == StringView::npos ? source.size() : lineEndFound;
-    const StringView line = source.substr(lineStart, lineEndFound - lineStart);
+    const StringView line = source.substr(lineStart, lineEnd - lineStart);
 
     indent(depth);
     output() << " | " << line << '\n';

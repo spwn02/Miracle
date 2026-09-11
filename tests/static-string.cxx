@@ -175,14 +175,14 @@ namespace Tests::staticString {
 }
 
 [[ = test, = group("foundation"), = tag("capabilities") ]] auto capabilityFacts() -> void {
-  static_assert(capability::importStd);
-  static_assert(capability::reflectionCore);
-  static_assert(capability::reflectionQueries);
-  static_assert(capability::reflectionAnnotations);
-  static_assert(capability::reflectionStaticStorage);
-  static_assert(capability::expansionStatements);
-  static_assert(capability::stdVocabulary);
-  static_assert(capability::stdHive);
+  static_assert(capabilities::importStd);
+  static_assert(capabilities::reflectionCore);
+  static_assert(capabilities::reflectionQueries);
+  static_assert(capabilities::reflectionAnnotations);
+  static_assert(capabilities::reflectionStaticStorage);
+  static_assert(capabilities::expansionStatements);
+  static_assert(capabilities::stdVocabulary);
+  static_assert(capabilities::stdHive);
 }
 
 } // namespace Tests::staticString

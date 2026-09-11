@@ -320,7 +320,7 @@ public:
 
   /// Attaches a human-facing label to this span.
   [[nodiscard]] auto label(this DiagnosticSpan &&self, String label) -> DiagnosticSpan {
-    self.label_ = label;
+    self.label_ = std::move(label);
     return std::move(self);
   }
 

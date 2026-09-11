@@ -252,15 +252,15 @@ namespace FeatureTests {
 [[ = test, = group("foundation"), = tag("feature") ]] auto detectedCapabilityBridge() -> void {
   constexpr auto detected = feature::detectedCapabilities();
 
-  check(detected.contains(feature::Capability::ImportStd) == capability::importStd);
-  check(detected.contains(feature::Capability::ReflectionCore) == capability::reflectionCore);
-  check(detected.contains(feature::Capability::ReflectionQueries) == capability::reflectionQueries);
-  check(detected.contains(feature::Capability::ReflectionAnnotations) == capability::reflectionAnnotations);
+  check(detected.contains(feature::Capability::ImportStd) == capabilities::importStd);
+  check(detected.contains(feature::Capability::ReflectionCore) == capabilities::reflectionCore);
+  check(detected.contains(feature::Capability::ReflectionQueries) == capabilities::reflectionQueries);
+  check(detected.contains(feature::Capability::ReflectionAnnotations) == capabilities::reflectionAnnotations);
   check(
-      detected.contains(feature::Capability::ReflectionStaticStorage) == capability::reflectionStaticStorage);
-  check(detected.contains(feature::Capability::ExpansionStatements) == capability::expansionStatements);
-  check(detected.contains(feature::Capability::StdVocabulary) == capability::stdVocabulary);
-  check(detected.contains(feature::Capability::StdHive) == capability::stdHive);
+      detected.contains(feature::Capability::ReflectionStaticStorage) == capabilities::reflectionStaticStorage);
+  check(detected.contains(feature::Capability::ExpansionStatements) == capabilities::expansionStatements);
+  check(detected.contains(feature::Capability::StdVocabulary) == capabilities::stdVocabulary);
+  check(detected.contains(feature::Capability::StdHive) == capabilities::stdHive);
 }
 
 } // namespace FeatureTests

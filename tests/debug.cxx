@@ -198,7 +198,7 @@ enum class[[= debug::derive]] AliasedColor : u8 {
   check(debug::enumName(HiddenEnum::Hidden) == "default"_exp);
 }
 
-} // namespace Tests::debug
+} // namespace debug_tests
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
 
 consteval {

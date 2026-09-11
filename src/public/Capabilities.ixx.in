@@ -1,7 +1,7 @@
 export module Miracle:Capabilities;
 
 /// Compile-time facts established by Miracle's executable toolchain probes.
-export namespace Miracle::capability {
+export namespace Miracle::capabilities {
 
 /// C++26 `import std;` and standard-library module consumption are available.
 inline constexpr bool importStd = @MIRACLE_CAPABILITY_IMPORT_STD_CPP@;
@@ -39,4 +39,4 @@ inline constexpr bool stacktrace = @MIRACLE_CAPABILITY_STACKTRACE_CPP@;
 /// Ordinary string literals use UTF-8 execution encoding.
 inline constexpr bool literalUtf8 = @MIRACLE_CAPABILITY_LITERAL_UTF8_CPP@;
 
-} // namespace Miracle::capability
+} // namespace Miracle::capabilities

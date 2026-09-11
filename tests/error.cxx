@@ -30,7 +30,7 @@ auto readFile(const Path &path) -> Result<void> {
 
 auto compileShaders(const String &shader) -> Result<void> {
   return readFile((std::filesystem::current_path() / (shader + ".txt")))
-      .transform_error([&](Error err) constexpr noexcept -> Error {
+      .transform_error([&](Error err) constexpr -> Error {
         err << std::format("Failed to compile shader: {}", shader);
         return err;
       });

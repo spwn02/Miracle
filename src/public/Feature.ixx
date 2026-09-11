@@ -112,10 +112,12 @@ struct DescriptionSelector<First, Rest...> final {
 /// Invokes `function` for every option in `Options...` matching `Kind`.
 template <OptionKind Kind, class... Options, class Function>
 constexpr auto forEachOption(Function &&function) -> void {
+  auto &&callback = std::forward<Function>(function);
+
   (
       [&] -> void {
         if constexpr (Options::kind == Kind) {
-          std::invoke(std::forward<Function>(function), Options{});
+          std::invoke(callback, Options{});
         }
       }(),
       ...);
@@ -222,35 +224,35 @@ struct CapabilitySet final {
 [[nodiscard]] consteval auto detectedCapabilities() noexcept -> CapabilitySet {
   CapabilitySet result{};
 
-  if constexpr (Miracle::capability::importStd) {
+  if constexpr (Miracle::capabilities::importStd) {
     result = result.with(Capability::ImportStd);
   }
 
-  if constexpr (Miracle::capability::reflectionCore) {
+  if constexpr (Miracle::capabilities::reflectionCore) {
     result = result.with(Capability::ReflectionCore);
   }
 
-  if constexpr (Miracle::capability::reflectionQueries) {
+  if constexpr (Miracle::capabilities::reflectionQueries) {
     result = result.with(Capability::ReflectionQueries);
   }
 
-  if constexpr (Miracle::capability::reflectionAnnotations) {
+  if constexpr (Miracle::capabilities::reflectionAnnotations) {
     result = result.with(Capability::ReflectionAnnotations);
   }
 
-  if constexpr (Miracle::capability::reflectionStaticStorage) {
+  if constexpr (Miracle::capabilities::reflectionStaticStorage) {
     result = result.with(Capability::ReflectionStaticStorage);
   }
 
-  if constexpr (Miracle::capability::expansionStatements) {
+  if constexpr (Miracle::capabilities::expansionStatements) {
     result = result.with(Capability::ExpansionStatements);
   }
 
-  if constexpr (Miracle::capability::stdVocabulary) {
+  if constexpr (Miracle::capabilities::stdVocabulary) {
     result = result.with(Capability::StdVocabulary);
   }
 
-  if constexpr (Miracle::capability::stdHive) {
+  if constexpr (Miracle::capabilities::stdHive) {
     result = result.with(Capability::StdHive);
   }
 
@@ -565,7 +567,8 @@ public:
   /// Miracle itself does not interpret.
   template <class Function>
   static constexpr auto forEachOption(Function &&function) -> void {
-    (std::invoke(std::forward<Function>(function), Options{}), ...);
+    auto &&callback = std::forward<Function>(function);
+    (std::invoke(callback, Options{}), ...);
   }
 };
 
@@ -847,7 +850,8 @@ struct Catalog final {
   /// Invokes `function` for every descriptor in canonical catalog order.
   template <class Function>
   static constexpr auto forEach(Function &&function) -> void {
-    (std::invoke(std::forward<Function>(function), Features), ...);
+    auto &&callback = std::forward<Function>(function);
+    (std::invoke(callback, Features), ...);
   }
 
   /// Returns the catalog index for `name`, or `npos` when absent.

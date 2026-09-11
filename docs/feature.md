@@ -240,7 +240,7 @@ set.with(capability)
 set.without(capability)
 ```
 
-`feature::detectedCapabilities()` adapts the generated `Miracle::capability::*` build facts into this generic set. This means capability probing happens once at the build boundary; feature resolution does not rerun or reconstruct compiler probes.
+`feature::detectedCapabilities()` adapts the generated `Miracle::capabilities::*` build facts into this generic set. This means capability probing happens once at the build boundary; feature resolution does not rerun or reconstruct compiler probes.
 
 `feature::capabilityName(capability)` returns the stable build-facing spelling (`reflection_core`, `std_hive`, and so on) used by compile-time diagnostics. Diagnostics never expose enum ordinals as capability identities.
 
