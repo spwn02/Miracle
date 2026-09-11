@@ -224,7 +224,7 @@ target_sources(
          "${miracle_generated_dir}/Build.ixx"
          "${miracle_generated_dir}/Capabilities.ixx"
          "${miracle_generated_dir}/FeatureConfiguration.ixx"
-         "${MIRACLE_BUILD_FEATURE_SOURCES}"
+         ${MIRACLE_BUILD_FEATURE_SOURCES}
   PRIVATE src/private/Diagnostic.cxx src/private/Error.cxx
           src/private/Panic.cxx src/private/Fs.cxx src/private/Profiling.cxx
           "${miracle_memory_source}")
