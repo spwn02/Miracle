@@ -12,13 +12,13 @@ permissions:
   contents: read
 
 env:
-  CXX26_SNAPSHOT: cxx26-2026.09.05
-  CXX26_REVISION: 6c7ef6afbfd8456c964c7a2625b3ea2aaa7d613f
-  CXX26_ASSET: clang-cxx26-2026.09.05-linux-x86_64
+  CXX26_SNAPSHOT: cxx26-2026.09.11.5
+  CXX26_REVISION: 14a727591a6cd0943340b8e578a890fceb478e0f
+  CXX26_ASSET: clang-cxx26-2026.09.11.5-linux-x86_64
 
 jobs:
   reference:
-    name: Reference C++26 (cxx26-2026.09.05)
+    name: Reference C++26 (cxx26-2026.09.11.5)
     runs-on: ubuntu-22.04
 
     steps:
