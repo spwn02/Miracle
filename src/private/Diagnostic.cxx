@@ -20,16 +20,55 @@ namespace {
 
 [[nodiscard]] constexpr auto severityAnsi(Severity severity) noexcept -> StringView {
   switch (severity) {
-    case Severity::Debug: return "\033[36m";
-    case Severity::Note: return "\033[34m";
-    case Severity::Warning: return "\033[33m";
-    case Severity::Error: return "\033[31m";
+    case Severity::Debug: return "\033[1;36m";
+    case Severity::Note: return "\033[1;34m";
+    case Severity::Warning: return "\033[1;33m";
+    case Severity::Error: return "\033[1;31m";
   }
-  return "\033[31m";
+  return "\033[1;31m";
 }
+
+constexpr StringView ansiReset = "\033[0m";
+constexpr StringView sourceAnsi = "\033[1;34m";
+constexpr StringView auxiliaryAnsi = "\033[1;36m";
+constexpr StringView helpAnsi = "\033[1;32m";
 
 [[nodiscard]] constexpr auto spanMarker(SpanRole role) noexcept -> char {
   return role == SpanRole::Primary ? '^' : '-';
+}
+
+[[nodiscard]] constexpr auto spanAnsi(SpanRole role, Severity severity) noexcept -> StringView {
+  return role == SpanRole::Primary ? severityAnsi(severity) : auxiliaryAnsi;
+}
+
+[[nodiscard]] auto displayPath(std::source_location location) -> String {
+  const char *fileName = location.file_name();
+  if (fileName == nullptr or *fileName == '\0') {
+    return {};
+  }
+
+  const Path file{fileName};
+  if (not file.is_absolute()) {
+    return file.generic_string();
+  }
+
+  std::error_code error;
+  const Path cwd = std::filesystem::current_path(error);
+  if (error) {
+    return file.generic_string();
+  }
+
+  const Path relative = file.lexically_relative(cwd);
+  if (relative.empty()) {
+    return file.generic_string();
+  }
+
+  const Path::iterator first = relative.begin();
+  if (first != relative.end() and *first == Path{".."}) {
+    return file.generic_string();
+  }
+
+  return relative.generic_string();
 }
 
 [[nodiscard]] auto semanticName(std::contracts::evaluation_semantic semantic) -> StringView {
@@ -84,6 +123,18 @@ private:
     }
   }
 
+  auto beginStyle(StringView ansi) -> void {
+    if (coloursEnabled()) {
+      output() << ansi;
+    }
+  }
+
+  auto endStyle() -> void {
+    if (coloursEnabled()) {
+      output() << ansiReset;
+    }
+  }
+
   auto renderCode(const DiagnosticCodeDescriptor &code) -> void {
     if (code.prefix.empty()) {
       return;
@@ -100,14 +151,10 @@ private:
 
   auto renderHeader(const Diagnostic &diagnostic, usize depth) -> void {
     indent(depth);
-    if (coloursEnabled()) {
-      output() << severityAnsi(diagnostic.severity());
-    }
+    beginStyle(severityAnsi(diagnostic.severity()));
     output() << severityName(diagnostic.severity());
     renderCode(diagnostic.code());
-    if (coloursEnabled()) {
-      output() << "\033[0m";
-    }
+    endStyle();
     output() << ": " << diagnostic.messageText() << '\n';
   }
 
@@ -116,10 +163,13 @@ private:
       return;
     }
     indent(depth);
-    output() << "--> " << location.file_name() << ':' << location.line() << ':' << location.column() << '\n';
+    beginStyle(sourceAnsi);
+    output() << "--> ";
+    endStyle();
+    output() << displayPath(location) << ':' << location.line() << ':' << location.column() << '\n';
   }
 
-  auto renderSnippet(const DiagnosticSpan &span, usize depth) -> void {
+  auto renderSnippet(const DiagnosticSpan &span, Severity severity, usize depth) -> void {
     const StringView source = span.source();
     if (source.empty()) {
       return;
@@ -147,35 +197,48 @@ private:
     const StringView line = source.substr(lineStart, lineEnd - lineStart);
 
     indent(depth);
-    output() << " | " << line << '\n';
+    beginStyle(sourceAnsi);
+    output() << " | ";
+    endStyle();
+    output() << line << '\n';
 
     if (span.selection()) {
       const usize markerBegin = std::min(begin, lineEnd) - lineStart;
       const usize markerEnd = std::min(std::max(end, begin + 1UZ), lineEnd) - lineStart;
       indent(depth);
+      beginStyle(sourceAnsi);
       output() << " | ";
+      endStyle();
       for (usize index{}; index < markerBegin; ++index) {
         output().put(' ');
       }
       const usize markerLength = std::max(1UZ, markerEnd > markerBegin ? markerEnd - markerBegin : 1);
+      beginStyle(spanAnsi(span.spanRole(), severity));
       for (usize index{}; index < markerLength; ++index) {
         output().put(spanMarker(span.spanRole()));
       }
       if (not span.labelText().empty()) {
         output() << ' ' << span.labelText();
       }
+      endStyle();
       output().put('\n');
     } else if (not span.labelText().empty()) {
       indent(depth);
-      output() << " | " << span.labelText() << '\n';
+      beginStyle(sourceAnsi);
+      output() << " | ";
+      endStyle();
+      beginStyle(spanAnsi(span.spanRole(), severity));
+      output() << span.labelText();
+      endStyle();
+      output() << '\n';
     }
   }
 
   auto renderSpans(const Diagnostic &diagnostic, usize depth) -> void {
-    for (const auto &span : diagnostic.spans()) {
+    for (const DiagnosticSpan &span : diagnostic.spans()) {
       renderLocation(span.location(), depth);
       if (options_.source == SourceMode::Snippet) {
-        renderSnippet(span, depth);
+        renderSnippet(span, diagnostic.severity(), depth);
       }
     }
   }
@@ -183,11 +246,17 @@ private:
   auto renderNotes(const Diagnostic &diagnostic, usize depth) -> void {
     for (const String &note : diagnostic.notes()) {
       indent(depth);
-      output() << "note: " << note << '\n';
+      beginStyle(auxiliaryAnsi);
+      output() << "note:";
+      endStyle();
+      output() << ' ' << note << '\n';
     }
     for (const String &help : diagnostic.helpMessages()) {
       indent(depth);
-      output() << "help: " << help << '\n';
+      beginStyle(helpAnsi);
+      output() << "help:";
+      endStyle();
+      output() << ' ' << help << '\n';
     }
   }
 
@@ -196,7 +265,10 @@ private:
       return;
     }
     indent(depth);
-    output() << "stacktrace:\n";
+    beginStyle(auxiliaryAnsi);
+    output() << "stacktrace:";
+    endStyle();
+    output().put('\n');
     std::istringstream input{std::to_string(*diagnostic.stacktrace())};
     String line;
     while (std::getline(input, line)) {
@@ -210,18 +282,28 @@ private:
       return;
     }
     indent(depth);
-    output() << "diagnostic: " << diagnostic.code().domain << "::" << diagnostic.code().enumerator << " ("
+    beginStyle(auxiliaryAnsi);
+    output() << "diagnostic:";
+    endStyle();
+    output() << ' ' << diagnostic.code().domain << "::" << diagnostic.code().enumerator << " ("
              << diagnostic.code().numeric << ")\n";
   }
 
   auto renderOne(const Diagnostic &diagnostic, usize depth, bool cause) -> void {
     if (cause) {
       indent(depth);
-      output() << "caused by:\n";
+      beginStyle(auxiliaryAnsi);
+      output() << "caused by:";
+      endStyle();
+      output().put('\n');
       ++depth;
     }
     renderHeader(diagnostic, depth);
-    renderLocation(diagnostic.location(), depth);
+    // Explicit spans are the authoritative source anchors. Rendering the diagnostic construction location as
+    // well would duplicate the path and often point at the builder call rather than the highlighted source.
+    if (diagnostic.spans().empty()) {
+      renderLocation(diagnostic.location(), depth);
+    }
     renderSpans(diagnostic, depth);
     renderNotes(diagnostic, depth);
     renderTrace(diagnostic, depth);

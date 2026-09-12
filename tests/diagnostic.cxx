@@ -158,6 +158,35 @@ constexpr RenderOptions plainCompact{
   Switch::check(not forcedColourPlain.contains("\033["));
 }
 
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto terminalStyling() -> void {
+  constexpr usize selectionBegin = 5;
+  constexpr usize selectionEnd = 10;
+  const std::source_location location = std::source_location::current();
+  Diagnostic diagnostic = Diagnostic::error(Code::Annotated, location)
+                              .note("context note")
+                              .help("actionable help")
+                              .span(DiagnosticSpan{"name = value", location}
+                                      .select({.begin = selectionBegin, .end = selectionEnd})
+                                      .label("expected a value"));
+
+  const String styled = render(diagnostic,
+      {.color = Miracle::ColorMode::Always,
+          .source = SourceMode::Snippet,
+          .detail = Miracle::DetailMode::Full,
+          .presentation = Presentation::Terminal});
+
+  Switch::check(styled.contains("\033[1;31merror[E042]\033[0m"));
+  Switch::check(styled.contains("\033[1;34m--> \033[0m"));
+  Switch::check(styled.contains("\033[1;31m^^^^^ expected a value\033[0m"));
+  Switch::check(styled.contains("\033[1;36mnote:\033[0m context note"));
+  Switch::check(styled.contains("\033[1;32mhelp:\033[0m actionable help"));
+  Switch::check(styled.contains("\033[1;36mdiagnostic:\033[0m Code::Annotated (42)"));
+
+  const usize firstLocation = styled.find("--> ");
+  Switch::require(firstLocation != String::npos);
+  Switch::check(styled.find("--> ", firstLocation + 4) == String::npos);
+}
+
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto sourceAndAuxiliaryMessages()
     -> void {
   constexpr usize primaryBegin = 6;
