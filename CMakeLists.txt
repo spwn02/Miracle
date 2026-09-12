@@ -209,6 +209,7 @@ target_sources(
          FILES
          src/public/Miracle.ixx
          src/public/Types.ixx
+         src/public/Range.ixx
          src/public/StaticString.ixx
          src/public/Feature.ixx
          src/public/Diagnostic.ixx

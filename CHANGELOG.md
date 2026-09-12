@@ -8,6 +8,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Added
 
+- Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
 - Added reflected enum diagnostic domains, structured move-only diagnostics/spans, source-aware rendering, Error and C++26 contract adapters, and terminal `panic()` integration with stacktraces and debugger breakpoints.
 - Added executable capability probes for contracts, debugging, stacktraces, UTF-8 literal encoding, and typed reflection-annotation extraction.
 - Added the structural compile-time Feature engine with build/semantic descriptors, dependency/implication/conflict resolution, feature groups, capability requirements, canonical local sets, third-party metadata, and reflection-friendly requirements.

@@ -31,6 +31,7 @@ add_executable(
   diagnostic.cxx
   error.cxx
   fs.cxx
+  range.cxx
   reflection.cxx
   static-string.cxx
   feature.cxx)
