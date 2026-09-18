@@ -18,6 +18,9 @@ constexpr auto square(i32 value) noexcept -> i32 {
 template <class T>
 concept AddableToOne = requires(T value) { value + 1; };
 
+template <class T>
+concept PeekablePipeline = requires(T value) { std::move(value).peekable(); };
+
 static_assert(not std::convertible_to<Infinity, usize>);
 static_assert(not std::integral<Infinity>);
 static_assert(not AddableToOne<Infinity>);
@@ -92,6 +95,7 @@ static_assert([] -> bool {
   Switch::check(iter(5).toVec() == Vec<i32>{0, 1, 2, 3, 4});
   Switch::check(iter(2, 8).toVec() == Vec<i32>{2, 3, 4, 5, 6, 7});
   Switch::check(iter(2, 11, 3).toVec() == Vec<i32>{2, 5, 8});
+  Switch::check(iter(10, 2, 2).toVec().empty());
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto projectionFusion() -> void {
@@ -145,11 +149,21 @@ static_assert([] -> bool {
   Option<i32> none{};
   std::expected<i32, i32> ok{7}; // NOLINT
   std::expected<i32, i32> error{std::unexpected{3}};
+  Option<UPtr<i32>> ownedSome{std::make_unique<i32>(11)};
+  std::expected<UPtr<i32>, i32> ownedOk{std::make_unique<i32>(13)};
 
   Switch::check(iter(some).toVec() == Vec<i32>{9});
   Switch::check(iter(none).toVec().empty());
   Switch::check(iter(ok).toVec() == Vec<i32>{7});
   Switch::check(iter(error).toVec().empty());
+
+  const auto movedSome = iter(std::move(ownedSome)).toVec();
+  Switch::check(movedSome.size() == 1);
+  Switch::check(movedSome.front() and *movedSome.front() == 11);
+
+  const auto movedOk = iter(std::move(ownedOk)).toVec();
+  Switch::check(movedOk.size() == 1);
+  Switch::check(movedOk.front() and *movedOk.front() == 13);
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto lazyAdaptors() -> void {
@@ -160,6 +174,15 @@ static_assert([] -> bool {
       iter(values)
           .filterMap([](i32 value) -> Option<i32> { return value % 2 == 0 ? Option<i32>{value * 10} : None; })
           .toVec() == Vec<i32>{20, 40, 60, 80});
+  const auto moveOnlyFilterMap = iter(values)
+                                     .filterMap([](i32 value) -> Option<UPtr<i32>> {
+                                       if (value % 2 == 0) {
+                                         return std::make_unique<i32>(value * 10);
+                                       }
+                                       return None;
+                                     })
+                                     .toVec();
+  Switch::check(moveOnlyFilterMap.size() == 4 and *moveOnlyFilterMap.front() == 20);
   Switch::check(iter(nested).flatten().toVec() == Vec<i32>{1, 2, 3, 4});
   Switch::check(
       iter(nested).flatMap([](auto &value) -> auto & { return value; }).toVec() == Vec<i32>{1, 2, 3, 4});
@@ -204,6 +227,12 @@ static_assert([] -> bool {
   static_assert(std::ranges::sized_range<decltype(iter(values).windows(2))>);
   static_assert(std::ranges::random_access_range<decltype(iter(values).intersperse(0))>);
   static_assert(std::ranges::sized_range<decltype(iter(values).intersperse(0))>);
+
+  std::list<i32> linked{1, 2, 3};
+  auto linkedIntersperse = iter(linked).intersperse(0);
+  static_assert(std::ranges::forward_range<decltype(linkedIntersperse)>);
+  static_assert(std::ranges::sized_range<decltype(linkedIntersperse)>);
+  Switch::check(linkedIntersperse.toVec() == Vec<i32>{1, 0, 2, 0, 3});
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto statefulAdaptors() -> void {
@@ -214,6 +243,12 @@ static_assert([] -> bool {
   Switch::check(inspectedValues == Vec<i32>{1, 2, 3});
   Switch::check(inspected == 6);
 
+  i32 countedInspections{};
+  const usize inspectedCount =
+      iter(values).inspect([&countedInspections](i32) -> void { ++countedInspections; }).count();
+  Switch::check(inspectedCount == values.size());
+  Switch::check(countedInspections == static_cast<i32>(values.size()));
+
   Switch::check(iter(values)
                     .scan(0,
                         [](i32 &state, i32 value) -> Option<i32> {
@@ -221,10 +256,28 @@ static_assert([] -> bool {
                           return state < 10 ? Option<i32>{state} : None;
                         })
                     .toVec() == Vec<i32>{1, 3, 6});
+  const auto moveOnlyScan = iter(values)
+                                .take(3)
+                                .scan(0,
+                                    [](i32 &state, i32 value) -> Option<UPtr<i32>> {
+                                      state += value;
+                                      return std::make_unique<i32>(state);
+                                    })
+                                .toVec();
+  Switch::check(moveOnlyScan.size() == 3 and *moveOnlyScan.back() == 6);
   Switch::check(
       iter(values)
           .mapWhile([](i32 value) -> Option<i32> { return value < 5 ? Option<i32>{value * 2} : None; })
           .toVec() == Vec<i32>{2, 4, 6, 8});
+  const auto moveOnlyMapWhile = iter(values)
+                                    .mapWhile([](i32 value) -> Option<UPtr<i32>> {
+                                      if (value < 3) {
+                                        return std::make_unique<i32>(value);
+                                      }
+                                      return None;
+                                    })
+                                    .toVec();
+  Switch::check(moveOnlyMapWhile.size() == 2 and *moveOnlyMapWhile.back() == 2);
 
   auto peekable = iter(values).peekable();
   Switch::check(peekable.peek()->get() == 1);
@@ -251,7 +304,14 @@ static_assert([] -> bool {
   Switch::check(iter(values).minBy(std::ranges::greater{})->get() == 8);
   Switch::check(iter(values).maxBy(std::ranges::greater{})->get() == 1);
   Switch::check(iter(values).minByKey([](i32 value) -> i32 { return -value; })->get() == 8);
-  Switch::check(iter(values).maxByKey([](i32 value) -> i32 { return -value; })->get() == 1);
+  i32 keyCalls{};
+  Switch::check(iter(values)
+                    .maxByKey([&keyCalls](i32 value) -> i32 {
+                      ++keyCalls;
+                      return -value;
+                    })
+                    ->get() == 1);
+  Switch::check(keyCalls == static_cast<i32>(values.size()));
   Switch::check(iter(values).sum() == 36);
   Switch::check(iter(values).product() == 40'320);
   Switch::check(iter(values).fold(0, std::plus{}) == 36);
@@ -264,6 +324,15 @@ static_assert([] -> bool {
   const auto unzipped = iter(values).take(3).enumerate().unzip();
   Switch::check(unzipped.first == Vec<isize>{0, 1, 2});
   Switch::check(unzipped.second == Vec<i32>{1, 2, 3});
+
+  Vec<Pair<UPtr<i32>, UPtr<i32>>> ownedPairs;
+  ownedPairs.emplace_back(std::make_unique<i32>(10), std::make_unique<i32>(20));
+  const auto movedUnzipped = iter(std::move(ownedPairs)).unzip();
+  Switch::check(movedUnzipped.first.size() == 1);
+  Switch::check(movedUnzipped.second.size() == 1);
+  Switch::check(*movedUnzipped.first.front() == 10);
+  Switch::check(*movedUnzipped.second.front() == 20);
+
   Switch::check(iter(values).collect<std::deque<i32>>() == std::deque<i32>{1, 2, 3, 4, 5, 6, 7, 8});
   Switch::check(iter(values).eq(values));
   Switch::check(not iter(values).ne(values));
@@ -301,7 +370,12 @@ static_assert([] -> bool {
   auto input = std::views::istream<i32>(stream);
   static_assert(std::ranges::input_range<decltype(iter(input))>);
   static_assert(not std::ranges::forward_range<decltype(iter(input))>);
+  static_assert(not PeekablePipeline<decltype(iter(input))>);
   Switch::check(iter(input).filter(isEven).toVec() == Vec<i32>{2, 4});
+
+  std::istringstream projectedStream{"1 2 3 4"};
+  auto projectedInput = std::views::istream<i32>(projectedStream);
+  Switch::check(iter(projectedInput).map(square).filter(isEven).toVec() == Vec<i32>{4, 16});
 
   Vec<Tracked> tracked;
   tracked.emplace_back(1);

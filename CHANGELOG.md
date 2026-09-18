@@ -21,7 +21,13 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Changed
 
-- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.09.05` toolchain snapshot (`6c7ef6afbfd8456c964c7a2625b3ea2aaa7d613f`).
+- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.09.15.1` toolchain snapshot (`bba9ea40d350734a44eb1176909ebce9a045f9b3`).
+
+### Fixed
+
+- Preserved reserve-range emptiness for positively-strided integer `iter(...)` construction and made fused map/filter traversal valid for non-common ranges.
+- Preserved move-only ownership through rvalue Option/Expected sources, `filterMap`, `mapWhile`, `scan`, and `unzip` materialization.
+- Made `count()` traverse lazy pipelines so projections and `inspect()` side effects are observed, and cached extrema keys so key projections execute once per visited item.
 
 ### Performance
 

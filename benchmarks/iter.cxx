@@ -1,5 +1,4 @@
 import std;
-import std;
 import Miracle;
 
 using namespace Miracle;

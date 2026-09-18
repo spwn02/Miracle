@@ -68,7 +68,7 @@ constexpr auto adaptiveInvoke(Function &&function, Item &&item) -> decltype(auto
     } else {
       static_assert(canInvoke,
           "Miracle adaptive invocation requires a callable accepting the item directly, its tuple elements, "
-          "or its reflected aggregate memebers");
+          "or its reflected aggregate members");
     }
   } else {
     static_assert(std::invocable<Function, Item>,
@@ -167,7 +167,8 @@ public:
   constexpr ~MovableBox() = default;
 
   constexpr auto operator=(const MovableBox &other) -> MovableBox &
-    requires std::copy_constructible<T>
+    requires std::copy_constructible<T> and
+             (std::is_copy_assignable_v<T> or std::is_nothrow_copy_constructible_v<T>)
   {
     if (this == std::addressof(other)) {
       return *this;
@@ -182,7 +183,10 @@ public:
   }
 
   constexpr auto operator=(MovableBox &&other) noexcept(
-      std::is_nothrow_move_constructible_v<T> and std::is_nothrow_move_assignable_v<T>) -> MovableBox & {
+      std::is_nothrow_move_assignable_v<T> or not std::is_move_assignable_v<T>) -> MovableBox &
+    requires std::move_constructible<T> and
+             (std::is_move_assignable_v<T> or std::is_nothrow_move_constructible_v<T>)
+  {
     if (this == std::addressof(other)) {
       return *this;
     }
@@ -294,6 +298,15 @@ concept OptionalLike = requires(Optional optional) {
   { optional.has_value() } -> std::convertible_to<bool>;
   *optional;
 };
+
+/// Standard execution policies support by ParallelIter. The facade stores only the policy type and rehydrates
+/// the matching standard singleton, so user-defined policy types are intentionally excluded.
+template <class Policy>
+concept StandardExecutionPolicy =
+    std::same_as<std::remove_cvref_t<Policy>, std::execution::sequenced_policy> or
+    std::same_as<std::remove_cvref_t<Policy>, std::execution::parallel_policy> or
+    std::same_as<std::remove_cvref_t<Policy>, std::execution::parallel_unsequenced_policy> or
+    std::same_as<std::remove_cvref_t<Policy>, std::execution::unsequenced_policy>;
 
 template <class T>
 inline constexpr auto isIdentityProjection = std::same_as<std::remove_cvref_t<T>, std::identity>;
@@ -518,14 +531,24 @@ public:
       : maybe_(std::move(maybe)) {
   }
 
+  [[nodiscard]] constexpr auto begin() {
+    using Pointer = decltype(std::addressof(*maybe_));
+    return maybe_.has_value() ? std::addressof(*maybe_) : Pointer{};
+  }
+
+  [[nodiscard]] constexpr auto end() {
+    using Pointer = decltype(std::addressof(*maybe_));
+    return maybe_.has_value() ? std::addressof(*maybe_) + 1 : Pointer{};
+  }
+
   [[nodiscard]] constexpr auto begin() const {
-    using Value = Maybe::value_type;
-    return maybe_.has_value() ? std::addressof(*maybe_) : static_cast<Value *>(nullptr);
+    using Pointer = decltype(std::addressof(*maybe_));
+    return maybe_.has_value() ? std::addressof(*maybe_) : Pointer{};
   }
 
   [[nodiscard]] constexpr auto end() const {
-    using Value = Maybe::value_type;
-    return maybe_.has_value() ? std::addressof(*maybe_) + 1 : static_cast<Value *>(nullptr);
+    using Pointer = decltype(std::addressof(*maybe_));
+    return maybe_.has_value() ? std::addressof(*maybe_) + 1 : Pointer{};
   }
 
   [[nodiscard]] constexpr auto size() const noexcept -> usize {
@@ -642,7 +665,7 @@ public:
     return Iterator{this, std::ranges::begin(view_)};
   }
 
-  [[nodiscard]] constexpr auto end() -> Iterator {
+  [[nodiscard]] constexpr auto end() {
     if constexpr (std::ranges::common_range<View>) {
       return Iterator{this, std::ranges::end(view_)};
     } else {
@@ -652,8 +675,9 @@ public:
 
   template <class Visitor>
   constexpr auto visitWhile(Visitor visitor) -> bool {
-    for (auto iterator = std::ranges::begin(view_), end = std::ranges::end(view_); iterator != end;
-        ++iterator) {
+    auto iterator = std::ranges::begin(view_);
+    const auto end = std::ranges::end(view_);
+    for (; iterator != end; ++iterator) {
       using Result = decltype(std::invoke(projection_.get(), *iterator));
       if constexpr (std::is_reference_v<Result>) {
         auto &&mapped = std::invoke(projection_.get(), *iterator);
@@ -664,7 +688,6 @@ public:
       } else {
         auto mapped = std::invoke(projection_.get(), *iterator);
         if (std::invoke(predicate_.get(), mapped) and not std::invoke(visitor, std::move(mapped))) {
-
           return false;
         }
       }
@@ -717,7 +740,7 @@ class ScanView final : public std::ranges::view_interface<ScanView<View, State, 
       load();
     }
 
-    [[nodiscard]] constexpr auto operator*() const -> const value_type & {
+    [[nodiscard]] constexpr auto operator*() const -> value_type & {
       return *cache_;
     }
 
@@ -755,7 +778,7 @@ class ScanView final : public std::ranges::view_interface<ScanView<View, State, 
 
     ScanView *parent_{};
     std::ranges::iterator_t<View> current_{};
-    Option<value_type> cache_{};
+    mutable Option<value_type> cache_{};
     bool done_{};
   };
 
@@ -795,7 +818,8 @@ class IntersperseView final : public std::ranges::view_interface<IntersperseView
 
   class Iterator final {
   public:
-    using iterator_concept = std::input_iterator_tag;
+    using iterator_concept = std::
+        conditional_t<std::ranges::forward_range<View>, std::forward_iterator_tag, std::input_iterator_tag>;
     using value_type = Value;
     using difference_type = std::ranges::range_difference_t<View>;
 
@@ -825,7 +849,19 @@ class IntersperseView final : public std::ranges::view_interface<IntersperseView
     }
 
     constexpr auto operator++(int) {
-      ++*this;
+      if constexpr (std::ranges::forward_range<View>) {
+        auto previous = *this;
+        ++*this;
+        return previous;
+      } else {
+        ++*this;
+      }
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &left, const Iterator &right) -> bool
+      requires std::ranges::forward_range<View>
+    {
+      return left.current_ == right.current_ and left.separatorNext_ == right.separatorNext_;
     }
 
     [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
@@ -855,6 +891,20 @@ public:
 
   [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
     return {};
+  }
+
+  [[nodiscard]] constexpr auto size()
+    requires std::ranges::sized_range<View>
+  {
+    const auto count = static_cast<usize>(std::ranges::size(view_));
+    return count == 0 ? 0 : (count * 2) - 1;
+  }
+
+  [[nodiscard]] constexpr auto size() const
+    requires std::ranges::sized_range<const View>
+  {
+    const auto count = static_cast<usize>(std::ranges::size(view_));
+    return count == 0 ? 0 : (count * 2) - 1;
   }
 
 private:
@@ -1198,7 +1248,7 @@ public:
 
   /// Keeps values accepted by an adaptive predicate.
   /// A pending map is retained in a small fused view so Miracle materializers evaluate it once per source
-  /// item intead of the naïve transform/filter twice.
+  /// item instead of the naïve transform/filter twice.
   template <class Self, class Predicate>
   [[nodiscard]] constexpr auto filter(this Self &&self, Predicate predicate) {
     auto wrapped = adapt(std::move(predicate));
@@ -1221,8 +1271,9 @@ public:
         std::views::transform(std::move(base), adapt(std::move(function))) | std::views::cache_latest;
     auto present =
         std::views::filter(std::move(mapped), [](const auto &value) -> bool { return value.has_value(); });
-    auto values = std::views::transform(std::move(present),
-        [](auto &&value) -> decltype(auto) { return *std::forward<decltype(value)>(value); });
+    auto values = std::views::transform(std::move(present), [](auto &&value) -> decltype(auto) {
+      return *std::forward<decltype(value)>(value);
+    }) | std::views::as_rvalue;
     return Iter<decltype(values)>(std::move(values));
   }
 
@@ -1316,8 +1367,9 @@ public:
   }
 
   /// Compatibility adaptor: standard forward Iter pipelines are already safely peekable, so this returns the
-  /// pipeline unchanged instaed of allocating or adding cache state.
+  /// pipeline unchanged instead of allocating or adding cache state.
   template <class Self>
+    requires std::ranges::forward_range<View>
   [[nodiscard]] constexpr auto peekable(this Self &&self) {
     return std::forward<Self>(self);
   }
@@ -1357,7 +1409,8 @@ public:
   [[nodiscard]] constexpr auto scan(this Self &&self, State state, Function function) {
     auto base = lower(std::forward<Self>(self));
     using Scan = ScanView<decltype(base), std::decay_t<State>, std::decay_t<Function>>;
-    return Iter<Scan>{Scan{std::move(base), std::move(state), std::move(function)}};
+    auto view = Scan{std::move(base), std::move(state), std::move(function)} | std::views::as_rvalue;
+    return Iter<decltype(view)>{std::move(view)};
   }
 
   /// Maps until the function returns an empty Optional-like value, then terminates the sequence.
@@ -1369,8 +1422,9 @@ public:
         std::views::transform(std::move(base), adapt(std::move(function))) | std::views::cache_latest;
     auto prefix = std::views::take_while(
         std::move(mapped), [](const auto &value) -> bool { return value.has_value(); });
-    auto values = std::views::transform(std::move(prefix),
-        [](auto &&value) -> decltype(auto) { return *std::forward<decltype(value)>(value); });
+    auto values = std::views::transform(std::move(prefix), [](auto &&value) -> decltype(auto) {
+      return *std::forward<decltype(value)>(value);
+    }) | std::views::as_rvalue;
     return Iter<decltype(values)>{std::move(values)};
   }
 
@@ -1501,7 +1555,7 @@ public:
     return found;
   }
 
-  /// Returns the zero-based index of the last matching item. Requires bidirectional traversal.
+  /// Returns the zero-based index of the last matching item in one forward pass.
   template <class Predicate>
   [[nodiscard]] constexpr auto rposition(Predicate predicate) -> Option<usize> {
     usize index{};
@@ -1556,9 +1610,15 @@ public:
     }
   }
 
-  /// Counts remaining items. Sized ranges use their standard distance/size machinery.
+  /// Consumes the pipeline and counts observed items. Traversal is intentional so pending projections and
+  /// side-effecting lazy adaptors such as `inspect()` are evaluated exactly as they are for other terminals.
   [[nodiscard]] constexpr auto count() -> usize {
-    return static_cast<usize>(std::ranges::distance(view_));
+    usize result{};
+    visitProjected([&](auto &&) -> bool {
+      ++result;
+      return true;
+    });
+    return result;
   }
 
   /// Returns the item at `target` if present. The implementation remains single-pass for input ranges and
@@ -1712,8 +1772,8 @@ public:
     using Second = std::remove_cvref_t<std::tuple_element_t<1, Item>>;
     Pair<Vec<First>, Vec<Second>> result;
     visitProjected([&](auto &&item) -> bool {
-      result.first.emplace_back(std::get<0>(item));
-      result.second.emplace_back(std::get<1>(item));
+      result.first.emplace_back(std::get<0>(std::forward<decltype(item)>(item)));
+      result.second.emplace_back(std::get<1>(std::forward<decltype(item)>(item)));
       return true;
     });
     return result;
@@ -1833,9 +1893,8 @@ public:
   /// Switches an rvalue indexable/common pipeline to an explicit standard execution policy.
   template <class Policy>
   [[nodiscard]] constexpr auto parallel(Policy &&policy) &&
-    requires std::is_execution_policy_v<std::remove_cvref_t<Policy>> and
-             std::ranges::random_access_range<View> and std::ranges::sized_range<View> and
-             std::ranges::common_range<View>;
+    requires StandardExecutionPolicy<Policy> and std::ranges::random_access_range<View> and
+             std::ranges::sized_range<View> and std::ranges::common_range<View>;
 
 private:
   /// Moves the stored view from rvalue pipelines and copies it from lvalue pipelines according to
@@ -1943,26 +2002,22 @@ private:
   template <class KeyProjection>
   [[nodiscard]] constexpr auto extremumByKey(KeyProjection projection, bool maximum) {
     using Result = TerminalOptionT<Reference>;
+    using Key = std::remove_cvref_t<decltype(adaptiveInvoke(
+        std::declval<KeyProjection &>(), std::declval<Reference>()))>;
     Result best{};
+    Option<Key> bestKey{};
     auto key = adapt(std::move(projection));
-    auto valueOf = [](auto &option) -> decltype(auto) {
-      if constexpr (requires { option->get(); }) {
-        return option->get();
-      } else {
-        return *option;
-      }
-    };
     visitProjected([&](auto &&item) -> bool {
+      Key itemKey = std::invoke(key, item);
       if (not best.has_value()) {
+        bestKey.emplace(std::move(itemKey));
         best = makeTerminalValue(std::forward<decltype(item)>(item));
         return true;
       }
-      auto &&bestValue = valueOf(best);
-      const auto bestKey = std::invoke(key, bestValue);
-      const auto itemKey = std::invoke(key, item);
       const bool replace =
-          maximum ? std::ranges::less{}(bestKey, itemKey) : std::ranges::less{}(itemKey, bestKey);
+          maximum ? std::ranges::less{}(*bestKey, itemKey) : std::ranges::less{}(itemKey, *bestKey);
       if (replace) {
+        bestKey.emplace(std::move(itemKey));
         best = makeTerminalValue(std::forward<decltype(item)>(item));
       }
       return true;
@@ -1985,6 +2040,8 @@ Iter(View) -> Iter<View>;
 /// implementation rather than Miracle.
 template <class Iteration, class Policy>
 class ParallelIter final {
+  using Projection = std::remove_cvref_t<decltype(std::declval<Iteration &>().projection_.get())>;
+
 public:
   /// Stores the already-built Iter pipeline; the execution policy remains a compile-time type and therefore
   /// adds no per-object policy storage.
@@ -2025,7 +2082,8 @@ public:
 
   /// Materializes an indexable pipeline in source order with `std::transform(policy, ...)`.
   [[nodiscard]] auto toVec()
-    requires std::default_initializable<std::ranges::range_value_t<Iteration>>
+    requires std::default_initializable<std::ranges::range_value_t<Iteration>> and
+             std::copy_constructible<Projection>
   {
     using Value = std::ranges::range_value_t<Iteration>;
     const auto count = static_cast<usize>(std::ranges::size(iteration_.view_));
@@ -2073,9 +2131,8 @@ template <std::ranges::view View, class Projection>
 template <std::ranges::view View, class Projection>
 template <class Policy>
 [[nodiscard]] constexpr auto Iter<View, Projection>::parallel([[maybe_unused]] Policy &&policy) &&
-  requires std::is_execution_policy_v<std::remove_cvref_t<Policy>> and
-           std::ranges::random_access_range<View> and std::ranges::sized_range<View> and
-           std::ranges::common_range<View>
+  requires StandardExecutionPolicy<Policy> and std::ranges::random_access_range<View> and
+           std::ranges::sized_range<View> and std::ranges::common_range<View>
 {
   using StoredPolicy = std::remove_cvref_t<Policy>;
   return ParallelIter<Iter, StoredPolicy>{std::move(*this)};
@@ -2113,9 +2170,8 @@ template <std::integral Left, std::integral Right, std::integral Step>
   if (step <= 0) {
     std::terminate();
   }
-  auto base = std::views::iota(
-                  std::common_type_t<Left, Right, Step>{start}, std::common_type_t<Left, Right, Step>{stop}) |
-              std::views::stride(std::common_type_t<Left, Right, Step>{step});
+  using Common = std::common_type_t<Left, Right, Step>;
+  auto base = Range<Common>{Common{start}, Common{stop}} | std::views::stride(Common{step});
   return Iter<decltype(base)>{std::move(base)};
 }
 

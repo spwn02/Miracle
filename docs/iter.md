@@ -115,13 +115,17 @@ Custom range machinery is intentionally restricted to semantics the standard lib
 - `scan` carries explicit mutable state and yields present outputs;
 - `intersperse` inserts a separator and preserves random-access/sized traversal when the source supports it.
 
-`peekable()` and `fuse()` are zero-work façades where the underlying C++ range already provides the required behavior. `peek()` requires a forward range so observing the next item cannot destructively consume a single-pass source.
+The values produced by `filterMap`, `mapWhile`, and `scan` are owned by those adaptors and remain consumable, including when the produced value is move-only.
+
+`peekable()` and `fuse()` are zero-work façades where the underlying C++ range already provides the required behavior. `peekable()`/`peek()` require a forward range so observing the next item cannot destructively consume a single-pass source; input-only pipelines do not expose a fake peekable façade.
 
 ## Search and reduction
 
 Terminals include `find`, `findMap`, `position`, `rposition`, `any`, `all`, `count`, `nth`, `last`, min/max and key/comparator variants, `sum`, `product`, `fold`, `reduce`, `partition`, `unzip`, `collect`, `toVec`, and `forEach`.
 
 Reference-returning terminals preserve references when the source is borrowed and produce owned values when the range yields rvalues. `reduce` delegates to `std::ranges::fold_left_first` where no fused projected-filter traversal is required.
+
+`count()` deliberately traverses the pipeline instead of using a sized-range shortcut so lazy projections and side effects such as `inspect()` are observed consistently with other consuming terminals.
 
 ## Parallel execution
 

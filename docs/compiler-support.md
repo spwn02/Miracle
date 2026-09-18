@@ -47,7 +47,7 @@ Other toolchains become eligible for `master` support when they implement the re
 
 The compiler alone is not the reference unit: its matching libc++ headers, binaries, ABI runtime, and C++ module sources/metadata belong to the same validated toolchain build. Deliberately mixing components from unrelated toolchain revisions is unsupported.
 
-The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.09.05`, built from source revision `6c7ef6afbfd8456c964c7a2625b3ea2aaa7d613f`.
+The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.09.15.1`, built from source revision `bba9ea40d350734a44eb1176909ebce9a045f9b3`.
 
 The historical `p2996-2026.08.23.2` snapshot remains immutable provenance for earlier releases, but it is no longer the current reference baseline.
 
@@ -174,7 +174,7 @@ No workflow force-pushes, rewrites, or automatically deletes `gcc`. The compatib
 
 ## Capability-driven support
 
-Compiler support is decided by executable capability probes rather than a compiler-version allowlist. `master` does not inject compiler-specific language or standard-library feature-enablement flags. Those belong to the selected toolchain, which must establish the complete C++26 mode before Miracle configures. Vendor checks in Miracle are limited to compiler-specific diagnostic policy; they do not decide whether a toolchain is accepted.
+Compiler support is decided by executable capability probes rather than a compiler-version allowlist. Implementation-specific language-mode switches normally belong to the selected toolchain, which must establish the complete C++26 mode before Miracle configures. A target-level driver option may be propagated when a shipped standard-library surface must be enabled consistently for Miracle, CMake's synthetic `std` BMI, and downstream consumers; the current Clang/libc++ reference uses `-fexperimental-library` for that purpose. Such options must not redefine Miracle's public semantics or substitute a missing standardized facility. Vendor checks themselves do not decide whether a toolchain is accepted.
 
 The current Miracle master revision probes:
 
@@ -187,6 +187,10 @@ reflection_static_storage
 expansion_statements
 std_vocabulary
 std_hive
+contracts
+debugging
+stacktrace
+literal_utf8
 ```
 
 The probes compile in one nested CMake build so the `std` module can be reused across checks. Toolchain resolution follows the effective compiler environment: an explicit `MIRACLE_CAPABILITY_TOOLCHAIN_FILE` override first, then `VCPKG_CHAINLOAD_TOOLCHAIN_FILE` for wrapper toolchains such as vcpkg, then the ordinary `CMAKE_TOOLCHAIN_FILE`. Without a toolchain file, the probe project reuses the selected compiler and global C++ flags. This keeps implementation-specific mode selection at the toolchain boundary while testing the same effective C++26 environment as Miracle itself. Every failed target gets its own build log. Configuration also writes a machine-readable `MiracleCapabilities.json` into the Miracle build directory.

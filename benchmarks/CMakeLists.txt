@@ -11,3 +11,7 @@ foreach(target IN ITEMS MiracleIterBenchmark MiracleIterStress)
                CXX_MODULE_STD ON)
   target_link_libraries(${target} PRIVATE Miracle::Miracle)
 endforeach()
+
+if(MIRACLE_BUILD_TESTS)
+  add_test(NAME MiracleIterStress COMMAND MiracleIterStress)
+endif()

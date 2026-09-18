@@ -20,7 +20,7 @@ Signed endpoints are supported, including negative intervals. `bool` is not a ra
 
 ## Standard range model
 
-For ordinary integral `T`, `Range<T>` is a borrowed, sized, common, random-access view. Generated elements are values rather than references into contiguous storage, so it is intentionally not a `contiguous_range`. 
+For ordinary integral `T`, `Range<T>` is a borrowed, sized, common, random-access view. Generated elements are values rather than references into contiguous storage, so it is intentionally not a `contiguous_range`.
 
 ```cpp
 const Range range{2, 10};
@@ -32,7 +32,7 @@ const auto squares =
 const auto backwards = range | std::views::reverse;
 ```
 
-`size()` is a constant-time and computes signed endpoint distance through the corresponding unsigned representation so even the full representable signed interval and does not perform overflowing signed arithmetic.
+`size()` is constant-time and computes signed endpoint distance through the corresponding unsigned representation, so even the full representable signed interval avoids overflowing signed arithmetic.
 
 ## Endpoint deduction
 
