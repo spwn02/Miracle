@@ -210,6 +210,7 @@ target_sources(
          src/public/Miracle.ixx
          src/public/Types.ixx
          src/public/Range.ixx
+         src/public/Iter.ixx
          src/public/StaticString.ixx
          src/public/Feature.ixx
          src/public/Diagnostic.ixx
@@ -238,6 +239,14 @@ if(MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES)
   target_link_libraries(Miracle
                         PRIVATE ${MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES})
 endif()
+
+# The reference Clang/libc++ toolchain gates its still-experimental PSTL and
+# related library surface behind -fexperimental-library. Keeping this PUBLIC
+# also gives CMake's synthetic import-std target the same BMI configuration as
+# Miracle and its consumers, while the generator expression keeps other
+# compilers free of the libc++-specific driver option.
+target_compile_options(
+  Miracle PUBLIC $<$<CXX_COMPILER_ID:Clang>:-fexperimental-library>)
 
 target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 
@@ -276,6 +285,7 @@ install(FILES LICENSE DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle")
 
 option(MIRACLE_BUILD_EXAMPLES "Build Miracle examples" OFF)
 option(MIRACLE_BUILD_TESTS "Build Miracle's self-test suite" OFF)
+option(MIRACLE_BUILD_BENCHMARKS "Build Miracle benchmarks and stress gates" OFF)
 
 if(MIRACLE_BUILD_EXAMPLES)
   add_subdirectory(examples)
@@ -284,4 +294,8 @@ endif()
 if(MIRACLE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+if(MIRACLE_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()

@@ -67,14 +67,12 @@ iter(Range{0, 10}).stepBy(2);
 
 ## Infinity and unbounded intervals
 
-Miracle reserves an `Infinity`/`infinity` vocabulary for the unbounded range family, but it is intentionally **not a numeric value** and is not part of finite `Range<T>` storage. Miracle currently locks that vocabulary and its safety rules without exposing an orphan unbounded factory before `Iter`/slicing has a consumer for it.
+Miracle exposes `Infinity`/`infinity` as an unbounded positional bound token. It is intentionally **not a numeric value** and is not part of finite `Range<T>` storage. `Iter` uses it for suffix slicing such as `iter(values).slice(5, infinity)`.
 
 A strictly increasing endless sequence of a fixed-width C++ integral type cannot be represented forever without eventually overflowing, wrapping, repeating, or changing value type. Miracle therefore does not pretend that `Range<i64>` can become mathematically infinite merely by replacing `stop` with a sentinel.
 
-The future unbounded form uses infinity as a **bound token** for interval/slicing/matching semantics. `Iter` will track source cardinality at the tpye level (`finite`, `unknown`, `provably infinite`) so Miracle-owned terminal operations can reject obvious non-terminating materialization such as collecting a provably infinite source. Bounding adaptors such as `take(n)` turn such a source finite again. Short-circuiting operations may remain valid while still documenting that termination depends on the predicate/input.
-
-This policy prevents hidden allocation growth in Miracle-owned collection machinery without claiming that arbitrary standard-library consumers or user callbacks can be made termination-proof.
+Infinity remains a **bound token** for interval/slicing/matching semantics rather than an integer sentinel. `Iter` deliberately follows the standard ranges termination model instead of maintaining a parallel finite/unknown/infinite type system. Exhaustive consumption of an endless standard range is therefore the caller's responsibility, exactly as it is for direct `std::ranges` use.
 
 ## Future integration
 
-Range is the common interval vocabulary for `Iter` slicing, contiguous container slicing, and scalar `Match` patterns. Direct container slicing arrives when Miracle's container façades are revisited; `Iter` consumes Range in the next phase.
+Range is the common interval vocabulary for `Iter` slicing, contiguous container slicing, and scalar `Match` patterns. `Iter` consumes finite `Range` values directly currently; direct container slicing arrives when Miracle's container façades are revisited.

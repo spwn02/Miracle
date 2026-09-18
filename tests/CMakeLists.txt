@@ -32,6 +32,7 @@ add_executable(
   error.cxx
   fs.cxx
   range.cxx
+  iter.cxx
   reflection.cxx
   static-string.cxx
   feature.cxx)
@@ -182,3 +183,7 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   DiagnosticAlignWithoutPrefix compile-fail/diagnostic-align-without-prefix.cxx
   "because 'InvalidAlignment' does not satisfy 'DiagnosticCode'")
+
+miracle_add_compile_fail_test(
+  IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cxx
+  "Miracle adaptive invocation requires a callable accepting the item directly")

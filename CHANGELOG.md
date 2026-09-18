@@ -8,6 +8,9 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Added
 
+- Added lazy `Iter` pipelines with universal range/integer/Option/Result construction, adaptive tuple/reflected-aggregate callable invocation, positional slicing, Rust-inspired adaptors and terminals, and standard-range capability preservation.
+- Added explicit `ParallelIter` execution as a thin façade over standard C++ execution policies for indexable pipelines.
+- Added nonnumeric `Infinity`/`infinity` positional-bound vocabulary and conservative `SizeHint` iterator size knowledge.
 - Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
 - Added reflected enum diagnostic domains, structured move-only diagnostics/spans, source-aware rendering, Error and C++26 contract adapters, and terminal `panic()` integration with stacktraces and debugger breakpoints.
 - Added executable capability probes for contracts, debugging, stacktraces, UTF-8 literal encoding, and typed reflection-annotation extraction.
@@ -22,6 +25,9 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Performance
 
+- Simplified Iter to delegate ordinary traversal to standard views/algorithms, removing the custom exhaustion lattice, worker pool, bounded-concurrency protocol, and custom executor runtime.
+- Composed consecutive Iter maps into one pending projection and fused projected-filter terminals so mapped values are evaluated once per source item without `cache_latest` capability loss.
+- Preserved random-access and sized traversal through chunks, windows, and intersperse when the source supports those capabilities.
 - Rendered diagnostic cause trees with iterative parent/index DFS in O(n) time, O(depth) auxiliary storage, and O(1) native recursion.
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.
