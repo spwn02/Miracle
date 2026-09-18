@@ -35,14 +35,12 @@ jobs:
             +gcc:refs/remotes/origin/gcc
           git switch --detach origin/gcc
 
-          # gcc is a compatibility branch, so its compiler-specific edits are
-          # authoritative whenever both branches changed the same file. The
-          # three-way merge still brings across master-only commits and files,
-          # while -X ours resolves edits made on both sides in favour of the
-          # existing GCC implementation. This is important after an amended
-          # or force-pushed master commit: a stale gcc tip must be recoverable
-          # by the same synchronization job instead of getting permanently
-          # wedged on a merge-conflict failure.
+          # authoritative for conflicting hunks. Cleanly mergeable master edits
+          # still enter the candidate; -X ours only chooses the gcc side when
+          # the merge algorithm finds an actual content conflict. This is
+          # important after an amended or force-pushed master commit: a stale
+          # gcc tip must be recoverable by the same synchronization job instead
+          # of getting permanently wedged on a merge-conflict failure.
           if ! git merge --no-ff --no-edit -X ours origin/master; then
             git status --short
             git merge --abort || true
@@ -53,11 +51,14 @@ jobs:
           git diff --check origin/gcc..HEAD
 
       - name: Validate synchronization candidate on GCC
+        id: gcc_validation
         shell: bash
         run: |
           set -euo pipefail
 
+          set +e
           docker run --rm \
+            --env MIRACLE_GCC_SYNC_CANDIDATE=1 \
             --volume "$GITHUB_WORKSPACE:/workspace" \
             --workdir /workspace \
             archlinux:latest \
@@ -67,6 +68,17 @@ jobs:
                 base-devel ca-certificates cmake git ninja
               bash ./.github/scripts/validate-gcc.sh
             '
+          status="$?"
+          set -e
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+          if [[ "$status" == "20" ]]; then
+            echo "::notice::Current GCC cannot satisfy this master revision; gcc remains at its last compatible commit."
+            exit 0
+          fi
+
+          exit "$status"
 
       - name: Measure GCC convergence
         shell: bash
@@ -86,6 +98,7 @@ jobs:
           if-no-files-found: error
 
       - name: Advance gcc
+        if: steps.gcc_validation.outputs.status == '0'
         shell: bash
         run: |
           set -euo pipefail

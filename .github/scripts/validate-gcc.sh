@@ -17,10 +17,28 @@ cmake --version
 ninja --version
 
 echo "== Miracle debug + example =="
+configure_log="$(mktemp)"
+trap 'rm -f "$configure_log"' EXIT
+
+set +e
 cmake --preset debug --fresh \
   -DCMAKE_TOOLCHAIN_FILE="$toolchain" \
   -DMIRACLE_BUILD_EXAMPLES=ON \
-  -DMIRACLE_BUILD_TESTS=OFF
+  -DMIRACLE_BUILD_TESTS=OFF 2>&1 | tee "$configure_log"
+configure_status="${PIPESTATUS[0]}"
+set -e
+
+if ((configure_status != 0)); then
+  if [[ "${MIRACLE_GCC_SYNC_CANDIDATE:-0}" == "1" ]] &&
+    grep -Fq "Missing capabilities required by the current master revision:" \
+      "$configure_log"; then
+    echo "GCC sync candidate cannot satisfy the current master capability contract."
+    exit 20
+  fi
+
+  exit "$configure_status"
+fi
+
 cmake --build --preset debug
 "$repo_root/build/debug/examples/MiracleQuickstart"
 

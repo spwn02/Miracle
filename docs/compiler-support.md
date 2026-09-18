@@ -109,7 +109,9 @@ install + find_package consumer
 
 Miracle's Switch-powered self-tests are intentionally not part of this lane. They add a second product/compiler surface beyond Miracle's production and consumer contract; Switch validates its own GCC self-test surface independently.
 
-Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. When both branches edit the same file, the existing `gcc` version wins because it contains the compiler-specific compatibility implementation; master-only commits and files are still imported. The candidate is validated with the same GCC validator before `gcc` is advanced. An unresolvable merge conflict, compiler regression, consumer failure, or concurrent `gcc` update fails the workflow and leaves `gcc` unchanged. The final update is a normal non-forced push, and the fetch is force-tolerant so amended or force-pushed `master` commits can recover a stale `gcc` tip.
+Every push to `master` also creates a temporary synchronization candidate by merging `master` into the current `gcc` tip. For actual conflicting hunks, the existing `gcc` version wins because it contains the compiler-specific compatibility implementation; cleanly mergeable master edits still enter the candidate, and master-only commits/files are imported normally. The candidate is validated with the same GCC validator before `gcc` is advanced.
+
+If configuration reaches Miracle's capability gate and reports standardized capabilities that the current GCC/libstdc++ line cannot provide, that is an expected **non-advance**, not a broken synchronization job: the workflow records convergence evidence, emits a notice, leaves `gcc` at its last compatible commit, and succeeds. Unresolvable merge conflicts, unexpected configure/build/consumer failures, CI infrastructure failures, or concurrent `gcc` updates remain hard workflow failures. The final update is a normal non-forced push, and the fetch is force-tolerant so amended or force-pushed `master` commits can recover a stale `gcc` tip.
 
 This automation does not change the synchronization policy:
 
