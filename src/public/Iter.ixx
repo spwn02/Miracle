@@ -6,6 +6,81 @@ import :Range;
 
 namespace Miracle {
 
+/// Miracle-owned range values opt into the standard view concept structurally rather than through
+/// view_interface inheritance. Public semantic adaptor names are exported here while implementation helpers
+/// remain module-private.
+template <class Maybe>
+class MaybeRefView;
+template <class Maybe>
+class MaybeValueView;
+export template <class Function>
+class OnceWith;
+export template <class Function>
+class RepeatWith;
+export template <class Function>
+class FromFn;
+export template <class Value, class Function>
+class Successors;
+export template <std::ranges::view View>
+  requires std::ranges::forward_range<View>
+class Cycle;
+template <std::ranges::view View, class Projection, class Predicate>
+class ProjectedFilterView;
+export template <std::ranges::view View, class State, class Function>
+class Scan;
+export template <std::ranges::view View>
+class Intersperse;
+export template <std::ranges::view View, class Function>
+class IntersperseWith;
+export template <std::ranges::view View, class Function, usize N>
+class MapWindows;
+export template <std::ranges::view View, usize N>
+class ArrayChunks;
+export template <std::ranges::view Iteration>
+class Peekable;
+export template <std::ranges::view View, class Projection = std::identity>
+class Iter;
+
+} // namespace Miracle
+
+// Standard customization-point spelling is fixed by the C++ ranges API.
+// NOLINTBEGIN(readability-identifier-naming)
+template <class Maybe>
+inline constexpr bool std::ranges::enable_view<Miracle::MaybeRefView<Maybe>> = true;
+template <class Maybe>
+inline constexpr bool std::ranges::enable_view<Miracle::MaybeValueView<Maybe>> = true;
+template <class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::OnceWith<Function>> = true;
+template <class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::RepeatWith<Function>> = true;
+template <class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::FromFn<Function>> = true;
+template <class Value, class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::Successors<Value, Function>> = true;
+template <std::ranges::view View>
+  requires std::ranges::forward_range<View>
+inline constexpr bool std::ranges::enable_view<Miracle::Cycle<View>> = true;
+template <std::ranges::view View, class Projection, class Predicate>
+inline constexpr bool std::ranges::enable_view<Miracle::ProjectedFilterView<View, Projection, Predicate>> =
+    true;
+template <std::ranges::view View, class State, class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::Scan<View, State, Function>> = true;
+template <std::ranges::view View>
+inline constexpr bool std::ranges::enable_view<Miracle::Intersperse<View>> = true;
+template <std::ranges::view View, class Function>
+inline constexpr bool std::ranges::enable_view<Miracle::IntersperseWith<View, Function>> = true;
+template <std::ranges::view View, class Function, Miracle::usize N>
+inline constexpr bool std::ranges::enable_view<Miracle::MapWindows<View, Function, N>> = true;
+template <std::ranges::view View, Miracle::usize N>
+inline constexpr bool std::ranges::enable_view<Miracle::ArrayChunks<View, N>> = true;
+template <std::ranges::view Iteration>
+inline constexpr bool std::ranges::enable_view<Miracle::Peekable<Iteration>> = true;
+template <std::ranges::view View, class Projection>
+inline constexpr bool std::ranges::enable_view<Miracle::Iter<View, Projection>> = true;
+// NOLINTEND(readability-identifier-naming)
+
+namespace Miracle {
+
 /// Detects tuple-like values through the standard tuple protocol. This remains module-private:
 /// callers only observe the adaptive invocation behavior, not this implementation vocabulary.
 template <class T>
@@ -299,6 +374,17 @@ concept OptionalLike = requires(Optional optional) {
   *optional;
 };
 
+/// Minimal expected-like protocol used by Peekable::nextIfMap without coupling Iter to the temporary
+/// single-error Miracle::Result alias.
+template <class Expected>
+concept ExpectedLike = requires(Expected expected) {
+  typename std::remove_cvref_t<Expected>::value_type;
+  typename std::remove_cvref_t<Expected>::error_type;
+  { expected.has_value() } -> std::convertible_to<bool>;
+  *expected;
+  expected.error();
+};
+
 /// Standard execution policies support by ParallelIter. The facade stores only the policy type and rehydrates
 /// the matching standard singleton, so user-defined policy types are intentionally excluded.
 template <class Policy>
@@ -494,7 +580,7 @@ private:
 /// Zero/one-element borrowed view over an lvalue Optional-like object. Present values are exposed by
 /// reference and therefore follow the source object's lifetime.
 template <class Maybe>
-class MaybeRefView final : public std::ranges::view_interface<MaybeRefView<Maybe>> {
+class MaybeRefView final {
 public:
   constexpr MaybeRefView() = default;
   constexpr explicit MaybeRefView(Maybe &maybe)
@@ -522,7 +608,7 @@ private:
 /// Owning zero/one-element view for rvalue Optional-like objects. `iter(rvalue)` later applies `as_rvalue` so
 /// materialization can move the contained value.
 template <class Maybe>
-class MaybeValueView final : public std::ranges::view_interface<MaybeValueView<Maybe>> {
+class MaybeValueView final {
 public:
   constexpr MaybeValueView()
     requires std::default_initializable<Maybe>
@@ -562,7 +648,7 @@ private:
 /// Lazy one-element source used by `onceWith()`. The iterator owns the generated value so repeated
 /// dereference never repeats user computation and move-only results remain consumable.
 template <class Function>
-class OnceWithView final : public std::ranges::view_interface<OnceWithView<Function>> {
+class OnceWith final {
   using Value = std::remove_cvref_t<std::invoke_result_t<Function &>>;
 
   class Sentinel final {};
@@ -574,7 +660,7 @@ class OnceWithView final : public std::ranges::view_interface<OnceWithView<Funct
     using difference_type = isize;
 
     Iterator() = default;
-    constexpr explicit Iterator(OnceWithView *parent) {
+    constexpr explicit Iterator(OnceWith *parent) {
       value_.emplace(std::invoke(parent->function_.get()));
     }
 
@@ -603,10 +689,10 @@ class OnceWithView final : public std::ranges::view_interface<OnceWithView<Funct
   };
 
 public:
-  constexpr OnceWithView()
+  constexpr OnceWith()
     requires std::default_initializable<Function>
   = default;
-  constexpr explicit OnceWithView(Function function)
+  constexpr explicit OnceWith(Function function)
       : function_(std::move(function)) {
   }
 
@@ -625,7 +711,7 @@ private:
 /// Endless callable source used by `repeatWith()`. Each increment generates and caches exactly one logical
 /// iter, so repeated dereference has no user-visible work beyond reading the cache.
 template <class Function>
-class RepeatWithView final : public std::ranges::view_interface<RepeatWithView<Function>> {
+class RepeatWith final {
   using Value = std::remove_cvref_t<std::invoke_result_t<Function &>>;
 
   class Iterator final {
@@ -635,7 +721,7 @@ class RepeatWithView final : public std::ranges::view_interface<RepeatWithView<F
     using difference_type = isize;
 
     Iterator() = default;
-    constexpr explicit Iterator(RepeatWithView *parent)
+    constexpr explicit Iterator(RepeatWith *parent)
         : parent_(parent) {
       load();
     }
@@ -664,15 +750,15 @@ class RepeatWithView final : public std::ranges::view_interface<RepeatWithView<F
       value_.emplace(std::invoke(parent_->function_.get()));
     }
 
-    RepeatWithView *parent_{};
+    RepeatWith *parent_{};
     mutable Option<Value> value_{};
   };
 
 public:
-  constexpr RepeatWithView()
+  constexpr RepeatWith()
     requires std::default_initializable<Function>
   = default;
-  constexpr explicit RepeatWithView(Function function)
+  constexpr explicit RepeatWith(Function function)
       : function_(std::move(function)) {
   }
 
@@ -691,7 +777,7 @@ private:
 /// Optional-producing callable source used by `fromFn()`. Generation is lazy and cached per logical item; the
 /// first empty result permanently ends that traversal.
 template <class Function>
-class FromFnView final : public std::ranges::view_interface<FromFnView<Function>> {
+class FromFn final {
   using Maybe = std::remove_cvref_t<std::invoke_result_t<Function &>>;
   static_assert(OptionalLike<Maybe>);
   using Value = Maybe::value_type;
@@ -705,7 +791,7 @@ class FromFnView final : public std::ranges::view_interface<FromFnView<Function>
     using difference_type = isize;
 
     Iterator() = default;
-    constexpr explicit Iterator(FromFnView *parent)
+    constexpr explicit Iterator(FromFn *parent)
         : parent_(parent) {
       load();
     }
@@ -737,15 +823,15 @@ class FromFnView final : public std::ranges::view_interface<FromFnView<Function>
       }
     }
 
-    FromFnView *parent_{};
+    FromFn *parent_{};
     mutable Option<Value> value_{};
   };
 
 public:
-  constexpr FromFnView()
+  constexpr FromFn()
     requires std::default_initializable<Function>
   = default;
-  constexpr explicit FromFnView(Function function)
+  constexpr explicit FromFn(Function function)
       : function_(std::move(function)) {
   }
 
@@ -764,7 +850,7 @@ private:
 /// Stateful successor source. The next value is computed from the current value before the current value is
 /// exposed, so downstream consumers may move from an item without corrupting successor generation.
 template <class Value, class Function>
-class SuccessorsView final : public std::ranges::view_interface<SuccessorsView<Value, Function>> {
+class Successors final {
   using Maybe = std::remove_cvref_t<decltype(adaptiveInvoke(std::declval<Function &>(),
       std::declval<const Value &>()))>;
   static_assert(OptionalLike<Maybe>);
@@ -779,7 +865,7 @@ class SuccessorsView final : public std::ranges::view_interface<SuccessorsView<V
     using difference_type = isize;
 
     Iterator() = default;
-    constexpr Iterator(SuccessorsView *parent, Value seed)
+    constexpr Iterator(Successors *parent, Value seed)
         : parent_(parent)
         , current_(std::move(seed)) {
       prepareNext();
@@ -816,13 +902,18 @@ class SuccessorsView final : public std::ranges::view_interface<SuccessorsView<V
       }
     }
 
-    SuccessorsView *parent_{};
+    Successors *parent_{};
     mutable Option<Value> current_{};
     Option<Value> next_{};
   };
 
 public:
-  constexpr SuccessorsView(Value seed, Function function)
+  constexpr Successors(Value seed, Function function)
+      : seed_(std::move(seed))
+      , function_(std::move(function)) {
+  }
+
+  constexpr Successors(Option<Value> seed, Function function)
       : seed_(std::move(seed))
       , function_(std::move(function)) {
   }
@@ -850,7 +941,7 @@ private:
 /// narrow to forward traversal because an unbounded cycle has no meaningful random-access end.
 template <std::ranges::view View>
   requires std::ranges::forward_range<View>
-class CycleView final : public std::ranges::view_interface<CycleView<View>> {
+class Cycle final {
   class Sentinel final {};
 
   class Iterator final {
@@ -860,7 +951,7 @@ class CycleView final : public std::ranges::view_interface<CycleView<View>> {
     using difference_type = std::ranges::range_difference_t<View>;
 
     Iterator() = default;
-    constexpr Iterator(CycleView *parent, std::ranges::iterator_t<View> current, bool empty)
+    constexpr Iterator(Cycle *parent, std::ranges::iterator_t<View> current, bool empty)
         : parent_(parent)
         , current_(std::move(current))
         , empty_(empty) {
@@ -897,16 +988,16 @@ class CycleView final : public std::ranges::view_interface<CycleView<View>> {
     }
 
   private:
-    CycleView *parent_{};
+    Cycle *parent_{};
     std::ranges::iterator_t<View> current_{};
     bool empty_{true};
   };
 
 public:
-  CycleView()
+  Cycle()
     requires std::default_initializable<View>
   = default;
-  constexpr explicit CycleView(View view)
+  constexpr explicit Cycle(View view)
       : view_(std::move(view)) {
   }
 
@@ -927,8 +1018,7 @@ private:
 /// `visitWhile()` lets Miracle terminals evaluate the projection exactly once per source item and reuse the
 /// projected value for both filtering and consumption.
 template <std::ranges::view View, class Projection, class Predicate>
-class ProjectedFilterView final
-    : public std::ranges::view_interface<ProjectedFilterView<View, Projection, Predicate>> {
+class ProjectedFilterView final {
   class Iterator final {
   public:
     using iterator_concept =
@@ -1082,7 +1172,7 @@ inline constexpr bool isProjectedFilterView = IsProjectedFilterView<std::remove_
 /// Stateful single-pass view used by `scan()`. Each increment advances the source, updates state, and caches
 /// the next yielded value so dereference never repeats user computation.
 template <std::ranges::view View, class State, class Function>
-class ScanView final : public std::ranges::view_interface<ScanView<View, State, Function>> {
+class Scan final {
   using SourceReference = std::ranges::range_reference_t<View>;
   using Maybe = std::remove_cvref_t<decltype(adaptiveInvokeWithPrefix(std::declval<Function &>(),
       std::declval<State &>(),
@@ -1098,7 +1188,7 @@ class ScanView final : public std::ranges::view_interface<ScanView<View, State, 
     using difference_type = std::ranges::range_difference_t<View>;
 
     Iterator() = default;
-    constexpr Iterator(ScanView *parent, std::ranges::iterator_t<View> current)
+    constexpr Iterator(Scan *parent, std::ranges::iterator_t<View> current)
         : parent_(parent)
         , current_(std::move(current)) {
       load();
@@ -1140,19 +1230,19 @@ class ScanView final : public std::ranges::view_interface<ScanView<View, State, 
       }
     }
 
-    ScanView *parent_{};
+    Scan *parent_{};
     std::ranges::iterator_t<View> current_{};
     mutable Option<value_type> cache_{};
     bool done_{};
   };
 
 public:
-  ScanView()
+  Scan()
     requires std::default_initializable<View> and std::default_initializable<State> and
                  std::default_initializable<Function>
   = default;
 
-  constexpr ScanView(View view, State state, Function function)
+  constexpr Scan(View view, State state, Function function)
       : view_(std::move(view))
       , state_(std::move(state))
       , function_(std::move(function)) {
@@ -1172,34 +1262,69 @@ private:
   [[no_unique_address]] MovableBox<Function> function_{};
 };
 
-/// Forward/input intersperse implementation for sources that cannot provide indexed access. It alternates
-/// source values and the stored separator without materializing the sequence.
+/// Inserts one stored separator between adjacent source values. One semantic type conditionally preserves
+/// indexed traversal instead of exposing separate implementation types for random-access and streaming bases.
 template <std::ranges::view View>
-class IntersperseView final : public std::ranges::view_interface<IntersperseView<View>> {
+class Intersperse final {
   using Value = std::ranges::range_value_t<View>;
   using SourceReference = std::ranges::range_reference_t<View>;
+  static constexpr bool randomAccess_ =
+      std::ranges::random_access_range<View> and std::ranges::sized_range<View>;
+  static constexpr bool stableReference_ = std::is_lvalue_reference_v<SourceReference>;
   using CommonReference = std::common_reference_t<SourceReference, const Value &>;
 
   class Iterator final {
   public:
-    using iterator_concept = std::
-        conditional_t<std::ranges::forward_range<View>, std::forward_iterator_tag, std::input_iterator_tag>;
+    using iterator_concept = std::conditional_t<randomAccess_,
+        std::random_access_iterator_tag,
+        std::conditional_t<std::ranges::forward_range<View>,
+            std::forward_iterator_tag,
+            std::input_iterator_tag>>;
     using value_type = Value;
     using difference_type = std::ranges::range_difference_t<View>;
+    using reference = std::conditional_t<randomAccess_ and not stableReference_, Value, CommonReference>;
 
     Iterator() = default;
-    constexpr Iterator(IntersperseView *parent, std::ranges::iterator_t<View> current)
+
+    constexpr Iterator(Intersperse *parent, std::ranges::iterator_t<View> current)
+      requires(not randomAccess_)
         : parent_(parent)
         , current_(std::move(current))
         , done_(current_ == std::ranges::end(parent_->view_)) {
     }
 
-    [[nodiscard]] constexpr auto operator*() const -> CommonReference {
-      return separatorNext_ ? CommonReference{parent_->separator_} : CommonReference{*current_};
+    constexpr Iterator(Intersperse *parent, difference_type position)
+      requires randomAccess_
+        : parent_(parent)
+        , position_(position) {
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> reference {
+      if constexpr (randomAccess_) {
+        if (position_ % 2 != 0) {
+          return parent_->separator_;
+        }
+        auto &&item = std::ranges::begin(parent_->view_)[position_ / 2];
+        if constexpr (stableReference_) {
+          return item;
+        } else {
+          return Value{std::forward<decltype(item)>(item)};
+        }
+      } else {
+        return separatorNext_ ? CommonReference{parent_->separator_} : CommonReference{*current_};
+      }
+    }
+
+    [[nodiscard]] constexpr auto operator[](difference_type offset) const -> reference
+      requires randomAccess_
+    {
+      return *(*this + offset);
     }
 
     constexpr auto operator++() -> Iterator & {
-      if (separatorNext_) {
+      if constexpr (randomAccess_) {
+        ++position_;
+      } else if (separatorNext_) {
         separatorNext_ = false;
       } else {
         ++current_;
@@ -1213,7 +1338,7 @@ class IntersperseView final : public std::ranges::view_interface<IntersperseView
     }
 
     constexpr auto operator++(int) {
-      if constexpr (std::ranges::forward_range<View>) {
+      if constexpr (randomAccess_ or std::ranges::forward_range<View>) {
         auto previous = *this;
         ++*this;
         return previous;
@@ -1222,39 +1347,111 @@ class IntersperseView final : public std::ranges::view_interface<IntersperseView
       }
     }
 
-    [[nodiscard]] friend constexpr auto operator==(const Iterator &left, const Iterator &right) -> bool
-      requires std::ranges::forward_range<View>
+    constexpr auto operator--() -> Iterator &
+      requires randomAccess_
     {
-      return left.current_ == right.current_ and left.separatorNext_ == right.separatorNext_;
+      --position_;
+      return *this;
+    }
+    constexpr auto operator--(int) -> Iterator
+      requires randomAccess_
+    {
+      auto previous = *this;
+      --*this;
+      return previous;
+    }
+    constexpr auto operator+=(difference_type offset) -> Iterator &
+      requires randomAccess_
+    {
+      position_ += offset;
+      return *this;
+    }
+    constexpr auto operator-=(difference_type offset) -> Iterator &
+      requires randomAccess_
+    {
+      position_ -= offset;
+      return *this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator+(Iterator iterator, difference_type offset) -> Iterator
+      requires randomAccess_
+    {
+      iterator += offset;
+      return iterator;
+    }
+    [[nodiscard]] friend constexpr auto operator+(difference_type offset, Iterator iterator) -> Iterator
+      requires randomAccess_
+    {
+      return iterator + offset;
+    }
+    [[nodiscard]] friend constexpr auto operator-(Iterator iterator, difference_type offset) -> Iterator
+      requires randomAccess_
+    {
+      iterator -= offset;
+      return iterator;
+    }
+    [[nodiscard]] friend constexpr auto operator-(const Iterator &left, const Iterator &right)
+        -> difference_type
+      requires randomAccess_
+    {
+      return left.position_ - right.position_;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &left, const Iterator &right) -> bool
+      requires(randomAccess_ or std::ranges::forward_range<View>)
+    {
+      if constexpr (randomAccess_) {
+        return left.position_ == right.position_;
+      } else {
+        return left.current_ == right.current_ and left.separatorNext_ == right.separatorNext_;
+      }
+    }
+
+    [[nodiscard]] friend constexpr auto operator<=>(const Iterator &left, const Iterator &right)
+      requires randomAccess_
+    {
+      return left.position_ <=> right.position_;
     }
 
     [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
-        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool {
+        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool
+      requires(not randomAccess_)
+    {
       return iterator.done_;
     }
 
   private:
-    IntersperseView *parent_{};
+    Intersperse *parent_{};
     std::ranges::iterator_t<View> current_{};
+    difference_type position_{};
     bool separatorNext_{};
     bool done_{true};
   };
 
 public:
-  IntersperseView()
+  Intersperse()
     requires std::default_initializable<View> and std::default_initializable<Value>
   = default;
-  constexpr IntersperseView(View view, Value separator)
+
+  constexpr Intersperse(View view, Value separator)
       : view_(std::move(view))
       , separator_(std::move(separator)) {
   }
 
   [[nodiscard]] constexpr auto begin() -> Iterator {
-    return Iterator{this, std::ranges::begin(view_)};
+    if constexpr (randomAccess_) {
+      return Iterator{this, 0};
+    } else {
+      return Iterator{this, std::ranges::begin(view_)};
+    }
   }
 
-  [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
-    return {};
+  [[nodiscard]] constexpr auto end() {
+    if constexpr (randomAccess_) {
+      return Iterator{this, static_cast<std::ranges::range_difference_t<View>>(size())};
+    } else {
+      return std::default_sentinel;
+    }
   }
 
   [[nodiscard]] constexpr auto size()
@@ -1276,122 +1473,479 @@ private:
   Value separator_{};
 };
 
-/// Random-access intersperse specialization. Logical positions map directly to either a source element or the
-/// separator, preserving random-access and sized-range capabilities.
-template <std::ranges::view View>
-  requires std::ranges::random_access_range<View> and std::ranges::sized_range<View>
-class RandomAccessIntersperseView final
-    : public std::ranges::view_interface<RandomAccessIntersperseView<View>> {
+/// Lazily generates separators between adjacent source values. A generated separator is cached so repeated
+/// dereference of the same logical position never invokes the callable twice.
+template <std::ranges::view View, class Function>
+class IntersperseWith final {
   using Value = std::ranges::range_value_t<View>;
   using SourceReference = std::ranges::range_reference_t<View>;
-  static constexpr bool stableReference_ = std::is_lvalue_reference_v<SourceReference>;
-  using StableReference = std::common_reference_t<SourceReference, const Value &>;
+  using Generated = std::remove_cvref_t<std::invoke_result_t<Function &>>;
+  static_assert(std::constructible_from<Value, Generated>);
+  using CommonReference = std::common_reference_t<SourceReference, const Value &>;
 
   class Iterator final {
   public:
-    using iterator_concept = std::random_access_iterator_tag;
+    using iterator_concept = std::input_iterator_tag;
     using value_type = Value;
     using difference_type = std::ranges::range_difference_t<View>;
-    using reference = std::conditional_t<stableReference_, StableReference, Value>;
 
-    Iterator() = default;
-    constexpr Iterator(RandomAccessIntersperseView *parent, difference_type position)
+    Iterator()
+      requires std::default_initializable<std::ranges::iterator_t<View>>
+    = default;
+    constexpr Iterator(IntersperseWith *parent, std::ranges::iterator_t<View> current)
         : parent_(parent)
-        , position_(position) {
+        , current_(std::move(current))
+        , done_(current_ == std::ranges::end(parent_->view_)) {
     }
 
-    [[nodiscard]] constexpr auto operator*() const -> reference {
-      if (position_ % 2 != 0) {
-        return parent_->separator_;
+    [[nodiscard]] constexpr auto operator*() const -> CommonReference {
+      if (separatorNext_) {
+        if (not separator_.has_value()) {
+          separator_.emplace(std::invoke(parent_->function_.get()));
+        }
+        return CommonReference{*separator_};
       }
-      auto &&item = std::ranges::begin(parent_->view_)[position_ / 2];
-      if constexpr (stableReference_) {
-        return item;
-      } else {
-        return Value{std::forward<decltype(item)>(item)};
-      }
-    }
-
-    [[nodiscard]] constexpr auto operator[](difference_type offset) const -> reference {
-      return *(*this + offset);
+      return CommonReference{*current_};
     }
 
     constexpr auto operator++() -> Iterator & {
-      ++position_;
-      return *this;
-    }
-    constexpr auto operator++(int) -> Iterator {
-      auto previous = *this;
-      ++*this;
-      return previous;
-    }
-    constexpr auto operator--() -> Iterator & {
-      --position_;
-      return *this;
-    }
-    constexpr auto operator--(int) -> Iterator {
-      auto previous = *this;
-      --*this;
-      return previous;
-    }
-    constexpr auto operator+=(difference_type offset) -> Iterator & {
-      position_ += offset;
-      return *this;
-    }
-    constexpr auto operator-=(difference_type offset) -> Iterator & {
-      position_ -= offset;
+      if (separatorNext_) {
+        separator_.reset();
+        separatorNext_ = false;
+      } else {
+        ++current_;
+        if (current_ == std::ranges::end(parent_->view_)) {
+          done_ = true;
+        } else {
+          separatorNext_ = true;
+        }
+      }
       return *this;
     }
 
-    [[nodiscard]] friend constexpr auto operator+(Iterator iterator, difference_type offset) -> Iterator {
-      iterator += offset;
-      return iterator;
+    constexpr auto operator++(int) -> void {
+      ++*this;
     }
-    [[nodiscard]] friend constexpr auto operator+(difference_type offset, Iterator iterator) -> Iterator {
-      return iterator + offset;
-    }
-    [[nodiscard]] friend constexpr auto operator-(Iterator iterator, difference_type offset) -> Iterator {
-      iterator -= offset;
-      return iterator;
-    }
-    [[nodiscard]] friend constexpr auto operator-(const Iterator &left, const Iterator &right)
-        -> difference_type {
-      return left.position_ - right.position_;
-    }
-    [[nodiscard]] friend constexpr auto operator==(const Iterator &, const Iterator &) -> bool = default;
-    [[nodiscard]] friend constexpr auto operator<=>(const Iterator &left, const Iterator &right) {
-      return left.position_ <=> right.position_;
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool {
+      return iterator.done_;
     }
 
   private:
-    RandomAccessIntersperseView *parent_{};
-    difference_type position_{};
+    IntersperseWith *parent_{};
+    std::ranges::iterator_t<View> current_;
+    mutable Option<Value> separator_{};
+    bool separatorNext_{};
+    bool done_{true};
   };
 
 public:
-  RandomAccessIntersperseView()
-    requires std::default_initializable<View> and std::default_initializable<Value>
+  IntersperseWith()
+    requires std::default_initializable<View> and std::default_initializable<Function>
   = default;
-  constexpr RandomAccessIntersperseView(View view, Value separator)
+
+  constexpr IntersperseWith(View view, Function function)
       : view_(std::move(view))
-      , separator_(std::move(separator)) {
+      , function_(std::move(function)) {
   }
 
   [[nodiscard]] constexpr auto begin() -> Iterator {
-    return Iterator{this, 0};
-  }
-  [[nodiscard]] constexpr auto end() -> Iterator {
-    return Iterator{this, static_cast<std::ranges::range_difference_t<View>>(size())};
+    return Iterator{this, std::ranges::begin(view_)};
   }
 
-  [[nodiscard]] constexpr auto size() const -> usize {
+  [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
+    return {};
+  }
+
+  [[nodiscard]] constexpr auto size() const
+    requires std::ranges::sized_range<const View>
+  {
     const auto count = static_cast<usize>(std::ranges::size(view_));
     return count == 0 ? 0 : (count * 2) - 1;
   }
 
 private:
   View view_{};
-  Value separator_{};
+  [[no_unique_address]] MovableBox<Function> function_{};
+};
+
+/// Compile-time overlapping window mapper. The fixed window is represented as borrowed references so input
+/// sources and move-only values are supported without copying. Miracle adaptive invocation accepts either the
+/// whole fixed reference array or N decomposed element references.
+template <std::ranges::view View, class Function, usize N>
+class MapWindows final {
+  static_assert(N > 0);
+  using SourceReference = std::ranges::range_reference_t<View>;
+  using Item = std::remove_cvref_t<SourceReference>;
+  static constexpr bool borrowed_ =
+      std::ranges::forward_range<View> and std::is_lvalue_reference_v<SourceReference>;
+  using Slot = std::conditional_t<borrowed_, Ref<std::remove_reference_t<SourceReference>>, Item>;
+  using Window = Array<Ref<const Item>, N>;
+  using Mapped =
+      std::remove_cvref_t<decltype(adaptiveInvoke(std::declval<Function &>(), std::declval<Window &>()))>;
+  static_assert(not std::is_void_v<Mapped>);
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Mapped;
+    using difference_type = std::ranges::range_difference_t<View>;
+
+    Iterator()
+      requires std::default_initializable<std::ranges::iterator_t<View>>
+    = default;
+    constexpr Iterator(MapWindows *parent, std::ranges::iterator_t<View> current)
+        : parent_(parent)
+        , current_(std::move(current)) {
+      initialize();
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> Mapped & {
+      return *mapped_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      if (done_) {
+        return *this;
+      }
+      if (current_ == std::ranges::end(parent_->view_)) {
+        mapped_.reset();
+        done_ = true;
+        return *this;
+      }
+      for (usize index{1}; index < N; ++index) {
+        slots_[index - 1] = std::move(slots_[index]);
+      }
+      slots_[N - 1].reset();
+      store(N - 1, *current_);
+      ++current_;
+      generate();
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool {
+      return iterator.done_;
+    }
+
+  private:
+    template <class Reference>
+    constexpr auto store(usize index, Reference &&reference) -> void {
+      if constexpr (borrowed_) {
+        slots_[index].emplace(reference);
+      } else {
+        slots_[index].emplace(std::forward<Reference>(reference));
+      }
+    }
+
+    [[nodiscard]] constexpr auto item(usize index) const -> const Item & {
+      if constexpr (borrowed_) {
+        return slots_[index]->get();
+      } else {
+        return *slots_[index];
+      }
+    }
+
+    template <usize... Index>
+    [[nodiscard]] constexpr auto window([[maybe_unused]] std::index_sequence<Index...> indices) const
+        -> Window {
+      return {std::cref(item(Index))...};
+    }
+
+    constexpr auto generate() -> void {
+      auto refs = window(std::make_index_sequence<N>{});
+      mapped_.reset();
+      mapped_.emplace(adaptiveInvoke(parent_->function_.get(), refs));
+    }
+
+    constexpr auto initialize() -> void {
+      for (usize index{}; index < N; ++index) {
+        if (current_ == std::ranges::end(parent_->view_)) {
+          done_ = true;
+          return;
+        }
+        store(index, *current_);
+        ++current_;
+      }
+      generate();
+    }
+
+    MapWindows *parent_{};
+    std::ranges::iterator_t<View> current_;
+    Array<Option<Slot>, N> slots_{};
+    mutable Option<Mapped> mapped_{};
+    bool done_{};
+  };
+
+public:
+  MapWindows()
+    requires std::default_initializable<View> and std::default_initializable<Function>
+  = default;
+
+  constexpr MapWindows(View view, Function function)
+      : view_(std::move(view))
+      , function_(std::move(function)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    return Iterator{this, std::ranges::begin(view_)};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
+    return {};
+  }
+
+  [[nodiscard]] constexpr auto size() const
+    requires std::ranges::sized_range<const View>
+  {
+    const auto count = static_cast<usize>(std::ranges::size(view_));
+    return count < N ? 0U : count - N + 1U;
+  }
+
+private:
+  View view_{};
+  [[no_unique_address]] MovableBox<Function> function_{};
+};
+
+/// Fixed-size non-overlapping chunk source. Borrowed random-access sources preserve indexed/double-ended
+/// traversal; streaming or owning sources use a single-pass cache so move-only packet elements remain safe.
+template <std::ranges::view View, usize N>
+class ArrayChunks final {
+  static_assert(N > 0);
+  using SourceReference = std::ranges::range_reference_t<View>;
+  using Item = std::remove_cvref_t<SourceReference>;
+  static constexpr bool borrowed_ =
+      std::ranges::forward_range<View> and std::is_lvalue_reference_v<SourceReference>;
+  static constexpr bool indexed_ =
+      borrowed_ and std::ranges::random_access_range<View> and std::ranges::sized_range<View>;
+  using Slot = std::conditional_t<borrowed_, Ref<std::remove_reference_t<SourceReference>>, Item>;
+
+public:
+  using Chunk = Array<Slot, N>;
+
+private:
+  class Iterator final {
+  public:
+    using iterator_concept =
+        std::conditional_t<indexed_, std::random_access_iterator_tag, std::input_iterator_tag>;
+    using value_type = Chunk;
+    using difference_type = std::ranges::range_difference_t<View>;
+
+    Iterator()
+      requires(indexed_ or std::default_initializable<std::ranges::iterator_t<View>>)
+    = default;
+
+    constexpr Iterator(ArrayChunks *parent, difference_type position)
+      requires indexed_
+        : parent_(parent)
+        , position_(position) {
+    }
+
+    constexpr Iterator(ArrayChunks *parent, std::ranges::iterator_t<View> current)
+      requires(not indexed_)
+        : parent_(parent)
+        , current_(std::move(current)) {
+      load();
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> decltype(auto) {
+      if constexpr (indexed_) {
+        return indexedChunk(std::make_index_sequence<N>{});
+      } else {
+        return static_cast<Chunk &>(*chunk_);
+      }
+    }
+
+    [[nodiscard]] constexpr auto operator[](difference_type offset) const -> Chunk
+      requires indexed_
+    {
+      return *(*this + offset);
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      if constexpr (indexed_) {
+        ++position_;
+      } else {
+        load();
+      }
+      return *this;
+    }
+
+    constexpr auto operator++(int) {
+      if constexpr (indexed_) {
+        auto previous = *this;
+        ++*this;
+        return previous;
+      } else {
+        ++*this;
+      }
+    }
+
+    constexpr auto operator--() -> Iterator &
+      requires indexed_
+    {
+      --position_;
+      return *this;
+    }
+
+    constexpr auto operator--(int) -> Iterator
+      requires indexed_
+    {
+      auto previous = *this;
+      --*this;
+      return previous;
+    }
+
+    constexpr auto operator+=(difference_type offset) -> Iterator &
+      requires indexed_
+    {
+      position_ += offset;
+      return *this;
+    }
+
+    constexpr auto operator-=(difference_type offset) -> Iterator &
+      requires indexed_
+    {
+      position_ -= offset;
+      return *this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator+(Iterator iterator, difference_type offset) -> Iterator
+      requires indexed_
+    {
+      iterator += offset;
+      return iterator;
+    }
+
+    [[nodiscard]] friend constexpr auto operator+(difference_type offset, Iterator iterator) -> Iterator
+      requires indexed_
+    {
+      return iterator + offset;
+    }
+
+    [[nodiscard]] friend constexpr auto operator-(Iterator iterator, difference_type offset) -> Iterator
+      requires indexed_
+    {
+      iterator -= offset;
+      return iterator;
+    }
+
+    [[nodiscard]] friend constexpr auto operator-(const Iterator &left, const Iterator &right)
+        -> difference_type
+      requires indexed_
+    {
+      return left.position_ - right.position_;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &left, const Iterator &right) -> bool
+      requires indexed_
+    {
+      return left.position_ == right.position_ and left.parent_ == right.parent_;
+    }
+
+    [[nodiscard]] friend constexpr auto operator<=>(const Iterator &left, const Iterator &right)
+      requires indexed_
+    {
+      return left.position_ <=> right.position_;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool
+      requires(not indexed_)
+    {
+      return not iterator.chunk_.has_value();
+    }
+
+  private:
+    template <usize... Index>
+    [[nodiscard]] constexpr auto indexedChunk([[maybe_unused]] std::index_sequence<Index...> indices) const
+        -> Chunk
+      requires indexed_
+    {
+      auto first = std::ranges::begin(parent_->view_) + (position_ * static_cast<difference_type>(N));
+      return {std::ref(first[static_cast<difference_type>(Index)])...};
+    }
+
+    template <class Reference>
+    constexpr auto store(usize index, Reference &&reference) -> void
+      requires(not indexed_)
+    {
+      if constexpr (borrowed_) {
+        slots_[index].emplace(reference);
+      } else {
+        slots_[index].emplace(std::forward<Reference>(reference));
+      }
+    }
+
+    template <usize... Index>
+    [[nodiscard]] constexpr auto makeChunk([[maybe_unused]] std::index_sequence<Index...> indices) -> Chunk
+      requires(not indexed_)
+    {
+      return {std::move(*slots_[Index])...};
+    }
+
+    constexpr auto load() -> void
+      requires(not indexed_)
+    {
+      chunk_.reset();
+      for (auto &slot : slots_) {
+        slot.reset();
+      }
+      for (usize index{}; index < N; ++index) {
+        if (*current_ == std::ranges::end(parent_->view_)) {
+          return;
+        }
+        store(index, **current_);
+        ++*current_;
+      }
+      chunk_.emplace(makeChunk(std::make_index_sequence<N>{}));
+    }
+
+    ArrayChunks *parent_{};
+    difference_type position_{};
+    std::conditional_t<indexed_, std::monostate, Option<std::ranges::iterator_t<View>>> current_{};
+    Array<Option<Slot>, N> slots_{};
+    mutable Option<Chunk> chunk_{};
+  };
+
+public:
+  ArrayChunks()
+    requires std::default_initializable<View>
+  = default;
+
+  constexpr explicit ArrayChunks(View view)
+      : view_(std::move(view)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() {
+    if constexpr (indexed_) {
+      return Iterator{this, 0};
+    } else {
+      return Iterator{this, std::ranges::begin(view_)};
+    }
+  }
+
+  [[nodiscard]] constexpr auto end() {
+    if constexpr (indexed_) {
+      return Iterator{this, static_cast<std::ranges::range_difference_t<View>>(size())};
+    } else {
+      return std::default_sentinel;
+    }
+  }
+
+  [[nodiscard]] constexpr auto size() const
+    requires std::ranges::sized_range<const View>
+  {
+    return static_cast<usize>(std::ranges::size(view_)) / N;
+  }
+
+private:
+  View view_{};
 };
 
 } // namespace Miracle
@@ -1418,11 +1972,6 @@ struct SizeHint final {
   }
 };
 
-/// Primary lazy iteration façade. `Projection` is normally private implementation state carried by `map()`;
-/// users construct Iter pipelines through `iter(...)`.
-template <std::ranges::view View, class Projection = std::identity>
-class Iter;
-
 /// Standard-execution-policy terminal façade produced by `Iter::parallel(...)`.
 template <class Iteration, class Policy>
 class ParallelIter;
@@ -1431,19 +1980,19 @@ class ParallelIter;
 
 namespace Miracle {
 
-// Maps a terminal's reference category to the correct Option payload: lvalues remain references through
-// `Ref`, while xvalues/prvalues become owned values.
+/// Maps a terminal's reference category to the correct Option payload: lvalues remain direct C++26 optional
+/// references, while xvalues/prvalues become owned values.
 template <class Result>
 struct TerminalOption;
 
 template <class T>
 struct TerminalOption<T &> {
-  using Type = Option<Ref<T>>;
+  using Type = Option<T &>;
 };
 
 template <class T>
 struct TerminalOption<const T &> {
-  using Type = Option<Ref<const T>>;
+  using Type = Option<const T &>;
 };
 
 template <class T>
@@ -1463,7 +2012,7 @@ using TerminalOptionT = TerminalOption<Result>::Type;
 template <class Result>
 [[nodiscard]] constexpr auto makeTerminalValue(Result &&result) -> TerminalOptionT<Result &&> {
   if constexpr (std::is_lvalue_reference_v<Result &&>) {
-    return std::ref(result);
+    return result;
   } else {
     return std::remove_cvref_t<Result>{std::forward<Result>(result)};
   }
@@ -1486,11 +2035,354 @@ concept ReservableContainer = requires(Container container, usize count) { conta
 
 export namespace Miracle {
 
+/// Stateful one-element lookahead adaptor. Peekable owns one logical cursor over its source and keeps at most
+/// one front item cached; unlike ordinary Iter it intentionally exposes a narrow cursor API.
+template <std::ranges::view Iteration>
+class Peekable final {
+  using SourceReference = std::ranges::range_reference_t<Iteration>;
+  using Item = std::remove_cvref_t<SourceReference>;
+  static constexpr bool borrowed_ =
+      std::ranges::forward_range<Iteration> and std::is_lvalue_reference_v<SourceReference>;
+  static constexpr bool mutableBorrow_ =
+      not borrowed_ or not std::is_const_v<std::remove_reference_t<SourceReference>>;
+  using Borrowed = std::remove_reference_t<SourceReference>;
+  using Cache = std::conditional_t<borrowed_, Option<Borrowed &>, Option<Item>>;
+  using NextResult = std::conditional_t<borrowed_, Option<Borrowed &>, Option<Item>>;
+  static constexpr bool doubleEnded_ =
+      std::ranges::bidirectional_range<Iteration> and std::ranges::common_range<Iteration>;
+
+  class Cursor final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Item;
+    using difference_type = std::ranges::range_difference_t<Iteration>;
+
+    Cursor() = default;
+    constexpr explicit Cursor(Peekable *parent)
+        : parent_(parent) {
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> decltype(auto) {
+      return parent_->frontReference();
+    }
+
+    constexpr auto operator++() -> Cursor & {
+      parent_->discardFront();
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Cursor &iterator,
+        [[maybe_unused]] std::default_sentinel_t sentinel) -> bool {
+      return iterator.parent_ == nullptr or not iterator.parent_->hasRemaining();
+    }
+
+  private:
+    Peekable *parent_{};
+  };
+
+public:
+  using value_type = Item;
+
+  Peekable()
+    requires std::default_initializable<Iteration>
+  = default;
+
+  constexpr explicit Peekable(Iteration iteration)
+      : iteration_(std::move(iteration)) {
+    if constexpr (std::ranges::sized_range<Iteration>) {
+      exactRemaining_ = static_cast<usize>(std::ranges::size(iteration_));
+    }
+  }
+
+  [[nodiscard]] constexpr auto next() -> NextResult {
+    if (not fillFront()) {
+      return {};
+    }
+    auto result = takeCached();
+    consumeOne();
+    return result;
+  }
+
+  [[nodiscard]] constexpr auto nextBack() -> NextResult
+    requires doubleEnded_
+  {
+    ensureCursor();
+    if (cache_.has_value()) {
+      if (cacheConsumesSource_) {
+        auto last = *back_;
+        if (last == *front_) {
+          return {};
+        }
+        --last;
+        if (last == *front_) {
+          return next();
+        }
+        *back_ = last;
+        auto result = makeTerminalValue(**back_);
+        consumeOne();
+        return result;
+      }
+      if (*front_ == *back_) {
+        auto result = takeCached();
+        consumeOne();
+        return result;
+      }
+    }
+    if (*front_ == *back_) {
+      return {};
+    }
+    --*back_;
+    auto result = makeTerminalValue(**back_);
+    consumeOne();
+    return result;
+  }
+
+  [[nodiscard]] constexpr auto peek() -> Option<const Item &> {
+    if (not fillFront()) {
+      return {};
+    }
+    return std::as_const(*this).cachedItem();
+  }
+
+  [[nodiscard]] constexpr auto peekMut() -> Option<Item &>
+    requires mutableBorrow_
+  {
+    if (not fillFront()) {
+      return {};
+    }
+    return cachedItem();
+  }
+
+  template <class Predicate>
+  [[nodiscard]] constexpr auto nextIf(Predicate predicate) -> NextResult {
+    auto value = peek();
+    if (value.has_value() and static_cast<bool>(adaptiveInvoke(predicate, *value))) {
+      return next();
+    }
+    return {};
+  }
+
+  template <class T>
+  [[nodiscard]] constexpr auto nextIfEq(const T &value) -> NextResult
+    requires requires(const Item &item) {
+      { item == value } -> std::convertible_to<bool>;
+    }
+  {
+    return nextIf([&](const Item &item) -> bool { return item == value; });
+  }
+
+  template <class Function>
+  [[nodiscard]] constexpr auto nextIfMap(Function function) {
+    auto candidate = next();
+    using CandidateReference = std::conditional_t<borrowed_, decltype(*candidate), Item &&>;
+    using Outcome = std::remove_cvref_t<decltype(adaptiveInvoke(
+        std::declval<Function &>(), std::declval<CandidateReference>()))>;
+    static_assert(ExpectedLike<Outcome>, "Peekable::nextIfMap requires an expected-like return value");
+    using Mapped = std::remove_cvref_t<typename Outcome::value_type>;
+
+    if (not candidate.has_value()) {
+      return Option<Mapped>{};
+    }
+
+    Outcome outcome = [&] -> Outcome {
+      if constexpr (borrowed_) {
+        return adaptiveInvoke(function, *candidate);
+      } else {
+        return adaptiveInvoke(function, std::move(*candidate));
+      }
+    }();
+    if (outcome.has_value()) {
+      return Option<Mapped>{Mapped{std::move(*outcome)}};
+    }
+
+    using Error = Outcome::error_type;
+    if constexpr (borrowed_) {
+      if constexpr (std::same_as<std::remove_cvref_t<Error>, Ref<Borrowed>>) {
+        cache_.emplace(outcome.error().get());
+      } else {
+        static_assert(std::same_as<std::remove_cvref_t<Error>, Ref<Borrowed>>,
+            "nextIfMap on a borrowed Peekable must reject with Ref<Item> so the put-back item cannot dangle");
+      }
+    } else {
+      static_assert(std::constructible_from<Item, Error &&>,
+          "nextIfMap rejection must carry an item that can be put back into the Peekable cache");
+      cache_.emplace(std::move(outcome.error()));
+    }
+    cacheConsumesSource_ = false;
+    restoreOne();
+    return Option<Mapped>{};
+  }
+
+  template <class Function>
+  [[nodiscard]] constexpr auto nextIfMapMut(Function function)
+    requires mutableBorrow_
+  {
+    using Result =
+        std::remove_cvref_t<decltype(adaptiveInvoke(std::declval<Function &>(), std::declval<Item &>()))>;
+    static_assert(OptionalLike<Result>, "Peekable::nextIfMapMut requires an Optional-like return value");
+    if (not fillFront()) {
+      return Result{};
+    }
+    Result result = adaptiveInvoke(function, cachedItem());
+    if (result.has_value()) {
+      discardFront();
+    }
+    return result;
+  }
+
+  [[nodiscard]] constexpr auto size() -> usize
+    requires std::ranges::sized_range<Iteration>
+  {
+    return exactRemaining_.value_or(0U);
+  }
+
+  [[nodiscard]] constexpr auto sizeHint() -> SizeHint {
+    if (exactRemaining_.has_value()) {
+      return {.lower = *exactRemaining_, .upper = *exactRemaining_};
+    }
+    return {.lower = cache_.has_value() ? 1U : 0U, .upper = None};
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Cursor {
+    return Cursor{this};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> std::default_sentinel_t {
+    return {};
+  }
+
+private:
+  constexpr auto ensureCursor() -> void {
+    if (initialized_) {
+      return;
+    }
+    front_.emplace(std::ranges::begin(iteration_));
+    end_.emplace(std::ranges::end(iteration_));
+    if constexpr (doubleEnded_) {
+      back_.emplace(std::ranges::end(iteration_));
+    }
+    initialized_ = true;
+  }
+
+  [[nodiscard]] constexpr auto sourceEmpty() -> bool {
+    ensureCursor();
+    if constexpr (doubleEnded_) {
+      return *front_ == *back_;
+    } else {
+      return *front_ == *end_;
+    }
+  }
+
+  [[nodiscard]] constexpr auto fillFront() -> bool {
+    if (cache_.has_value()) {
+      return true;
+    }
+    if (sourceEmpty()) {
+      return false;
+    }
+    auto &&value = **front_;
+    if constexpr (borrowed_) {
+      cache_.emplace(value);
+    } else {
+      cache_.emplace(std::forward<decltype(value)>(value));
+    }
+    cacheConsumesSource_ = true;
+    return true;
+  }
+
+  [[nodiscard]] constexpr auto cachedItem() -> Item &
+    requires mutableBorrow_
+  {
+    if constexpr (borrowed_) {
+      return const_cast<Item &>(*cache_);
+    } else {
+      return *cache_;
+    }
+  }
+
+  [[nodiscard]] constexpr auto cachedItem() const -> const Item & {
+    return *cache_;
+  }
+
+  [[nodiscard]] constexpr auto frontReference() -> decltype(auto) {
+    if (not fillFront()) {
+      std::terminate();
+    }
+    if constexpr (borrowed_) {
+      return static_cast<Borrowed &>(*cache_);
+    } else {
+      return static_cast<Item &>(*cache_);
+    }
+  }
+
+  [[nodiscard]] constexpr auto takeCached() -> NextResult {
+    const bool advanceSource = cacheConsumesSource_;
+    if constexpr (borrowed_) {
+      NextResult result{*cache_};
+      cache_.reset();
+      cacheConsumesSource_ = false;
+      if (advanceSource) {
+        ++*front_;
+      }
+      return result;
+    } else {
+      NextResult result{std::move(*cache_)};
+      cache_.reset();
+      cacheConsumesSource_ = false;
+      if (advanceSource) {
+        ++*front_;
+      }
+      return result;
+    }
+  }
+
+  constexpr auto discardFront() -> void {
+    if (fillFront()) {
+      const bool advanceSource = cacheConsumesSource_;
+      cache_.reset();
+      cacheConsumesSource_ = false;
+      if (advanceSource) {
+        ++*front_;
+      }
+      consumeOne();
+    }
+  }
+
+  [[nodiscard]] constexpr auto hasRemaining() -> bool {
+    return cache_.has_value() or not sourceEmpty();
+  }
+
+  constexpr auto consumeOne() -> void {
+    if (exactRemaining_.has_value()) {
+      --*exactRemaining_;
+    }
+  }
+
+  constexpr auto restoreOne() -> void {
+    if (exactRemaining_.has_value()) {
+      ++*exactRemaining_;
+    }
+  }
+
+  Iteration iteration_{};
+  Option<std::ranges::iterator_t<Iteration>> front_{};
+  Option<std::ranges::sentinel_t<Iteration>> end_{};
+  std::conditional_t<doubleEnded_, Option<std::ranges::iterator_t<Iteration>>, std::monostate> back_{};
+  Cache cache_{};
+  Option<usize> exactRemaining_;
+  bool cacheConsumesSource_{};
+  bool initialized_{};
+};
+
 /// Lazy range façade that keeps at most one pending map projection.
 /// Standard views own traversal semantics; Miracle adds adaptive invocation and fuses projection-aware
 /// terminals where doing so avoids redundant work.
 template <std::ranges::view View, class Projection>
-class Iter final : public std::ranges::view_interface<Iter<View, Projection>> {
+class Iter final {
 public:
   /// Reference yielded by the stored standard view before Miracle's pending projection.
   using BaseReference = std::ranges::range_reference_t<View>;
@@ -1730,24 +2622,12 @@ public:
     return rebindProjection(std::forward<Self>(self), std::move(view));
   }
 
-  /// Compatibility adaptor: standard forward Iter pipelines are already safely peekable, so this returns the
-  /// pipeline unchanged instead of allocating or adding cache state.
+  /// Converts the remaining sequence into a dedicated one-item-lookahead cursor adaptor. Pending projection
+  /// state is lowered first so Peekable observes the exact logical items of this pipeline.
   template <class Self>
-    requires std::ranges::forward_range<View>
   [[nodiscard]] constexpr auto peekable(this Self &&self) {
-    return std::forward<Self>(self);
-  }
-
-  /// Observes the next item without advancing a forward pipeline. References remain references.
-  [[nodiscard]] constexpr auto peek() &
-    requires std::ranges::forward_range<View>
-  {
-    auto first = begin();
-    if (first == end()) {
-      using Result = decltype(*first);
-      return emptyTerminalValue<Result>();
-    }
-    return makeTerminalValue(*first);
+    auto base = lower(std::forward<Self>(self));
+    return Peekable<decltype(base)>{std::move(base)};
   }
 
   /// Compatibility adaptor. Standard range exhaustion is already stable, so no wrapper is needed.
@@ -1780,7 +2660,7 @@ public:
     requires std::ranges::forward_range<View>
   [[nodiscard]] constexpr auto cycle(this Self &&self) {
     auto base = lower(std::forward<Self>(self));
-    using Result = CycleView<decltype(base)>;
+    using Result = Cycle<decltype(base)>;
     return Iter<Result>{Result{std::move(base)}};
   }
 
@@ -1800,8 +2680,8 @@ public:
   template <class Self, class State, class Function>
   [[nodiscard]] constexpr auto scan(this Self &&self, State state, Function function) {
     auto base = lower(std::forward<Self>(self));
-    using Scan = ScanView<decltype(base), std::decay_t<State>, std::decay_t<Function>>;
-    auto view = Scan{std::move(base), std::move(state), std::move(function)} | std::views::as_rvalue;
+    using ScanType = Scan<decltype(base), std::decay_t<State>, std::decay_t<Function>>;
+    auto view = ScanType{std::move(base), std::move(state), std::move(function)} | std::views::as_rvalue;
     return Iter<decltype(view)>{std::move(view)};
   }
 
@@ -1842,18 +2722,43 @@ public:
     return Iter<decltype(view)>{std::move(view)};
   }
 
-  /// Inserts `separator` between adjacent values while preserving random access when the source supports it.
+  /// Inserts `separator` between adjacent values through one semantic adaptor type. Indexed bases retain
+  /// indexed traversal while streaming bases remain single-pass/forward as truthful.
   template <class Self>
   [[nodiscard]] constexpr auto intersperse(this Self &&self, Value separator) {
     auto base = lower(std::forward<Self>(self));
-    if constexpr (std::ranges::random_access_range<decltype(base)> and
-                  std::ranges::sized_range<decltype(base)>) {
-      using Result = RandomAccessIntersperseView<decltype(base)>;
-      return Iter<Result>{Result{std::move(base), std::move(separator)}};
-    } else {
-      using Result = IntersperseView<decltype(base)>;
-      return Iter<Result>{Result{std::move(base), std::move(separator)}};
-    }
+    using Result = Intersperse<decltype(base)>;
+    return Iter<Result>{Result{std::move(base), std::move(separator)}};
+  }
+
+  /// Lazily generates a separator only when traversal actually crosses an adjacent-element boundary.
+  template <class Self, class Function>
+  [[nodiscard]] constexpr auto intersperseWith(this Self &&self, Function function) {
+    auto base = lower(std::forward<Self>(self));
+    using Result = IntersperseWith<decltype(base), std::decay_t<Function>>;
+    return Iter<Result>{Result{std::move(base), std::move(function)}};
+  }
+
+  /// Maps every overlapping compile-time window. The adaptive callable may accept the whole fixed reference
+  /// array or N decomposed element references.
+  template <usize N, class Self, class Function>
+    requires(N > 0)
+  [[nodiscard]] constexpr auto mapWindows(this Self &&self, Function function) {
+    auto base = lower(std::forward<Self>(self));
+    using Result = MapWindows<decltype(base), std::decay_t<Function>, N>;
+    auto view = Result{std::move(base), std::move(function)} | std::views::as_rvalue;
+    return Iter<decltype(view)>{std::move(view)};
+  }
+
+  /// Consumes non-overlapping fixed-size packets and omits a final short remainder. Borrowed sources use
+  /// reference-wrapper packet elements; owned source move values into the packet.
+  template <usize N, class Self>
+    requires(N > 0)
+  [[nodiscard]] constexpr auto arrayChunks(this Self &&self) {
+    auto base = lower(std::forward<Self>(self));
+    using Result = ArrayChunks<decltype(base), N>;
+    auto view = Result{std::move(base)} | std::views::as_rvalue;
+    return Iter<decltype(view)>{std::move(view)};
   }
 
   /// Drops the first `start` items and yields the remainder.
@@ -2294,6 +3199,13 @@ public:
     return std::ranges::equal(*this, std::forward<Other>(other));
   }
 
+  /// Sequence equality with a caller-supplied heterogeneous predicate. Traversal short-circuits on the first
+  /// mismatch and requires both ranges to end together.
+  template <std::ranges::input_range Other, class Predicate>
+  [[nodiscard]] constexpr auto eqBy(Other &&other, Predicate predicate) -> bool {
+    return std::ranges::equal(*this, std::forward<Other>(other), std::move(predicate));
+  }
+
   /// Returns the logical negation of sequence equality.
   template <std::ranges::input_range Other>
   [[nodiscard]] constexpr auto ne(Other &&other) -> bool {
@@ -2472,13 +3384,7 @@ private:
   [[nodiscard]] constexpr auto extremum(Compare compare, bool maximum) {
     using Result = TerminalOptionT<Reference>;
     Result best{};
-    auto valueOf = [](auto &option) -> decltype(auto) {
-      if constexpr (requires { option->get(); }) {
-        return option->get();
-      } else {
-        return *option;
-      }
-    };
+    auto valueOf = [](auto &option) -> decltype(auto) { return *option; };
     visitProjected([&](auto &&item) -> bool {
       if (not best.has_value()) {
         best = makeTerminalValue(std::forward<decltype(item)>(item));
@@ -2708,7 +3614,7 @@ template <class T>
 template <class Function>
 [[nodiscard]] constexpr auto onceWith(Function function) {
   using Stored = std::decay_t<Function>;
-  auto view = OnceWithView<Stored>{std::move(function)} | std::views::as_rvalue;
+  auto view = OnceWith<Stored>{std::move(function)} | std::views::as_rvalue;
   return Iter<decltype(view)>{std::move(view)};
 }
 
@@ -2732,7 +3638,7 @@ template <class T>
 template <class Function>
 [[nodiscard]] constexpr auto repeatWith(Function function) {
   using Stored = std::decay_t<Function>;
-  auto view = RepeatWithView<Stored>{std::move(function)} | std::views::as_rvalue;
+  auto view = RepeatWith<Stored>{std::move(function)} | std::views::as_rvalue;
   return Iter<decltype(view)>{std::move(view)};
 }
 
@@ -2740,18 +3646,44 @@ template <class Function>
 template <class Function>
 [[nodiscard]] constexpr auto fromFn(Function function) {
   using Stored = std::decay_t<Function>;
-  auto view = FromFnView<Stored>{std::move(function)} | std::views::as_rvalue;
+  auto view = FromFn<Stored>{std::move(function)} | std::views::as_rvalue;
   return Iter<decltype(view)>{std::move(view)};
 }
 
 /// Creates a single-pass sequence beginning with `seed` and repeatedly invoking `function(const T&) ->
 /// Option<T>`. Each successor is computed before its predecessor becomes consumable.
 template <class T, class Function>
+  requires(not OptionalLike<std::remove_cvref_t<T>>)
 [[nodiscard]] constexpr auto successors(T seed, Function function) {
   using Value = std::decay_t<T>;
   using Stored = std::decay_t<Function>;
-  auto view = SuccessorsView<Value, Stored>{std::move(seed), std::move(function)} | std::views::as_rvalue;
+  auto view = Successors<Value, Stored>{std::move(seed), std::move(function)} | std::views::as_rvalue;
   return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Rust-parity successor source whose optional first value may make the sequence initially exhausted.
+template <OptionalLike Maybe, class Function>
+[[nodiscard]] constexpr auto successors(Maybe first, Function function) {
+  using Value = std::remove_cvref_t<typename std::remove_cvref_t<Maybe>::value_type>;
+  using Stored = std::decay_t<Function>;
+  Option<Value> seed{};
+  if (first.has_value()) {
+    seed.emplace(std::move(*first));
+  }
+  auto view = Successors<Value, Stored>{std::move(seed), std::move(function)} | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Free-function spelling equivalent to `iter(first).chain(second)`.
+template <std::ranges::viewable_range First, std::ranges::viewable_range Second>
+[[nodiscard]] constexpr auto chain(First &&first, Second &&second) {
+  return iter(std::forward<First>(first)).chain(std::forward<Second>(second));
+}
+
+/// Free-function spelling equivalent to `iter(first).zip(second)`.
+template <std::ranges::viewable_range First, std::ranges::viewable_range Second>
+[[nodiscard]] constexpr auto zip(First &&first, Second &&second) {
+  return iter(std::forward<First>(first)).zip(std::forward<Second>(second));
 }
 
 } // namespace Miracle

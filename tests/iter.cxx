@@ -73,6 +73,12 @@ struct Ranked final {
   i32 identity{};
 };
 
+auto generatedIntegers() -> std::generator<i32> {
+  co_yield 2;
+  co_yield 4;
+  co_yield 6;
+}
+
 static_assert([] -> bool {
   i32 values[]{1, 2, 3, 4, 5, 6}; // NOLINT
   auto pipeline = iter(values);
@@ -115,8 +121,7 @@ static_assert([] -> bool {
              [](i32 value) -> Option<i32> {
                return value < 4 ? Option<i32>{value + 1} : None;
              }).sum() == 10 and
-         iter(values).cycle().take(5).toVec() == Vec<i32>{1, 2, 3, 1, 2} and
-         iter(values).nthBack(1)->get() == 2 and
+         iter(values).cycle().take(5).toVec() == Vec<i32>{1, 2, 3, 1, 2} and *iter(values).nthBack(1) == 2 and
          iter(values).compare(Array<i32, 3>{1, 2, 4}) == std::strong_ordering::less;
 }());
 
@@ -463,15 +468,256 @@ static_assert([] -> bool {
   Switch::check(moveOnlyMapWhile.size() == 2 and *moveOnlyMapWhile.back() == 2);
 
   auto peekable = iter(values).peekable();
-  Switch::check(peekable.peek()->get() == 1);
-  Switch::check(peekable.toVec() == values);
+  Switch::check(*peekable.peek() == 1);
+  Switch::check(iter(peekable).toVec() == values);
   Switch::check(iter(values).fuse().toVec() == values);
+}
+
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto semanticAdaptorSurface() -> void {
+  Vec<i32> values{1, 2, 3};
+  using View = std::views::all_t<Vec<i32> &>;
+  static_assert(std::ranges::view<Cycle<View>>);
+  static_assert(std::ranges::view<Intersperse<View>>);
+  static_assert(not std::is_base_of_v<std::ranges::view_interface<Iter<View>>, Iter<View>>);
+
+  auto sourceFunction = [next = i32{}]() mutable -> Option<i32> {
+    return next < 2 ? Option<i32>{next++} : None;
+  };
+  static_assert(std::ranges::view<FromFn<decltype(sourceFunction)>>);
+  static_assert(std::ranges::view<RepeatWith<decltype([]() -> i32 { return 1; })>>);
+
+  Switch::check(chain(values, Array<i32, 2>{4, 5}).toVec() == Vec<i32>{1, 2, 3, 4, 5});
+  Switch::check(zip(values, Array<i32, 3>{4, 5, 6})
+                    .map([](i32 left, i32 right) -> i32 { return left + right; })
+                    .toVec() == Vec<i32>{5, 7, 9});
+
+  Option<i32> noSeed{};
+  Switch::check(successors(noSeed, [](i32 value) -> Option<i32> { return value + 1; }).toVec().empty());
+  Switch::check(successors(Option<i32>{2}, [](i32 value) -> Option<i32> {
+    return value < 4 ? Option<i32>{value + 1} : None;
+  }).toVec() == Vec<i32>{2, 3, 4});
+
+  Switch::check(
+      iter(generatedIntegers()).map([](i32 value) -> i32 { return value / 2; }).toVec() == Vec<i32>{1, 2, 3});
+}
+
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto peekableStateMachine() -> void {
+  Vec<i32> borrowed{1, 2, 3, 4};
+  auto borrowedPeek = iter(borrowed).peekable();
+  static_assert(std::same_as<decltype(borrowedPeek.peek()), Option<const i32 &>>);
+  static_assert(std::same_as<decltype(borrowedPeek.peekMut()), Option<i32 &>>);
+  static_assert(std::same_as<decltype(borrowedPeek.next()), Option<i32 &>>);
+  static_assert(std::ranges::input_range<decltype(borrowedPeek)>);
+  static_assert(not std::ranges::forward_range<decltype(borrowedPeek)>);
+
+  Switch::check(borrowedPeek.size() == 4);
+  auto firstPeek = borrowedPeek.peek();
+  Switch::check(firstPeek.has_value() and *firstPeek == 1);
+  Switch::check(borrowedPeek.size() == 4);
+  *borrowedPeek.peekMut() = 10;
+  Switch::check(borrowed.front() == 10);
+  Switch::check(*borrowedPeek.nextBack() == 4);
+  Switch::check(borrowedPeek.size() == 3);
+  Switch::check(*borrowedPeek.nextIfEq(i64{10}) == 10);
+  Switch::check(borrowedPeek.size() == 2);
+  const SizeHint borrowedHint = borrowedPeek.sizeHint();
+  Switch::check(borrowedHint.exact() and borrowedHint.lower == 2 and borrowedHint.upper == Option<usize>{2});
+  Switch::check(not borrowedPeek.nextIf([](i32 value) -> bool { return value == 99; }).has_value());
+  Switch::check(*borrowedPeek.peek() == 2);
+
+  const auto borrowedRejected = borrowedPeek.nextIfMap(
+      [](i32 &value) -> std::expected<i32, Ref<i32>> { return std::unexpected{std::ref(value)}; });
+  Switch::check(not borrowedRejected.has_value());
+  Switch::check(*borrowedPeek.peek() == 2);
+
+  i32 nextValue = 1;
+  i32 calls{};
+  auto inputPeek = fromFn([&]() -> Option<i32> {
+    ++calls;
+    return nextValue <= 4 ? Option<i32>{nextValue++} : None;
+  }).peekable();
+  static_assert(std::same_as<decltype(inputPeek.next()), Option<i32>>);
+  static_assert(std::ranges::input_range<decltype(inputPeek)>);
+  static_assert(not std::ranges::forward_range<decltype(inputPeek)>);
+
+  Switch::check(calls == 0);
+  Switch::check(*inputPeek.peek() == 1);
+  Switch::check(*inputPeek.peek() == 1);
+  Switch::check(calls == 1);
+  Switch::check(*inputPeek.nextIfEq(1) == 1);
+  Switch::check(calls == 2);
+
+  const auto mapped = inputPeek.nextIfMap([](i32 value) -> std::expected<i32, i32> {
+    return value == 2 ? std::expected<i32, i32>{value * 10} : std::unexpected{value};
+  });
+  Switch::check(mapped == Option<i32>{20});
+
+  const auto rejected =
+      inputPeek.nextIfMap([](i32 value) -> std::expected<i32, i32> { return std::unexpected{value + 100}; });
+  Switch::check(not rejected.has_value());
+  Switch::check(*inputPeek.peek() == 103);
+  Switch::check(*inputPeek.next() == 103);
+
+  auto mutablePeek = iter(Vec<i32>{5, 6}).peekable();
+  const auto notMapped = mutablePeek.nextIfMapMut([](i32 &value) -> Option<i32> {
+    value += 2;
+    return None;
+  });
+  Switch::check(not notMapped.has_value());
+  Switch::check(*mutablePeek.peek() == 7);
+  const auto didMap = mutablePeek.nextIfMapMut([](i32 &value) -> Option<i32> { return value * 3; });
+  Switch::check(didMap == Option<i32>{21});
+  Switch::check(*mutablePeek.next() == 6);
+  Switch::check(not mutablePeek.next().has_value());
+
+  auto emptyPeek = empty<i32>().peekable();
+  Switch::check(not emptyPeek.peek().has_value());
+  Switch::check(not emptyPeek.next().has_value());
+
+  auto twoEnded = iter(Array<i32, 2>{1, 2}).peekable();
+  Switch::check(*twoEnded.peek() == 1);
+  Switch::check(*twoEnded.nextBack() == 2);
+  Switch::check(*twoEnded.next() == 1);
+  Switch::check(not twoEnded.nextBack().has_value());
+
+  i32 moveOnlyValue = 9;
+  auto moveOnlyPeek = fromFn([&]() -> Option<UPtr<i32>> {
+    if (moveOnlyValue == 0) {
+      return None;
+    }
+    const i32 value = std::exchange(moveOnlyValue, 0);
+    return std::make_unique<i32>(value);
+  }).peekable();
+  Switch::check(**moveOnlyPeek.peek() == 9);
+  auto moved = moveOnlyPeek.next();
+  Switch::check(moved.has_value() and **moved == 9);
+  Switch::check(not moveOnlyPeek.next().has_value());
+}
+
+// NOLINTNEXTLINE
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto selectedNightlyParity() -> void {
+  Vec<i32> values{1, 2, 3, 4, 5};
+
+  Switch::check(
+      iter(values)
+          .mapWindows<3>([](i32 first, i32 second, i32 third) -> i32 { return first + second + third; })
+          .toVec() == Vec<i32>{6, 9, 12});
+  Switch::check(iter(values).mapWindows<1>([](i32 value) -> i32 { return value * 2; }).toVec() ==
+                Vec<i32>{2, 4, 6, 8, 10});
+  Switch::check(iter(Array<i32, 2>{1, 2}).mapWindows<3>([](auto &&) -> i32 { return 0; }).toVec().empty());
+  Switch::check(iter(Array<i32, 3>{1, 2, 3})
+                    .mapWindows<3>([](i32 a, i32 b, i32 c) -> i32 { return a + b + c; }) // NOLINT
+                    .toVec() == Vec<i32>{6});
+
+  i32 windowCalls{};
+  Switch::check(iter(values)
+                    .mapWindows<2>([&](i32 left, i32 right) -> i32 {
+                      ++windowCalls;
+                      return left + right;
+                    })
+                    .toVec() == Vec<i32>{3, 5, 7, 9});
+  Switch::check(windowCalls == 4);
+
+  const auto directWindows =
+      iter(values)
+          .mapWindows<2>([](const auto &window) -> i32 { return (window[0].get() * 10) + window[1].get(); })
+          .toVec();
+  Switch::check(directWindows == Vec<i32>{12, 23, 34, 45});
+
+  std::istringstream stream{"1 2 3 4"};
+  Switch::check(iter(std::views::istream<i32>(stream))
+                    .mapWindows<2>([](i32 left, i32 right) -> i32 { return left + right; })
+                    .toVec() == Vec<i32>{3, 5, 7});
+
+  Vec<UPtr<i32>> owners;
+  owners.emplace_back(std::make_unique<i32>(2));
+  owners.emplace_back(std::make_unique<i32>(3));
+  owners.emplace_back(std::make_unique<i32>(5));
+  Switch::check(
+      iter(std::move(owners))
+          .mapWindows<2>([](const UPtr<i32> &left, const UPtr<i32> &right) -> i32 { return *left + *right; })
+          .toVec() == Vec<i32>{5, 8});
+
+  auto borrowedChunks = iter(values).arrayChunks<2>();
+  static_assert(std::ranges::sized_range<decltype(borrowedChunks)>);
+  static_assert(std::ranges::random_access_range<decltype(borrowedChunks)>);
+  static_assert(std::ranges::common_range<decltype(borrowedChunks)>);
+  const auto chunks = borrowedChunks.toVec();
+  Switch::check(chunks.size() == 2);
+  Switch::check(chunks[0][0].get() == 1 and chunks[0][1].get() == 2);
+  Switch::check(chunks[1][0].get() == 3 and chunks[1][1].get() == 4);
+  Switch::check(iter(values).arrayChunks<1>().size() == values.size());
+  auto reverseChunks = iter(values).arrayChunks<2>();
+  auto reverseIterator = reverseChunks.end();
+  --reverseIterator;
+  Switch::check((*reverseIterator)[0].get() == 3 and (*reverseIterator)[1].get() == 4);
+
+  Vec<UPtr<i32>> packetOwners;
+  packetOwners.emplace_back(std::make_unique<i32>(7));
+  packetOwners.emplace_back(std::make_unique<i32>(8));
+  packetOwners.emplace_back(std::make_unique<i32>(9));
+  const auto ownerChunks = iter(std::move(packetOwners)).arrayChunks<2>().toVec();
+  Switch::check(ownerChunks.size() == 1);
+  Switch::check(*ownerChunks.front()[0] == 7 and *ownerChunks.front()[1] == 8);
+
+  i32 separatorCalls{};
+  Switch::check(iter(Array<i32, 3>{1, 2, 3})
+                    .intersperseWith([&]() -> i32 {
+                      ++separatorCalls; // NOLINT
+                      return -separatorCalls;
+                    })
+                    .toVec() == Vec<i32>{1, -1, 2, -2, 3});
+  Switch::check(separatorCalls == 2);
+  i32 emptySeparatorCalls{};
+  Switch::check(iter(Array<i32, 0>{})
+          .intersperseWith([&]() -> i32 {
+            ++emptySeparatorCalls;
+            return -1;
+          })
+          .toVec()
+          .empty());
+  Switch::check(iter(Array<i32, 1>{1})
+                    .intersperseWith([&]() -> i32 {
+                      ++emptySeparatorCalls;
+                      return -1;
+                    })
+                    .toVec() == Vec<i32>{1});
+  Switch::check(emptySeparatorCalls == 0);
+
+  i32 comparisons{};
+  Switch::check(iter(values).eqBy(Array<i64, 5>{1, 2, 3, 4, 5}, [&](i32 left, i64 right) -> bool {
+    ++comparisons;
+    return left == right;
+  }));
+  Switch::check(comparisons == 5);
+  comparisons = 0;
+  Switch::check(not iter(values).eqBy(Array<i32, 5>{1, 2, 9, 4, 5}, [&](i32 left, i32 right) -> bool {
+    ++comparisons;
+    return left == right;
+  }));
+  Switch::check(comparisons == 3);
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto terminals() -> void {
   Vec<i32> values{1, 2, 3, 4, 5, 6, 7, 8};
+  static_assert(std::same_as<decltype(iter(values).find([](i32) -> bool { return true; })), Option<i32 &>>);
+  static_assert(std::same_as<decltype(iter(values).nth(0)), Option<i32 &>>);
+  static_assert(std::same_as<decltype(iter(values).last()), Option<i32 &>>);
 
-  Switch::check(iter(values).find([](i32 value) -> bool { return value == 4; })->get() == 4);
+  struct GetterValue final {
+    i32 value{};
+    [[nodiscard]] auto get() const -> i32 {
+      return value + 1000;
+    }
+  };
+  Vec<GetterValue> getterValues{{3}, {1}, {2}};
+  const auto getterMin =
+      iter(getterValues).min([](const GetterValue &left, const GetterValue &right) -> bool {
+        return left.value < right.value;
+      });
+  Switch::check(getterMin.has_value() and getterMin->value == 1);
+
+  Switch::check(*iter(values).find([](i32 value) -> bool { return value == 4; }) == 4);
   Switch::check(iter(values).findMap([](i32 value) -> Option<i32> {
     return value == 5 ? Option<i32>{50} : None;
   }) == Option<i32>{50});
@@ -480,20 +726,20 @@ static_assert([] -> bool {
   Switch::check(iter(values).any([](i32 value) -> bool { return value == 8; }));
   Switch::check(iter(values).all([](i32 value) -> bool { return value > 0; }));
   Switch::check(iter(values).count() == 8);
-  Switch::check(iter(values).nth(3)->get() == 4);
-  Switch::check(iter(values).last()->get() == 8);
-  Switch::check(iter(values).min()->get() == 1);
-  Switch::check(iter(values).max()->get() == 8);
-  Switch::check(iter(values).minBy(std::ranges::greater{})->get() == 8);
-  Switch::check(iter(values).maxBy(std::ranges::greater{})->get() == 1);
-  Switch::check(iter(values).minByKey([](i32 value) -> i32 { return -value; })->get() == 8);
+  Switch::check(*iter(values).nth(3) == 4);
+  Switch::check(*iter(values).last() == 8);
+  Switch::check(*iter(values).min() == 1);
+  Switch::check(*iter(values).max() == 8);
+  Switch::check(*iter(values).minBy(std::ranges::greater{}) == 8);
+  Switch::check(*iter(values).maxBy(std::ranges::greater{}) == 1);
+  Switch::check(*iter(values).minByKey([](i32 value) -> i32 { return -value; }) == 8);
   i32 keyCalls{};
   Switch::check(iter(values)
                     .maxByKey([&keyCalls](i32 value) -> i32 {
                       ++keyCalls; // NOLINT
                       return -value;
                     })
-                    ->get() == 1);
+                    .value() == 1);
   Switch::check(keyCalls == static_cast<i32>(values.size()));
   Switch::check(iter(values).sum() == 36);
   Switch::check(iter(values).product() == 40'320);
@@ -547,10 +793,10 @@ static_assert([] -> bool {
                       visited.push_back(value);
                       return value < 7;
                     })
-                    ->get() == 6);
+                    .value() == 6);
   Switch::check(visited == Vec<i32>{8, 7, 6});
-  Switch::check(iter(values).nthBack(0)->get() == 8);
-  Switch::check(iter(values).nthBack(3)->get() == 5);
+  Switch::check(*iter(values).nthBack(0) == 8);
+  Switch::check(*iter(values).nthBack(3) == 5);
   Switch::check(not iter(values).nthBack(values.size()).has_value());
   Switch::check(
       iter(values).take(3).rFold(0, [](i32 total, i32 value) -> i32 { return (total * 10) + value; }) == 321);
@@ -567,13 +813,13 @@ static_assert([] -> bool {
   Vec<Ranked> ranked{{.key = 3, .identity = 1}, {.key = 1, .identity = 2}, {.key = 3, .identity = 3}};
   const auto byKey = [](const Ranked &item) -> i32 { return item.key; };
   const auto byOrder = [](const Ranked &left, const Ranked &right) -> bool { return left.key < right.key; };
-  Switch::check(iter(ranked).maxBy(byOrder)->get().identity == 3);
-  Switch::check(iter(ranked).maxByKey(byKey)->get().identity == 3);
-  Switch::check(iter(ranked).minBy(byOrder)->get().identity == 2);
-  Switch::check(iter(ranked).minByKey(byKey)->get().identity == 2);
+  Switch::check(iter(ranked).maxBy(byOrder)->identity == 3);
+  Switch::check(iter(ranked).maxByKey(byKey)->identity == 3);
+  Switch::check(iter(ranked).minBy(byOrder)->identity == 2);
+  Switch::check(iter(ranked).minByKey(byKey)->identity == 2);
 
   Vec<i32> equalMaxima{9, 2, 9};
-  Switch::check(std::addressof(iter(equalMaxima).max()->get()) == std::addressof(equalMaxima.back()));
+  Switch::check(std::addressof(*iter(equalMaxima).max()) == std::addressof(equalMaxima.back()));
 
   Switch::check(iter(values).compare(Vec<i32>{1, 2, 3, 4, 5, 6, 7, 9}) == std::strong_ordering::less);
   Switch::check(iter(values).compare(values) == std::strong_ordering::equal);
@@ -592,7 +838,7 @@ static_assert([] -> bool {
     -> void {
   Vec<i32> values{1, 2, 3};
   auto item = iter(values).nth(1);
-  item->get() = 99;
+  *item = 99;
   Switch::check(values[1] == 99);
 
   const SizeHint exact = iter(values).sizeHint();
@@ -611,7 +857,7 @@ static_assert([] -> bool {
   auto input = std::views::istream<i32>(stream);
   static_assert(std::ranges::input_range<decltype(iter(input))>);
   static_assert(not std::ranges::forward_range<decltype(iter(input))>);
-  static_assert(not PeekablePipeline<decltype(iter(input))>);
+  static_assert(PeekablePipeline<decltype(iter(input))>);
   Switch::check(iter(input).filter(isEven).toVec() == Vec<i32>{2, 4});
 
   std::istringstream projectedStream{"1 2 3 4"};
