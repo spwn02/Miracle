@@ -19,7 +19,7 @@ const Vec<i32> values{1, 2, 3, 4, 5, 6};
 const Vec<i32> result = iter(values).filter(even).map(square).toVec();
 ```
 
-The umbrella `import Miracle;` exports `Iter`, `ParallelIter`, `iter(...)`, `Infinity`/`infinity`, and `SizeHint`. Adaptive invocation, projection composition, fused traversal helpers, and custom helper views remain module-private.
+The umbrella `import Miracle;` exports `Iter`, `ParallelIter`, `iter(...)`, the source-constructor functions described below, `Infinity`/`infinity`, and `SizeHint`. Adaptive invocation, projection composition, fused traversal helpers, and custom helper views remain module-private.
 
 ## Construction and ownership
 
@@ -35,6 +35,30 @@ iter(2, 10, 2);    // [2, 10) with stride 2
 ```
 
 `Option` and `std::expected` participate as zero-or-one success ranges: present/success values yield one item and absent/error values yield none.
+
+### Source constructors
+
+Source constructors live directly in `Miracle` so they compose with the established `iter(...)` vocabulary without introducing a conflicting `iter` namespace:
+
+```cpp
+empty<i32>();
+
+once(42);
+onceWith([] { return loadValue(); });
+
+repeat(42);
+repeatN(42, 10);
+repeatWith([] { return makeValue(); });
+
+fromFn([]() -> Option<Value> { return nextValue(); });
+successors(seed, [](const Value &value) -> Option<Value> {
+  return nextValueAfter(value);
+});
+```
+
+`empty`, `once`, `repeat`, and `repeatN` use the corresponding standard views. `repeat` and `repeatN` therefore follow C++ `repeat_view` semantics: every position references one stored value rather than cloning a fresh value on dereference. `once` exposes its stored value consumably so move-only values materialize normally.
+
+`onceWith`, `repeatWith`, `fromFn`, and `successors` are lazy, allocation-free input ranges. Their callable runs exactly once per logical item and the result is cached across repeated dereference. Callables and generated values may be move-only. `fromFn` ends at the first empty Option-like result. `successors` computes the next value from a const reference to the current value before exposing the current value for consumption, so moving an item downstream cannot corrupt successor generation.
 
 ## Standard-first lowering
 
@@ -113,19 +137,34 @@ Custom range machinery is intentionally restricted to semantics the standard lib
 - `filterMap` evaluates an Option-like mapper once and yields present values;
 - `mapWhile` stops after the mapper first returns an empty value;
 - `scan` carries explicit mutable state and yields present outputs;
-- `intersperse` inserts a separator and preserves random-access/sized traversal when the source supports it.
+- `intersperse` inserts a separator and preserves random-access/sized traversal when the source supports it;
+- `cycle` restarts a forward range without buffering and produces an unbounded 
 
 The values produced by `filterMap`, `mapWhile`, and `scan` are owned by those adaptors and remain consumable, including when the produced value is move-only.
 
 `peekable()` and `fuse()` are zero-work façades where the underlying C++ range already provides the required behavior. `peekable()`/`peek()` require a forward range so observing the next item cannot destructively consume a single-pass source; input-only pipelines do not expose a fake peekable façade.
 
+`copied()` and `cloned()` turn genuine lvalue references into owned prvalues without allocation. `copied()` is limited to trivially copy-constructible values; `cloned()` accepts arbitrary copy-constructible values. Neither is exposed for a pipeline that already yields owned prvalues or xvalues.
+
+`cycle()` first lowers any pending projection and then cycles the resulting forward range. This ordering is observable for stateful projections and deliberately prevents `source.map(function).cycle()` from being rewritten as `source.cycle().map(function)`. Empty sources stay empty; nonempty sources are endless.
+
 ## Search and reduction
 
-Terminals include `find`, `findMap`, `position`, `rposition`, `any`, `all`, `count`, `nth`, `last`, min/max and key/comparator variants, `sum`, `product`, `fold`, `reduce`, `partition`, `unzip`, `collect`, `toVec`, and `forEach`.
+Terminals include `find`, `rFind`, `findMap`, `position`, `rposition`, `any`, `all`, `count`, `nth`, `nthBack`, `last`, min/max and key/comparator variants, `sum`, `product`, `fold`, `rFold`, `reduce`, `partition`, `unzip`, `collect`, `toVec`, and `forEach`.
 
 Reference-returning terminals preserve references when the source is borrowed and produce owned values when the range yields rvalues. `reduce` delegates to `std::ranges::fold_left_first` where no fused projected-filter traversal is required.
 
 `count()` deliberately traverses the pipeline instead of using a sized-range shortcut so lazy projections and side effects such as `inspect()` are observed consistently with other consuming terminals.
+
+`nthBack`, `rFind`, and `rFold` require bidirectional common ranges. `rposition` additionally requires exact size so it can search from the back, short-circuit on the first reverse match, and still report the original forward index. The maximum family selects the last item among equivalent maxima, while the minimum family retains the first equivalent minimum.
+
+`compare(other)` performs lexicographical three-way comparison and returns the element comparison category (`std::strong_ordering`, `std::weak_ordering`, or `std::partial_ordering`). Common ranges delegate to `std::lexicographical_compare_three_way`; a sentinel-aware traversal preserves the same semantics for non-common input ranges, including unordered partial comparisons.
+
+## Sequence API rather than cursor API
+
+Miracle mirrors useful Rust sequence operations, not Rust's mutable-cursor object model. `next`, `nextBack`, `byRef`, `advanceBy`, and chunk-consuming cursor primitives are intentionally absent: C++ iterators own cursor position, while `Iter` is a range/view façade. Terminals such as `nth`, `nthBack`, `find`, and `rFind` remain meaningful sequence queries without manufacturing hidden persistent cursor state.
+
+The stable Rust `tryFold` and `tryForEach` family is deferred until Miracle has one library-wide fallible-control-flow abstraction. Iter will consume that abstraction rather than creating an Iter-local substitute. Nightly Rust APIs are not automatic parity requirements; existing C++-native facilities such as `isPartitioned` and Miracle's useful `intersperse` remain part of the surface.
 
 ## Parallel execution
 

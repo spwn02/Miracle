@@ -9,6 +9,8 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 ### Added
 
 - Added lazy `Iter` pipelines with universal range/integer/Option/Result construction, adaptive tuple/reflected-aggregate callable invocation, positional slicing, Rust-inspired adaptors and terminals, and standard-range capability preservation.
+- Added standard-backed `empty`, `once`, `repeat`, and `repeatN` Iter sources plus allocation-free `onceWith`, `repeatWith`, `fromFn`, and `successors` generated sources.
+- Added `copied`, `cloned`, and forward-range `cycle` adaptors; reverse `nthBack`, `rFind`, and `rFold` terminals; and C++-native lexicographical `compare`.
 - Added explicit `ParallelIter` execution as a thin façade over standard C++ execution policies for indexable pipelines.
 - Added nonnumeric `Infinity`/`infinity` positional-bound vocabulary and conservative `SizeHint` iterator size knowledge.
 - Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
@@ -28,12 +30,14 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Preserved reserve-range emptiness for positively-strided integer `iter(...)` construction and made fused map/filter traversal valid for non-common ranges.
 - Preserved move-only ownership through rvalue Option/Expected sources, `filterMap`, `mapWhile`, `scan`, and `unzip` materialization.
 - Made `count()` traverse lazy pipelines so projections and `inspect()` side effects are observed, and cached extrema keys so key projections execute once per visited item.
+- Made `rposition()` search and short-circuit from the back, aligned `max`, `maxBy`, and `maxByKey` with last-equivalent-maximum selection.
 
 ### Performance
 
 - Simplified Iter to delegate ordinary traversal to standard views/algorithms, removing the custom exhaustion lattice, worker pool, bounded-concurrency protocol, and custom executor runtime.
 - Composed consecutive Iter maps into one pending projection and fused projected-filter terminals so mapped values are evaluated once per source item without `cache_latest` capability loss.
 - Preserved random-access and sized traversal through chunks, windows, and intersperse when the source supports those capabilities.
+- Kept callable-generated sources allocation-free with one invocation per logical iter, and implemented `cycle()` by restarting its forward base without buffering.
 - Rendered diagnostic cause trees with iterative parent/index DFS in O(n) time, O(depth) auxiliary storage, and O(1) native recursion.
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.

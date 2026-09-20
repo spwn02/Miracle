@@ -559,6 +559,370 @@ private:
   Maybe maybe_{};
 };
 
+/// Lazy one-element source used by `onceWith()`. The iterator owns the generated value so repeated
+/// dereference never repeats user computation and move-only results remain consumable.
+template <class Function>
+class OnceWithView final : public std::ranges::view_interface<OnceWithView<Function>> {
+  using Value = std::remove_cvref_t<std::invoke_result_t<Function &>>;
+
+  class Sentinel final {};
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Value;
+    using difference_type = isize;
+
+    Iterator() = default;
+    constexpr explicit Iterator(OnceWithView *parent) {
+      value_.emplace(std::invoke(parent->function_.get()));
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> Value & {
+      return *value_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      value_.reset();
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] Sentinel sentinel) -> bool {
+      return not iterator.value_.has_value();
+    }
+
+  private:
+    /// A const input iterator must remain indirectly readable; mutable cache storage lets `as_rvalue` consume
+    /// the generated value while repeated ordinary dereference still observes the same object.
+    mutable Option<Value> value_{};
+  };
+
+public:
+  constexpr OnceWithView()
+    requires std::default_initializable<Function>
+  = default;
+  constexpr explicit OnceWithView(Function function)
+      : function_(std::move(function)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    return Iterator{this};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> Sentinel {
+    return {};
+  }
+
+private:
+  [[no_unique_address]] MovableBox<Function> function_;
+};
+
+/// Endless callable source used by `repeatWith()`. Each increment generates and caches exactly one logical
+/// iter, so repeated dereference has no user-visible work beyond reading the cache.
+template <class Function>
+class RepeatWithView final : public std::ranges::view_interface<RepeatWithView<Function>> {
+  using Value = std::remove_cvref_t<std::invoke_result_t<Function &>>;
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Value;
+    using difference_type = isize;
+
+    Iterator() = default;
+    constexpr explicit Iterator(RepeatWithView *parent)
+        : parent_(parent) {
+      load();
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> Value & {
+      return *value_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      load();
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==([[maybe_unused]] const Iterator &iterator,
+        [[maybe_unused]] std::unreachable_sentinel_t sentinel) noexcept -> bool {
+      return false;
+    }
+
+  private:
+    constexpr auto load() -> void {
+      value_.reset();
+      value_.emplace(std::invoke(parent_->function_.get()));
+    }
+
+    RepeatWithView *parent_{};
+    mutable Option<Value> value_{};
+  };
+
+public:
+  constexpr RepeatWithView()
+    requires std::default_initializable<Function>
+  = default;
+  constexpr explicit RepeatWithView(Function function)
+      : function_(std::move(function)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    return Iterator{this};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> std::unreachable_sentinel_t {
+    return {};
+  }
+
+private:
+  [[no_unique_address]] MovableBox<Function> function_;
+};
+
+/// Optional-producing callable source used by `fromFn()`. Generation is lazy and cached per logical item; the
+/// first empty result permanently ends that traversal.
+template <class Function>
+class FromFnView final : public std::ranges::view_interface<FromFnView<Function>> {
+  using Maybe = std::remove_cvref_t<std::invoke_result_t<Function &>>;
+  static_assert(OptionalLike<Maybe>);
+  using Value = Maybe::value_type;
+
+  class Sentinel final {};
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Value;
+    using difference_type = isize;
+
+    Iterator() = default;
+    constexpr explicit Iterator(FromFnView *parent)
+        : parent_(parent) {
+      load();
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> Value & {
+      return *value_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      load();
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] Sentinel sentinel) -> bool {
+      return not iterator.value_.has_value();
+    }
+
+  private:
+    constexpr auto load() -> void {
+      Maybe generated = std::invoke(parent_->function_.get());
+      value_.reset();
+      if (generated.has_value()) {
+        value_.emplace(std::move(*generated));
+      }
+    }
+
+    FromFnView *parent_{};
+    mutable Option<Value> value_{};
+  };
+
+public:
+  constexpr FromFnView()
+    requires std::default_initializable<Function>
+  = default;
+  constexpr explicit FromFnView(Function function)
+      : function_(std::move(function)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    return Iterator{this};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> Sentinel {
+    return {};
+  }
+
+private:
+  [[no_unique_address]] MovableBox<Function> function_;
+};
+
+/// Stateful successor source. The next value is computed from the current value before the current value is
+/// exposed, so downstream consumers may move from an item without corrupting successor generation.
+template <class Value, class Function>
+class SuccessorsView final : public std::ranges::view_interface<SuccessorsView<Value, Function>> {
+  using Maybe = std::remove_cvref_t<decltype(adaptiveInvoke(std::declval<Function &>(),
+      std::declval<const Value &>()))>;
+  static_assert(OptionalLike<Maybe>);
+  static_assert(std::same_as<std::remove_cvref_t<typename Maybe::value_type>, Value>);
+
+  class Sentinel final {};
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::input_iterator_tag;
+    using value_type = Value;
+    using difference_type = isize;
+
+    Iterator() = default;
+    constexpr Iterator(SuccessorsView *parent, Value seed)
+        : parent_(parent)
+        , current_(std::move(seed)) {
+      prepareNext();
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> Value & {
+      return *current_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      current_.reset();
+      if (next_.has_value()) {
+        current_.emplace(std::move(*next_));
+        prepareNext();
+      }
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> void {
+      ++*this;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] Sentinel sentinel) -> bool {
+      return not iterator.current_.has_value();
+    }
+
+  private:
+    constexpr auto prepareNext() -> void {
+      Maybe generated = adaptiveInvoke(parent_->function_.get(), std::as_const(*current_));
+      next_.reset();
+      if (generated.has_value()) {
+        next_.emplace(std::move(*generated));
+      }
+    }
+
+    SuccessorsView *parent_{};
+    mutable Option<Value> current_{};
+    Option<Value> next_{};
+  };
+
+public:
+  constexpr SuccessorsView(Value seed, Function function)
+      : seed_(std::move(seed))
+      , function_(std::move(function)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    if (not seed_.has_value()) {
+      return {};
+    }
+    Value seed = std::move(*seed_);
+    seed_.reset();
+    return Iterator{this, std::move(seed)};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> Sentinel {
+    return {};
+  }
+
+private:
+  Option<Value> seed_{};
+  [[no_unique_address]] MovableBox<Function> function_;
+};
+
+/// Restartable endless view used by `cycle()`. It stores no element buffer; reaching the base sentinel simply
+/// reacquires the base begin iterator. Empty sources remain empty and stronger base categories intentionally
+/// narrow to forward traversal because an unbounded cycle has no meaningful random-access end.
+template <std::ranges::view View>
+  requires std::ranges::forward_range<View>
+class CycleView final : public std::ranges::view_interface<CycleView<View>> {
+  class Sentinel final {};
+
+  class Iterator final {
+  public:
+    using iterator_concept = std::forward_iterator_tag;
+    using value_type = std::ranges::range_value_t<View>;
+    using difference_type = std::ranges::range_difference_t<View>;
+
+    Iterator() = default;
+    constexpr Iterator(CycleView *parent, std::ranges::iterator_t<View> current, bool empty)
+        : parent_(parent)
+        , current_(std::move(current))
+        , empty_(empty) {
+    }
+
+    [[nodiscard]] constexpr auto operator*() const -> decltype(auto) {
+      return *current_;
+    }
+
+    constexpr auto operator++() -> Iterator & {
+      ++current_;
+      if (current_ == std::ranges::end(parent_->view_)) {
+        current_ = std::ranges::begin(parent_->view_);
+      }
+      return *this;
+    }
+
+    constexpr auto operator++(int) -> Iterator {
+      auto previous = *this;
+      ++*this;
+      return previous;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &left, const Iterator &right) -> bool {
+      if (left.empty_ or right.empty_) {
+        return left.empty_ == right.empty_ and left.parent_ == right.parent_;
+      }
+      return left.parent_ == right.parent_ and left.current_ == right.current_;
+    }
+
+    [[nodiscard]] friend constexpr auto operator==(const Iterator &iterator,
+        [[maybe_unused]] Sentinel sentinel) noexcept -> bool {
+      return iterator.empty_;
+    }
+
+  private:
+    CycleView *parent_{};
+    std::ranges::iterator_t<View> current_{};
+    bool empty_{true};
+  };
+
+public:
+  CycleView()
+    requires std::default_initializable<View>
+  = default;
+  constexpr explicit CycleView(View view)
+      : view_(std::move(view)) {
+  }
+
+  [[nodiscard]] constexpr auto begin() -> Iterator {
+    auto first = std::ranges::begin(view_);
+    return Iterator{this, first, first == std::ranges::end(view_)};
+  }
+
+  [[nodiscard]] constexpr auto end() const noexcept -> Sentinel {
+    return {};
+  }
+
+private:
+  View view_{};
+};
+
 /// Fused map->filter representation. Ordinary iteration preserves standard transform/filter semantics, while
 /// `visitWhile()` lets Miracle terminals evaluate the projection exactly once per source item and reuse the
 /// projected value for both filtering and consumption.
@@ -1392,6 +1756,34 @@ public:
     return std::forward<Self>(self);
   }
 
+  /// Copies each referenced item into an owned value. This narrow spelling mirrors Rust's `copied()` by
+  /// accepting only genuine lvalue-reference pipelines whose values have trivial copy construction.
+  template <class Self>
+    requires std::is_lvalue_reference_v<Reference> and std::is_trivially_copy_constructible_v<Value> and
+             std::constructible_from<Value, Reference>
+  [[nodiscard]] constexpr auto copied(this Self &&self) {
+    return std::forward<Self>(self).map([](auto &&item) -> Value { return Value{item}; });
+  }
+
+  /// Copy-constructs each referenced item into an owned value. Unlike `copied`, non-trivial copies are
+  /// accepted, but prvalue/xvalue pipelines remain excluded because they are already owned values.
+  template <class Self>
+    requires std::is_lvalue_reference_v<Reference> and std::copy_constructible<Value> and
+             std::constructible_from<Value, Reference>
+  [[nodiscard]] constexpr auto cloned(this Self &&self) {
+    return std::forward<Self>(self).map([](auto &&item) -> Value { return Value{item}; });
+  }
+
+  /// Repeats a restartable source forever without buffering. Pending projections are lowered before the cycle
+  /// boundary so stateful `map(...).cycle()` evaluation is not reordered into `cycle().map(...)`.
+  template <class Self>
+    requires std::ranges::forward_range<View>
+  [[nodiscard]] constexpr auto cycle(this Self &&self) {
+    auto base = lower(std::forward<Self>(self));
+    using Result = CycleView<decltype(base)>;
+    return Iter<Result>{Result{std::move(base)}};
+  }
+
   /// Invokes a side-effect callback for each observed item and forwards the item unchanged.
   template <class Self, class Function>
   [[nodiscard]] constexpr auto inspect(this Self &&self, Function function) {
@@ -1518,6 +1910,33 @@ public:
     return found;
   }
 
+  /// Searches from the back and returns the first reverse match, preserving borrowed references.
+  template <class Predicate>
+  [[nodiscard]] constexpr auto rFind(Predicate predicate)
+    requires std::ranges::bidirectional_range<Iter> and std::ranges::common_range<Iter>
+  {
+    using Result = TerminalOptionT<Reference>;
+    auto wrapped = adapt(std::move(predicate));
+    auto current = end();
+    const auto first = begin();
+    while (current != first) {
+      --current;
+      using Item = decltype(*current);
+      if constexpr (std::is_reference_v<Item>) {
+        auto &&item = *current;
+        if (static_cast<bool>(std::invoke(wrapped, item))) {
+          return Result{makeTerminalValue(std::forward<Item>(item))};
+        }
+      } else {
+        auto item = *current;
+        if (static_cast<bool>(std::invoke(wrapped, item))) {
+          return Result{makeTerminalValue(std::move(item))};
+        }
+      }
+    }
+    return Result{};
+  }
+
   /// Returns the first present Optional-like value produced by `function`.
   template <class Function>
   [[nodiscard]] constexpr auto findMap(Function function) {
@@ -1555,20 +1974,24 @@ public:
     return found;
   }
 
-  /// Returns the zero-based index of the last matching item in one forward pass.
+  /// Searches from the back and returns the zero-based index of the first reverse match. Exact size is
+  /// required so the original forward index can be reported without a preliminary traversal.
   template <class Predicate>
+    requires std::ranges::bidirectional_range<Iter> and std::ranges::common_range<Iter> and
+             std::ranges::sized_range<Iter>
   [[nodiscard]] constexpr auto rposition(Predicate predicate) -> Option<usize> {
-    usize index{};
-    Option<usize> found{};
+    auto current = end();
+    const auto first = begin();
+    auto index = static_cast<usize>(std::ranges::size(*this));
     auto wrapped = adapt(std::move(predicate));
-    visitProjected([&](auto &&item) -> bool {
-      if (static_cast<bool>(std::invoke(wrapped, item))) {
-        found = index;
+    while (current != first) {
+      --current;
+      --index;
+      if (static_cast<bool>(std::invoke(wrapped, *current))) {
+        return index;
       }
-      ++index;
-      return true;
-    });
-    return found;
+    }
+    return None;
   }
 
   /// Returns true as soon as one item satisfies the predicate. Pending projections are fused into the
@@ -1636,6 +2059,31 @@ public:
       return true;
     });
     return found;
+  }
+
+  /// Returns the item `target` positions from the back of a bidirectional common range.
+  [[nodiscard]] constexpr auto nthBack(usize target)
+    requires std::ranges::bidirectional_range<Iter> and std::ranges::common_range<Iter>
+  {
+    using Result = TerminalOptionT<Reference>;
+    auto current = end();
+    const auto first = begin();
+    usize index{};
+    while (current != first) {
+      --current;
+      if (index == target) {
+        using Item = decltype(*current);
+        if constexpr (std::is_reference_v<Item>) {
+          auto &&item = *current;
+          return Result{makeTerminalValue(std::forward<Item>(item))};
+        } else {
+          auto item = *current;
+          return Result{makeTerminalValue(std::move(item))};
+        }
+      }
+      ++index;
+    }
+    return Result{};
   }
 
   /// Returns the final item if present, preserving the terminal reference/value category.
@@ -1750,6 +2198,21 @@ public:
     }
   }
 
+  /// Right-folds a bidirectional common range from its final item toward its first item.
+  template <class Accumulator, class Function>
+  [[nodiscard]] constexpr auto rFold(Accumulator initial, Function function) -> Accumulator
+    requires std::ranges::bidirectional_range<Iter> and std::ranges::common_range<Iter>
+  {
+    auto wrapped = adaptWithPrefix(std::move(function));
+    auto current = end();
+    const auto first = begin();
+    while (current != first) {
+      --current;
+      initial = std::invoke(wrapped, std::move(initial), *current);
+    }
+    return initial;
+  }
+
   /// Materializes matching and non-matching values into two vectors in encounter order.
   template <class Predicate>
   [[nodiscard]] constexpr auto partition(Predicate predicate) {
@@ -1835,6 +2298,39 @@ public:
   template <std::ranges::input_range Other>
   [[nodiscard]] constexpr auto ne(Other &&other) -> bool {
     return not eq(std::forward<Other>(other));
+  }
+
+  /// Lexicographically three-way compares this sequence with `other`. Common ranges delegate directly to the
+  /// standard algorithm; non-common input ranges use the identical sentinal-aware traversal.
+  template <std::ranges::input_range Other, class Compare = std::compare_three_way>
+  [[nodiscard]] constexpr auto compare(Other &&other, Compare compare = {}) {
+    auto rightRange = viewForRange(std::forward<Other>(other));
+    using Compared = std::remove_cvref_t<
+        std::invoke_result_t<Compare &, Reference, std::ranges::range_reference_t<decltype(rightRange)>>>;
+    using Category = std::common_comparison_category_t<Compared, std::strong_ordering>;
+    static_assert(not std::same_as<Category, void>);
+
+    if constexpr (std::ranges::common_range<Iter> and std::ranges::common_range<decltype(rightRange)>) {
+      return std::lexicographical_compare_three_way(
+          begin(), end(), std::ranges::begin(rightRange), std::ranges::end(rightRange), std::move(compare));
+    } else {
+      auto left = begin();
+      const auto leftEnd = end();
+      auto right = std::ranges::begin(rightRange);
+      const auto rightEnd = std::ranges::end(rightRange);
+      while (left != leftEnd and right != rightEnd) {
+        const Category result = std::invoke(compare, *left, *right);
+        if (result != 0) {
+          return result;
+        }
+        ++left;
+        ++right;
+      }
+      if (left == leftEnd and right == rightEnd) {
+        return Category::equivalent;
+      }
+      return left == leftEnd ? Category::less : Category::greater;
+    }
   }
 
   /// Lexicographically tests whether this sequence is less than another range.
@@ -1988,8 +2484,10 @@ private:
         best = makeTerminalValue(std::forward<decltype(item)>(item));
         return true;
       }
+      // Maximum selection deliberately replaces on equivalence so max/maxBy match Rust's last-equal tie rule.
+      // Minimum selection remains strictly less and therefore keeps the first equal minimum.
       const bool replace =
-          maximum ? std::invoke(compare, valueOf(best), item) : std::invoke(compare, item, valueOf(best));
+          maximum ? not std::invoke(compare, item, valueOf(best)) : std::invoke(compare, item, valueOf(best));
       if (replace) {
         best = makeTerminalValue(std::forward<decltype(item)>(item));
       }
@@ -2014,8 +2512,9 @@ private:
         best = makeTerminalValue(std::forward<decltype(item)>(item));
         return true;
       }
+      // As above, maximum keeps the last equivalent key while minimum keeps the first.
       const bool replace =
-          maximum ? std::ranges::less{}(*bestKey, itemKey) : std::ranges::less{}(itemKey, *bestKey);
+          maximum ? not std::ranges::less{}(itemKey, *bestKey) : std::ranges::less{}(itemKey, *bestKey);
       if (replace) {
         bestKey.emplace(std::move(itemKey));
         best = makeTerminalValue(std::forward<decltype(item)>(item));
@@ -2188,6 +2687,70 @@ template <OptionalLike Maybe>
 [[nodiscard]] constexpr auto iter(Maybe &&maybe) {
   using Stored = std::remove_cvref_t<Maybe>;
   auto view = MaybeValueView<Stored>{std::forward<Maybe>(maybe)} | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates an empty random-access, sized, borrowed Iter source of `T`.
+template <class T>
+[[nodiscard]] constexpr auto empty() {
+  return Iter{std::views::empty<T>};
+}
+
+/// Creates a one-element source. The stored value is exposed as an rvalue so move-only values can be
+/// materialized without a copy.
+template <class T>
+[[nodiscard]] constexpr auto once(T value) {
+  auto view = std::views::single(std::move(value)) | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Lazily invokes `function` once when traversal begins and yields its cached result exactly once.
+template <class Function>
+[[nodiscard]] constexpr auto onceWith(Function function) {
+  using Stored = std::decay_t<Function>;
+  auto view = OnceWithView<Stored>{std::move(function)} | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates an endless standard repeat view. Each position references the one stored value, following C++
+/// `repeat_view` semantics rather than cloning a new value on every dereference.
+template <class T>
+[[nodiscard]] constexpr auto repeat(T value) {
+  auto view = std::views::repeat(std::move(value));
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates a bounded standard repeat view with exactly `count` positions.
+template <class T>
+[[nodiscard]] constexpr auto repeatN(T value, usize count) {
+  auto view = std::views::repeat(std::move(value), count);
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates an endless callable source that invokes `function` once per increment and caches the result for
+/// repeated dereference of that logical item.
+template <class Function>
+[[nodiscard]] constexpr auto repeatWith(Function function) {
+  using Stored = std::decay_t<Function>;
+  auto view = RepeatWithView<Stored>{std::move(function)} | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates a single-pass source from `function() -> Option<T>`. The first empty result terminates traversal.
+template <class Function>
+[[nodiscard]] constexpr auto fromFn(Function function) {
+  using Stored = std::decay_t<Function>;
+  auto view = FromFnView<Stored>{std::move(function)} | std::views::as_rvalue;
+  return Iter<decltype(view)>{std::move(view)};
+}
+
+/// Creates a single-pass sequence beginning with `seed` and repeatedly invoking `function(const T&) ->
+/// Option<T>`. Each successor is computed before its predecessor becomes consumable.
+template <class T, class Function>
+[[nodiscard]] constexpr auto successors(T seed, Function function) {
+  using Value = std::decay_t<T>;
+  using Stored = std::decay_t<Function>;
+  auto view = SuccessorsView<Value, Stored>{std::move(seed), std::move(function)} | std::views::as_rvalue;
   return Iter<decltype(view)>{std::move(view)};
 }
 
