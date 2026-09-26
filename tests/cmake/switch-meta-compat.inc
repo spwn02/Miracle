@@ -1,6 +1,6 @@
 // Miracle's Meta vocabulary intentionally removed the variable-template helpers.
-// The pinned Switch test dependency still targets that historical surface, so 
-// keep its adapter local to Switch rather than re-exporting deprecated names 
+// The pinned Switch test dependency still targets that historical surface, so
+// keep its adapter local to Switch rather than re-exporting deprecated names
 // from Miracle.Meta.
 export namespace Switch::compat {
 
