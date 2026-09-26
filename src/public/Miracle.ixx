@@ -9,7 +9,7 @@ export import :Diagnostic;
 export import :Error;
 export import :Panic;
 export import :Fs;
-export import :Meta;
+export import Miracle.Meta;
 export import :Bitflags;
 export import :Debug;
 export import :Build;

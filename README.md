@@ -89,7 +89,7 @@ It currently re-exports:
 - `Miracle:Types`
 - `Miracle:Error`
 - `Miracle:Fs`
-- `Miracle:Meta`
+- `Miracle:Meta` (also directly importable as `import Miracle.Meta;`)
 - `Miracle:Bitflags`
 - `Miracle:Debug`
 - `Miracle:Build`

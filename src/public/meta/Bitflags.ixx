@@ -2,21 +2,25 @@ export module Miracle:Bitflags;
 
 import std;
 import :Types;
-import :Meta;
+import Miracle.Meta;
 
-// NOLINTBEGIN(bugprone-reserved-identifier)
 namespace Miracle {
 
 struct Bitflags {};
 export inline constexpr Bitflags bitflags{};
 
 template <typename E>
-concept UnevaluatedBitflagsConcept = std::is_enum_v<E> and
-    (std::meta::is_unsigned_type(^^std::underlying_type_t<E>)) and Miracle::meta::has_annotation<Bitflags, ^^E>();
+concept UnevaluatedBitflagsConcept =
+    std::is_enum_v<E> and (std::meta::is_unsigned_type(^^std::underlying_type_t<E>)) and
+    meta::annotated<Bitflags>(^^E);
 
 template <UnevaluatedBitflagsConcept E>
 consteval auto is_flags_enum_v() -> bool { // NOLINT(readability-identifier-naming)
-  template for (constexpr std::meta::info enumerator : meta::enumerators<^^E>) {
+  // Validate the complete declared flag universe at compile time. Zero is allowed as an empty value; every
+  // positive enumerator must represent exactly one bit so the generated bitwise helpers cannot encode
+  // overlapping base flags.
+  constexpr auto reflectedEnumerators = std::define_static_array(std::meta::enumerators_of(^^E));
+  template for (constexpr std::meta::info enumerator : reflectedEnumerators) {
     const auto value = std::to_underlying([:enumerator:]);
     if (value > 0 and not std::has_single_bit(value)) {
       return false;
@@ -48,7 +52,7 @@ struct std::formatter<B> : std::formatter<Miracle::String> {
   bool prefix{};
 
   template <typename ParseContext>
-  constexpr auto parse(ParseContext &ctx) -> typename ParseContext::iterator {
+  constexpr auto parse(ParseContext &ctx) -> ParseContext::iterator {
     auto iter = ctx.begin();
 
     if (iter == ctx.end())
@@ -63,7 +67,7 @@ struct std::formatter<B> : std::formatter<Miracle::String> {
       if (mode != Mode::None)
         throw std::format_error(std::format("Invalid format args for displaying Bitflags: {}. Attempted to "
                                             "enable both binary and hex simultaneously",
-            Miracle::meta::identifier<^^B>));
+            Miracle::meta::requireName(^^B)));
       mode = Mode::Hex;
       ++iter;
     }
@@ -75,7 +79,7 @@ struct std::formatter<B> : std::formatter<Miracle::String> {
 
     if (iter != ctx.end() && *iter != '}')
       throw std::format_error(
-          std::format("Invalid format args for Bitflags: {}.", Miracle::meta::identifier<^^B>));
+          std::format("Invalid format args for Bitflags: {}.", Miracle::meta::requireName(^^B)));
 
     return iter;
   }
@@ -136,7 +140,10 @@ template <BitflagsConcept B>
 constexpr auto all() noexcept -> B {
   B result{};
 
-  template for (constexpr std::meta::info enumerator : meta::enumerators<^^B>) {
+  // The concept already proved every positive enumerator is a single bit, so OR-ing the compile-time enum
+  // universe produces the exact mask of all declared flags without maintaining a parallel hand-written mask.
+  constexpr auto reflectedEnumerators = std::define_static_array(std::meta::enumerators_of(^^B));
+  template for (constexpr std::meta::info enumerator : reflectedEnumerators) {
     result |= [:enumerator:];
   }
 
@@ -149,4 +156,3 @@ constexpr auto has(B flags, B flag) noexcept -> bool {
 }
 
 } // namespace Miracle
-// NOLINTEND(bugprone-reserved-identifier)

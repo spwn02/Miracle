@@ -13,10 +13,10 @@ concept Enum = std::is_enum_v<E>;
 
 template <Enum E>
 constexpr auto enum_to_string(E value) -> String { // NOLINT
-  // NOLINTNEXTLINE(bugprone-reserved-identifier)
-  template for (constexpr std::meta::info enumerator : meta::enumerators<^^E>) {
+  constexpr auto enumerators = std::define_static_array(std::meta::enumerators_of(^^E));
+  template for (constexpr std::meta::info enumerator : enumerators) {
     if (value == [:enumerator:]) {
-      return String(meta::identifier<enumerator>);
+      return String(meta::requireName(enumerator));
     }
   }
   return "<unnamed>";
@@ -43,9 +43,10 @@ template <Struct T>
 constexpr auto list_members(const T &val) -> String { // NOLINT
   Vec<String> buf{};
 
-  // NOLINTNEXTLINE(bugprone-reserved-identifier)
-  template for (constexpr auto mem : meta::nsMembers<^^T, meta::AccessContext::current()>) {
-    buf.push_back(std::format("{}: {}", meta::identifier<mem>, val.[:mem:]));
+  constexpr auto members =
+      std::define_static_array(std::meta::nonstatic_data_members_of(^^T, Access::current()));
+  template for (constexpr auto mem : members) {
+    buf.push_back(std::format("{}: {}", meta::requireName(mem), val.[:mem:]));
   }
 
   return buf | std::views::join_with(StringView{"; "}) | std::ranges::to<String>();

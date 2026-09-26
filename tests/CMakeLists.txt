@@ -33,6 +33,7 @@ add_executable(
   fs.cxx
   range.cxx
   iter.cxx
+  meta.cxx
   reflection.cxx
   static-string.cxx
   feature.cxx)
@@ -47,6 +48,19 @@ set_target_properties(
              CXX_MODULE_STD ON)
 
 target_link_libraries(MiracleTests PRIVATE Miracle::Miracle Switch::Switch)
+
+# Verify that the Phase-5 narrow Meta module is independently consumable; this
+# probe deliberately does not import the Miracle umbrella or std module.
+add_executable(MiracleMetaImportProbe meta-import-probe.cxx)
+target_compile_features(MiracleMetaImportProbe PRIVATE cxx_std_26)
+set_target_properties(
+  MiracleMetaImportProbe
+  PROPERTIES CXX_EXTENSIONS OFF
+             CXX_STANDARD_REQUIRED ON
+             CXX_SCAN_FOR_MODULES ON
+             CXX_MODULE_STD ON)
+target_link_libraries(MiracleMetaImportProbe PRIVATE Miracle::Miracle)
+add_test(NAME Miracle.Meta.Import COMMAND MiracleMetaImportProbe)
 
 # The filesystem tests intentionally write only below the build tree.
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tests")
@@ -187,3 +201,10 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cxx
   "Miracle adaptive invocation requires a callable accepting the item directly")
+
+miracle_add_compile_fail_test(
+  MetaRequireName compile-fail/meta-require-name.cxx
+  "requireName() requires a reflection with an identifier")
+miracle_add_compile_fail_test(
+  MetaEnumeratorsNonEnum compile-fail/meta-enumerators-non-enum.cxx
+  "enumerators() requires an enum reflection")

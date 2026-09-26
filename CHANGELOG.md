@@ -12,6 +12,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added standard-backed `empty`, `once`, `repeat`, and `repeatN` Iter sources plus allocation-free `onceWith`, `repeatWith`, `fromFn`, and `successors` generated sources.
 - Added `copied`, `cloned`, and forward-range `cycle` adaptors; reverse `nthBack`, `rFind`, and `rFold` terminals; and C++-native lexicographical `compare`.
 - Added the iterator-parity surface: stateful `Peekable`, public semantic adaptor values, free `chain`/`zip`, optional-seed `successors`, `std::generator` interoperability, selected Rust-nightly `intersperseWith`/`mapWindows`/`arrayChunks`/`eqBy`, and explicit Rust-to-Miracle parity/defer/divergence documentation.
+- Added Meta vocabulary with the standalone `Miracle.Meta` module, `Reflect<T>`/`reflect<T>()`, strict C++26 reflection sources and transformations, composable reflection predicates.
 - Added explicit `ParallelIter` execution as a thin façade over standard C++ execution policies for indexable pipelines.
 - Added nonnumeric `Infinity`/`infinity` positional-bound vocabulary and conservative `SizeHint` iterator size knowledge.
 - Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
