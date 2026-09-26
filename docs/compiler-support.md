@@ -47,7 +47,7 @@ Other toolchains become eligible for `master` support when they implement the re
 
 The compiler alone is not the reference unit: its matching libc++ headers, binaries, ABI runtime, and C++ module sources/metadata belong to the same validated toolchain build. Deliberately mixing components from unrelated toolchain revisions is unsupported.
 
-The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.09.15.1`, built from source revision `bba9ea40d350734a44eb1176909ebce9a045f9b3`.
+The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.09.25`, built from source revision `ee10c125a25f8ff59b916e7f048c964ac7994bfb`.
 
 The historical `p2996-2026.08.23.2` snapshot remains immutable provenance for earlier releases, but it is no longer the current reference baseline.
 

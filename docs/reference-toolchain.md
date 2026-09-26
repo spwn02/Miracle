@@ -146,7 +146,7 @@ Two identities must remain distinct:
 cxx26
   mutable development branch
 
-cxx26-2026-09.15.1
+cxx26-2026-09.25
   current immutable validated snapshot
 ```
 
@@ -167,9 +167,9 @@ The snapshot rules are:
 The currently validated reference is:
 
 ```text
-snapshot: cxx26-2026.09.15.1
-source revision: bba9ea40d350734a44eb1176909ebce9a045f9b3
-asset: clang-cxx26-2026.09.15.1-linux-x86_64
+snapshot: cxx26-2026.09.25
+source revision: ee10c125a25f8ff59b916e7f048c964ac7994bfb
+asset: clang-cxx26-2026.09.25-linux-x86_64
 ```
 
 ## Validation scope
@@ -230,8 +230,8 @@ Miracle/Switch release
   source branch:        master
   reference repository: spwn02/clang-cxx26
   development branch:   cxx26
-  reference snapshot:   cxx26-2026.09.15.1
-  toolchain revision:   bba9ea40d350734a44eb1176909ebce9a045f9b3
+  reference snapshot:   cxx26-2026.09.25
+  toolchain revision:   ee10c125a25f8ff59b916e7f048c964ac7994bfb
 ```
 
 The release does not vendor or redistribute compiler BMIs, and the non-release-bearing `gcc` compatibility branch never produces parallel release artifacts.
