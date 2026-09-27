@@ -27,10 +27,9 @@ namespace Miracle::meta::detail {
 
 /// Promotes a temporary compile-time reflection sequence into static storage.
 ///
-/// Miracle uses `std::span<const Info>` as its intentionally temporary source carrier. The returned span
-/// therefore never refers to the transient `std::vector`; `std::define_static_array` owns the persistent
-/// backing storage. In the future Miracle replaces repeated source construction with canonical category
-/// caches without changing this public vocabulary. Compile-time work and promoted storage are linear in
+/// The returned span never refers to the transient `std::vector`; `std::define_static_array` owns the backing
+/// storage for the program lifetime. Miracle uses this both for canonical category caches and for
+/// access-filtered projections of those caches. Compile-time work and promoted storage are linear in
 /// `values.size()`.
 [[nodiscard]] consteval auto makeInfoSequence(const std::vector<Info> &values) -> std::span<const Info> {
   return std::define_static_array(values);
@@ -89,6 +88,277 @@ template <class Predicate>
   return makeInfoSequence(result);
 }
 
+/// Returns whether `access` is the standard unrestricted reflection context.
+///
+/// `access_context` is a structural standard type whose unchecked spelling is represented by empty
+/// scope/designating reflections. Recognizing it lets typed queries return their canonical backing span
+/// directly instead of allocating a second, content-identical static array.
+[[nodiscard]] consteval auto isUnchecked(Access access) -> bool {
+  return access.scope() == Info{} and access.designating_class() == Info{};
+}
+
+/// Applies caller-sensitive access to an already-canonical unchecked category universe.
+///
+/// Declaration order is stable because filtering never reorders the cached sequence. The unchecked path is
+/// O(1) and returns the canonical span itself; other access contexts perform one linear `is_accessible` pass
+/// and statically promote the visible subset. This preserves the standard access model without repeating the
+/// expensive source query.
+[[nodiscard]] consteval auto visibleFrom(std::span<const Info> canonical, Access access)
+    -> std::span<const Info> {
+  if (isUnchecked(access)) {
+    return canonical;
+  }
+
+  std::vector<Info> result{};
+  result.reserve(canonical.size());
+  for (const Info item : canonical) {
+    if (std::meta::is_accessible(item, access)) {
+      result.push_back(item);
+    }
+  }
+  return makeInfoSequence(result);
+}
+
+/// Builds the canonical unchecked member universe for one reflected subject.
+///
+/// The validation here is defensive: public source APIs validate *before* crossing into a variable-template
+/// cache. An exception escaping a `constexpr` variable initializer is a hard constant-expression failure and
+/// cannot serve as Miracle's catchable semantic-failure channel. Keeping the builder check as well protects
+/// private direct use.
+[[nodiscard]] consteval auto buildMembers(Info subject) -> std::span<const Info> {
+  requireMemberScope(subject, "members() requires a class, union, or namespace reflection");
+  return makeInfoSequence(std::meta::members_of(subject, Access::unchecked()));
+}
+
+/// Builds the canonical unchecked non-static-data-member universe.
+[[nodiscard]] consteval auto buildFields(Info subject) -> std::span<const Info> {
+  requireRecord(subject, "fields() requires a class or union reflection");
+  return makeInfoSequence(std::meta::nonstatic_data_members_of(subject, Access::unchecked()));
+}
+
+/// Builds the canonical unchecked static-data-member universe.
+[[nodiscard]] consteval auto buildStaticFields(Info subject) -> std::span<const Info> {
+  requireRecord(subject, "staticFields() requires a class or union reflection");
+  return makeInfoSequence(std::meta::static_data_members_of(subject, Access::unchecked()));
+}
+
+/// Builds the canonical unchecked ordinary-function universe, excluding constructors.
+[[nodiscard]] consteval auto buildFunctions(Info subject) -> std::span<const Info> {
+  requireMemberScope(subject, "functions() requires a class, union, or namespace reflection");
+  return filteredMembers(subject, Access::unchecked(), [](Info member) consteval -> bool {
+    return (std::meta::is_function(member) or std::meta::is_function_template(member)) and
+           not(std::meta::is_constructor(member) or std::meta::is_constructor_template(member));
+  });
+}
+
+/// Builds the canonical unchecked constructor/constructor-template universe.
+[[nodiscard]] consteval auto buildConstructors(Info subject) -> std::span<const Info> {
+  requireClass(subject, "constructors() requires a class reflection");
+  return filteredMembers(subject, Access::unchecked(), [](Info member) consteval -> bool {
+    return std::meta::is_constructor(member) or std::meta::is_constructor_template(member);
+  });
+}
+
+/// Builds the canonical unchecked direct-base universe.
+[[nodiscard]] consteval auto buildBases(Info subject) -> std::span<const Info> {
+  requireClass(subject, "bases() requires a class reflection");
+  return makeInfoSequence(std::meta::bases_of(subject, Access::unchecked()));
+}
+
+/// Builds the canonical enumerator universe for an enum reflection.
+[[nodiscard]] consteval auto buildEnumerators(Info subject) -> std::span<const Info> {
+  if (not std::meta::is_type(subject) or not std::meta::is_enum_type(subject)) {
+    throw std::meta::exception{"enumerators() requires an enum reflection", subject};
+  }
+  return makeInfoSequence(std::meta::enumerators_of(subject));
+}
+
+/// Builds the canonical all-annotation universe for one reflected subject.
+[[nodiscard]] consteval auto buildAnnotations(Info subject) -> std::span<const Info> {
+  return makeInfoSequence(std::meta::annotations_of(subject));
+}
+
+/// Builds the canonical annotation universe restricted to one annotation object type.
+[[nodiscard]] consteval auto buildAnnotationsOfType(Info subject, Info annotationType)
+    -> std::span<const Info> {
+  return makeInfoSequence(std::meta::annotations_of_with_type(subject, annotationType));
+}
+
+/// Reflection source categories with independently lazy canonical cache specializations.
+enum class CacheCategory : unsigned char {
+  Members,
+  Fields,
+  StaticFields,
+  Functions,
+  Constructors,
+  Bases,
+  Enumerators,
+  Parameters,
+  Annotations,
+  TemplateArguments,
+};
+
+/// Builds exactly one requested source category for `Subject`.
+///
+/// A `(Subject, Category)` specialization is the unit of laziness: the `if constexpr` chain discards every
+/// unrelated source query before instantiation. This prevents asking for fields from forcing
+/// functions/bases/annotations and keeps compiler work proportional to the categories a translation unit
+/// actually consumes.
+template <Info Subject, CacheCategory Category>
+[[nodiscard]] consteval auto buildCategory() -> std::span<const Info> {
+  if constexpr (Category == CacheCategory::Members) {
+    return buildMembers(Subject);
+  } else if constexpr (Category == CacheCategory::Fields) {
+    return buildFields(Subject);
+  } else if constexpr (Category == CacheCategory::StaticFields) {
+    return buildStaticFields(Subject);
+  } else if constexpr (Category == CacheCategory::Functions) {
+    return buildFunctions(Subject);
+  } else if constexpr (Category == CacheCategory::Constructors) {
+    return buildConstructors(Subject);
+  } else if constexpr (Category == CacheCategory::Bases) {
+    return buildBases(Subject);
+  } else if constexpr (Category == CacheCategory::Enumerators) {
+    return buildEnumerators(Subject);
+  } else if constexpr (Category == CacheCategory::Parameters) {
+    const bool functionType = std::meta::is_type(Subject) and std::meta::is_function_type(Subject);
+    if (not std::meta::is_function(Subject) and not functionType and
+        not std::meta::is_function_template(Subject)) {
+      throw std::meta::exception{"parameters() requires a function reflection", Subject};
+    }
+    return makeInfoSequence(std::meta::parameters_of(Subject));
+  } else if constexpr (Category == CacheCategory::Annotations) {
+    return buildAnnotations(Subject);
+  } else {
+    static_assert(Category == CacheCategory::TemplateArguments);
+    if (not std::meta::has_template_arguments(Subject)) {
+      throw std::meta::exception{
+          "templateArguments() requires a reflection with template arguments", Subject};
+    }
+    return makeInfoSequence(std::meta::template_arguments_of(Subject));
+  }
+}
+
+/// Canonical static backing for one valid reflected subject/category pair.
+///
+/// `std::meta::info` is intentionally used as an NTTP only here, at the private cache boundary. Repeated
+/// type-rooted queries and raw-Info queries that resolve to the same subject/category specialization
+/// therefore share one reflected universe rather than rebuilding `std::vector<Info>` state on each call.
+/// Public APIs must establish semantic validity before naming this specialization so invalid input can still
+/// throw/catch `std::meta::exception` normally.
+template <Info Subject, CacheCategory Category>
+inline constexpr std::span<const Info> categoryCache = buildCategory<Subject, Category>();
+
+/// Structural pointer/size representation used to cross the reflective invocation bridge.
+///
+/// `std::span` itself is not structural and therefore cannot be the result of `std::meta::reflect_invoke`.
+/// This tiny representation is structural, contains only a pointer into canonical static storage plus its
+/// extent, and converts back to `span` immediately; it is never exposed publicly.
+struct InfoSequenceRef final {
+  const Info *data{};
+  std::size_t size{};
+
+  constexpr auto operator==(const InfoSequenceRef &) const -> bool = default;
+};
+
+/// Returns a structural reference to a concrete category-cache specialization.
+template <Info Subject, CacheCategory Category>
+[[nodiscard]] consteval auto categoryCacheRef() -> InfoSequenceRef {
+  constexpr auto cached = categoryCache<Subject, Category>;
+  return {.data = cached.data(), .size = cached.size()};
+}
+
+/// Bridges a value-oriented `Info` subject into the canonical NTTP cache without exposing template-state
+/// publicly.
+///
+/// C++ function parameters cannot be used directly as NTTPs even inside an immediate function. C++26
+/// reflection provides a zero-runtime bridge: reflect the subject/category constants, substitute them into
+/// `categoryCacheRef`, invoke that specialization during constant evaluation, then extract its structural
+/// pointer/size result. This lets `meta::fields(^^T)` and `meta::fields<T>()` converge on the exact same
+/// cache specialization while the public API stays value-oriented. The bridge performs no reflection source
+/// query itself and assumes the public source API has already validated `subject`; validation cannot be
+/// deferred into a failing cache variable initializer without changing error semantics.
+[[nodiscard]] consteval auto cachedCategory(Info subject, CacheCategory category) -> std::span<const Info> {
+  const std::array arguments{std::meta::reflect_constant(subject), std::meta::reflect_constant(category)};
+  const Info specialization = std::meta::substitute(^^categoryCacheRef, arguments);
+  const Info reflectedResult = std::meta::reflect_invoke(specialization, {});
+  const auto result = std::meta::extract<InfoSequenceRef>(reflectedResult);
+  return {result.data, result.size};
+}
+
+/// Statically backed visible subset for one canonical subject/category/access triple.
+///
+/// Access is part of the private cache key because it is observable reflection semantics. Repeated queries
+/// from the same caller context therefore pay the linear accessibility filter once, while unrelated access
+/// contexts remain isolated. This intentionally trades one specialization per *used* access context for
+/// eliminating repeated `is_accessible` passes; Miracle compiler-cost benchmarks verify that the trade is
+/// profitable on the reference toolchain.
+template <Info Subject, CacheCategory Category, Access Context>
+inline constexpr std::span<const Info> visibleCategoryCache =
+    visibleFrom(categoryCache<Subject, Category>, Context);
+
+/// Returns a structural reference to one access-filtered cache specialization.
+template <Info Subject, CacheCategory Category, Access Context>
+[[nodiscard]] consteval auto visibleCategoryCacheRef() -> InfoSequenceRef {
+  constexpr auto cached = visibleCategoryCache<Subject, Category, Context>;
+  return {.data = cached.data(), .size = cached.size()};
+}
+
+/// Bridges value-oriented subject/category/access state into the access-filtered NTTP cache.
+///
+/// `access_context` is structural in C+26, so the same reflection/substitution technique used by
+/// `cachedCategory` can specialize by caller access without exposing template-state publicly. Unchecked
+/// access bypasses this bridge entirely because the canonical cache is already the exact requested universe.
+[[nodiscard]] consteval auto cachedVisibleCategory(Info subject, CacheCategory category, Access access)
+    -> std::span<const Info> {
+  if (isUnchecked(access)) {
+    return cachedCategory(subject, category);
+  }
+
+  const std::array arguments{std::meta::reflect_constant(subject),
+      std::meta::reflect_constant(category),
+      std::meta::reflect_constant(access)};
+  const Info specialization = std::meta::substitute(^^visibleCategoryCacheRef, arguments);
+  const Info reflectedResult = std::meta::reflect_invoke(specialization, {});
+  const auto result = std::meta::extract<InfoSequenceRef>(reflectedResult);
+  return {result.data, result.size};
+}
+
+/// Type-oriented access-filtered cache lookup.
+///
+/// Keeping this helper separate preserves the fast direct NTTP path for typed unchecked queries while sending
+/// all other access contexts through the same access-cache specialization used by raw-`Info` calls.
+template <class T, CacheCategory Category>
+[[nodiscard]] consteval auto cachedVisibleCategory(Access access) -> std::span<const Info> {
+  if (isUnchecked(access)) {
+    return categoryCache<^^T, Category>;
+  }
+  return cachedVisibleCategory(^^T, Category, access);
+}
+
+/// Canonical typed-annotation backing keyed by both reflected subject and annotation object type.
+template <Info Subject, Info AnnotationType>
+inline constexpr std::span<const Info> typedAnnotationsCache =
+    buildAnnotationsOfType(Subject, AnnotationType);
+
+/// Returns a structural reference to a concrete typed-annotation cache specialization.
+template <Info Subject, Info AnnotationType>
+[[nodiscard]] consteval auto typedAnnotationsCacheRef() -> InfoSequenceRef {
+  constexpr auto cached = typedAnnotationsCache<Subject, AnnotationType>;
+  return {.data = cached.data(), .size = cached.size()};
+}
+
+/// value-oriented bridge into the `(subject, annotation-type)` NTTP cache.
+[[nodiscard]] consteval auto cachedAnnotationsOfType(Info subject, Info annotationType)
+    -> std::span<const Info> {
+  const std::array arguments{
+      std::meta::reflect_constant(subject), std::meta::reflect_constant(annotationType)};
+  const Info specialization = std::meta::substitute(^^typedAnnotationsCacheRef, arguments);
+  const Info reflectedResult = std::meta::reflect_invoke(specialization, {});
+  const auto result = std::meta::extract<InfoSequenceRef>(reflectedResult);
+  return {result.data, result.size};
+}
+
 /// Structural marker used only to constrain the predicate-composition operators.
 ///
 /// A marker avoids inheritance or a public predicate base class: any data-oriented callable carrying this
@@ -139,9 +409,9 @@ inline constexpr Name name{};
 
 /// Strict declared-identifier projection.
 ///
-/// Unline `name`, absence is a semantic error: constant evaluation throws `std::meta::exception` carrying the
-/// offending reflection. This makes the operation appropriate for pipelines whose contract requires a source
-/// identifier.
+/// Unlike `name`, absence is a semantic error: constant evaluation throws `std::meta::exception` carrying
+/// the offending reflection. This makes the operation appropriate for pipelines whose contract requires a
+/// source identifier.
 struct RequireName final {
   /// Returns the declared identifier or throws `std::meta::exception` when the reflection has none.
   [[nodiscard]] consteval auto operator()(Info info) const -> std::string_view {
@@ -317,18 +587,26 @@ inline constexpr SourceLocation sourceLocation{};
 ///
 /// `access` is evaluated at the public call site and controls which access-sensitive members are visible. The
 /// returned span has static backing storage and is valid for the remainder of the program. Invalid subjects
-/// throw `std::meta::exception` with `subject` attached. Miracle now performs one standard member query per
-/// call; In the future it replaces repeated construction with canonical caches.
+/// throw `std::meta::exception` with `subject` attached. The raw reflection is bridged into the same private
+/// NTTP-backed canonical member universe used by type-oriented and `Reflect<T>` queries; only caller-access
+/// filtering is per call.
 [[nodiscard]] consteval auto members(Info subject, Access access = Access::current()) {
   detail::requireMemberScope(subject, "members() requires a class, union, or namespace reflection");
-  return detail::makeInfoSequence(std::meta::members_of(subject, access));
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::Members, access);
 }
 
-/// Type-oriented overload of `members(Info, Access)` reflecting `T` without changing source ordering or
-/// access rules.
+/// Type-oriented overload of `members(Info, Access)` backed by the canonical per-type member cache.
+///
+/// `Reflect<T>::members()` delegates here as well, and the raw-`Info` overload reaches the same
+/// specialization through the private reflective bridge. The cache itself is instantiated only when this
+/// category is requested for `T`.
 template <class T>
 [[nodiscard]] consteval auto members(Access access = Access::current()) {
-  return members(^^T, access);
+  if constexpr (not std::is_class_v<T> and not std::is_union_v<T>) {
+    throw std::meta::exception{"members() requires a class or union type", ^^T};
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::Members>(access);
+  }
 }
 
 /// Returns non-static data members visible to the supplied access context.
@@ -337,13 +615,17 @@ template <class T>
 /// storage, and an invalid subject throws `std::meta::exception`.
 [[nodiscard]] consteval auto fields(Info subject, Access access = Access::current()) {
   detail::requireRecord(subject, "fields() requires a class or union reflection");
-  return detail::makeInfoSequence(std::meta::nonstatic_data_members_of(subject, access));
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::Fields, access);
 }
 
-/// Type-oriented overload of `fields(Info, Access)` for class/union type `T`.
+/// Type-oriented overload of backed by independently lazy canonical field cache for `T`.
 template <class T>
 [[nodiscard]] consteval auto fields(Access access = Access::current()) {
-  return fields(^^T, access);
+  if constexpr (not std::is_class_v<T> and not std::is_union_v<T>) {
+    throw std::meta::exception{"fields() requires a class or union type", ^^T};
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::Fields>(access);
+  }
 }
 
 /// Returns static data members visible to the supplied access context.
@@ -352,13 +634,17 @@ template <class T>
 /// storage, and an invalid subject throws `std::meta::exception`.
 [[nodiscard]] consteval auto staticFields(Info subject, Access access = Access::current()) {
   detail::requireRecord(subject, "staticFields() requires a class or union reflection");
-  return detail::makeInfoSequence(std::meta::static_data_members_of(subject, access));
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::StaticFields, access);
 }
 
-/// Type-oriented overload of `staticFields(Info, Access)` for class/union type `T`.
+/// Type-oriented overload backed by the independently lazy canonical static-field cache for `T`.
 template <class T>
 [[nodiscard]] consteval auto staticFields(Access access = Access::current()) {
-  return staticFields(^^T, access);
+  if constexpr (not std::is_class_v<T> and not std::is_union_v<T>) {
+    throw std::meta::exception{"staticFields() requires a class or union type", ^^T};
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::StaticFields>(access);
+  }
 }
 
 /// Returns ordinary functions/function templates, excluding constructors.
@@ -367,16 +653,17 @@ template <class T>
 /// declaration order and `access`; invalid subjects throw `std::meta::exception`.
 [[nodiscard]] consteval auto functions(Info subject, Access access = Access::current()) {
   detail::requireMemberScope(subject, "functions() requires a class, union, or namespace reflection");
-  return detail::filteredMembers(subject, access, [](Info member) consteval -> bool {
-    return (std::meta::is_function(member) or std::meta::is_function_template(member)) and
-           not(std::meta::is_constructor(member) or std::meta::is_constructor_template(member));
-  });
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::Functions, access);
 }
 
 /// Type-oriented overload of `functions(Info, Access)` reflecting the scope represented by `T`.
 template <class T>
 [[nodiscard]] consteval auto functions(Access access = Access::current()) {
-  return functions(^^T, access);
+  if constexpr (not std::is_class_v<T> and not std::is_union_v<T>) {
+    throw std::meta::exception{"functions() requires a class or union type", ^^T};
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::Functions>(access);
+  }
 }
 
 /// Returns constructors and constructor templates visible to the supplied access context.
@@ -385,15 +672,17 @@ template <class T>
 /// and use static backing storage.
 [[nodiscard]] consteval auto constructors(Info subject, Access access = Access::current()) {
   detail::requireClass(subject, "constructors() requires a class reflection");
-  return detail::filteredMembers(subject, access, [](Info member) consteval -> bool {
-    return std::meta::is_constructor(member) or std::meta::is_constructor_template(member);
-  });
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::Constructors, access);
 }
 
-/// Type-oriented overload of `constructors(Info, Access)` for class type `T`.
+/// Type-oriented overload backed by the independently lazy canonical constructor cache for `T`.
 template <class T>
 [[nodiscard]] consteval auto constructors(Access access = Access::current()) {
-  return constructors(^^T, access);
+  if constexpr (not std::is_class_v<T>) {
+    throw std::meta::exception{"constructors() requires a class type", ^^T};
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::Constructors>(access);
+  }
 }
 
 /// Returns direct base-specifier reflections in declaration order.
@@ -402,13 +691,18 @@ template <class T>
 /// transitive-base expansion or reordering is performed.
 [[nodiscard]] consteval auto bases(Info subject, Access access = Access::current()) {
   detail::requireClass(subject, "bases() requires a class reflection");
-  return detail::makeInfoSequence(std::meta::bases_of(subject, access));
+  return detail::cachedVisibleCategory(subject, detail::CacheCategory::Bases, access);
 }
 
 /// Type-oriented overload of `bases(Info, Access)` for class type `T`.
 template <class T>
 [[nodiscard]] consteval auto bases(Access access = Access::current()) {
-  return bases(^^T, access);
+  if constexpr (not std::is_class_v<T>) {
+    throw std::meta::exception{"bases() requires a class type", ^^T};
+
+  } else {
+    return detail::cachedVisibleCategory<T, detail::CacheCategory::Bases>(access);
+  }
 }
 
 /// Returns enumerators of an enum in declaration order.
@@ -419,7 +713,7 @@ template <class T>
   if (not std::meta::is_type(subject) or not std::meta::is_enum_type(subject)) {
     throw std::meta::exception{"enumerators() requires an enum reflection", subject};
   }
-  return detail::makeInfoSequence(std::meta::enumerators_of(subject));
+  return detail::cachedCategory(subject, detail::CacheCategory::Enumerators);
 }
 
 /// Type-oriented enum source. The constraint makes non-enum misuse an overload-formation error instead of a
@@ -428,7 +722,7 @@ template <class T>
 template <class E>
   requires std::is_enum_v<E>
 [[nodiscard]] consteval auto enumerators() {
-  return enumerators(^^E);
+  return detail::categoryCache<^^E, detail::CacheCategory::Enumerators>;
 }
 
 /// Parameter-source callable for reflected functions, function types, and function templates.
@@ -444,7 +738,7 @@ struct Parameters final {
         not std::meta::is_function_template(subject)) {
       throw std::meta::exception{"parameters() requires a function reflection", subject};
     }
-    return detail::makeInfoSequence(std::meta::parameters_of(subject));
+    return detail::cachedCategory(subject, detail::CacheCategory::Parameters);
   }
 };
 /// Stateless callable parameter source used as `meta::parameters(info)` and as a future Query projection.
@@ -456,25 +750,25 @@ inline constexpr Parameters parameters{};
 /// returned span has static backing storage; value-level deduplication is intentionally left to the future
 /// Query algebra.
 [[nodiscard]] consteval auto annotations(Info subject) {
-  return detail::makeInfoSequence(std::meta::annotations_of(subject));
+  return detail::cachedCategory(subject, detail::CacheCategory::Annotations);
 }
 
-/// Type-oriented overload returning all annotations attached to `T`.
+/// Type-oriented overload returning the independently lazy canonical annotation cache for `T`.
 template <class T>
 [[nodiscard]] consteval auto annotations() {
-  return annotations(^^T);
+  return detail::categoryCache<^^T, detail::CacheCategory::Annotations>;
 }
 
 /// Returns annotations whose annotation object has type `A`, preserving source order and annotation identity.
 template <class A>
 [[nodiscard]] consteval auto annotations(Info subject) {
-  return detail::makeInfoSequence(std::meta::annotations_of_with_type(subject, ^^A));
+  return detail::cachedAnnotationsOfType(subject, ^^A);
 }
 
-/// Type-oriented typed-annotation source equivalent to `annotations<A>(^^T)`.
+/// Type-oriented typed-annotation source backed by an independent `(T, A)` canonical state.
 template <class A, class T>
 [[nodiscard]] consteval auto annotations() {
-  return annotations<A>(^^T);
+  return detail::typedAnnotationsCache<^^T, ^^A>;
 }
 
 /// Template-argument source callable preserving source order and exact reflection identity.
@@ -488,7 +782,7 @@ struct TemplateArguments final {
       throw std::meta::exception{
           "templateArguments() requires a reflection with template arguments", subject};
     }
-    return detail::makeInfoSequence(std::meta::template_arguments_of(subject));
+    return detail::cachedCategory(subject, detail::CacheCategory::TemplateArguments);
   }
 };
 /// Stateless callable template-argument source.
@@ -619,7 +913,7 @@ export namespace Miracle {
 /// (`consteval`).
 template <class T>
 struct Reflect final {
-  /// Contructs the unique valid façade state for `T`.
+  /// Constructs the unique valid façade state for `T`.
   consteval Reflect()
       : subject_(^^T) {
   }
@@ -634,44 +928,44 @@ struct Reflect final {
 
   /// Returns direct members of `T`, honoring the caller-sensitive access context.
   [[nodiscard]] consteval auto members(Access access = Access::current()) const {
-    return meta::members(subject_, access);
+    return meta::members<T>(access);
   }
 
   /// Returns non-static data members of `T`; semantic validity is identical to `meta::fields(raw(), access)`.
   [[nodiscard]] consteval auto fields(Access access = Access::current()) const {
-    return meta::fields(subject_, access);
+    return meta::fields<T>(access);
   }
 
   /// Returns static data members of `T`, preserving declaration order and `access`.
   [[nodiscard]] consteval auto staticFields(Access access = Access::current()) const {
-    return meta::staticFields(subject_, access);
+    return meta::staticFields<T>(access);
   }
 
   /// Returns ordinary functions/function templates of `T`, excluding constructors.
   [[nodiscard]] consteval auto functions(Access access = Access::current()) const {
-    return meta::functions(subject_, access);
+    return meta::functions<T>(access);
   }
 
   /// Returns constructors/constructor templates of a class type `T`.
   [[nodiscard]] consteval auto constructors(Access access = Access::current()) const {
-    return meta::constructors(subject_, access);
+    return meta::constructors<T>(access);
   }
 
   /// Returns direct base specifiers of class type `T` under the requested access context.
   [[nodiscard]] consteval auto bases(Access access = Access::current()) const {
-    return meta::bases(subject_, access);
+    return meta::bases<T>(access);
   }
 
   /// Returns enumerators of enum type `T`; the constraint prevents this member from existing for non-enums.
   [[nodiscard]] consteval auto enumerators() const
     requires std::is_enum_v<T>
   {
-    return meta::enumerators(subject_);
+    return meta::enumerators<T>();
   }
 
   /// Returns all annotations attached directly to `T` in source order.
   [[nodiscard]] consteval auto annotations() const {
-    return meta::annotations(subject_);
+    return meta::annotations<T>();
   }
 
 private:

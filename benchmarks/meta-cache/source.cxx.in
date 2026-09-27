@@ -1,0 +1,18 @@
+import std;
+@MIRACLE_IMPORT@
+
+namespace {
+
+// Every generated target owns a fresh reflected subject so compiler timing measures
+// reflection/cache work in this TU rather than accidentally reusing another target's state.
+struct Subject final {
+@FIELD_DECLARATIONS@};
+
+inline constexpr std::size_t memberCount = @MEMBER_COUNT@;
+inline constexpr std::size_t repetitions = @REPETITIONS@;
+
+@BENCHMARK_BODY@
+
+} // namespace
+
+int main() {}

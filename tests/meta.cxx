@@ -22,7 +22,33 @@ struct[[= Marker{7}]] Sample final : Base {
 
 private:
   int hidden{};
+
+public:
+  static consteval auto fieldsFromMemberContext();
+  static consteval auto reflectedFieldsFromMemberContext();
+  static consteval auto cacheMatchesRawFromMemberContext() -> bool;
 };
+
+consteval auto Sample::fieldsFromMemberContext() {
+  // The default access context must be captured at this member-function call site, where `hidden` is
+  // accessible.
+  return Miracle::meta::fields<Sample>();
+}
+
+consteval auto Sample::reflectedFieldsFromMemberContext() {
+  // `Reflect<T>` must forward the caller's access value rather than recomputing `Access::current()` inside
+  // the façade.
+  return Miracle::reflect<Sample>().fields();
+}
+
+consteval auto Sample::cacheMatchesRawFromMemberContext() -> bool {
+  // Validate the cache projection against the standard query in the *same* privileged context; using an
+  // expected count alone could miss an access-context bug if both the test and implementation accidentally
+  // used an unprivileged caller.
+  const auto cached = Miracle::meta::fields<Sample>();
+  const auto raw = std::meta::nonstatic_data_members_of(^^Sample, Miracle::Access::current());
+  return std::ranges::equal(cached, raw);
+}
 
 enum class Color { red, green, blue };
 
@@ -40,6 +66,24 @@ struct Type {};
 
 template <class T>
 concept HasEnumerators = requires { Miracle::Reflect<T>{}.enumerators(); };
+
+consteval auto cachedInvalidSubjectStillThrows() -> bool {
+  try {
+    static_cast<void>(Miracle::meta::fields(^^int, Miracle::Access::unchecked()));
+  } catch (const std::meta::exception &) {
+    return true;
+  }
+  return false;
+}
+
+consteval auto typedInvalidSubjectStillThrows() -> bool {
+  try {
+    static_cast<void>(Miracle::meta::fields<int>(Miracle::Access::unchecked()));
+  } catch (const std::meta::exception &) {
+    return true;
+  }
+  return false;
+}
 
 // Source-query coverage deliberately exercises caller-sensitive access, namespace subjects, function types,
 // annotations, and template arguments separately; these are the semantic categories Phase 5.2 must later
@@ -66,6 +110,66 @@ static_assert(annotationValues.size() == 1);
 static_assert(templateArguments.size() == 1);
 static_assert(Miracle::meta::members(^^Scope).size() >= 3);
 static_assert(Miracle::meta::functions(^^Scope).size() >= 1);
+static_assert(cachedInvalidSubjectStillThrows());
+static_assert(typedInvalidSubjectStillThrows());
+
+// Phase 5.2 cache invariants: unchecked type queries expose the canonical backing span directly, and the
+// Reflect façade delegates to those same typed caches rather than maintaining a parallel reflection universe.
+constexpr auto cachedMembers = Miracle::meta::members<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedFields = Miracle::meta::fields<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedStaticFields = Miracle::meta::staticFields<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedFunctions = Miracle::meta::functions<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedConstructors = Miracle::meta::constructors<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedBases = Miracle::meta::bases<Sample>(Miracle::Access::unchecked());
+constexpr auto cachedEnumerators = Miracle::meta::enumerators<Color>();
+constexpr auto cachedAnnotations = Miracle::meta::annotations<Sample>();
+constexpr auto cachedTypedAnnotations = Miracle::meta::annotations<Marker, Sample>();
+
+constexpr auto cachedFieldsAgain = Miracle::meta::fields<Sample>(Miracle::Access::unchecked());
+constexpr auto reflected = Miracle::reflect<Sample>();
+
+static_assert(cachedMembers.data() == reflected.members(Miracle::Access::unchecked()).data());
+static_assert(cachedFields.data() == cachedFieldsAgain.data());
+static_assert(cachedFields.data() == reflected.fields(Miracle::Access::unchecked()).data());
+static_assert(cachedStaticFields.data() == reflected.staticFields(Miracle::Access::unchecked()).data());
+static_assert(cachedFunctions.data() == reflected.functions(Miracle::Access::unchecked()).data());
+static_assert(cachedConstructors.data() == reflected.constructors(Miracle::Access::unchecked()).data());
+static_assert(cachedBases.data() == reflected.bases(Miracle::Access::unchecked()).data());
+static_assert(cachedEnumerators.data() == Miracle::reflect<Color>().enumerators().data());
+static_assert(cachedAnnotations.data() == reflected.annotations().data());
+static_assert(cachedTypedAnnotations.data() == Miracle::meta::annotations<Marker, Sample>().data());
+
+// Raw-Info subjects cross a private reflection/substitution bridge into the same NTTP specialization. Pointer
+// identity proves that `meta::fields(^^T)`, `meta::fields<T>()`, and `Reflect<T>::fields()` do not own
+// parallel universes.
+constexpr auto rawUncheckedFields = Miracle::meta::fields(^^Sample, Miracle::Access::unchecked());
+static_assert(rawUncheckedFields.data() == cachedFields.data());
+
+// Access-filtered typed/raw calls also converge on one `(subject, category, Access)` cache specialization.
+constexpr auto visibleTypedFields = Miracle::meta::fields<Sample>(Miracle::Access::unprivileged());
+constexpr auto visibleRawFields = Miracle::meta::fields(^^Sample, Miracle::Access::unprivileged());
+static_assert(visibleTypedFields.data() == visibleRawFields.data());
+static_assert(std::ranges::equal(visibleTypedFields,
+    std::meta::nonstatic_data_members_of(^^Sample, Miracle::Access::unprivileged())));
+constexpr auto viaSample = Miracle::Access::unprivileged().via(^^Sample);
+static_assert(std::ranges::equal(Miracle::meta::fields<Sample>(viaSample),
+    std::meta::nonstatic_data_members_of(^^Sample, viaSample)));
+static_assert(std::ranges::equal(Miracle::meta::members(^^Scope, Miracle::Access::unprivileged()),
+    std::meta::members_of(^^Scope, Miracle::Access::unprivileged())));
+
+// Non-access-sensitive sources use the same canonical identity rule, including two-key typed annotations.
+static_assert(Miracle::meta::parameters(^^freeFunction).data() == parameters.data());
+static_assert(Miracle::meta::templateArguments(^^Box<int>).data() == templateArguments.data());
+static_assert(Miracle::meta::annotations<Marker>(^^Sample).data() == cachedTypedAnnotations.data());
+
+// Caller-sensitive filtering happens over the cached unchecked universe: an ordinary namespace-scope call
+// sees only the public field while a call originating in Sample's member context sees both public and private
+// data members.
+static_assert(publicFields.size() == 1);
+static_assert(visibleTypedFields.size() == 1);
+static_assert(Sample::fieldsFromMemberContext().size() == 2);
+static_assert(Sample::reflectedFieldsFromMemberContext().size() == 2);
+static_assert(Sample::cacheMatchesRawFromMemberContext());
 
 // Functional-vocabulary coverage verifies both strict and optional projections before Query starts composing
 // these values.

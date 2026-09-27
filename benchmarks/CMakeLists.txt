@@ -15,3 +15,7 @@ endforeach()
 if(MIRACLE_BUILD_TESTS)
   add_test(NAME MiracleIterStress COMMAND MiracleIterStress)
 endif()
+
+# Compile-time reflection-cache benchmarks are isolated from runtime benchmark
+# targets.
+add_subdirectory(meta-cache)

@@ -22,6 +22,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added a build-system feature that omits disabled heavy module sources and dependencies and generates the typed configured `BuildFeatureSet`, capability universe, and build identity.
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
 - Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
+- Added canonical, independently lazy Miracle.Meta reflection caches with caller-sensitive access projections and shared backing across type, raw-`Info`, and `Reflect<T>` entry points.
 
 ### Changed
 
@@ -45,6 +46,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Rendered diagnostic cause trees with iterative parent/index DFS in O(n) time, O(depth) auxiliary storage, and O(1) native recursion.
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.
+- Added 32/128/512/1024-member Meta compiler-cost fixtures measuring one-shot and repeated raw-vs-cached reflection wall time and peak RSS; repeated cache lookups avoid rebuilding source universes and access-filtered projections.
 
 ### Diagnostics
 
