@@ -1,6 +1,6 @@
-# Miracle compiler-cost fixtures. Each target is a separate translation unit so
-# the benchmark driver can time the compiler process directly after all imported
-# module BMIs are already available.
+# Meta cache compiler-cost fixtures. Each target is a separate translation unit
+# so the benchmark driver can time the compiler process directly after all
+# imported module BMIs are already available.
 set(miracle_meta_cache_sizes 32 128 512 1024)
 set(miracle_meta_cache_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_meta_cache_generated_dir}")

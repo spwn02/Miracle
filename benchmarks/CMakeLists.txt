@@ -19,3 +19,4 @@ endif()
 # Compile-time reflection-cache benchmarks are isolated from runtime benchmark
 # targets.
 add_subdirectory(meta-cache)
+add_subdirectory(meta-query)

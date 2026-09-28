@@ -30,25 +30,24 @@ else()
     STATUS "Patched ${replacement_count} pinned Switch fatal call(s) to panic")
 endif()
 
-# Miracle's replaces pre-Meta variable-template vocabulary with the public
-# Miracle.Meta module. The pinned Switch test baseline still consumes those
-# historical names. Adapt Switch locally instead of re-exporting legacy aliases
-# from Miracle's production module.
+# The Meta surface replaces Miracle's pre-Meta variable-template vocabulary with
+# the public Miracle.Meta module. The pinned Switch test baseline still consumes
+# those historical names. Adapt Switch locally instead of re-exporting legacy
+# aliases from Miracle's production module.
 set(annotations_source "${SOURCE_DIR}/src/public/Annotations.ixx")
 file(READ "${annotations_source}" annotations_content)
-string(FIND "${annotations_content}"
-            "Miracle Phase-5 test compatibility facade" compat_position)
+string(FIND "${annotations_content}" "Miracle Meta test compatibility facade"
+            compat_position)
 if(compat_position EQUAL -1)
   file(READ "${CMAKE_CURRENT_LIST_DIR}/switch-meta-compat.inc" meta_compat)
   string(
     REPLACE
       "using namespace Miracle;\n\n"
-      "using namespace Miracle;\n\n// Miracle Phase-5 test compatibility facade.\n${meta_compat}\n\n"
+      "using namespace Miracle;\n\n// Miracle Meta test compatibility facade.\n${meta_compat}\n\n"
       annotations_content
       "${annotations_content}")
   file(WRITE "${annotations_source}" "${annotations_content}")
-  message(
-    STATUS "Patched pinned Switch for the Phase-5 Miracle.Meta vocabulary")
+  message(STATUS "Patched pinned Switch for the Miracle.Meta vocabulary")
 endif()
 
 # Redirect the pinned dependency's old Miracle::meta helper spellings to the

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure and gate Miracle Meta cache compiler wall time and peak RSS.
+"""Measure and gate Meta cache compiler wall time and peak RSS.
 
 The benchmark targets first build normally so CMake has generated module maps and
 all imported BMIs are warm. Measurements then invoke each translation unit's
@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-gate",
         action="store_true",
-        help="report measurements without enforcing Miracle relative-cost gates",
+        help="report measurements without enforcing Meta cache relative-cost gates",
     )
     return parser.parse_args()
 
@@ -134,7 +134,7 @@ def ratio(actual: float, baseline: float) -> float:
 def enforce_gates(size: int, measurements: dict[str, Measurement]) -> list[str]:
     """Return relative-cost gate failures for one reflected subject size.
 
-    Absolute compiler times vary with host load, so Miracle gates ratios from
+    Absolute compiler times vary with host load, so Meta cache gates ratios from
     fixtures compiled in the same run. One-shot wrappers may cost at most 25%
     more wall time / 10% more RSS than raw `<meta>`. Repeated cached lookups must
     beat repeated raw reflection by at least 5% wall time and may not increase RSS.
@@ -173,7 +173,7 @@ def main() -> int:
         raise SystemExit("--samples must be >= 1")
     if not Path("/usr/bin/time").is_file():
         raise SystemExit(
-            "Miracle RSS measurements require GNU /usr/bin/time on the reference Linux host"
+            "Meta cache RSS measurements require GNU /usr/bin/time on the reference Linux host"
         )
 
     build_dir = args.build_dir.resolve()
@@ -215,12 +215,12 @@ def main() -> int:
         failure for size in args.sizes for failure in enforce_gates(size, results[size])
     ]
     if failures:
-        print("\nMiracle compiler-cost gate failures:")
+        print("\nMeta cache compiler-cost gate failures:")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
-    print("\nMiracle compiler-cost gates: PASS")
+    print("\nMeta cache compiler-cost gates: PASS")
     return 0
 
 

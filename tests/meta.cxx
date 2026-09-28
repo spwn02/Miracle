@@ -86,8 +86,8 @@ consteval auto typedInvalidSubjectStillThrows() -> bool {
 }
 
 // Source-query coverage deliberately exercises caller-sensitive access, namespace subjects, function types,
-// annotations, and template arguments separately; these are the semantic categories Phase 5.2 must later
-// cache without API changes.
+// annotations, and template arguments separately; these are the semantic categories the cache layer  must
+// later cache without API changes.
 constexpr auto publicFields = Miracle::meta::fields<Sample>();
 constexpr auto allFields = Miracle::meta::fields<Sample>(Miracle::Access::unchecked());
 constexpr auto staticFields = Miracle::meta::staticFields<Sample>(Miracle::Access::unchecked());
@@ -113,7 +113,7 @@ static_assert(Miracle::meta::functions(^^Scope).size() >= 1);
 static_assert(cachedInvalidSubjectStillThrows());
 static_assert(typedInvalidSubjectStillThrows());
 
-// Phase 5.2 cache invariants: unchecked type queries expose the canonical backing span directly, and the
+// Cache invariants: unchecked type queries expose the canonical backing span directly, and the
 // Reflect façade delegates to those same typed caches rather than maintaining a parallel reflection universe.
 constexpr auto cachedMembers = Miracle::meta::members<Sample>(Miracle::Access::unchecked());
 constexpr auto cachedFields = Miracle::meta::fields<Sample>(Miracle::Access::unchecked());
@@ -241,3 +241,193 @@ constexpr bool narrowReflectMatches = Miracle::reflect<Sample>().raw() == ^^Samp
 consteval {
   Switch::discover<^^Tests::metaVocabulary>();
 }
+
+namespace Tests::meta_query {
+
+constexpr auto fields = Miracle::meta::fields<Tests::metaVocabulary::Sample>(Miracle::Access::unchecked());
+constexpr auto baseQuery = Miracle::meta::query(fields);
+
+static_assert(std::same_as<typename decltype(baseQuery)::Value, const Miracle::meta::Info &>);
+static_assert(baseQuery.size() == fields.size());
+static_assert(baseQuery.count() == fields.size());
+static_assert(not baseQuery.isEmpty());
+static_assert(baseQuery.first().has_value());
+static_assert(baseQuery.first().value() == fields.front());
+static_assert(baseQuery.last().has_value());
+static_assert(baseQuery.last().value() == fields.back());
+static_assert(baseQuery.nth(1).has_value());
+static_assert(baseQuery.position(Miracle::meta::isField) == 0);
+static_assert(baseQuery.rposition(Miracle::meta::isField) == fields.size() - 1);
+static_assert(baseQuery.all(Miracle::meta::isField));
+static_assert(baseQuery.any(Miracle::meta::isField));
+static_assert(not baseQuery.none(Miracle::meta::isField));
+static_assert(baseQuery.contains(fields.front()));
+static_assert(baseQuery.find(Miracle::meta::isField).has_value());
+
+constexpr auto names = baseQuery.map(Miracle::meta::name);
+static_assert(std::same_as<typename decltype(names)::Value, std::optional<std::string_view>>);
+static_assert(names.count() == fields.size());
+static_assert(names.first().has_value());
+static_assert(names.first().value().has_value());
+static_assert(names.findMap([](std::optional<std::string_view> name) consteval { return name; }).has_value());
+
+constexpr auto namedFields = baseQuery.filterMap(Miracle::meta::name);
+static_assert(namedFields.count() == fields.size());
+static_assert(namedFields.first().has_value());
+static_assert(namedFields.first().value() == "visible");
+
+constexpr auto filtered = baseQuery.filter(
+    [](Miracle::meta::Info info) consteval { return Miracle::meta::name(info).has_value(); });
+static_assert(filtered.count() == fields.size());
+static_assert(filtered.take(1).count() == 1);
+static_assert(filtered.skip(1).count() == fields.size() - 1);
+static_assert(
+    filtered.takeWhile([](Miracle::meta::Info) consteval { return true; }).count() == fields.size());
+static_assert(
+    filtered.skipWhile([](Miracle::meta::Info) consteval { return false; }).count() == fields.size());
+static_assert(filtered.slice(0, 1).count() == 1);
+
+constexpr auto enumerated = filtered.enumerate();
+static_assert(enumerated.first().has_value());
+static_assert(enumerated.first()->first == 0);
+static_assert(enumerated.first()->second == fields.front());
+
+constexpr auto boolValues = baseQuery.map(Miracle::meta::isField);
+constexpr auto intSource = std::array{3, 1, 2, 2};
+constexpr auto intValues = Miracle::meta::query(intSource);
+
+struct MappedValue final {
+  int value{};
+  constexpr auto operator==(const MappedValue &) const -> bool = default;
+};
+
+constexpr auto mappedValues = intValues.map([](int value) consteval { return MappedValue{value * 2}; });
+static_assert(std::same_as<typename decltype(mappedValues)::Value, MappedValue>);
+static_assert(mappedValues.nth(2)->value == 4);
+
+constexpr auto tupleSource = std::array{std::pair{1, 2}, std::pair{3, 4}};
+constexpr auto tupleSums =
+    Miracle::meta::query(tupleSource).map([](int left, int right) consteval { return left + right; });
+static_assert(tupleSums.first().value() == 3);
+
+struct AggregateValue final {
+  int left{};
+  int right{};
+};
+constexpr auto aggregateSource = std::array{AggregateValue{2, 3}, AggregateValue{5, 7}};
+constexpr auto aggregateProducts =
+    Miracle::meta::query(aggregateSource).map([](int left, int right) consteval { return left * right; });
+static_assert(aggregateProducts.first().value() == 6);
+static_assert(aggregateProducts.last().value() == 35);
+
+constexpr auto mixedSubjects = std::array{^^int, ^^Tests::metaVocabulary::Sample};
+constexpr auto exceptionFallback =
+    Miracle::meta::query(mixedSubjects).filter([](Miracle::meta::Info info) consteval {
+      try {
+        return Miracle::meta::requireName(info) == "Sample";
+      } catch (const std::meta::exception &) {
+        return false;
+      }
+    });
+static_assert(exceptionFallback.count() == 1);
+
+constexpr auto refFilterMap = Miracle::meta::query(std::span<const int>{intSource})
+                                  .filterMap([](const int &value) consteval -> std::optional<const int &> {
+                                    return value > 1 ? std::optional<const int &>{value} : std::nullopt;
+                                  });
+static_assert(std::same_as<typename decltype(refFilterMap)::Value, const int &>);
+static_assert(refFilterMap.first().value() == 3);
+constexpr auto zipped = filtered.map(Miracle::meta::isField).zip(boolValues);
+static_assert(zipped.count() == fields.size());
+static_assert(zipped.first().has_value());
+static_assert(zipped.first()->first);
+static_assert(zipped.first()->second);
+
+constexpr auto chained = filtered.chain(filtered);
+static_assert(chained.count() == fields.size() * 2);
+
+constexpr auto nested = std::array{std::array{1, 2}, std::array{3, 4}};
+constexpr auto flattened = Miracle::meta::query(nested).flatten();
+static_assert(flattened.count() == 4);
+static_assert(flattened.nth(2).value() == 3);
+
+constexpr auto flatSource = std::array{1, 2};
+constexpr auto flatMapped = Miracle::meta::query(flatSource).flatMap([](int value) consteval {
+  return std::array{value, value + 10};
+});
+static_assert(flatMapped.count() == 4);
+static_assert(flatMapped.nth(3).value() == 12);
+
+constexpr auto inspected = names.inspect([](std::optional<std::string_view>) consteval {});
+static_assert(inspected.count() == names.count());
+
+constexpr auto reverseNames = intValues.reverse();
+static_assert(reverseNames.count() == intValues.count());
+
+constexpr auto sortedNames = intValues.sort();
+constexpr auto sortedByNames = intValues.sortBy(std::less<>{});
+constexpr auto sortedByKey = intValues.sortByKey(std::identity{});
+static_assert(sortedNames.count() == intValues.count());
+static_assert(sortedByNames.count() == intValues.count());
+static_assert(sortedByKey.count() == intValues.count());
+
+constexpr auto minName = names.min();
+constexpr auto maxName = names.max();
+static_assert(minName.has_value());
+static_assert(maxName.has_value());
+static_assert(intValues.minBy(std::less<>{}).has_value());
+static_assert(intValues.maxBy(std::less<>{}).has_value());
+
+constexpr auto minByName = baseQuery.minByKey(Miracle::meta::name);
+constexpr auto maxByName = baseQuery.maxByKey(Miracle::meta::name);
+static_assert(minByName.has_value());
+static_assert(maxByName.has_value());
+
+constexpr auto uniqueNames = intValues.unique();
+constexpr auto uniqueByNames = intValues.uniqueBy(std::identity{});
+static_assert(uniqueNames.count() == 3);
+static_assert(uniqueByNames.count() == 3);
+
+constexpr auto partitioned = baseQuery.partition(Miracle::meta::isField);
+static_assert(partitioned.first.count() == fields.size());
+static_assert(partitioned.second.count() == 0);
+
+consteval auto forEachCount() -> std::size_t {
+  std::size_t count{};
+  intValues.forEach([&count](int) consteval { ++count; });
+  return count;
+}
+static_assert(forEachCount() == intValues.count());
+
+constexpr auto materializableInts = intValues.map([](int value) consteval { return value; });
+constexpr auto materialized = materializableInts.materialize();
+static_assert(materialized.size() == intValues.count());
+static_assert(materialized.front() == 3);
+
+constexpr auto referenceFirst = baseQuery.first();
+static_assert(
+    std::same_as<std::remove_cvref_t<decltype(referenceFirst)>, std::optional<const Miracle::meta::Info &>>);
+
+} // namespace Tests::meta_query
+
+namespace Tests::meta_query_nested {
+
+constexpr auto sourceA = std::array{1, 2};
+constexpr auto sourceB = std::array{3, 4};
+constexpr auto nestedA = Miracle::meta::query(sourceA);
+constexpr auto nestedB = Miracle::meta::query(sourceB);
+constexpr std::array nestedQueries{nestedA, nestedB};
+constexpr auto flattenedQueries = Miracle::meta::query(nestedQueries).flatten();
+
+static_assert(flattenedQueries.count() == 4);
+static_assert(flattenedQueries.nth(0).value() == 1);
+static_assert(flattenedQueries.nth(3).value() == 4);
+
+constexpr auto captured = [] consteval {
+  const int threshold = 3;
+  return Miracle::meta::query(sourceB).filter([threshold](int value) consteval { return value > threshold; });
+}();
+static_assert(captured.count() == 1);
+static_assert(captured.first().value() == 4);
+
+} // namespace Tests::meta_query_nested

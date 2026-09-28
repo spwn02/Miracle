@@ -41,17 +41,15 @@ consteval auto rename(const char (&name)[Size]) -> DebugRename<Size> { // NOLINT
   return DebugRename<Size>{StaticString<Size - 1>{name}};
 }
 
-namespace detail {
-
 template <class>
 inline constexpr bool is_debug_rename_v{};
 template <usize Size>
 inline constexpr bool is_debug_rename_v<DebugRename<Size>>{true};
 
-template <class T>
+export template <class T>
 concept DebuggableAggr = meta::annotated<DebugDerive>(^^T) and not Enum<T>;
 
-template <class T>
+export template <class T>
 concept DebuggableEnum = meta::annotated<DebugDerive>(^^T) and Enum<T>;
 
 template <std::meta::info Info>
@@ -63,7 +61,7 @@ template <std::meta::info Info>
 consteval auto debug_name() -> StringView {
   // Expansion statements need a persistent compile-time range. Promote the annotation sequence once so rename
   // lookup neither depends on a temporary range lifetime nor repeats `annotations_of` during the expansion.
-  constexpr auto reflectedAnnotations = std::define_static_array(std::meta::annotations_of(Info));
+  constexpr auto reflectedAnnotations = meta::annotations(Info);
   template for (constexpr std::meta::info annotation : reflectedAnnotations) {
     using Annotation = std::remove_cvref_t<typename[:meta::type(annotation):]>;
 
@@ -100,7 +98,7 @@ constexpr auto enum_name(T value) -> StringView {
 
   // Enum formatting is runtime-capable, but its candidate set is fixed at compile time. Static promotion lets
   // the runtime branch compare only concrete enum values and precomputed metadata.
-  constexpr auto reflectedEnumerators = std::define_static_array(std::meta::enumerators_of(^^T));
+  constexpr auto reflectedEnumerators = reflect<T>().enumerators();
   template for (constexpr std::meta::info enumerator : reflectedEnumerators) {
     constexpr DebugMetadata metadata = debug_metadata<enumerator>();
 
@@ -126,8 +124,7 @@ constexpr auto format_fields(const Obj &obj, bool pretty = false, usize level = 
   // `debug::derive` is explicit opt-in for the whole type, so formatting intentionally sees private/protected
   // state too. Resolve that field universe once at compile time and keep the runtime formatter limited to
   // value formatting/joining.
-  constexpr auto reflectedFields =
-      std::define_static_array(std::meta::nonstatic_data_members_of(^^Obj, Access::current()));
+  constexpr auto reflectedFields = reflect<Obj>().fields();
   template for (constexpr std::meta::info mem : reflectedFields) {
     constexpr DebugMetadata metadata = debug_metadata<mem>();
     if constexpr (metadata.skipped)
@@ -168,14 +165,6 @@ constexpr auto format_fields(const Obj &obj, bool pretty = false, usize level = 
   return std::format("{} {{ {} }}", name, joined);
 }
 
-} // namespace detail
-
-export template <class T>
-concept DebuggableAggr = detail::DebuggableAggr<T>;
-
-export template <class T>
-concept DebuggableEnum = detail::DebuggableEnum<T>;
-
 export template <class T>
 concept Debuggable = DebuggableAggr<T> or DebuggableEnum<T>;
 
@@ -186,7 +175,7 @@ concept Debuggable = DebuggableAggr<T> or DebuggableEnum<T>;
 /// to the first reflected enumerator.
 export template <Enum T>
 constexpr auto enumName(T value) -> StringView {
-  return detail::enum_name(value);
+  return enum_name(value);
 }
 
 } // namespace Miracle::debug
@@ -214,7 +203,7 @@ struct std::formatter<T> : std::formatter<Miracle::String> {
   }
 
   constexpr auto format(const T &obj, format_context &ctx) const -> std::format_context::iterator {
-    return std::formatter<Miracle::String>::format(Miracle::debug::detail::format_fields(obj, pretty), ctx);
+    return std::formatter<Miracle::String>::format(Miracle::debug::format_fields(obj, pretty), ctx);
   }
 };
 

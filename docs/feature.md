@@ -442,7 +442,7 @@ feature::defaults(catalog)
 `buildFeatures` is the maximum heavy implementation universe compiled into this
 Miracle build.
 
-For now it intentionally does not retrofit legacy Miracle modules into optional features. Existing facilities remain required until their contracted dedicated redesign/revisit phase. New optional facilities can register themselves with the Feature engine immediately.
+For now it intentionally does not retrofit legacy Miracle modules into optional features. Existing facilities remain required until their contracted dedicated redesign/revisit. New optional facilities can register themselves with the Feature engine immediately.
 
 ### `buildCapabilities`
 

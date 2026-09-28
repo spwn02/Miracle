@@ -1,0 +1,19 @@
+import std;
+import Miracle.Meta;
+
+namespace {
+
+struct Subject final {
+  int value{};
+};
+
+constexpr std::array subjects{
+@SUBJECTS@};
+
+@CONTROL_FUNCTION@
+
+static_assert(@EXPECTED@ == selectedPath());
+
+} // namespace
+
+int main() {}

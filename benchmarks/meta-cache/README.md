@@ -1,6 +1,6 @@
 # Meta cache compiler-cost benchmark
 
-Miracle treats compiler wall time and peak RSS as first-class performance metrics. These fixtures compare raw C++26 reflection with Miracle's canonical cache paths at 32, 128, 512, and 1024 reflected fields.
+Meta treats compiler wall time and peak RSS as first-class performance metrics. These fixtures compare raw C++26 reflection with Miracle's canonical cache paths at 32, 128, 512, and 1024 reflected fields.
 
 Configure a build with `MIRACLE_BUILD_BENCHMARKS=ON`, then run:
 

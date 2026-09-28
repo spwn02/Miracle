@@ -49,8 +49,8 @@ set_target_properties(
 
 target_link_libraries(MiracleTests PRIVATE Miracle::Miracle Switch::Switch)
 
-# Verify that the Phase-5 narrow Meta module is independently consumable; this
-# probe deliberately does not import the Miracle umbrella or std module.
+# Verify that the narrow Meta module is independently consumable; this probe
+# deliberately does not import the Miracle umbrella or std module.
 add_executable(MiracleMetaImportProbe meta-import-probe.cxx)
 target_compile_features(MiracleMetaImportProbe PRIVATE cxx_std_26)
 set_target_properties(
@@ -208,3 +208,13 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   MetaEnumeratorsNonEnum compile-fail/meta-enumerators-non-enum.cxx
   "enumerators() requires an enum reflection")
+miracle_add_compile_fail_test(
+  MetaQueryMapVoid compile-fail/meta-query-map-void.cxx
+  "Query::map() cannot return void")
+miracle_add_compile_fail_test(
+  MetaQueryMaterializeReference
+  compile-fail/meta-query-materialize-reference.cxx
+  "Query::materialize() requires a copy-constructible object value")
+miracle_add_compile_fail_test(
+  MetaQueryTemporaryArray compile-fail/meta-query-temporary-array.cxx
+  "Query cannot borrow a temporary array")

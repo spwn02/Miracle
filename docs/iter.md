@@ -234,7 +234,7 @@ Container-extension and mutation-heavy operations such as `collectInto` and `par
 
 ### Rust API reconciliation matrix
 
-The final policy is semantic parity, not lexical imitation. Rust's API is classified as follows:
+The iterator policy is semantic parity, not lexical imitation. Rust's API is classified as follows:
 
 | Classification | Miracle treatment |
 | --- | --- |

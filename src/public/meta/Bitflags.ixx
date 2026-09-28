@@ -19,7 +19,7 @@ consteval auto is_flags_enum_v() -> bool { // NOLINT(readability-identifier-nami
   // Validate the complete declared flag universe at compile time. Zero is allowed as an empty value; every
   // positive enumerator must represent exactly one bit so the generated bitwise helpers cannot encode
   // overlapping base flags.
-  constexpr auto reflectedEnumerators = std::define_static_array(std::meta::enumerators_of(^^E));
+  constexpr auto reflectedEnumerators = reflect<E>().enumerators();
   template for (constexpr std::meta::info enumerator : reflectedEnumerators) {
     const auto value = std::to_underlying([:enumerator:]);
     if (value > 0 and not std::has_single_bit(value)) {
@@ -142,7 +142,7 @@ constexpr auto all() noexcept -> B {
 
   // The concept already proved every positive enumerator is a single bit, so OR-ing the compile-time enum
   // universe produces the exact mask of all declared flags without maintaining a parallel hand-written mask.
-  constexpr auto reflectedEnumerators = std::define_static_array(std::meta::enumerators_of(^^B));
+  constexpr auto reflectedEnumerators = reflect<B>().enumerators();
   template for (constexpr std::meta::info enumerator : reflectedEnumerators) {
     result |= [:enumerator:];
   }

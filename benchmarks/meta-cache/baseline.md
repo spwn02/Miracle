@@ -1,4 +1,4 @@
-# Miracle reference compiler-cost baseline
+# Meta cache reference compiler-cost baseline
 
 Reference snapshot recorded on 2026-09-26 with:
 

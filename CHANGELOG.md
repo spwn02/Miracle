@@ -11,8 +11,8 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added lazy `Iter` pipelines with universal range/integer/Option/Result construction, adaptive tuple/reflected-aggregate callable invocation, positional slicing, Rust-inspired adaptors and terminals, and standard-range capability preservation.
 - Added standard-backed `empty`, `once`, `repeat`, and `repeatN` Iter sources plus allocation-free `onceWith`, `repeatWith`, `fromFn`, and `successors` generated sources.
 - Added `copied`, `cloned`, and forward-range `cycle` adaptors; reverse `nthBack`, `rFind`, and `rFold` terminals; and C++-native lexicographical `compare`.
-- Added the iterator-parity surface: stateful `Peekable`, public semantic adaptor values, free `chain`/`zip`, optional-seed `successors`, `std::generator` interoperability, selected Rust-nightly `intersperseWith`/`mapWindows`/`arrayChunks`/`eqBy`, and explicit Rust-to-Miracle parity/defer/divergence documentation.
-- Added Meta vocabulary with the standalone `Miracle.Meta` module, `Reflect<T>`/`reflect<T>()`, strict C++26 reflection sources and transformations, composable reflection predicates.
+- Expanded the iterator-parity surface with stateful `Peekable`, public semantic adaptor values, free `chain`/`zip`, optional-seed `successors`, `std::generator` interoperability, selected Rust-nightly `intersperseWith`/`mapWindows`/`arrayChunks`/`eqBy`, and explicit Rust-to-Miracle parity/defer/divergence documentation.
+- Added Meta reflection vocabulary with the standalone `Miracle.Meta` module, `Reflect<T>`/`reflect<T>()`, strict C++26 reflection sources and transformations, and composable reflection predicates.
 - Added explicit `ParallelIter` execution as a thin façade over standard C++ execution policies for indexable pipelines.
 - Added nonnumeric `Infinity`/`infinity` positional-bound vocabulary and conservative `SizeHint` iterator size knowledge.
 - Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
@@ -23,6 +23,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
 - Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
 - Added canonical, independently lazy Miracle.Meta reflection caches with caller-sensitive access projections and shared backing across type, raw-`Info`, and `Reflect<T>` entry points.
+- Added compile-time `Miracle::meta::Query<State>` with fused transformation, selection, search, ordering, set-like, partition, terminal, and static-materialization operations, including exact reference preservation and C++26 `std::optional<T&>` support.
 
 ### Changed
 
