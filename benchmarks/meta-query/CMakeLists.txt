@@ -77,7 +77,9 @@ foreach(size IN LISTS miracle_meta_query_sizes)
 endforeach()
 
 # Exception-versus-predicate control-flow fixtures use the same mixed reflection
-# sequence so both strategies answer the identical semantic question.
+# sequence so both spellings answer the identical Boolean question. The
+# exception variant is intentionally the non-policy baseline: production Boolean
+# branching should use the predicate path.
 set(miracle_meta_query_control_dir "${CMAKE_CURRENT_BINARY_DIR}/control")
 file(MAKE_DIRECTORY "${miracle_meta_query_control_dir}")
 set(META_QUERY_CONTROL_SUBJECTS "")
@@ -102,7 +104,7 @@ foreach(variant IN ITEMS Predicate Exception)
 consteval auto selectedPath() -> std::size_t {
   std::size_t result{};
   for (const Miracle::meta::Info info : subjects) {
-    if (Miracle::meta::name(info).has_value()) {
+  if (Miracle::meta::hasIdentifier(info)) {
       ++result;
     }
   }

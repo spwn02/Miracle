@@ -8,7 +8,7 @@ import Miracle.Meta;
 
 The umbrella `import Miracle;` re-exports the same API.
 
-The Meta surface establishes a reflection vocabulary, canonical source caches, caller-sensitive access projections, and a dedicated `Query<State>` compile-time algebra. Query remains deliberately independent of `Iter`.
+The Meta surface establishes a reflection vocabulary, canonical source caches, caller-sensitive access projections, and a dedicated compile-time `Query` algebra. Query remains deliberately independent of runtime `Iter`.
 
 ## Core vocabulary
 
@@ -35,7 +35,7 @@ static_assert(fields.size() == 3);
 constexpr Miracle::meta::Info first = fields.front();
 ```
 
-This standard carrier remains the source-layer representation underneath the frozen `Query<State>` surface. Query adds transformation/search/ordering/materialization semantics without changing the canonical reflection identities or their backing storage.
+This standard carrier remains the source-layer representation underneath Query. Query adds transformation, search, ordering, source-composition, and explicit materialization semantics without changing the canonical reflection identities or their backing storage.
 
 ## `Reflect<T>`
 
@@ -75,6 +75,8 @@ The Meta source layer provides declaration-ordered source queries for:
 
 Access-sensitive APIs default to the caller's `Access::current()`. Callers may explicitly request another standard access context, including `Access::unchecked()`.
 
+Source preconditions are intentional. Record-member sources require a complete class/union; `enumerators()` requires an enumerable enum definition; `parameters()` accepts a concrete function declaration/specialization or a function type, while an unspecialized function-template reflection is rejected because it has no concrete parameter declaration sequence. Namespace aliases and type aliases keep their own reflected identity until `dealias` is requested.
+
 ## Functional metadata vocabulary
 
 Reflection operations are small callable values where composition benefits from it:
@@ -101,6 +103,17 @@ Miracle::meta::canSubstitute(^^Template, arguments);
 Miracle::meta::substitute(^^Template, arguments);
 ```
 
+Type normalization is deliberately explicit rather than hidden inside a broad canonicalization helper:
+
+```cpp
+Miracle::meta::removeCv(^^const volatile int);       // ^^int
+Miracle::meta::removeReference(^^const int&);        // ^^const int
+Miracle::meta::removeCvref(^^const int&);            // ^^int
+Miracle::meta::underlyingType(^^MyEnum);             // reflected enum representation type
+```
+
+`dealias` and cv/reference normalization are separate operations: alias identity is preserved until the caller explicitly asks to erase it. These callable projections compose directly in Query, for example `fields<T>() -> map(type) -> map(removeCvref)`.
+
 `raw` is the explicit escape hatch and leaves `std::meta::info` available for standard facilities that Miracle does not wrap.
 
 ## Predicate DSL
@@ -119,9 +132,11 @@ The initial vocabulary includes type/class/union/enum, function/function-templat
 
 ## Strict consteval failure
 
-Semantic misuse is reported with `std::meta::exception`. For example, `requireName` rejects a reflection without an identifier and `enumerators` rejects a non-enum reflection. This is also the foundation for the speculative compile-time control-flow model: callers may deliberately try one semantic interpretation, catch `std::meta::exception`, and attempt another.
+Semantic misuse is reported with `std::meta::exception`. For example, `requireName` rejects a reflection without an identifier and `enumerators` rejects a non-enum reflection. Strict operations are appropriate when failure is itself a semantic error or when a caller is genuinely attempting one compile-time interpretation before falling back to another.
 
-Boolean questions should still use predicates rather than exceptions.
+Ordinary Boolean questions do **not** use exceptions as branching syntax. Miracle exposes non-throwing predicates for the common strict-operation preconditions: `hasIdentifier`, `hasParent`, `hasTemplateArguments`, `isFunctionType`, `isType`, `isEnum`, `isComplete`, and `isEnumerable`; substitution has the dedicated `canSubstitute` probe. Use `name(info)` when identifier absence is an expected value rather than an error.
+
+A natural speculative fallback is an operation such as `meta::type(info)`: there is no single standard predicate describing every entity for which `type_of` is meaningful, so a compile-time interpreter may try the projection, catch `std::meta::exception`, and attempt another interpretation. This is distinct from writing `try { requireName(x); } catch (...) { return false; }`, which should simply use `hasIdentifier(x)` or `name(x)`.
 
 ## Reflection cache semantics
 
@@ -144,20 +159,30 @@ The public APIs remain value-oriented. Internally, raw `Info`/`Access` values cr
 
 ## Query algebra
 
-`Query<State>` is the finite, compile-time-only sequence algebra used to compose reflection results and other static metadata sources. `State` is the only public template parameter; the implementation keeps one source plus a flat tuple of normalized operation state rather than recursively nesting expression-template nodes.
+`Query` is Miracle.Meta's finite, compile-time-only sequence algebra for reflection results and other constant-evaluable static sources. Its public syntax stays deliberately Iter-like while the implementation lowers the fluent chain into immutable normalized value IR rather than encoding every operation as a new C++ stage type.
 
-Every public Query operation is `consteval`. `Query::Value` is the exact logical element type, including lvalue-reference and other reference qualifiers where the pipeline can preserve them. Selection terminals therefore use the C++26 `std::optional<T&>` facility when `Value` is a reference.
+Every public Query operation is `consteval`. `Query::Value` is the exact logical element type, including references where the pipeline can preserve them. Selection terminals therefore use C++26 `std::optional<T&>` when `Value` is an lvalue reference.
 
 ```cpp
-constexpr auto functions = Miracle::meta::query(Miracle::meta::functions<MyType>())
-    .filter(Miracle::meta::isFunction)
-    .map(Miracle::meta::name)
-    .filterMap([](auto name) consteval { return name; });
+consteval auto hasLongRenderFunction() -> bool {
+    constexpr std::size_t threshold = 3;
+    auto functions = Miracle::meta::query(Miracle::meta::functions<MyType>())
+        .filter(Miracle::meta::isFunction)
+        .map(Miracle::meta::name)
+        .filterMap([](auto name) consteval { return name; })
+        .filter([threshold](std::string_view name) consteval {
+            return name.size() > threshold;
+        });
 
-static_assert(functions.any([](std::string_view name) consteval {
-    return name == "render";
-}));
+    return functions.any([](std::string_view name) consteval {
+        return name == "render";
+    });
+}
+
+static_assert(hasLongRenderFunction());
 ```
+
+Captured lambdas are a supported ordinary case. Structural/captureless callables can be reflected directly into the immutable program; genuinely non-structural captured closures remain in a compact flat capture environment. Users never spell that distinction in the API.
 
 The transformation surface is:
 
@@ -188,29 +213,49 @@ min       max          minBy           maxBy          minByKey       maxByKey
 unique    uniqueBy     partition
 ```
 
-`size()` is exposed only where the implementation can prove exact cardinality without evaluating a data-dependent predicate. `count()` is the evaluative cardinality terminal.
+`size()` is exposed only where exact cardinality is statically knowable without evaluating a data-dependent predicate. `count()` is the evaluative cardinality terminal.
 
-### Fusion and state
+### Value IR, normalization, and typed segments
 
-Element-wise transformations, predicates, inspection, slicing, enumeration, and cardinality-limiting operations are represented as one flat normalized stage tuple. Evaluation walks the source once and propagates each logical value through the stages, so compatible pipelines do not create intermediate compile-time containers.
+A fluent pipeline is represented primarily as immutable structural instruction data. Safe adjacent operations are normalized when doing so preserves evaluation order, short-circuiting, reference categories, overflow behavior, and compile-time observable effects. Examples include removing `skip(0)`, combining compatible `take`/`skip` restrictions, and canonicalizing exact slice restrictions.
 
-Operations that require persistent reordered/grouped storage use a static-storage barrier only when the result element representation is eligible for `std::define_static_array`. Reference-valued queries retain reference semantics through selection and other non-persistent operations; `materialize()` rejects a result when persistence would require silently changing that logical representation.
+Consecutive operations that preserve the exact logical item type compile into one homogeneous execution segment. C++26 expansion statements lower that segment directly into statements. Only genuine type/cardinality boundaries—such as a type-changing `map`, output-changing `filterMap`, or flattening boundary—require typed continuation machinery. Long same-type pipelines therefore do not create one function/class-template specialization per logical operation.
 
-`flatMap()` and `flatten()` accept another Query or an input-range value. An rvalue nested range yields its value type so that a terminal cannot accidentally retain a reference into a temporary; lvalue nested ranges preserve their reference semantics. `filterMap()` follows the same rule for optional-like results and recognizes the C++26 `std::optional<T&>` specialization explicitly, preserving `T&` as the logical Query value instead of decaying it to `T`.
+Traversal mutation is evaluation-local data. `take`, `skip`, `enumerate`, `takeWhile`, `skipWhile`, and slices use compact counter/flag pools compiled from the normalized program; mutable traversal state is not stored persistently in the Query object.
 
-`chain()` and `zip()` retain their source states as compile-time source composition rather than eagerly converting either input into a user-visible container. `zip()` terminates at the shorter logical sequence.
+### Exact references, values, and captures
 
-### Persistence
+Lazy execution preserves exact logical categories whenever the operation permits it: `T`, `T&`, `const T&`, and valid rvalue categories are not silently decayed or copied. A reference-valued selection remains a reference:
 
-`materialize()` is the explicit persistence boundary. Eligible object values are promoted through C++26 `std::define_static_array` and returned as an ordinary standard span. The query abstraction itself never becomes a runtime range and has no runtime storage or iterator hierarchy.
+```cpp
+constexpr auto selected = Miracle::meta::query(objects)
+    .filter([](const Item& item) consteval { return item.enabled; })
+    .first();
+
+static_assert(std::same_as<decltype(selected), const std::optional<Item const&>>);
+```
+
+A non-structural captured callable is stored only because its closure value is semantically required. Captureless/static operations do not consume capture-environment slots, so environment type/storage growth follows the number of irreducible captures rather than total pipeline depth.
+
+### Source composition and lifetime
+
+`flatMap()` and `flatten()` accept another Query or an input-range value. An rvalue nested range yields its value type so a terminal cannot retain a reference into expired temporary storage; lvalue nested ranges preserve their reference semantics. `filterMap()` applies the same rule to optional-like results, including C++26 `std::optional<T&>`.
+
+`chain()` and `zip()` retain their source states as compile-time source composition rather than eagerly converting either input into an intermediate user-visible container. `zip()` terminates at the shorter logical sequence.
+
+### Persistence barriers
+
+Operations that fundamentally require stable reordered/grouped backing are explicit persistence barriers. `materialize()` promotes eligible object values through C++26 `std::define_static_array` and returns an ordinary standard span. `sort`, `reverse`, `partition`, set-like operations, and other persistence-requiring operations evaluate the current program, create the required backing, then continue from that new source.
+
+Ordinary lazy adaptors do not silently create intermediate compile-time containers. Reference-valued queries reject persistence when storing the result would require changing the logical representation, and move-only values are rejected at a barrier when the required persistence operation cannot preserve their semantics.
 
 ### Adaptive invocation
 
-Predicates and projections use Meta's local adaptive invocation rules: direct invocation is preferred, then tuple protocol decomposition, then reflected aggregate-field expansion. Aggregate expansion reuses `Reflect<T>::fields()` so the Query engine does not maintain a parallel reflection path. This machinery is private to Meta Query and does not import the runtime `Iter` implementation.
+Predicates and projections use Meta's local adaptive invocation rules: direct invocation is preferred, then tuple-protocol decomposition, then reflected aggregate-field expansion. Aggregate expansion reuses `Reflect<T>::fields()` so Query does not maintain a parallel reflection path. This machinery is private to Miracle.Meta and does not import runtime `Iter`.
 
 ### Compile-time failure
 
-Query remains a strict consteval API. Invalid semantic operations use `std::meta::exception` where a meaningful semantic failure can be represented that way; ordinary Boolean questions continue to use predicates and do not use exceptions as branching syntax.
+Query is a strict consteval API. Invalid semantic operations use `std::meta::exception` where failure is a genuine semantic error; ordinary Boolean questions use predicates and do not use exceptions as generic branching syntax. Failure-prone source/cache operations validate before entering NTTP cache specializations so catchable semantic exceptions do not escape through constant-initializer machinery.
 
 ## Compiler-cost benchmark
 
@@ -224,8 +269,8 @@ python3 benchmarks/meta-cache/run.py build/tests --samples 3
 
 The driver measures the compiler process directly after module BMIs/module maps exist, reporting front-end wall time and peak RSS without dependency-scanner or link time. One-shot Miracle lookup is required to stay within measurement noise of the raw standard expression; repeated lookups are expected to become cheaper when canonical cache reuse avoids repeated reflection/filter work. The recorded reference snapshot is in `benchmarks/meta-cache/baseline.md`; the executable gate uses same-run ratios rather than absolute machine-specific timings.
 
-`benchmarks/meta-query` separately compares direct raw `<meta>` multi-stage evaluation with the fused Query state machine and measures the consteval predicate-versus-`std::meta::exception` control-flow forms on the reference compiler. These measurements are diagnostic rather than absolute-time gates.
+`benchmarks/meta-query` separately measures the final reflected value-IR/typed-segment Query architecture against raw and historical architecture controls, including depth scaling, structural allocation, wall time/RSS, generated assembly, and the predicate-versus-`std::meta::exception` control-flow diagnostic. See `benchmarks/meta-query/baseline.md` for the pinned completion measurements and their snapshot/fixture caveats.
 
 ## Implementation boundary
 
-The cache layer covers only canonical reflection sources and access-filtered source projections. Arbitrary user Query pipelines are deliberately not cached: Query keeps them as fused value-state expressions and materializes persistent results only at the explicit boundary required by the frozen contract.
+The cache layer covers canonical reflection sources and context-safe access-filtered projections. Equivalent structural static Query prefixes rely first on native compiler identity/interning; captured-lambda-heavy arbitrary pipelines are not blindly global-cached. Persistent user values are created only at an explicit semantic barrier.

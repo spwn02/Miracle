@@ -62,3 +62,15 @@ The important shape is stable across all four stress sizes:
   cache benefit.
 
 Re-run `run.py` after compiler/cache changes. A changed host may shift the absolute numbers substantially; relative same-run gates are the authoritative regression signal.
+
+## Completion spot-check
+
+The final cache architecture was rechecked with `cxx26-2026.10.02` (`c64402ae0a5986b438d03fac632b3744a4c104fe`). For 128 fields and 16 repeated source-universe requests, three-sample medians were:
+
+| Path | Front-end wall | Peak RSS |
+| --- | ---: | ---: |
+| independently repeated raw reflection | 1.20 s | 118.2 MiB |
+| typed canonical cache | 0.13 s | 111.3 MiB |
+| raw-`Info` public-value bridge | 0.15 s | 112.5 MiB |
+
+This is the workload-level negative-cost evidence: the ergonomic value bridge is about 8x faster than recomputing the same reflection universe independently. It does **not** imply that every one-shot Query invocation is cheaper than raw `<meta>`.

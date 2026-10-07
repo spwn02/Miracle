@@ -209,6 +209,9 @@ miracle_add_compile_fail_test(
   MetaEnumeratorsNonEnum compile-fail/meta-enumerators-non-enum.cxx
   "enumerators() requires an enum reflection")
 miracle_add_compile_fail_test(
+  MetaParentNoParent compile-fail/meta-parent-no-parent.cxx
+  "parent() requires a reflection with a parent")
+miracle_add_compile_fail_test(
   MetaQueryMapVoid compile-fail/meta-query-map-void.cxx
   "Query::map() cannot return void")
 miracle_add_compile_fail_test(
@@ -218,3 +221,12 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   MetaQueryTemporaryArray compile-fail/meta-query-temporary-array.cxx
   "Query cannot borrow a temporary array")
+miracle_add_compile_fail_test(
+  MetaQueryDanglingNestedQuery
+  compile-fail/meta-query-dangling-nested-query.cxx
+  "read of variable whose lifetime has ended")
+miracle_add_compile_fail_test(
+  MetaQueryPersistenceMoveOnly
+  compile-fail/meta-query-persistence-move-only.cxx
+  "Query persistence barrier requires a copy-constructible owning logical value"
+)

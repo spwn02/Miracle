@@ -23,11 +23,11 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
 - Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
 - Added canonical, independently lazy Miracle.Meta reflection caches with caller-sensitive access projections and shared backing across type, raw-`Info`, and `Reflect<T>` entry points.
-- Added compile-time `Miracle::meta::Query<State>` with fused transformation, selection, search, ordering, set-like, partition, terminal, and static-materialization operations, including exact reference preservation and C++26 `std::optional<T&>` support.
+- Added compile-time `Miracle::meta::Query` with transformation, selection, search, ordering, set-like, partition, source-composition, terminal, and explicit static-materialization operations, including exact reference preservation, captured-lambda support, and C++26 `std::optional<T&>` support.
 
 ### Changed
 
-- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.09.19.1` toolchain snapshot (`71ba1036c652094d4869f34e0ba7fb5c756f4399`).
+- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.10.02` toolchain snapshot (`c64402ae0a5986b438d03fac632b3744a4c104fe`).
 - Reworked Miracle-owned Iter range types around composition and structural `std::ranges::view` conformance rather than `view_interface`/CRTP inheritance, and modernized borrowed optional terminal results to C++26 `Option<T&>` semantics.
 
 ### Fixed
@@ -48,6 +48,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.
 - Added 32/128/512/1024-member Meta compiler-cost fixtures measuring one-shot and repeated raw-vs-cached reflection wall time and peak RSS; repeated cache lookups avoid rebuilding source universes and access-filtered projections.
+- Replaced the legacy tuple/stage Query machinery with normalized reflected value IR, flat capture storage, typed homogeneous segments, expansion-statement lowering, and evaluation-local state; depth-64 template topology remains flat and the final `Miracle.Meta` module uses 42.9% less AST type/declaration allocation than the legacy module on the pinned completion snapshot.
 
 ### Diagnostics
 

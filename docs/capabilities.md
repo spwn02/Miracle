@@ -50,7 +50,7 @@ This is the bootstrap bridge consumed by Miracle facilities. The Feature engine 
 
 ## Current master behavior
 
-Existing pre-contract Miracle modules still require the capabilities their current implementations use. The Feature engine does not retroactively make legacy modules optional before their dedicated redesign phases. New build-selectable facilities can register capability requirements and heavy sources through the Feature engine now.
+Existing pre-contract Miracle modules still require the capabilities their current implementations use. The Feature engine does not retroactively make legacy modules optional before they are redesigned. New build-selectable facilities can register capability requirements and heavy sources through the Feature engine now.
 
 A feature capability failure is therefore distinct from a capability that remains a hard requirement of an existing required module. The former is diagnosed by feature resolution; the latter continues to reject the selected toolchain during configuration.
 
