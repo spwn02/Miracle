@@ -167,9 +167,9 @@ The snapshot rules are:
 The currently validated reference is:
 
 ```text
-snapshot: cxx26-2026.10.02
-source revision: c64402ae0a5986b438d03fac632b3744a4c104fe
-asset: clang-cxx26-2026.10.02-linux-x86_64
+snapshot: cxx26-2026.10.08
+source revision: 19a66e9bb4ac00a7a5f0510970e5694379a39757
+asset: clang-cxx26-2026.10.08-linux-x86_64
 ```
 
 ## Validation scope
@@ -230,8 +230,8 @@ Miracle/Switch release
   source branch:        master
   reference repository: spwn02/clang-cxx26
   development branch:   cxx26
-  reference snapshot:   cxx26-2026.10.02
-  toolchain revision:   c64402ae0a5986b438d03fac632b3744a4c104fe
+  reference snapshot:   cxx26-2026.10.08
+  toolchain revision:   19a66e9bb4ac00a7a5f0510970e5694379a39757
 ```
 
 The release does not vendor or redistribute compiler BMIs, and the non-release-bearing `gcc` compatibility branch never produces parallel release artifacts.
