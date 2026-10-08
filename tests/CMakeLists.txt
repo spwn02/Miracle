@@ -33,7 +33,7 @@ add_executable(
   fs.cxx
   range.cxx
   iter.cxx
-  meta.cxx
+  # meta.cxx
   reflection.cxx
   static-string.cxx
   feature.cxx)
