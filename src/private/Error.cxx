@@ -75,11 +75,17 @@ static constexpr auto generateStyle(bool locations, bool colours) -> decltype(au
       message = msg.message;
 
     if (idx == 0) {
-      StringView header{colours ? "Error: {}\n\n\033[33mCaused by:\033[0m" : "Error: {}\n\nCaused by:"};
-      res = std::format(std::runtime_format(header), message);
+      if (colours) {
+        res = std::format("Error: {}\n\n\033[33mCaused by:\033[0m", message);
+      } else {
+        res = std::format("Error: {}\n\nCaused by:", message);
+      }
     } else {
-      StringView footer{colours ? "  \033[33m{:d}:\033[0m {}" : "  {:d}: {}"};
-      res = std::format(std::runtime_format(footer), idx - 1, message);
+      if (colours) {
+        res = std::format("  \033[33m{:d}:\033[0m {}", idx - 1, message);
+      } else {
+        res = std::format("  {:d}: {}", idx - 1, message);
+      }
     }
 
     return res;

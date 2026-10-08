@@ -76,7 +76,8 @@ constexpr StringView helpAnsi = "\033[1;32m";
   switch (semantic) {
     case Semantic::enforce: return "enforce";
     case Semantic::observe: return "observe";
-    case Semantic::__unknown: return "unknown";
+    case Semantic::ignore: return "ignore";
+    case Semantic::quick_enforce: return "quick_enforce";
   }
   return "unknown";
 }
@@ -352,7 +353,6 @@ private:
     case Kind::assert:
     case Kind::manual:
     case Kind::cassert:
-    case Kind::__unknown: return ContractCode::Assertion;
   }
   return ContractCode::Assertion;
 }
