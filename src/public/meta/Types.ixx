@@ -55,3 +55,50 @@ using AttributeNamespace = std::meta::AttributeNamespace;
 using AttributeComparison = std::meta::attribute_comparison;
 
 } // namespace Miracle::meta
+
+export namespace Miracle::meta {
+
+/// Lightweight callable façade for a standard or user-provided immediate Meta operation.
+///
+/// The callable is stored directly with empty-state optimization and invoked with exact forwarding.
+/// This is the common representation used by one-to-one `std::meta` wrappers whose semantics do not require
+/// Miracle-specific caching, validation, or failure adaptation. Richer wrappers remain separate when Miracle
+/// intentionally adds those semantics.
+template <class Function>
+struct MetaFunction final {
+  /// Underlying immediate callable. Function pointers and empty function objects occupy no unnecessary state.
+  [[no_unique_address]] Function function;
+
+  /// Invokes the wrapped Meta operation with the exact argument/value categories supplied by the caller.
+  template <class... Arguments>
+  [[nodiscard]] consteval auto operator()(Arguments &&...arguments) const -> decltype(auto) {
+    return function(std::forward<Arguments>(arguments)...);
+  }
+};
+
+/// Deduction guide preserving the concrete standard/user callable type without type erasure.
+template <class Function>
+MetaFunction(Function) -> MetaFunction<Function>;
+
+/// Identity/escape-hatch projection for obtaining the underlying standard reflection value.
+///
+/// Passing `Info` is a no-op. Objects exposing `raw()` (notably `Reflect<T>`) are unwrapped without
+/// introducing another reflection representation. This operation cannot fail and does not create storage.
+struct Raw final {
+  /// Returns `info` unchanged.
+  [[nodiscard]] consteval auto operator()(Info info) const -> Info {
+    return info;
+  }
+
+  /// Returns `value.raw()` for façade-like objects exposing the standard reflection identity.
+  template <class T>
+    requires requires(const T &value) { value.raw(); }
+  [[nodiscard]] consteval auto operator()(const T &value) const -> Info {
+    return value.raw();
+  }
+};
+
+/// Stateless callable instance of `Raw`, suitable for direct calls and Meta Query projections.
+inline constexpr Raw raw{};
+
+} // namespace Miracle::meta
