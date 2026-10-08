@@ -221,6 +221,23 @@ target_sources(
          src/public/Profiling.ixx
          src/public/Concepts.ixx
          src/public/meta/Meta.ixx
+         src/public/meta/Types.ixx
+         src/public/meta/Storage.ixx
+         src/public/meta/Operators.ixx
+         src/public/meta/Names.ixx
+         src/public/meta/Predicates.ixx
+         src/public/meta/Access.ixx
+         src/public/meta/Cache.ixx
+         src/public/meta/Members.ixx
+         src/public/meta/Layout.ixx
+         src/public/meta/Annotations.ixx
+         src/public/meta/Values.ixx
+         src/public/meta/Substitution.ixx
+         src/public/meta/Generation.ixx
+         src/public/meta/TypeQueries.ixx
+         src/public/meta/TypeTransforms.ixx
+         src/public/meta/Reflect.ixx
+         src/public/meta/Query.ixx
          src/public/meta/Bitflags.ixx
          src/public/meta/Debug.ixx
          "${miracle_generated_dir}/Build.ixx"
