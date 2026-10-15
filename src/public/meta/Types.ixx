@@ -45,14 +45,8 @@ concept ReflectionRange = std::meta::reflection_range<Range>;
 using Operators = std::meta::operators;
 /// Standard aggregate-member description options used by `dataMemberSpec`/`defineAggregate`.
 using DataMemberOptions = std::meta::data_member_options;
-/// Standard enum-member description options used by `enumeratorSpec`/`defineEnum`.
-using EnumeratorOptions = std::meta::enumerator_options;
 /// Standard byte/bit member offset result returned by `offsetOf`.
 using MemberOffset = std::meta::member_offset;
-/// Standard reflected attribute namespace discriminator.
-using AttributeNamespace = std::meta::AttributeNamespace;
-/// Standard attribute comparison policy used by `hasAttribute`.
-using AttributeComparison = std::meta::attribute_comparison;
 
 } // namespace Miracle::meta
 
@@ -71,6 +65,7 @@ struct MetaFunction final {
 
   /// Invokes the wrapped Meta operation with the exact argument/value categories supplied by the caller.
   template <class... Arguments>
+    requires std::invocable<const Function &, Arguments...>
   [[nodiscard]] consteval auto operator()(Arguments &&...arguments) const -> decltype(auto) {
     return function(std::forward<Arguments>(arguments)...);
   }

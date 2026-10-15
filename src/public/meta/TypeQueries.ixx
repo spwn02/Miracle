@@ -41,9 +41,9 @@ struct ReturnType final {
 /// Stateless callable instance of `ReturnType`.
 inline constexpr ReturnType returnType{};
 
-/// Resolves a standard reflection alias/proxy to its canonical underlying entity.
+/// Resolves aliases using the exact standard dealias operation; no broader normalization is added.
 struct Dealias final {
-  /// Applies the standard canonical dealiasing operation to `info`.
+  /// Applies `std::meta::dealias` to `info`.
   [[nodiscard]] consteval auto operator()(Info info) const -> Info {
     return std::meta::dealias(info);
   }

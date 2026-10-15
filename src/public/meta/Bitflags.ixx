@@ -63,7 +63,7 @@ struct std::formatter<B> : std::formatter<Miracle::String> {
       ++iter;
     }
 
-    if (*iter == 'x') {
+    if (iter != ctx.end() and *iter == 'x') {
       if (mode != Mode::None)
         throw std::format_error(std::format("Invalid format args for displaying Bitflags: {}. Attempted to "
                                             "enable both binary and hex simultaneously",
@@ -72,7 +72,7 @@ struct std::formatter<B> : std::formatter<Miracle::String> {
       ++iter;
     }
 
-    if (*iter == 'p') {
+    if (iter != ctx.end() and *iter == 'p') {
       prefix = true;
       ++iter;
     }

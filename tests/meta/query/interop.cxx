@@ -24,6 +24,16 @@ inline constexpr Marker marker{42};
 struct[[= marker]] Annotated {};
 struct Plain {};
 
+// Test-local policy: accept exactly one Marker, otherwise produce no value.
+// This is deliberately not a replacement public reflection API.
+consteval auto singleMarker(Info subject) -> std::optional<Marker> {
+  const auto values = std::meta::annotations_of_with_type(subject, ^^Marker);
+  if (values.size() != 1) {
+    return std::nullopt;
+  }
+  return std::meta::extract<Marker>(std::meta::constant_of(values.front()));
+}
+
 struct Base {};
 struct Derived : Base {};
 
@@ -128,14 +138,14 @@ consteval auto rawBinaryPredicatesReachOrderingTerminals() -> bool {
 static_assert(rawBinaryPredicatesReachOrderingTerminals());
 
 consteval auto rawOptionalCallableUsesFilterMap() -> bool {
-  const auto annotations = query(kAnnotated).filterMap(std::meta::annotation_of_type<Marker>).materialize();
+  const auto annotations = query(kAnnotated).filterMap(singleMarker).materialize();
   return annotations.size() == 1 && annotations.at(0).value == marker.value;
 }
 
 static_assert(rawOptionalCallableUsesFilterMap());
 
 consteval auto rawOptionalCallableUsesFindMap() -> bool {
-  const auto annotation = query(kAnnotated).findMap(std::meta::annotation_of_type<Marker>);
+  const auto annotation = query(kAnnotated).findMap(singleMarker);
   return annotation.has_value() && annotation->value == marker.value;
 }
 

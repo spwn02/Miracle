@@ -19,8 +19,7 @@ struct TemplateOf final {
 /// Stateless callable instance of `TemplateOf`.
 inline constexpr TemplateOf templateOf{};
 
-/// Non-throwing probe for whether `arguments` can instantiate the reflected template `templ`.
-///
+/// Substitution failure returns false; invalid reflection domains can throw `std::meta::exception`.
 /// The argument range must yield `Info` values. No argument storage is retained after constant evaluation.
 struct CanSubstitute final {
   /// Returns whether `arguments` form a valid substitution for `templ` without throwing on substitution

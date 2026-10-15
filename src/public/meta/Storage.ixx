@@ -68,8 +68,23 @@ inline constexpr DefineStaticObject defineStaticObject{};
 /// Callable wrapper for the standard string-literal provenance predicate used by static-string reflection.
 struct IsStringLiteral final {
   /// Returns whether `characters` points at a language string literal recognized by the implementation.
-  template <class Character>
-  [[nodiscard]] consteval auto operator()(const Character *characters) const -> bool {
+  [[nodiscard]] consteval auto operator()(const char *characters) const -> bool {
+    return std::is_string_literal(characters);
+  }
+
+  [[nodiscard]] consteval auto operator()(const wchar_t *characters) const -> bool {
+    return std::is_string_literal(characters);
+  }
+
+  [[nodiscard]] consteval auto operator()(const char8_t *characters) const -> bool {
+    return std::is_string_literal(characters);
+  }
+
+  [[nodiscard]] consteval auto operator()(const char16_t *characters) const -> bool {
+    return std::is_string_literal(characters);
+  }
+
+  [[nodiscard]] consteval auto operator()(const char32_t *characters) const -> bool {
     return std::is_string_literal(characters);
   }
 };

@@ -81,7 +81,6 @@ inline thread_local int threadVariable{};
 extern "C" auto cFunction() -> void;
 auto function(int value = 1) -> long;
 auto varargFunction(int value = 1, ...) -> void;
-[[deprecated("parity")]] auto attributedFunction() -> void;
 
 // Raw arrays are intentional type-reflection subjects; std::array would test a different category.
 using Array = int[3];         // NOLINT(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
@@ -104,12 +103,6 @@ consteval auto firstSampleMember(Predicate predicate) -> std::meta::info {
 consteval auto firstParameter() -> std::meta::info {
   const auto values = std::meta::parameters_of(^^function);
   return values.front();
-}
-
-/// Returns the first reflected attribute on `attributedFunction` when attribute reflection is enabled.
-consteval auto firstAttribute() -> std::meta::info {
-  const auto values = std::meta::attributes_of(^^attributedFunction);
-  return values.empty() ? std::meta::info{} : values.front();
 }
 
 /// Compares one Miracle predicate with the corresponding standard unary predicate on the same reflection.
@@ -140,13 +133,9 @@ inline constexpr auto constructorInfo = firstSampleMember(std::meta::is_construc
 inline constexpr auto assignmentInfo = firstSampleMember(std::meta::is_assignment);
 inline constexpr auto destructorInfo = firstSampleMember(std::meta::is_destructor);
 inline constexpr auto parameterInfo = firstParameter();
-inline constexpr auto attributeInfo = firstAttribute();
 inline constexpr auto dataMemberSpecInfo = std::meta::data_member_spec(^^int,
     {
         .name = "generated"});
-inline constexpr auto enumeratorSpecInfo =
-    std::meta::enumerator_spec({.name = "generated", .value = std::meta::reflect_constant(7U)});
-
 inline constexpr auto intType = ^^int;
 inline constexpr auto voidType = ^^void;
 inline constexpr auto doubleType = ^^double;
@@ -310,7 +299,6 @@ static_assert(unaryPredicateParity<std::meta::is_member_pointer_type>(Miracle::m
     memberObjectPointerType));
 static_assert(unaryPredicateParity<std::meta::is_const_type>(Miracle::meta::isConstType, constType));
 static_assert(unaryPredicateParity<std::meta::is_volatile_type>(Miracle::meta::isVolatileType, volatileType));
-static_assert(unaryPredicateParity<std::meta::is_trivial_type>(Miracle::meta::isTrivialType, intType));
 static_assert(
     unaryPredicateParity<std::meta::is_trivially_copyable_type>(Miracle::meta::isTriviallyCopyableType,
         intType));
@@ -403,21 +391,6 @@ static_assert(
         parameterInfo));
 static_assert(unaryPredicateParity<std::meta::is_function_parameter>(Miracle::meta::isFunctionParameter,
     parameterInfo));
-static_assert(unaryPredicateParity<std::meta::is_attribute>(Miracle::meta::isAttribute, attributeInfo));
-static_assert(unaryPredicateParity<std::meta::has_attribute_namespace>(Miracle::meta::hasAttributeNamespace,
-    attributeInfo));
-static_assert(unaryPredicateParity<std::meta::is_unscoped_attribute>(Miracle::meta::isUnscopedAttribute,
-    attributeInfo));
-static_assert(
-    unaryPredicateParity<std::meta::is_clang_attribute>(Miracle::meta::isClangAttribute, attributeInfo));
-static_assert(
-    unaryPredicateParity<std::meta::is_gcc_attribute>(Miracle::meta::isGccAttribute, attributeInfo));
-static_assert(
-    unaryPredicateParity<std::meta::is_msvc_attribute>(Miracle::meta::isMsvcAttribute, attributeInfo));
-static_assert(
-    unaryPredicateParity<std::meta::is_access_specified>(Miracle::meta::isAccessSpecified, fieldInfo));
-static_assert(
-    unaryPredicateParity<std::meta::is_enumerator_spec>(Miracle::meta::isEnumeratorSpec, enumeratorSpecInfo));
 
 // Standard transformation/function parity: the wrappers preserve standard results on their valid domains.
 static_assert(Miracle::meta::identifierOf(fieldInfo) == std::meta::identifier_of(fieldInfo));
@@ -547,10 +520,6 @@ consteval auto sequenceOperationsMatch() -> bool {
   if (!sequenceParity(Miracle::meta::annotationsOf(sampleType), std::meta::annotations_of(sampleType))) {
     return false;
   }
-  if (!sequenceParity(Miracle::meta::attributesOf(^^attributedFunction),
-          std::meta::attributes_of(^^attributedFunction))) {
-    return false;
-  }
   return true;
 }
 static_assert(sequenceOperationsMatch());
@@ -563,7 +532,7 @@ static_assert(currentFunctionParity());
 struct CurrentClassProbe final {
   static consteval auto parity() -> bool {
     return Miracle::meta::currentClass() == std::meta::current_class();
-  }
+  } // namespace Tests::metaStdParity
 };
 static_assert(CurrentClassProbe::parity());
 

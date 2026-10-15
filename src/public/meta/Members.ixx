@@ -10,31 +10,19 @@ export namespace Miracle::meta {
 inline constexpr MetaFunction templateArgumentsOf{std::meta::template_arguments_of};
 
 /// Exact access-context-aware callable wrapper for `std::meta::members_of`
-inline constexpr MetaFunction membersOf{[](Info subject, Access access) consteval -> std::vector<Info> {
-  return std::meta::members_of(subject, access);
-}};
+inline constexpr MetaFunction membersOf{std::meta::members_of};
 
 /// Exact access-context-aware callable wrapper for `std::meta::bases_of`
-inline constexpr MetaFunction basesOf{[](Info subject, Access access) consteval -> std::vector<Info> {
-  return std::meta::bases_of(subject, access);
-}};
+inline constexpr MetaFunction basesOf{std::meta::bases_of};
 
 /// Exact access-context-aware callable wrapper for `std::meta::subobjects_of`
-inline constexpr MetaFunction subobjectsOf{[](Info subject, Access access) consteval -> std::vector<Info> {
-  return std::meta::subobjects_of(subject, access);
-}};
+inline constexpr MetaFunction subobjectsOf{std::meta::subobjects_of};
 
 /// Exact access-context-aware callable wrapper for `std::meta::static_data_members_of`
-inline constexpr MetaFunction staticDataMembersOf{
-    [](Info subject, Access access) consteval -> std::vector<Info> {
-      return std::meta::static_data_members_of(subject, access);
-    }};
+inline constexpr MetaFunction staticDataMembersOf{std::meta::static_data_members_of};
 
 /// Exact access-context-aware callable wrapper for `std::meta::nonstatic_data_members_of`
-inline constexpr MetaFunction nonstaticDataMembersOf{
-    [](Info subject, Access access) consteval -> std::vector<Info> {
-      return std::meta::nonstatic_data_members_of(subject, access);
-    }};
+inline constexpr MetaFunction nonstaticDataMembersOf{std::meta::nonstatic_data_members_of};
 
 /// Exact callable wrapper returning the standard vector representation of enum enumerators.
 inline constexpr MetaFunction enumeratorsOf{std::meta::enumerators_of};
@@ -42,33 +30,32 @@ inline constexpr MetaFunction enumeratorsOf{std::meta::enumerators_of};
 /// Exact callable wrapper returning function-parameter reflections in the standard vector representation.
 inline constexpr MetaFunction parametersOf{std::meta::parameters_of};
 
-/// Exact callable wrapper returning the variable associated with a structured binding/parameter when defined.
+/// Exact callable wrapper returning the variable associated with a function-parameter reflection.
 inline constexpr MetaFunction variableOf{std::meta::variable_of};
 
 /// Returns the direct members of a class, union, or namespace in declaration order.
 ///
 /// `access` is evaluated at the public call site and controls which access-sensitive members are visible. The
 /// returned span has static backing storage and is valid for the remainder of the program. Invalid subjects
-/// throw `std::meta::exception` with `subject` attached. The raw reflection is bridged into the same private
-/// NTTP-backed canonical member universe used by type-oriented and `Reflect<T>` queries; only caller-access
-/// filtering is per call.
+/// throw `std::meta::exception` with `subject` attached. Raw, type-oriented, and `Reflect<T>`
+/// routes use the same current standard member query. Enumeration runs at
+/// each evaluation point because visible declarations and deduced-return members can change.
 [[nodiscard]] consteval auto members(Info subject, Access access = Access::current())
     -> std::span<const Info> {
   requireMemberScope(subject, "members() requires a class, union, or namespace reflection");
-  return cachedVisibleCategory(subject, CacheCategory::Members, access);
+  return promoteInfoSnapshot(std::meta::members_of(subject, access));
 }
 
-/// Type-oriented overload of `members(Info, Access)` backed by the canonical per-type member cache.
+/// Type-oriented overload of `members(Info, Access)` returning the current member snapshot.
 ///
 /// `Reflect<T>::members()` delegates here as well, and the raw-`Info` overload reaches the same
-/// specialization through the private reflective bridge. The cache itself is instantiated only when this
-/// category is requested for `T`.
+/// current standard query. Static backing preserves the returned snapshot, without caching future results.
 template <class T>
 [[nodiscard]] consteval auto members(Access access = Access::current()) -> std::span<const Info> {
   if constexpr (not std::meta::is_class_type(^^T) and not std::meta::is_union_type(^^T)) {
     throw std::meta::exception{"members() requires a class or union type", ^^T};
   } else {
-    return cachedVisibleCategory<T, CacheCategory::Members>(access);
+    return members(^^T, access);
   }
 }
 
@@ -119,7 +106,14 @@ template <class T>
 [[nodiscard]] consteval auto functions(Info subject, Access access = Access::current())
     -> std::span<const Info> {
   requireMemberScope(subject, "functions() requires a class, union, or namespace reflection");
-  return cachedVisibleCategory(subject, CacheCategory::Functions, access);
+  return filteredMembers(
+      subject,
+      access,
+      [](Info member) consteval -> bool {
+        return (std::meta::is_function(member) or std::meta::is_function_template(member)) and
+               not(std::meta::is_constructor(member) or std::meta::is_constructor_template(member));
+      },
+      true);
 }
 
 /// Type-oriented overload of `functions(Info, Access)` reflecting the scope represented by `T`.
@@ -128,7 +122,7 @@ template <class T>
   if constexpr (not std::meta::is_class_type(^^T) and not std::meta::is_union_type(^^T)) {
     throw std::meta::exception{"functions() requires a class or union type", ^^T};
   } else {
-    return cachedVisibleCategory<T, CacheCategory::Functions>(access);
+    return functions(^^T, access);
   }
 }
 

@@ -8,12 +8,47 @@ namespace Miracle::meta {
 /// Promotes a temporary compile-time vector into static program storage.
 ///
 /// `std::define_static_array` owns the resulting backing storage, so the returned span never refers to the
-/// transient vector. Reflection caches, reordered Query results, and explicit materialization all share this
-/// one persistence primitive instead of maintaining category-specific copies. Compile-time work and promoted
-/// storage are O(n).
+/// transient vector. Stable caches, reordered Query values, and explicit materialization use this
+/// general primitive. Fresh Info snapshots use the specialized promotion below. Work and storage are O(n).
 template <class T>
 [[nodiscard]] consteval auto promoteVector(const std::vector<T> &values) -> std::span<const T> {
   return std::define_static_array(values);
+}
+
+/// Promotes a complete Info value snapshot without a second dynamically allocated vector pass. The extent
+/// selects code only: every call copies its current values and static object identity includes every Info
+/// element. This never caches a query result by subject, extent, or evaluation point.
+template <std::size_t Size>
+[[nodiscard]] consteval auto promoteInfoSnapshotImpl(const std::vector<Info> &values)
+    -> std::span<const Info> {
+  if (values.size() != Size) {
+    throw std::meta::exception{"internal Info snapshot extent mismatch", Info{}};
+  }
+  if constexpr (Size == 0) {
+    return {};
+  } else {
+    struct Snapshot final {
+      // The fixed-size aggregate is the measured low-cost representation for Info snapshots.
+      Info elements[Size]; // NOLINT(modernize-avoid-c-arrays,cppcoreguidelines-avoid-c-arrays)
+    };
+    Snapshot snapshot{};
+    const auto *source = values.data();
+    for (std::size_t index{}; index < Size; ++index) {
+      snapshot.elements[index] = source[index]; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic) --
+                                                // index the measured fixed-size snapshot
+    }
+    const auto *stored = std::define_static_object(snapshot);
+    return {stored->elements, Size};
+  }
+}
+
+/// Keeps generic user-value copying unchanged while specializing promotion for structural Info values.
+[[nodiscard]] consteval auto promoteInfoSnapshot(const std::vector<Info> &values) -> std::span<const Info> {
+  const Info specialization = std::meta::substitute(^^promoteInfoSnapshotImpl,
+      {
+          std::meta::reflect_constant(values.size())});
+  using Evaluator = std::span<const Info> (*)(const std::vector<Info> &);
+  return std::meta::extract<Evaluator>(specialization)(values);
 }
 
 /// Returns whether `subject` denotes a class or union type, the scopes accepted by data-member queries.
@@ -68,15 +103,17 @@ consteval auto requireMemberScope(Info subject, std::string_view message) -> voi
 /// have a single exact standard source query. Compile-time complexity is O(m) for `m` visible members and
 /// promoted storage is O(k) for `k` matches.
 template <class Predicate>
-[[nodiscard]] consteval auto filteredMembers(Info subject, Access access, Predicate predicate)
-    -> std::span<const Info> {
+[[nodiscard]] consteval auto filteredMembers(Info subject,
+    Access access,
+    Predicate predicate,
+    bool currentSnapshot = false) -> std::span<const Info> {
   auto result = std::vector<Info>{};
   for (const Info member : std::meta::members_of(subject, access)) {
     if (predicate(member)) {
       result.push_back(member);
     }
   }
-  return promoteVector(result);
+  return currentSnapshot ? promoteInfoSnapshot(result) : promoteVector(result);
 }
 
 /// Returns whether `access` is the standard unrestricted reflection context.
@@ -110,17 +147,6 @@ template <class Predicate>
   return promoteVector(result);
 }
 
-/// Builds the canonical unchecked member universe for one reflected subject.
-///
-/// The validation here is defensive: public source APIs validate *before* crossing into a variable-template
-/// cache. An exception escaping a `constexpr` variable initializer is a hard constant-expression failure and
-/// cannot serve as Miracle's catchable semantic-failure channel. Keeping the builder check as well protects
-/// private direct use.
-[[nodiscard]] consteval auto buildMembers(Info subject) -> std::span<const Info> {
-  requireMemberScope(subject, "members() requires a class, union, or namespace reflection");
-  return promoteVector(std::meta::members_of(subject, Access::unchecked()));
-}
-
 /// Builds the canonical unchecked non-static-data-member universe.
 [[nodiscard]] consteval auto buildFields(Info subject) -> std::span<const Info> {
   requireMemberScope(subject, "fields() requires a class or union reflection");
@@ -131,15 +157,6 @@ template <class Predicate>
 [[nodiscard]] consteval auto buildStaticFields(Info subject) -> std::span<const Info> {
   requireRecord(subject, "staticFields() requires a class or union reflection");
   return promoteVector(std::meta::static_data_members_of(subject, Access::unchecked()));
-}
-
-/// Builds the canonical unchecked ordinary-function universe, excluding constructors.
-[[nodiscard]] consteval auto buildFunctions(Info subject) -> std::span<const Info> {
-  requireMemberScope(subject, "functions() requires a class, union, or namespace reflection");
-  return filteredMembers(subject, Access::unchecked(), [](Info member) consteval -> bool {
-    return (std::meta::is_function(member) or std::meta::is_function_template(member)) and
-           not(std::meta::is_constructor(member) or std::meta::is_constructor_template(member));
-  });
 }
 
 /// Builds the canonical unchecked constructor/constructor-template universe.
@@ -176,27 +193,12 @@ template <class Predicate>
   return promoteVector(std::meta::enumerators_of(subject));
 }
 
-/// Builds the canonical all-annotation universe for one reflected subject.
-[[nodiscard]] consteval auto buildAnnotations(Info subject) -> std::span<const Info> {
-  return promoteVector(std::meta::annotations_of(subject));
-}
-
-/// Builds the canonical annotation universe restricted to one annotation object type.
-[[nodiscard]] consteval auto buildAnnotationsOfType(Info subject, Info annotationType)
-    -> std::span<const Info> {
-  return promoteVector(std::meta::annotations_of_with_type(subject, annotationType));
-}
-
 /// Reflection source categories with independently lazy canonical cache specializations.
 enum class CacheCategory : unsigned char {
-  /// Direct members of a class, union, or namespace.
-  Members,
   /// Non-static data members of a class or union.
   Fields,
   /// Static data members of a class or union.
   StaticFields,
-  /// Ordinary functions/function templates, excluding constructors.
-  Functions,
   /// Constructors and constructor templates of a class.
   Constructors,
   /// Direct base-specifier reflection of a class.
@@ -207,8 +209,6 @@ enum class CacheCategory : unsigned char {
   Enumerators,
   /// Parameters of a function declaration, specialization, or function type.
   Parameters,
-  /// Annotation reflections attached to an entity.
-  Annotations,
   /// Template arguments carried by a specialization-like reflection.
   TemplateArguments,
 };
@@ -222,12 +222,6 @@ enum class CacheCategory : unsigned char {
 /// flow.
 consteval auto validateCacheRequest(Info subject, CacheCategory category) -> void {
   switch (category) {
-    case CacheCategory::Members:
-      requireMemberScope(subject, "members() requires a class, union, or namespace reflection");
-      return;
-    case CacheCategory::Functions:
-      requireMemberScope(subject, "functions() requires a class, union, or namespace reflection");
-      return;
     case CacheCategory::Fields:
       requireRecord(subject, "functions() requires a class or union reflection");
       return;
@@ -265,7 +259,6 @@ consteval auto validateCacheRequest(Info subject, CacheCategory category) -> voi
             "templateArguments() requires a reflection with template arguments", subject};
       }
       return;
-    case CacheCategory::Annotations: return;
   }
 }
 
@@ -277,14 +270,10 @@ consteval auto validateCacheRequest(Info subject, CacheCategory category) -> voi
 /// actually consumes.
 template <Info Subject, CacheCategory Category>
 [[nodiscard]] consteval auto buildCategory() -> std::span<const Info> {
-  if constexpr (Category == CacheCategory::Members) {
-    return buildMembers(Subject);
-  } else if constexpr (Category == CacheCategory::Fields) {
+  if constexpr (Category == CacheCategory::Fields) {
     return buildFields(Subject);
   } else if constexpr (Category == CacheCategory::StaticFields) {
     return buildStaticFields(Subject);
-  } else if constexpr (Category == CacheCategory::Functions) {
-    return buildFunctions(Subject);
   } else if constexpr (Category == CacheCategory::Constructors) {
     return buildConstructors(Subject);
   } else if constexpr (Category == CacheCategory::Bases) {
@@ -299,8 +288,6 @@ template <Info Subject, CacheCategory Category>
       throw std::meta::exception{"parameters() requires a function declaration of function type", Subject};
     }
     return promoteVector(std::meta::parameters_of(Subject));
-  } else if constexpr (Category == CacheCategory::Annotations) {
-    return buildAnnotations(Subject);
   } else {
     static_assert(Category == CacheCategory::TemplateArguments);
     if (not std::meta::has_template_arguments(Subject)) {
@@ -323,7 +310,7 @@ inline constexpr std::span<const Info> categoryCache = buildCategory<Subject, Ca
 
 /// Structural pointer/size representation used to cross the reflective invocation bridge.
 ///
-/// `std::span` itself is not structural and therefore cannot be the result of `std::meta::reflect_invoke`.
+/// `std::span` itself is not structural; this representation crosses the template-evaluation bridge.
 /// This tiny representation is structural, contains only a pointer into canonical static storage plus its
 /// extent, and converts back to `span` immediately; it is never exposed publicly.
 struct InfoSequenceRef final {
@@ -355,7 +342,7 @@ template <Info Subject, CacheCategory Category>
   const Info specialization = std::meta::substitute(^^categoryCacheRef,
       {
           std::meta::reflect_constant(subject), std::meta::reflect_constant(category)});
-  using Evaluator = std::function<InfoSequenceRef()>;
+  using Evaluator = InfoSequenceRef (*)();
   const auto evaluator = std::meta::extract<Evaluator>(specialization);
   const auto result = evaluator();
   return {result.data, result.size};
@@ -384,7 +371,7 @@ template <Info Subject, CacheCategory Category, Access Context>
 /// `access_context` is structural in C++26, so the same reflection/substitution technique used by
 /// `cachedCategory` can specialize by caller access without exposing template-state publicly. Unchecked
 /// access bypasses this bridge entirely because the canonical cache is already the exact requested universe.
-/// The specialization is extracted and called directly rather than routed through `reflect_invoke`; this is
+/// The specialization is extracted and called directly through the adopted extraction facility; this is
 /// measurably cheaper on the pinned reference snapshot.
 [[nodiscard]] consteval auto cachedVisibleCategory(Info subject, CacheCategory category, Access access)
     -> std::span<const Info> {
@@ -398,7 +385,7 @@ template <Info Subject, CacheCategory Category, Access Context>
           std::meta::reflect_constant(subject),
           std::meta::reflect_constant(category),
           std::meta::reflect_constant(access)});
-  using Evaluator = std::function<InfoSequenceRef()>;
+  using Evaluator = InfoSequenceRef (*)();
   const auto evaluator = std::meta::extract<Evaluator>(specialization);
   const auto result = evaluator();
   return {result.data, result.size};
@@ -418,34 +405,6 @@ template <class T, CacheCategory Category>
     }
     return cachedVisibleCategory(^^T, Category, access);
   }
-}
-
-/// Canonical typed-annotation backing keyed by both reflected subject and annotation object type.
-template <Info Subject, Info AnnotationType>
-inline constexpr std::span<const Info> typedAnnotationsCache =
-    buildAnnotationsOfType(Subject, AnnotationType);
-
-/// Returns a structural reference to a concrete typed-annotation cache specialization.
-template <Info Subject, Info AnnotationType>
-[[nodiscard]] consteval auto typedAnnotationsCacheRef() -> InfoSequenceRef {
-  constexpr auto cached = typedAnnotationsCache<Subject, AnnotationType>;
-  return {.data = cached.data(), .size = cached.size()};
-}
-
-/// Value-oriented bridge into the `(subject, annotation-type)` NTTP cache.
-[[nodiscard]] consteval auto cachedAnnotationsOfType(Info subject, Info annotationType)
-    -> std::span<const Info> {
-  if (not std::meta::is_type(annotationType)) {
-    throw std::meta::exception{
-        "annotations<A>() requires an annotation object type reflection", annotationType};
-  }
-  const Info specialization = std::meta::substitute(^^typedAnnotationsCacheRef,
-      {
-          std::meta::reflect_constant(subject), std::meta::reflect_constant(annotationType)});
-  using Evaluator = std::function<InfoSequenceRef()>;
-  const auto evaluator = std::meta::extract<Evaluator>(specialization);
-  const auto result = evaluator();
-  return {result.data, result.size};
 }
 
 } // namespace Miracle::meta

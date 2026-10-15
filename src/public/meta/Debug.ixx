@@ -121,9 +121,8 @@ constexpr auto format_fields(const Obj &obj, bool pretty = false, usize level = 
   const String indent_outer(pretty ? level * 2 : 0, ' ');
   const String indent_inner(pretty ? (level + 1) * 2 : 0, ' ');
 
-  // `debug::derive` is explicit opt-in for the whole type, so formatting intentionally sees private/protected
-  // state too. Resolve that field universe once at compile time and keep the runtime formatter limited to
-  // value formatting/joining.
+  // Use the access context of this formatter implementation; derive does not grant private access.
+  // Resolve the visible field universe once and keep runtime work limited to value formatting/joining.
   constexpr auto reflectedFields = reflect<Obj>().fields();
   template for (constexpr std::meta::info mem : reflectedFields) {
     constexpr DebugMetadata metadata = debug_metadata<mem>();
@@ -170,8 +169,8 @@ concept Debuggable = DebuggableAggr<T> or DebuggableEnum<T>;
 
 /// Returns the reflected spelling of an enum value.
 ///
-/// Exact visible enumerators win. If no exact enumerator matches, the single visible `[[= debug::prefer]]`
-/// enumerator is returned. Otherwise the stable `<unnamed>` spelling is returned. Aliases naturally resolve
+/// Exact visible enumerators win. If none matches, the last visible `[[= debug::prefer]]`
+/// enumerator in declaration order is returned. Otherwise `<unnamed>` is returned. Aliases naturally resolve
 /// to the first reflected enumerator.
 export template <Enum T>
 constexpr auto enumName(T value) -> StringView {

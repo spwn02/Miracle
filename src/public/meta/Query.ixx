@@ -584,7 +584,7 @@ struct FlattenValue;
 template <class T>
 struct FlattenValue<T, true> {
   /// Exact downstream logical type: lvalue ranges preserve reference identity, rvalue ranges own values.
-  using type = std::conditional_t<std::is_reference_v<T>,
+  using type = std::conditional_t<std::is_lvalue_reference_v<T>,
       std::ranges::range_reference_t<T>,
       std::ranges::range_value_t<std::remove_cvref_t<T>>>;
 };
@@ -848,12 +848,12 @@ constexpr auto storeValueAs(Item &&value) -> StoredT<Value> {
   }
 }
 
-/// Recovers the logical value from a persisted representation.
-template <class T>
-constexpr auto unwrap(T &value) -> decltype(auto) {
-  if constexpr (std::is_pointer_v<T>) {
-    // Pointer storage represents a logical reference; dereference without changing ownership.
-    return *value;
+/// Presents an ordering operand according to its logical type, preserving owning pointer values.
+template <class Value, class Stored>
+constexpr auto orderingOperand(Stored &value)
+    -> std::conditional_t<std::is_reference_v<Value>, Value, Stored &> {
+  if constexpr (std::is_reference_v<Value>) {
+    return static_cast<Value>(*value);
   } else {
     // Owning storage already is the logical value.
     return value;
@@ -1914,7 +1914,8 @@ struct Query final {
             bool previousValue = previous != 0;
             precedes = static_cast<bool>(adaptiveInvokeBinary(compare, currentValue, previousValue));
           } else {
-            precedes = static_cast<bool>(adaptiveInvokeBinary(compare, unwrap(current), unwrap(previous)));
+            precedes = static_cast<bool>(adaptiveInvokeBinary(
+                compare, orderingOperand<Value>(current), orderingOperand<Value>(previous)));
           }
           if (not precedes) {
             break;
@@ -2150,8 +2151,8 @@ export namespace Miracle::meta {
 ///
 /// Raw `<meta>` range producers return temporary `std::vector<Info>` values. Query promotes their reflection
 /// identities into static backing during this call, so the source vector needs to remain valid only for the
-/// call itself. Temporary standard results and existing vectors therefore use the same zero-copy input
-/// path.
+/// call itself. Temporary standard results and existing vectors use the same promotion path;
+/// their elements are copied into static backing rather than retaining a view of the input vector.
 [[nodiscard]] consteval auto query(const std::vector<Info> &source) {
   return makeStoredQuery<Info>(source);
 }

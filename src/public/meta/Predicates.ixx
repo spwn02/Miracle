@@ -10,8 +10,8 @@ namespace Miracle::meta {
 /// A marker avoids inheritance or a public predicate base class: any data-oriented callable carrying this
 /// member can participate in `!`, `&&`, and `||` composition without runtime polymorphism.
 template <class T>
-inline constexpr bool metaPredicate = requires { std::remove_cvref_t<T>::miracleMetaPredicate_; } and
-                                      std::remove_cvref_t<T>::miracleMetaPredicate_;
+concept MetaPredicate = requires { std::remove_cvref_t<T>::miracleMetaPredicate_; } and
+                        std::remove_cvref_t<T>::miracleMetaPredicate_;
 
 } // namespace Miracle::meta
 
@@ -42,21 +42,21 @@ Predicate(Function) -> Predicate<Function>;
 
 /// Negates a Meta predicate while retaining its captured state by value.
 template <class PredicateType>
-  requires metaPredicate<PredicateType>
+  requires MetaPredicate<PredicateType>
 [[nodiscard]] consteval auto operator!(PredicateType predicate) {
   return Predicate{[predicate](Info info) consteval -> bool { return not predicate(info); }};
 }
 
 /// Composes two Meta predicates with a short-circuiting logical AND.
 template <class Left, class Right>
-  requires(metaPredicate<Left> and metaPredicate<Right>)
+  requires(MetaPredicate<Left> and MetaPredicate<Right>)
 [[nodiscard]] consteval auto operator&&(Left left, Right right) {
   return Predicate{[left, right](Info info) consteval -> bool { return left(info) and right(info); }};
 }
 
 /// Composes two Meta predicates with a short-circuiting logical OR.
 template <class Left, class Right>
-  requires(metaPredicate<Left> and metaPredicate<Right>)
+  requires(MetaPredicate<Left> and MetaPredicate<Right>)
 [[nodiscard]] consteval auto operator||(Left left, Right right) {
   return Predicate{[left, right](Info info) consteval -> bool { return left(info) or right(info); }};
 }
@@ -305,9 +305,6 @@ inline constexpr Predicate isExplicitObjectParameter{std::meta::is_explicit_obje
 /// Matches function-parameter reflections; exact wrapper for `std::meta::is_function_parameter`.
 inline constexpr Predicate isFunctionParameter{std::meta::is_function_parameter};
 
-/// Matches entities whose access is explicitly specified; exact wrapper for `std::meta::is_access_specified`.
-inline constexpr Predicate isAccessSpecified{std::meta::is_access_specified};
-
 /// Matches reflections denoting C++ types.
 inline constexpr Predicate isType{[](Info info) consteval -> bool { return std::meta::is_type(info); }};
 
@@ -415,12 +412,6 @@ inline constexpr Predicate isConstType{std::meta::is_const_type};
 
 /// Matches volatile-qualified type reflections; exact wrapper for `std::meta::is_volatile_type`.
 inline constexpr Predicate isVolatileType{std::meta::is_volatile_type};
-
-/// Matches trivial type reflections using the reference-toolchain extension `std::meta::is_trivial_type`.
-///
-/// This is intentionally outside the canonical cppreference C++26 parity matrix but retained as a useful
-/// extension while the reference implementation exposes it.
-inline constexpr Predicate isTrivialType{std::meta::is_trivial_type};
 
 /// Matches trivially-copyable type reflections; exact wrapper for `std::meta::is_trivially_copyable_type`.
 inline constexpr Predicate isTriviallyCopyableType{std::meta::is_trivially_copyable_type};
