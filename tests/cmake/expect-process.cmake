@@ -23,8 +23,14 @@ elseif(result EQUAL 0)
   message(FATAL_ERROR "Expected process failure, but it exited successfully")
 endif()
 
-string(FIND "${error}" "${EXPECTED}" found)
-if(found EQUAL -1)
-  message(
-    FATAL_ERROR "Expected stderr to contain '${EXPECTED}'\nstderr:\n${error}")
+if(EXPECT_EMPTY_STDERR)
+  if(NOT error STREQUAL "")
+    message(FATAL_ERROR "Expected empty stderr\nstderr:\n${error}")
+  endif()
+elseif(NOT EXPECTED STREQUAL "")
+  string(FIND "${error}" "${EXPECTED}" found)
+  if(found EQUAL -1)
+    message(
+      FATAL_ERROR "Expected stderr to contain '${EXPECTED}'\nstderr:\n${error}")
+  endif()
 endif()

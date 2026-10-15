@@ -99,6 +99,8 @@ miracle_add_meta_parity_test(Reflect reflect.cxx)
 miracle_add_meta_parity_test(Surface surface.cxx)
 miracle_add_meta_parity_test(Comprehensive std.cxx)
 
+add_subdirectory(meta/hardening)
+
 # The filesystem tests intentionally write only below the build tree.
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tests")
 
@@ -143,13 +145,48 @@ set_target_properties(
              CXX_SCAN_FOR_MODULES ON
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleContractProbe PRIVATE Miracle::Miracle)
+# The pinned reference toolchain ignores contract predicates in Release and
+# MinSizeRel. Match the test expectation to the final semantic flag for the
+# active single-config build instead of requiring diagnostics when checks are
+# off.
+set(miracle_contract_flags "${CMAKE_CXX_FLAGS}")
+if(CMAKE_BUILD_TYPE)
+  string(TOUPPER "${CMAKE_BUILD_TYPE}" miracle_contract_config)
+  set(miracle_contract_config_flags
+      "CMAKE_CXX_FLAGS_${miracle_contract_config}")
+  string(APPEND miracle_contract_flags " ${${miracle_contract_config_flags}}")
+endif()
+string(REGEX MATCHALL "-fcontract-evaluation-semantic=[A-Za-z_]+"
+             miracle_contract_semantic_flags "${miracle_contract_flags}")
+set(miracle_contracts_ignored FALSE)
+if(miracle_contract_semantic_flags)
+  list(GET miracle_contract_semantic_flags -1
+       miracle_contract_last_semantic_flag)
+  if(miracle_contract_last_semantic_flag STREQUAL
+     "-fcontract-evaluation-semantic=ignore")
+    set(miracle_contracts_ignored TRUE)
+  endif()
+endif()
+
 function(miracle_add_contract_test name argument expected)
-  add_test(
-    NAME "Miracle.Contracts.${name}"
-    COMMAND
+  set(expected_exit 42)
+  set(expect_empty_stderr FALSE)
+  if(miracle_contracts_ignored)
+    set(expected_exit 0)
+    set(expected "")
+    set(expect_empty_stderr TRUE)
+  endif()
+
+  set(command
       "${CMAKE_COMMAND}" "-DPROGRAM=$<TARGET_FILE:MiracleContractProbe>"
-      "-DARGUMENT=${argument}" "-DEXPECTED=${expected}" "-DEXPECTED_EXIT=42" -P
-      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/expect-process.cmake")
+      "-DARGUMENT=${argument}" "-DEXPECTED=${expected}"
+      "-DEXPECTED_EXIT=${expected_exit}")
+  if(expect_empty_stderr)
+    list(APPEND command "-DEXPECT_EMPTY_STDERR=ON")
+  endif()
+  list(APPEND command -P
+       "${CMAKE_CURRENT_SOURCE_DIR}/cmake/expect-process.cmake")
+  add_test(NAME "Miracle.Contracts.${name}" COMMAND ${command})
 endfunction()
 
 miracle_add_contract_test(Precondition 0 "error[CTR001]: value > 0")
