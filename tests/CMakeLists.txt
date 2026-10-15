@@ -8,7 +8,7 @@ if(NOT TARGET Switch::Switch)
   FetchContent_Declare(
     Switch
     GIT_REPOSITORY https://github.com/spwn02/Switch.git
-    GIT_TAG fa665096ff0406902e447cd95d2a9a2fffc69999
+    GIT_TAG d5587e5445d13d863c27ab7b5eef274db6523276
     GIT_SHALLOW FALSE)
   FetchContent_MakeAvailable(Switch)
 endif()
