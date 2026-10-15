@@ -31,7 +31,11 @@ add_executable(
   fs.cxx
   range.cxx
   iter.cxx
-  # meta.cxx
+  meta/semantics/meta.cxx
+  meta/query/sources.cxx
+  meta/query/barriers.cxx
+  meta/query/lifetimes.cxx
+  meta/query/interop.cxx
   reflection.cxx
   static-string.cxx
   feature.cxx)
@@ -49,7 +53,7 @@ target_link_libraries(MiracleTests PRIVATE Miracle::Miracle Switch::Switch)
 
 # Verify that the narrow Meta module is independently consumable; this probe
 # deliberately does not import the Miracle umbrella or std module.
-add_executable(MiracleMetaImportProbe meta-import-probe.cxx)
+add_executable(MiracleMetaImportProbe import.cxx)
 target_compile_features(MiracleMetaImportProbe PRIVATE cxx_std_26)
 set_target_properties(
   MiracleMetaImportProbe
@@ -59,6 +63,41 @@ set_target_properties(
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleMetaImportProbe PRIVATE Miracle::Miracle)
 add_test(NAME Miracle.Meta.Import COMMAND MiracleMetaImportProbe)
+
+# Compile-time parity against the pinned C++26 <meta> surface. Parity is split
+# by responsibility so a regression in one reflection family is independently
+# attributable instead of hiding inside one monolithic TU.
+function(miracle_add_meta_parity_test name source)
+  set(target "MiracleMetaParity${name}")
+  add_executable("${target}" "meta/parity/${source}")
+  target_compile_features("${target}" PRIVATE cxx_std_26)
+  set_target_properties(
+    "${target}"
+    PROPERTIES CXX_EXTENSIONS OFF
+               CXX_STANDARD_REQUIRED ON
+               CXX_SCAN_FOR_MODULES ON
+               CXX_MODULE_STD ON)
+  target_link_libraries("${target}" PRIVATE Miracle::Miracle)
+  add_test(NAME "Miracle.Meta.Parity.${name}" COMMAND "${target}")
+endfunction()
+
+miracle_add_meta_parity_test(Types types.cxx)
+miracle_add_meta_parity_test(Storage storage.cxx)
+miracle_add_meta_parity_test(Names names.cxx)
+miracle_add_meta_parity_test(Operators operators.cxx)
+miracle_add_meta_parity_test(Layout layout.cxx)
+miracle_add_meta_parity_test(Access access.cxx)
+miracle_add_meta_parity_test(Members members.cxx)
+miracle_add_meta_parity_test(Annotations annotations.cxx)
+miracle_add_meta_parity_test(Predicates predicates.cxx)
+miracle_add_meta_parity_test(TypeQueries type-queries.cxx)
+miracle_add_meta_parity_test(TypeTransforms type-transforms.cxx)
+miracle_add_meta_parity_test(Values values.cxx)
+miracle_add_meta_parity_test(Substitution substitution.cxx)
+miracle_add_meta_parity_test(Generation generation.cxx)
+miracle_add_meta_parity_test(Reflect reflect.cxx)
+miracle_add_meta_parity_test(Surface surface.cxx)
+miracle_add_meta_parity_test(Comprehensive std.cxx)
 
 # The filesystem tests intentionally write only below the build tree.
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tests")
@@ -180,6 +219,49 @@ function(miracle_add_compile_fail_test name source expected)
   set_tests_properties("Miracle.Features.CompileFail.${name}"
                        PROPERTIES RESOURCE_LOCK miracle_compile_fail)
 endfunction()
+
+function(miracle_add_meta_compile_fail_test name source expected)
+  set(target "MiracleMetaCompileFail${name}")
+  add_executable("${target}" EXCLUDE_FROM_ALL "${source}")
+  target_compile_features("${target}" PRIVATE cxx_std_26)
+  set_target_properties(
+    "${target}"
+    PROPERTIES CXX_EXTENSIONS OFF
+               CXX_STANDARD_REQUIRED ON
+               CXX_SCAN_FOR_MODULES ON
+               CXX_MODULE_STD ON)
+  target_link_libraries("${target}" PRIVATE Miracle::Miracle)
+
+  add_test(
+    NAME "Miracle.Meta.CompileFail.${name}"
+    COMMAND
+      "${CMAKE_COMMAND}" "-DBUILD_DIR=${CMAKE_BINARY_DIR}" "-DTARGET=${target}"
+      "-DEXPECTED=${expected}" -P
+      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/expect-build-failure.cmake")
+  set_tests_properties("Miracle.Meta.CompileFail.${name}"
+                       PROPERTIES RESOURCE_LOCK miracle_compile_fail)
+endfunction()
+
+miracle_add_meta_compile_fail_test(
+  QueryTemporaryArray meta/query/compile-fail/temporary-array.cxx
+  "Query cannot borrow a temporary array")
+miracle_add_meta_compile_fail_test(
+  QueryBorrowedLocalEscape meta/query/compile-fail/borrowed-local-escape.cxx
+  "lifetime has ended")
+miracle_add_meta_compile_fail_test(
+  QueryReferenceMaterialize meta/query/compile-fail/reference-materialize.cxx
+  "Query::materialize() requires a copy-constructible object value")
+miracle_add_meta_compile_fail_test(
+  QueryNonStructuralBarrier meta/query/compile-fail/non-structural-barrier.cxx
+  "Query persistence barrier requires a structurally promotable stored element")
+miracle_add_meta_compile_fail_test(
+  QueryMoveOnlyBarrier meta/query/compile-fail/move-only-barrier.cxx
+  "Query persistence barrier requires a copy-constructible owning logical value"
+)
+miracle_add_meta_compile_fail_test(
+  QueryLocalReferenceBarrier
+  meta/query/compile-fail/local-reference-barrier.cxx
+  "provided value cannot be represented by a reflection")
 
 miracle_add_compile_fail_test(Disabled compile-fail/feature-disabled.cxx
                               "feature `tracing` is not enabled")
