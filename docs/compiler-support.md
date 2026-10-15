@@ -47,7 +47,7 @@ Other toolchains become eligible for `master` support when they implement the re
 
 The compiler alone is not the reference unit: its matching libc++ headers, binaries, ABI runtime, and C++ module sources/metadata belong to the same validated toolchain build. Deliberately mixing components from unrelated toolchain revisions is unsupported.
 
-The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.10.08`, built from source revision `c64402ae0a5986b438d03fac632b3744a4c104fe`.
+The mutable development channel is `clang-cxx26:cxx26`. CI and releases never follow it directly. The currently validated immutable reference is `cxx26-2026.10.09.2`, built from source revision `040df2b05ea338d107fac7387a2e4db835d746e0`.
 
 The historical `p2996-2026.08.23.2` snapshot remains immutable provenance for earlier releases, but it is no longer the current reference baseline.
 
@@ -90,7 +90,7 @@ Compatibility work follows these rules:
 7. Temporary compatibility code is deleted when the corresponding standard feature becomes sufficiently implemented.
 8. Compiler versions are hints; actual capabilities determine support.
 
-For standard-library gaps such as `<hive>` and `<scope>`, a compatibility implementation is acceptable only when it preserves the semantics Miracle relies on and remains behind Miracle's own vocabulary/internal boundary. A fake or observably different implementation is worse than leaving the branch behind.
+For standard-library gaps such as `<hive>`, a compatibility implementation is acceptable only when it preserves the semantics Miracle relies on and remains behind Miracle's own vocabulary/internal boundary. A fake or observably different implementation is worse than leaving the branch behind.
 
 ## Automated GCC validation and synchronization
 

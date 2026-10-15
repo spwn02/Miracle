@@ -275,6 +275,8 @@ auto main() -> int {
 import std;
 
 [[nodiscard]] auto inspect(const std::contracts::contract_violation &violation) -> bool {
+  static_cast<void>(std::contracts::evaluation_semantic::ignore);
+  static_cast<void>(std::contracts::evaluation_semantic::quick_enforce);
   static_cast<void>(violation.kind());
   static_cast<void>(violation.semantic());
   static_cast<void>(violation.detection_mode());
