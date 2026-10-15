@@ -27,3 +27,13 @@ set_target_properties(
              CXX_SCAN_FOR_MODULES ON
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleIterExample PRIVATE Miracle::Miracle)
+
+add_executable(MiracleMetaExample meta.cxx)
+target_compile_features(MiracleMetaExample PRIVATE cxx_std_26)
+set_target_properties(
+  MiracleMetaExample
+  PROPERTIES CXX_EXTENSIONS OFF
+             CXX_STANDARD_REQUIRED ON
+             CXX_SCAN_FOR_MODULES ON
+             CXX_MODULE_STD ON)
+target_link_libraries(MiracleMetaExample PRIVATE Miracle::Miracle)
