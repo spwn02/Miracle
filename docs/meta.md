@@ -8,7 +8,7 @@ import Miracle.Meta;
 
 The umbrella `import Miracle;` re-exports the same API.
 
-The Meta surface establishes a reflection vocabulary, canonical source caches, caller-sensitive access projections, and a dedicated compile-time `Query` algebra. Query remains deliberately independent of runtime `Iter`.
+The Meta surface establishes a reflection vocabulary, persistent snapshots, stable-category caches, caller-sensitive access projections, and a dedicated compile-time `Query` algebra. Query remains deliberately independent of runtime `Iter`.
 
 ## Core vocabulary
 
@@ -112,9 +112,39 @@ Miracle::meta::removeCvref(^^const int&);            // ^^int
 Miracle::meta::underlyingType(^^MyEnum);             // reflected enum representation type
 ```
 
-`dealias` and cv/reference normalization are separate operations: alias identity is preserved until the caller explicitly asks to erase it. These callable projections compose directly in Query, for example `fields<T>() -> map(type) -> map(removeCvref)`.
+`dealias` applies the standard alias-resolution operation; it does not promise a general canonicalization pass. cv/reference transformations remain separate explicit operations. These callable projections compose directly in Query, for example `fields<T>() -> map(type) -> map(removeCvref)`.
 
 `raw` is the explicit escape hatch and leaves `std::meta::info` available for standard facilities that Miracle does not wrap.
+
+## C++26 API reconciliation
+
+The standards target is WG21 N5050 plus individually evidenced applicable C++26 corrections.
+Historical compiler-derived parity counts do not establish C++26 conformance. The reconciliation
+inventory and declaration ledger distinguish adopted facilities from experimental compiler APIs.
+
+The public Meta API no longer exposes enum synthesis (`EnumeratorSpec`, `DefineEnum`,
+`DefineUnscopedEnum`, their lowercase callable objects, `EnumeratorOptions`, or `isEnumeratorSpec`),
+attribute reflection or mutation, `annotationOfType`, `reflectInvoke`, `isAccessSpecified`, or
+`isTrivialType`. Their corresponding named callable types and attribute-policy aliases are removed
+as well. These dependencies are absent from the adopted C++26 inventory; no compatibility aliases
+or replacement implementations are provided. Existing enum queries and aggregate generation
+(`dataMemberSpec`, `defineAggregate`, `isDataMemberSpec`, `DataMemberOptions`) remain available.
+
+`annotationsOf(subject)` is unary. Select by annotation type with
+`annotationsOfWithType(subject, ^^AnnotationType)` or the explicitly documented convenience
+`annotations<AnnotationType>(subject)`. Applications choosing optional extraction must define
+their own policy for missing, repeated, or conflicting annotations.
+
+`dataMemberSpec(type, options)` requires explicit options. The old default empty record could not
+satisfy the standard validity requirement. `isStringLiteral` provides the five standard pointer overloads, including ordinary
+implicit conversions to those pointer types: `char`, `wchar_t`, `char8_t`, `char16_t`, and `char32_t`.
+`reflectFunction` reflects functions; it does not promise support for generic callable objects.
+`canSubstitute` returns false for substitution failure, while invalid reflection domains may throw.
+
+Use `std::meta::reflect_constant(value)` directly. The removed `ReflectConstant`/`reflectConstant`
+wrapper added a by-value copy, changing observable structural values with nontrivial copy
+constructors. A forwarding wrapper would not establish identical standard copy semantics.
+Copy-only inputs remain supported by the direct standard operation.
 
 ## Predicate DSL
 
@@ -138,11 +168,26 @@ Ordinary Boolean questions do **not** use exceptions as branching syntax. Miracl
 
 A natural speculative fallback is an operation such as `meta::type(info)`: there is no single standard predicate describing every entity for which `type_of` is meaningful, so a compile-time interpreter may try the projection, catch `std::meta::exception`, and attempt another interpretation. This is distinct from writing `try { requireName(x); } catch (...) { return false; }`, which should simply use `hasIdentifier(x)` or `name(x)`.
 
-## Reflection cache semantics
+## Reflection snapshots and stable caches
 
-The cache layer makes source reflection canonical without changing the public vocabulary. Every reflected `(subject, category)` pair owns one independently lazy unchecked universe in static storage. Asking for fields does not instantiate functions, bases, annotations, or another unrelated source category.
+Member and ordinary-function queries run the standard enumeration at each evaluation point. This is
+required for reopened namespaces and for complete classes whose deduced-return members become
+enumerable later. Annotation queries likewise re-query declarations reachable at the current point,
+including typed annotations and the `annotated` predicate. Each result is promoted to static storage:
+holding an earlier snapshot does not make a later query reuse its old declaration set.
 
-Access-sensitive sources derive visible subsets from that canonical universe. `Access::unchecked()` returns the canonical span directly; other structural access contexts are cached independently after one `std::meta::is_accessible` filtering pass. Declaration order is never changed. The unchecked universe remains module-private and is not an access-control bypass.
+Fresh `Info` sequences use a private fixed-extent structural object for static promotion. The
+extent selects implementation code; the complete sequence determines object identity. Equal-sized
+queries never share a result merely because their lengths agree. This reduces repeated promotion
+cost without caching a declaration-point-sensitive answer. Generic user-value promotion keeps its
+existing copy and lifetime behavior. When a caller deliberately needs one retained snapshot, store
+the returned span once and reuse it; later calls still request fresh enumeration.
+
+Stable categories retain independently lazy caches after semantic validation: fields, static fields,
+constructors, bases, subobjects, enumerable enum values, concrete parameters and template arguments.
+Access-sensitive stable categories filter their canonical unchecked universe by the supplied standard
+access context. Current, unprivileged, via and unchecked contexts retain their meanings; none grants
+access merely because a different query previously used unchecked access.
 
 The three equivalent type paths converge on the same backing storage:
 
@@ -155,7 +200,7 @@ static_assert(typed.data() == raw.data());
 static_assert(typed.data() == facade.data());
 ```
 
-The public APIs remain value-oriented. Internally, raw `Info`/`Access` values cross a C++26 reflection/substitution bridge only at the private cache boundary so callers do not inherit NTTP-heavy API state. Typed annotation queries use the same policy with `(subject, annotation type)` as the cache key. Public APIs validate subjects before crossing that bridge: an exception escaping a `constexpr` cache-variable initializer would become a hard constant-expression failure, so cache specialization is never used as Miracle's semantic-error channel.
+The public APIs remain value-oriented. Internally, raw `Info`/`Access` values cross a C++26 reflection/substitution bridge only at the private cache boundary so callers do not inherit NTTP-heavy API state. Annotation and point-sensitive member queries bypass that result cache and query their current standard sequence before promotion. Public APIs validate subjects before crossing that bridge: an exception escaping a `constexpr` cache-variable initializer would become a hard constant-expression failure, so cache specialization is never used as Miracle's semantic-error channel.
 
 ## Query algebra
 
@@ -273,4 +318,4 @@ The driver measures the compiler process directly after module BMIs/module maps 
 
 ## Implementation boundary
 
-The cache layer covers canonical reflection sources and context-safe access-filtered projections. Equivalent structural static Query prefixes rely first on native compiler identity/interning; captured-lambda-heavy arbitrary pipelines are not blindly global-cached. Persistent user values are created only at an explicit semantic barrier.
+The cache layer covers validated stable-category sources and their access-filtered projections. Point-sensitive member, function and annotation sources use fresh snapshots. Equivalent structural static Query prefixes rely first on native compiler identity/interning; captured-lambda-heavy arbitrary pipelines are not blindly global-cached. Persistent user values are created only at an explicit semantic barrier.
