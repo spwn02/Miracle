@@ -8,10 +8,8 @@ if(NOT TARGET Switch::Switch)
   FetchContent_Declare(
     Switch
     GIT_REPOSITORY https://github.com/spwn02/Switch.git
-    GIT_TAG 2ab457b0978755987424d134d78a02e8a6514ee0
-    GIT_SHALLOW FALSE
-    PATCH_COMMAND "${CMAKE_COMMAND}" "-DSOURCE_DIR=<SOURCE_DIR>" -P
-                  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/patch-switch-panic.cmake")
+    GIT_TAG fa665096ff0406902e447cd95d2a9a2fffc69999
+    GIT_SHALLOW FALSE)
   FetchContent_MakeAvailable(Switch)
 endif()
 
