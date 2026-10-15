@@ -16,6 +16,15 @@ namespace Tests::error {
   check(err.display() == "Error: invalid query\n"_exp);
 }
 
+[[ = test, = group("Core"), = tag("error") ]] auto colouredCauseFormatting() -> void {
+  Error error{"original cause"};
+  error << "top-level failure";
+
+  const String rendered = error.display({.colours = true});
+  check(rendered ==
+        "Error: top-level failure\n\n\033[33mCaused by:\033[0m\n  \033[33m0:\033[0m original cause"_exp);
+}
+
 [[ = test, = group("Core"), = tag("error") ]] auto errorFunction() -> void {
   check(not fail());
 }
