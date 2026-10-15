@@ -625,7 +625,7 @@ static_assert(std::ranges::equal(derivedVisibleBaseFields,
 static_assert(unprivilegedBaseFields.size() <= derivedVisibleBaseFields.size());
 constexpr auto allAccessFields = Miracle::meta::fields<AccessBase>(Miracle::Access::unchecked());
 static_assert(Miracle::meta::query(allAccessFields).count(Miracle::meta::isProtected) == 1);
-static_assert(Miracle::meta::query(allAccessFields).count(Miracle::meta::isProjected) == 1);
+static_assert(Miracle::meta::query(allAccessFields).count(Miracle::meta::isPrivate) == 1);
 
 static_assert(Miracle::meta::isUnion(^^EdgeUnion));
 static_assert(Miracle::meta::fields<EdgeUnion>(Miracle::Access::unchecked()).size() == 2);
@@ -643,6 +643,9 @@ static_assert(Miracle::meta::query(scopeMembers).any(Miracle::meta::isTypeAlias)
 static_assert(Miracle::meta::query(scopeMembers).any(Miracle::meta::isNamespaceAlias));
 static_assert(Miracle::meta::query(scopeMembers).any(Miracle::meta::isFunctionTemplate));
 static_assert(Miracle::meta::query(scopeMembers).any(Miracle::meta::isConcept));
+static_assert(Miracle::meta::query(scopeMembers).any(std::meta::is_concept));
+static_assert(Miracle::meta::query(scopeMembers).count(std::meta::is_concept) ==
+              Miracle::meta::query(scopeMembers).count(Miracle::meta::isConcept));
 static_assert(Miracle::meta::query(scopeMembers).any(Miracle::meta::isTemplate));
 
 constexpr auto edgeBase = Miracle::meta::bases<EdgeDerived>(Miracle::Access::unchecked()).front();
@@ -654,7 +657,7 @@ static_assert(Miracle::meta::parent(edgeBase) == ^^EdgeDerived);
 static_assert(Miracle::meta::parent(edgeEnumerator) == ^^EdgeColor);
 static_assert(Miracle::meta::extract<EdgeColor>(Miracle::meta::constant(edgeEnumerator)) == EdgeColor::red);
 
-// The 2026.10.02 reference compiler intentionally reports no declared identifier for cv-qualified types.
+// The reference compiler intentionally reports no declared identifier for cv-qualified types.
 // Miracle's optional name projection follows that standard boundary while diagnostics remain printable.
 static_assert(not Miracle::meta::name(^^const int).has_value());
 static_assert(not Miracle::meta::displayName(^^const int).empty());
@@ -685,6 +688,9 @@ static_assert(baseQuery.find(Miracle::meta::isField).has_value());
 
 constexpr auto names = baseQuery.map(Miracle::meta::name);
 static_assert(std::same_as<typename decltype(names)::Value, std::optional<std::string_view>>);
+constexpr auto fieldTypes = baseQuery.map(std::meta::type_of);
+static_assert(fieldTypes.count() == fields.size());
+static_assert(fieldTypes.first().value() == std::meta::type_of(fields.front()));
 static_assert(names.count() == fields.size());
 static_assert(names.first().has_value());
 static_assert(names.first().value().has_value());
@@ -845,7 +851,7 @@ constexpr auto owningInts = intValues.map([](const int &value) consteval { retur
 static_assert(std::same_as<typename decltype(owningInts)::Value, int>);
 static_assert(owningInts.filter([](int &&value) consteval { return value % 2 == 0; }).count() == 2);
 static_assert(owningInts.inspect([](int &&) consteval {}).take(2).count() == 2);
-static_assert(owningInts.takeWhile([](int &&value) consteval { return value > 0; }).count() == 1);
+static_assert(owningInts.takeWhile([](int &&value) consteval { return value > 0; }).count() == 4);
 static_assert(owningInts.skipWhile([](int &&value) consteval { return value > 1; }).count() == 3);
 static_assert(owningInts.position([](int &&value) consteval { return value == 2; }).value() == 2);
 static_assert(owningInts.rposition([](int &&value) consteval { return value == 2; }).value() == 3);
@@ -1119,7 +1125,7 @@ static_assert(moveOnlyCapturedPipeline());
 consteval auto nestedMoveOnlyCapturedPipeline() -> bool {
   constexpr std::array thresholds{1, 2};
   constexpr std::array values{1, 2, 3, 4};
-  auto flattened = Miracle::meta::query(thresholds).flatMap([](int threshold) consteval {
+  auto flattened = Miracle::meta::query(thresholds).flatMap([values](int threshold) consteval {
     return Miracle::meta::query(values).filter(
         [limit = MoveOnlyThreshold{threshold}](int value) consteval { return value > limit.value; });
   });
