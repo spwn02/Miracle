@@ -1,9 +1,9 @@
 # GCC compatibility layer for Miracle.
 #
 # libstdc++ 16 does not yet provide std::hive, so on this branch a pinned
-# upstream plf::hive revision is used as a drop-in backend instead. Kept out
-# of the shared CMakeLists.txt build graph (see its trailing include()) so
-# that syncing 'master' into this branch never has to merge through it.
+# upstream plf::hive revision is used as a drop-in backend instead. Kept out of
+# the shared CMakeLists.txt build graph (see its trailing include()) so that
+# syncing 'master' into this branch never has to merge through it.
 
 if(NOT MIRACLE_CAPABILITY_STD_HIVE)
   include(FetchContent)
@@ -14,8 +14,7 @@ if(NOT MIRACLE_CAPABILITY_STD_HIVE)
   FetchContent_Declare(
     plf_hive
     GIT_REPOSITORY https://github.com/mattreecebentley/plf_hive.git
-    GIT_TAG "${miracle_plf_hive_revision}"
-    GIT_SHALLOW TRUE)
+    GIT_TAG "${miracle_plf_hive_revision}")
   FetchContent_MakeAvailable(plf_hive)
 
   if(NOT EXISTS "${plf_hive_SOURCE_DIR}/plf_hive.h")
@@ -25,11 +24,8 @@ if(NOT MIRACLE_CAPABILITY_STD_HIVE)
         "the pinned plf_hive source tree does not contain it.")
   endif()
 
-  target_sources(
-    Miracle
-    PUBLIC FILE_SET miracle_modules
-           TYPE CXX_MODULES
-           FILES src/public/compat/HivePlf.ixx)
+  target_sources(Miracle PUBLIC FILE_SET miracle_modules TYPE CXX_MODULES FILES
+                                src/public/compat/HivePlf.ixx)
 
   target_include_directories(
     Miracle SYSTEM
@@ -46,11 +42,8 @@ if(NOT MIRACLE_CAPABILITY_STD_HIVE)
   message(
     STATUS "Miracle Hive backend: plf::hive (${miracle_plf_hive_revision})")
 else()
-  target_sources(
-    Miracle
-    PUBLIC FILE_SET miracle_modules
-           TYPE CXX_MODULES
-           FILES src/public/compat/HiveNative.ixx)
+  target_sources(Miracle PUBLIC FILE_SET miracle_modules TYPE CXX_MODULES FILES
+                                src/public/compat/HiveNative.ixx)
 
   message(STATUS "Miracle Hive backend: std::hive")
 endif()
