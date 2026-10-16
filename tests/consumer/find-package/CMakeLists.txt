@@ -13,7 +13,7 @@ endif()
 
 project(MiracleConsumer LANGUAGES CXX)
 
-find_package(Miracle 0.1.0 CONFIG REQUIRED)
+find_package(Miracle 0.5.27 CONFIG REQUIRED)
 
 add_executable(miracle_consumer "${CMAKE_CURRENT_LIST_DIR}/../main.cxx")
 target_compile_features(miracle_consumer PRIVATE cxx_std_26)
