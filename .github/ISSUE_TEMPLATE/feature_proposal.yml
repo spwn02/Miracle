@@ -1,0 +1,65 @@
+name: "Feature Proposal"
+description: "Suggest a new Miracle capability or extension to an existing API."
+title: "[Feature] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, search for an existing report or proposal.
+        Redact credentials, private data, and internal paths from any pasted output.
+        For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
+        Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
+        Check the [contributing guide](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md) before proposing an API. Proposals are **not** approved design contracts; an explicit design review and lock are required.
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem and motivation"
+      description: "What should be easier or possible? Explain the unmet need."
+      placeholder: "Describe the problem being solved."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-behavior
+    attributes:
+      label: "Proposed behavior or API sketch"
+      description: "Show consumer-facing C++26 code where possible; otherwise describe the intended semantics."
+      placeholder: "A usage example or precise expected behavior."
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: "Representative use case"
+      description: "Provide a concrete scenario demonstrating the need."
+      placeholder: "A realistic example or workflow."
+    validations:
+      required: true
+  - type: input
+    id: existing-surface
+    attributes:
+      label: "Related API or contract"
+      description: "Link to an existing API, documentation or contract if known."
+      placeholder: "Relevant path or link."
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives considered"
+      description: "Discuss standard C++26 facilities, workarounds or other libraries when relevant."
+      placeholder: "Alternative designs or existing facilities."
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: "Expected compatibility impact"
+      description: "Choose your best assessment; select `Unsure` if uncertain."
+      options:
+        - "Additive / likely compatible"
+        - "Potentially breaking"
+        - "Unsure"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Possible acceptance criteria"
+      description: "Suggest observable outcomes or examples that could demonstrate success."
+      placeholder: "What should be true when completed?"
