@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/spwn02/Miracle/blob/master/SECURITY.md
+    about: Read private vulnerability reporting instructions; do not disclose vulnerabilities in public issues.
+  - name: Contributing guide
+    url: https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md
+    about: Read contribution requirements and toolchain guidance before submitting a change.
