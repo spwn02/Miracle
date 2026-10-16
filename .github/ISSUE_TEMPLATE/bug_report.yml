@@ -1,0 +1,78 @@
+name: "Bug Report"
+description: "Report incorrect or regressed behavior in Miracle."
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, search for an existing report or proposal.
+        Redact credentials, private data, and internal paths from any pasted output.
+        For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
+        Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
+        If the issue is primarily about the compiler or standard library, consider the **Compiler / Toolchain Issue** form. Documentation and repository-operation defects may also be reported as infrastructure requests.
+  - type: input
+    id: affected-revision
+    attributes:
+      label: "Affected revision"
+      description: "Identify a release tag, branch and commit, or enter `Unknown`."
+      placeholder: "v0.5.27, commit SHA, or Unknown"
+    validations:
+      required: true
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: "Affected area"
+      description: "Select the closest area. Choose `Not sure` if classification is unclear."
+      options:
+        - "Core / Types / Error"
+        - "Diagnostics"
+        - "Ranges / Iter"
+        - "Meta / Reflection"
+        - "Filesystem"
+        - "Build / Features"
+        - "Other"
+        - "Not sure"
+  - type: textarea
+    id: observed
+    attributes:
+      label: "Observed behavior"
+      description: "What actually happened? Include any errors or failures."
+      placeholder: "Describe the observed behavior."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "What should happen, and why does the result appear incorrect?"
+      placeholder: "Describe the expected outcome."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Reproduction or isolation status"
+      description: "Share steps or a code snippet. If not yet isolated, explain the blocker; a complete reproducer is not required."
+      placeholder: "Steps, snippet, or why it has not yet been isolated."
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "Include OS, compiler, standard library, and CMake configuration where known. Explicit unknowns are acceptable."
+      placeholder: "OS, toolchain snapshot/version, libc++, CMake preset; Unknown where necessary."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Relevant output"
+      description: "Include redacted compiler diagnostics, logs, or command output when helpful."
+      placeholder: "Paste relevant, redacted output."
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: "Additional context"
+      description: "Provide related issues, links, screenshots, or other context."
+      placeholder: "Any other context."
