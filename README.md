@@ -175,6 +175,10 @@ See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 referen
 
 See [`docs/reference-toolchain.md`](docs/reference-toolchain.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
 
+See [Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md) for contract-driven development, milestone reviews and acceptance requirements.
+
+See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md) for public project governance and operational roadmap.
+
 ## Contributing and security
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).

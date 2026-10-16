@@ -1,8 +1,9 @@
 # Miracle GitHub Infrastructure Contract v1.0
 
-**Status:** DRAFT — requires explicit author approval
+**Status:** LOCKED — effective upon author acceptance and repository integration
 **Program:** GitHub Infrastructure & Governance (G0–G6)
 **Created:** 2026-10-16
+**Reviewed:** 2026-10-17
 **Repository:** `spwn02/Miracle`
 **Governed by:** Approved Miracle Development Protocol v1.0
 **Scope:** Repository governance, traceability, automation, documentation publishing, community intake and reproducible contributor environments. Does not change Miracle's product or C++ API contracts.
@@ -164,7 +165,9 @@ No automatically generated roadmap should imply that planned dates are firm prom
 
 No workstream is accepted based on configuration file presence alone when actual behavior can be tested.
 
-## 11. Approval-required choices
+## 11. Deferred configuration decisions
+
+This framework locks the stated architectural invariants, responsibility boundaries, and workstream acceptance gates. The precise configurations listed here remain **DEFERRED** until they are reviewed and locked in their respective workstreams; no unapproved detail is silently made binding.
 
 Pending explicit discussion/adoption:
 
@@ -174,6 +177,8 @@ Pending explicit discussion/adoption:
 - Community conduct policy and practical reporting channel.
 - Container image distribution and Codespaces spending limits.
 
-## 12. Current state
+## 12. Adoption and current state
 
-**DRAFT ONLY.** The GitHub repository has not been modified by this document. G0 audit facts are recorded separately. All other workstream specifications remain proposed until individually reviewed, approved and implemented.
+**LOCKED FRAMEWORK upon author acceptance and repository integration.** The mission, information ownership, architectural invariants and G0–G6 acceptance gates are binding. Where a section explicitly describes a value as *proposed*, *recommended*, *provisional* or *optional*, the detailed choice remains subject to its workstream-specific design review under section 11.
+
+The G0 audit remains an immutable point-in-time baseline. This contract does not itself create a GitHub Project, protect a branch, activate discussions, deploy documentation, or grant any integration permissions. No workstream is accepted before its exit evidence is verified.

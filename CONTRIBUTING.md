@@ -10,6 +10,10 @@ Use CMake 4.4+ and Ninja. Select the reference compiler before the top-level CMa
 
 See [`docs/compiler-support.md`](docs/compiler-support.md) and [`docs/reference-toolchain.md`](docs/reference-toolchain.md) before making compiler-compatibility or standard-library fallback changes.
 
+## Development governance
+
+Work follows the [Miracle Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md). Approved design contracts, architectural decisions and milestone acceptance criteria are binding. Propose design changes before implementing conflicting API or architectural changes.
+
 ## Invariants
 
 1. Miracle production code must not depend on [Switch](https://github.com/spwn02/Switch) or [Nyx](https://github.com/spwn02/Nyx).
