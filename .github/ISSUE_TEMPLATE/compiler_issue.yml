@@ -1,0 +1,90 @@
+name: "Compiler / Toolchain Issue"
+description: "Report a C++26 compiler, standard-library, modules or toolchain compatibility problem."
+title: "[Toolchain] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, search for an existing report or proposal.
+        Redact credentials, private data, and internal paths from any pasted output.
+        For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
+        Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
+        Read the [compiler support policy](https://github.com/spwn02/Miracle/blob/master/docs/compiler-support.md) and [reference-toolchain documentation](https://github.com/spwn02/Miracle/blob/master/docs/reference-toolchain.md). Missing C++26 facilities may reflect the toolchain rather than Miracle; maintainers will triage ownership.
+  - type: dropdown
+    id: affected-line
+    attributes:
+      label: "Affected development line"
+      description: "Choose the relevant development or release line; uncertainty is acceptable."
+      options:
+        - "master (reference C++26)"
+        - "gcc (compatibility)"
+        - "Tagged release"
+        - "Not sure"
+    validations:
+      required: true
+  - type: input
+    id: compiler-identity
+    attributes:
+      label: "Compiler and toolchain identity"
+      description: "Include the exact `clang-cxx26` snapshot/source revision or GCC/libstdc++ version. Enter `Unknown` only if unobtainable."
+      placeholder: "cxx26-2026.10.09.2 / revision, GCC version, or Unknown"
+    validations:
+      required: true
+  - type: input
+    id: library-revision
+    attributes:
+      label: "Miracle revision"
+      description: "Identify the relevant tag or commit SHA, or enter `Unknown`."
+      placeholder: "v0.5.27, SHA, or Unknown"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: "Suspected component"
+      description: "Select the likely component, or `Unknown / other`."
+      options:
+        - "Clang frontend / reflection"
+        - "libc++ / standard library"
+        - "C++ modules / import std"
+        - "Build / toolchain selection"
+        - "GCC / libstdc++ compatibility"
+        - "Unknown / other"
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: "Observed failure"
+      description: "Describe compiler diagnostics, crashes, wrong behavior, or incompatibility."
+      placeholder: "What fails, and how?"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "Describe the behavior expected by C++26 or the Miracle contract; cite a relevant reference if available."
+      placeholder: "Expected compilation/behavior and why."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Minimal example or isolation status"
+      description: "Include a code sample/commands or explain what prevents isolation."
+      placeholder: "Code, steps, commands, or isolation blocker."
+    validations:
+      required: true
+  - type: textarea
+    id: compiler-options
+    attributes:
+      label: "Compiler flags and build configuration"
+      description: "Include `-freflection-latest`, toolchain selection and modules setup where relevant."
+      placeholder: "Compiler command, flags, CMake preset/toolchain file."
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Full diagnostic output"
+      description: "Paste redacted output or a link to an external reproducer."
+      placeholder: "Relevant redacted diagnostics."
