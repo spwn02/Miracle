@@ -1,0 +1,61 @@
+name: "Infrastructure Request"
+description: "Request a change to builds, CI, documentation tooling or repository operations."
+title: "[Infra] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, search for an existing report or proposal.
+        Redact credentials, private data, and internal paths from any pasted output.
+        For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
+        Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
+        Documentation-publishing or repository-docs issues belong here; incorrect library behavior belongs in **Bug Report**. Never include tokens, passwords, deploy-key material, webhook secrets or private service endpoints.
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Infrastructure area"
+      description: "Select the component most directly affected."
+      options:
+        - "CMake / build system"
+        - "GitHub Actions / CI"
+        - "Compiler provisioning"
+        - "Documentation / publishing"
+        - "Repository configuration"
+        - "Docker / Codespaces"
+        - "Other"
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: "Goal and current limitation"
+      description: "Describe the current limitation and why a change would be useful."
+      placeholder: "The problem and desired result."
+    validations:
+      required: true
+  - type: input
+    id: affected-config
+    attributes:
+      label: "Affected configuration"
+      description: "Name a file, workflow, setting or integration, if known."
+      placeholder: "Path, workflow, or repository setting."
+  - type: textarea
+    id: proposed-approach
+    attributes:
+      label: "Proposed approach"
+      description: "Suggest a solution if you have one; a problem report alone is welcome."
+      placeholder: "Optional implementation idea."
+  - type: textarea
+    id: risks
+    attributes:
+      label: "Risks and constraints"
+      description: "Consider security, compatibility, maintenance and billing where applicable."
+      placeholder: "Known trade-offs or constraints."
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "Verification / acceptance evidence"
+      description: "Describe how we can tell the infrastructure change works."
+      placeholder: "Test, expected behavior, or observable outcome."
+    validations:
+      required: true
