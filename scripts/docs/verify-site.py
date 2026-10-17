@@ -6,6 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 import re
 import sys
+import tomllib
 
 
 CHAPTER = re.compile(r"^\s*(?:[-*]\s+)?\[.+?\]\(([^)]+\.md)\)\s*$")
@@ -51,15 +52,21 @@ def main() -> int:
         if not html.is_file() or html.stat().st_size == 0:
             errors.append(f"Missing or empty mdBook chapter: {html}")
 
-    # Legacy MkDocs used /chapter/ and /infrastructure/chapter/ URLs.
-    # mdBook redirects those paths to the canonical /chapter.html pages.
-    for chapter in chapters:
-        if chapter == Path("index.md"):
+    # Only *historical* MkDocs URLs need redirects. New canonical chapters
+    # did not exist under MkDocs and must not require fictitious legacy URLs.
+    # The book.toml redirect table is the authoritative migration inventory.
+    redirects = tomllib.loads(Path("book.toml").read_text(encoding="utf-8"))[
+        "output"
+    ]["html"].get("redirect", {})
+    for old_url, destination in redirects.items():
+        relative = Path(old_url.lstrip("/"))
+        if relative.is_absolute() or ".." in relative.parts:
+            errors.append(f"Unsafe old URL in book.toml: {old_url}")
             continue
-        redirect = site / chapter.with_suffix("") / "index.html"
+        redirect = site / relative
         if not redirect.is_file():
             errors.append(f"Missing legacy MkDocs URL redirect: {redirect}")
-        elif chapter.with_suffix(".html").name not in redirect.read_text(
+        elif Path(destination).name not in redirect.read_text(
             encoding="utf-8"
         ):
             errors.append(f"Legacy redirect has unexpected destination: {redirect}")
