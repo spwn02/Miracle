@@ -13,6 +13,7 @@ def check(root: Path) -> list[str]:
     ci = (root / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     workflow = (root / ".github/workflows/container.yml").read_text(encoding="utf-8")
     descriptor = json.loads((root / ".devcontainer/devcontainer.json").read_text(encoding="utf-8"))
+    lifecycle = (root / "scripts/ci/verify-devcontainer-lifecycle.sh").read_text(encoding="utf-8")
 
     expected = {
         "CXX26_SNAPSHOT": "cxx26-2026.10.09.2",
@@ -57,6 +58,17 @@ def check(root: Path) -> list[str]:
         faults.append("container CI must run full reference/consumer verification")
     if "permissions:\n  contents: read" not in workflow:
         faults.append("container CI must have read-only token permissions")
+    if "bash scripts/ci/verify-devcontainer-lifecycle.sh" not in workflow:
+        faults.append("container CI must exercise the real devcontainer lifecycle")
+    if "@devcontainers/cli@0.89.0" not in workflow:
+        faults.append("headless devcontainer CLI version must be explicit")
+    for fragment in (
+        " --no-lockfile", "run-user-commands", "docker restart",
+        'test "$(id -un)" = vscode',
+        "compile_commands.json", "verify-container.sh --smoke",
+    ):
+        if fragment not in lifecycle:
+            faults.append(f"missing headless devcontainer lifecycle invariant: {fragment}")
     return faults
 
 
