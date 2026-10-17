@@ -12,14 +12,14 @@
 | Milestone | Published artifacts | State | Outstanding acceptance evidence |
 | --- | --- | --- | --- |
 | G1.1 — Issue intake | `.github/ISSUE_TEMPLATE/{bug_report,compiler_issue,feature_proposal,architecture_proposal,infrastructure_issue,config}.yml`; [locked contract](G1.1-ISSUE-INTAKE-CONTRACT.md) | Implementation complete; source structure reviewed | Verify GitHub chooser, per-form rendered fields, required/optional behavior, and security link interaction |
-| G1.2 — Pull request intake | [PR template](../../.github/PULL_REQUEST_TEMPLATE.md) | Implementation complete | Verify template pre-population in GitHub's live PR interface without falsely asserting a test PR exists |
-| G1.3 — Community governance | [Code of Conduct](../../CODE_OF_CONDUCT.md), [Support](../../SUPPORT.md), [Accessibility](../../ACCESSIBILITY.md) | Documents implemented | Verify GitHub community recognition and links; owner should assess confidential moderation contact |
-| G1.4 — Contributor documentation | [Contributing](../../CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](../../README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
+| G1.2 — Pull request intake | [PR template](https://github.com/spwn02/Miracle/blob/master/.github/PULL_REQUEST_TEMPLATE.md) | Implementation complete | Verify template pre-population in GitHub's live PR interface without falsely asserting a test PR exists |
+| G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | Documents implemented | Verify GitHub community recognition and links; owner should assess confidential moderation contact |
+| G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
 
 ## Compiler/toolchain consistency
 
-Miracle reference CI [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) pins:
+Miracle reference CI [`.github/workflows/ci.yml`](https://github.com/spwn02/Miracle/blob/master/.github/workflows/ci.yml) pins:
 
 - Snapshot: `cxx26-2026.10.09.2`
 - Source revision: `040df2b05ea338d107fac7387a2e4db835d746e0`
