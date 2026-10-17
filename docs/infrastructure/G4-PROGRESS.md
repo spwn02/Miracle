@@ -40,13 +40,27 @@ The maintainer approved **Dependabot-generated pull requests**, without changing
 - **Merge gate:** Dependabot may **propose** updates but cannot approve or merge them by this configuration. Review CI, pinned source provenance and synchronization effects before author approval. PR merge does not imply Miracle's human `Accepted` Project status.
 - **Activation verified:** [Dependabot update run #38994801125](https://github.com/spwn02/Miracle/actions/runs/38994801125) completed successfully and immediately opened three genuine major-version update PRs: [#9 — actions/upload-pages-artifact v4→v5](https://github.com/spwn02/Miracle/pull/9), [#10 — actions/deploy-pages v4→v5](https://github.com/spwn02/Miracle/pull/10), and [#11 — actions/upload-artifact v4→v7](https://github.com/spwn02/Miracle/pull/11). All were opened by `dependabot[bot]`. These occupy all three configured open PR slots, so other version updates may queue until a review/merge/closure creates capacity. **No PR has been accepted or merged by this configuration.**
 
+## Branch and release-tag protection: configuration prepared, not applied
+
+The maintainer supplied a screenshot that GitHub still warns **`master` is not protected** and authorized proceeding to G4's next priority. A connected read-only audit on 2026-10-17 confirmed `master` and `gcc` both report `protected: false`; repository rulesets are `[]`.
+
+A minimal, version-controlled proposal now lives in [G4-RULESETS.md](G4-RULESETS.md):
+
+- Branch ruleset, **`master` and `gcc` only**: prevent deletion and non-fast-forward pushes, without preventing normal author fast-forward commits, Dependabot PR merging or the `gcc` no-ff merge-and-fast-forward update.
+- Tag ruleset, **`v*` only**: prevent removal and revision of already published version tags; permit normal first-time tag creation.
+- Rulesets deliberately do **not** require PR-only changes, signing, linear history, branch creation restrictions, or mandatory checks at this stage.
+- [`reconcile-rulesets.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/reconcile-rulesets.py) implements explicit **`--check` (read-only)**, **`--verify` (read-only)** and **`--apply` (requires maintainer's separate action)** against two reviewed [JSON recipes](https://github.com/spwn02/Miracle/tree/master/scripts/github/rulesets). It rejects drift and unknown rulesets instead of silently overwriting other policies.
+- Reference CI syntax-compiles the Python script and validates the two recipes offline without GitHub administration.
+
+**Current status: NOT APPLIED.** Source commits cannot activate repository protection. The connected GitHub integration cannot modify repository administrative rulesets, and the infrastructure contract reserves that change to the maintainer's reviewed configuration. Once the maintainer runs `--apply`, capture the actual ruleset IDs and verify that normal `master` CI and a `gcc` synchronization still succeed. A ruleset definition's `enforcement: active` does not mean GitHub is currently enforcing it.
+
 ## Open decisions and checks
 
 - [x] Action refs resolved to published Git SHAs and pin-guard/syntax steps passed on pinned reference CI; the full final-commit CI run still needs its conclusion checked.
 - [ ] GitHub Pages mdBook deploy remains green with pinned actions.
 - [ ] `gcc` sync and compatibility continue successfully.
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
-- [ ] Review branch protection/rulesets and protection of published tags without breaking solo-maintainer commits.
+- [ ] Review and apply the minimal `master`/`gcc` and `v*` rulesets using the documented maintainer-controlled `--apply`; verify real GitHub enforcement, normal direct pushes and `gcc` sync.
 - [ ] Review private security-reporting availability and actual repository security settings, without making unsupported claims.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
