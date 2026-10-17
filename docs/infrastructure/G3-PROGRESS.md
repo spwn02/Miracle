@@ -32,6 +32,16 @@ The initial build logged nine **source-link warnings** from infrastructure progr
 
 The actual documentation URL remains **unverified** until a successful Pages deployment reports its `page_url`. The typical project URL `https://spwn02.github.io/Miracle/` must not be described as live yet.
 
+## Follow-up strict-build validation
+
+The [strict-build documentation workflow run](https://github.com/spwn02/Miracle/actions/runs/38992585203) on commit `02fb429` confirmed:
+
+- `mkdocs build --clean --strict` **passed** with no unresolved MkDocs warnings.
+- `verify-site.py site` **passed**, including canonical pages, landing navigation and search index.
+- `configure-pages@v5` still **failed with `Get Pages site failed: Not Found`**, because the repository's Pages site was not yet enabled/configured. The upload/deploy steps therefore remain unverified.
+
+This establishes a clean *build* but does not establish a live website. The deployment remains gated on the maintainer's GitHub repository setting, not on missing C++ toolchain dependencies.
+
 ## Maintainer action: enable Pages
 
 In [repository Pages settings](https://github.com/spwn02/Miracle/settings/pages):
@@ -58,7 +68,7 @@ The output must include **Miracle Development** with `Backlog` or an appropriate
 - [x] Documentation build and site smoke checks passed in GitHub Actions.
 - [x] Pages workflow uses no personal token and separates read-only build from privileged deploy.
 - [x] Optional Wiki policy documented.
-- [ ] Updated build has zero unresolved cross-tree documentation-link warnings.
+- [x] Updated MkDocs build passes with `--strict` and zero unresolved documentation-link warnings.
 - [ ] GitHub Pages enabled with GitHub Actions publishing source.
 - [ ] Site deployed and real public URL recorded.
 - [ ] Public landing page, navigation/search and desktop/mobile/keyboard access verified.
