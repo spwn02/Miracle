@@ -48,6 +48,18 @@ python3 scripts/github/audit-security.py
 
 Use its **Allowlisted configuration values** section to resolve the private reporting and CodeQL default-setup statuses without screenshots of sensitive alert pages. This additional pass is verification only, not a request to enable CodeQL prematurely.
 
+## Second authenticated audit — feature status resolved (2026-10-17)
+
+The maintainer provided the actual **Allowlisted configuration values**, beyond HTTP reachability:
+
+| Feature | Reported configuration | Conclusion |
+| --- | --- | --- |
+| Private vulnerability reporting | `{'enabled': True}` | **Enabled** |
+| Dependabot security updates | `{'enabled': True, 'paused': False}` | **Enabled, not paused** |
+| Code scanning default setup | `{'state': 'configured'}` | **Configured** |
+
+No settings were changed. A configured CodeQL default setup does **not** prove successful scans or adequate coverage of Miracle's experimental C++26 reflection/modules and custom compiler. Those are separate analysis-evidence gates.
+
 ## Maintainer-side, read-only security audit
 
 A local [`audit-security.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-security.py) script uses the maintainer's existing authenticated GitHub CLI to inspect feature availability without printing sensitive alert bodies or secrets.
@@ -82,10 +94,10 @@ Do not add generic CodeQL C++ analysis to CI and declare coverage before verifyi
 ## Completion gates
 
 - [x] Maintainer supplied safe feature-state summary (without alert or secret details) from authenticated CLI.
-- [ ] Private reporting state and fallback method confirmed.
+- [x] Private vulnerability reporting confirmed enabled; SECURITY.md documents the fallback.
 - [x] Dependabot alerts and security updates confirmed enabled and distinguished from weekly version-update PRs.
 - [x] Secret scanning, push protection, optional pattern/validity flags and code-scanning endpoint availability documented with limitations; actual CodeQL configuration still pending.
-- [ ] Any agreed setting changes made explicitly and independently verified.
+- [x] Relevant settings verified through authenticated configuration API; no changes requested.
 - [ ] G4 ledger updated with acceptance evidence.
 
 No settings were changed by this read-only audit documentation.

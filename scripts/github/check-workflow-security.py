@@ -26,6 +26,8 @@ def check(workflows: dict[str, str]) -> list[str]:
         return errors
 
     for name, source in workflows.items():
+        if ".github/scripts/" in source:
+            errors.append(f"{name}: obsolete .github/scripts/ reference")
         if re.search(r"(?m)^\s*pull_request_target\s*:", source):
             errors.append(f"{name}: pull_request_target is forbidden")
         if re.search(r"(?m)^\s*workflow_run\s*:", source):
@@ -139,7 +141,14 @@ def main() -> int:
             print(f"ERROR: mutation escaped guard: {label}", file=sys.stderr)
             return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries and 4 negative fixtures.")
+    alternate = dict(workflows)
+    alternate["gcc.yml"] = alternate["gcc.yml"].replace(
+        "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
+    )
+    if alternate["gcc.yml"] == workflows["gcc.yml"] or not check(alternate):
+        print("ERROR: obsolete helper path fixture escaped check", file=sys.stderr)
+        return 1
+    print(f"PASS: {len(FILES)} workflow trust boundaries and 5 negative fixtures.")
     return 0
 
 

@@ -63,7 +63,7 @@ jobs:
           set -euo pipefail
 
           metadata="$RUNNER_TEMP/release-metadata.json"
-          python3 .github/scripts/create-release-metadata.py \
+          python3 scripts/ci/create-release-metadata.py \
             --project Miracle \
             --version "$PROJECT_VERSION" \
             --tag "$GITHUB_REF_NAME" \

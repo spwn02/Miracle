@@ -68,7 +68,7 @@ jobs:
               set -euo pipefail
               pacman -Syu --noconfirm --needed \
                 base-devel ca-certificates cmake git ninja
-              bash ./.github/scripts/validate-gcc.sh
+              bash ./scripts/ci/validate-gcc.sh
             '
           status="$?"
           set -e
@@ -87,7 +87,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          python3 .github/scripts/report-gcc-convergence.py \
+          python3 scripts/ci/report-gcc-convergence.py \
             --master origin/master \
             --gcc HEAD \
             --output "$RUNNER_TEMP/gcc-convergence.json"

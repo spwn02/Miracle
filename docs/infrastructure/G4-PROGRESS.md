@@ -121,6 +121,14 @@ After the maintainer confirmed running the second security audit (without sharin
 
 **Security-feature state remains bounded by evidence:** The maintainer said they ran the revised read-only security script, but did not supply its configuration-value section. Thus **private vulnerability reporting `enabled`** and **CodeQL default setup `state`** remain unverified. No change was made to either feature, and we must not claim that C++26 reflection/modules have effective CodeQL analysis without successful configured scans.
 
+## Security final-settings evidence and scripts-directory consolidation
+
+The maintainer supplied the follow-up read-only audit: **private vulnerability reporting enabled**, **Dependabot security updates enabled and unpaused**, and **Code scanning default setup configured**. See [G4 security audit](G4-SECURITY-AUDIT.md). The latter is a setup confirmation, not evidence that CodeQL accurately analyzes experimental C++26 reflection/modules.
+
+The maintainer also identified `.github/scripts/` alongside `scripts/` as ambiguous and requested one canonical root. The three historical GitHub CI helpers were moved **unchanged** to `scripts/ci/`; all five active YAML references were rewritten atomically. See [scripts/README.md](https://github.com/spwn02/Miracle/blob/master/scripts/README.md) for the final organization (`ci/`, `github/`, `docs/`). `scripts/ci/test-ci-helpers.py` tests layout and release/GCC report fixtures; the workflow security guard rejects legacy helper paths. GCC validator root resolution is unchanged because the original and new locations are both two directory levels below the repository root.
+
+**Migration gate:** the files and workflow references move together in one Git commit. Follow-up reference CI, GCC compatibility/synchronization and release-provenance paths still require live validation. Do not fabricate a release tag for testing.
+
 ## Open decisions and checks
 
 - [x] Action refs pinned and guard passed; independent reference CI runs #38995484739 and #38995614569 completed successfully.
@@ -130,7 +138,7 @@ After the maintainer confirmed running the second security audit (without sharin
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
 - [x] Live `master`/`gcc` and `v*` rulesets activated and independently verified by REST (IDs `25286606`, `25286609`); post-protection CI/direct-commit and `gcc` synchronization verification remain separate.
 - [x] Authenticated security baseline checked: Dependabot alerts/updates, secret scanning and push protection confirmed enabled; optional pattern/validity checks confirmed off.
-- [ ] Confirm private reporting `enabled` boolean and code scanning `state`, then assess whether any C++26-aware analysis actually runs; endpoint HTTP 200 alone is insufficient.
+- [x] Private vulnerability reporting enabled; Dependabot security updates active/unpaused; CodeQL default setup configured. Experimental C++26 analysis coverage remains unverified.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
-**G4 remains open.** Milestone #1, SHA-pinned Actions, Dependabot PR handling, active branch/tag protection, reference CI/Pages baseline, and most security toggles are verified. A compatible protected-`gcc` push, private-reporting and CodeQL configuration status, and final maintainer acceptance are still pending.
+**G4 remains open.** Milestone #1, SHA-pinned Actions, Dependabot PR handling, active branch/tag protection, reference CI/Pages baseline, and most security toggles are verified. A compatible protected-`gcc` push, meaningful CodeQL C++26 coverage, post-migration workflow verification and final maintainer acceptance remain outstanding.
