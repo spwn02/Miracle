@@ -127,7 +127,10 @@ The test runs `devcontainer up` on the checked-in configuration, explicitly
 waits for `postCreateCommand`, verifies `vscode` as the non-root user,
 checks the selected compiler and tools, runs the existing container smoke
 probe, configures the CMake `tests` preset and checks
-`build/tests/compile_commands.json`. It writes an ignored marker in the live
+`build/tests/compile_commands.json`. The Dev Containers VS Code settings
+pass this exact directory to clangd (its default search does not traverse
+`build/tests/`); first generate the database with `make configure`.
+The test then writes an ignored marker in the live
 workspace, restarts **only the isolated test container**, and confirms that
 both container and host can still read the marker. It removes the test marker
 and container on exit. Generated CMake `build/tests` artifacts remain for
