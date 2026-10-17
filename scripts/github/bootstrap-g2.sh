@@ -7,14 +7,14 @@ set -euo pipefail
 OWNER="spwn02"
 REPO="spwn02/Miracle"
 PROJECT_TITLE="Miracle Development"
-MILESTONE_TITLE="GitHub Infrastructure — G2"
+MILESTONE_TITLE="GitHub Infrastructure (G0–G6)"
 
 usage() {
   cat <<'HELP'
 Usage: scripts/github/bootstrap-g2.sh --check | --apply
 
 --check  Inspect existing project/labels/milestones without mutating them.
---apply  Create/reuse the GitHub Project and import real infrastructure issues #1-#6.
+--apply  Create/reuse the Project, import actual issues, reconcile the G0–G6 milestone.
 
 Requirements: authenticated GitHub CLI with permission for spwn02/Miracle
 and the GitHub Projects 'project' OAuth scope.
@@ -59,7 +59,7 @@ if [[ "$mode" == "--check" ]]; then
   echo "Existing matching repo labels:"
   gh label list --repo "$REPO" --limit 200 --json name --jq '.[].name' | grep -E '^(type:|triage:|help-wanted$|good-first-issue$)' || true
   echo "Existing matching milestones:"
-  gh api "repos/$REPO/milestones?state=all&per_page=100" --jq '.[].title' | grep -F "$MILESTONE_TITLE" || true
+  bash scripts/github/reconcile-infrastructure-milestone.sh --check
   exit 0
 fi
 
@@ -134,16 +134,6 @@ ensure_label "triage:needs-info" "fbca04" "Further diagnostic or design evidence
 ensure_label "help-wanted" "008672" "Maintainer invites outside contributions"
 ensure_label "good-first-issue" "7057ff" "Small, well-scoped and documented starting issue"
 
-milestones="$(gh api "repos/$REPO/milestones?state=all&per_page=100" --jq '.[].title')"
-if grep -Fxq "$MILESTONE_TITLE" <<< "$milestones"; then
-  echo "Milestone exists: $MILESTONE_TITLE"
-else
-  gh api --method POST "repos/$REPO/milestones" \
-    -f title="$MILESTONE_TITLE" \
-    -f description="Create and validate the public Miracle Development Project, its fields, views, issue routing and verification process. No deadline is implied." >/dev/null
-  echo "Created milestone: $MILESTONE_TITLE"
-fi
-
 # Seed only genuine, already-opened infrastructure work; do not backfill
 # historical issues or assign unreviewed priorities or target dates.
 project_id="$(gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.id')"
@@ -204,8 +194,8 @@ for entry in "1 G1 Infrastructure" "2 G2 Infrastructure" \
   echo "Set #$number: Phase=$phase, Area=$area"
 done
 
-# Only the actual G2 provisioning task belongs in the finite G2 milestone.
-gh issue edit 2 --repo "$REPO" --milestone "$MILESTONE_TITLE" >/dev/null
+# One program-level milestone covers G0–G6, not only the bootstrap subphase.
+bash scripts/github/reconcile-infrastructure-milestone.sh --apply
 
 echo
 echo "GitHub Project bootstrap finished."
