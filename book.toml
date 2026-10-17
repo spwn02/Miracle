@@ -22,3 +22,26 @@ enable = true
 limit-results = 20
 boost-title = 2
 boost-hierarchy = 2
+
+# Keep MkDocs-era directory URLs working after the mdBook migration.
+[output.html.redirect]
+"/compiler-support/index.html" = "../compiler-support.html"
+"/reference-toolchain/index.html" = "../reference-toolchain.html"
+"/capabilities/index.html" = "../capabilities.html"
+"/diagnostics/index.html" = "../diagnostics.html"
+"/meta/index.html" = "../meta.html"
+"/iter/index.html" = "../iter.html"
+"/range/index.html" = "../range.html"
+"/static-string/index.html" = "../static-string.html"
+"/feature/index.html" = "../feature.html"
+"/architecture/index.html" = "../architecture.html"
+"/DEVELOPMENT_PROTOCOL/index.html" = "../DEVELOPMENT_PROTOCOL.html"
+"/infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT/index.html" = "../GITHUB-INFRASTRUCTURE-CONTRACT.html"
+"/infrastructure/G0-AUDIT/index.html" = "../G0-AUDIT.html"
+"/infrastructure/G0-PROGRESS/index.html" = "../G0-PROGRESS.html"
+"/infrastructure/G1-PROGRESS/index.html" = "../G1-PROGRESS.html"
+"/infrastructure/G1.1-ISSUE-INTAKE-CONTRACT/index.html" = "../G1.1-ISSUE-INTAKE-CONTRACT.html"
+"/infrastructure/G2-OPERATING-PLAN/index.html" = "../G2-OPERATING-PLAN.html"
+"/infrastructure/G2-PROGRESS/index.html" = "../G2-PROGRESS.html"
+"/infrastructure/G3-OPERATING-PLAN/index.html" = "../G3-OPERATING-PLAN.html"
+"/infrastructure/G3-PROGRESS/index.html" = "../G3-PROGRESS.html"
