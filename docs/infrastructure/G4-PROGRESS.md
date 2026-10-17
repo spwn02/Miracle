@@ -1,7 +1,7 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-17
-**Status:** Initial Actions hardening implemented; live validation and repository settings review pending
+**Status:** Actions pinning, rulesets, Dependabot and baseline secret/dependency security verified; CodeQL/private-reporting states and final acceptance pending
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
@@ -89,6 +89,24 @@ Actual ruleset enforcement, target refs and no-bypass policy were verified. No d
 
 **Security availability audit:** Current public metadata and the connected GitHub integration do not expose authoritative private vulnerability, Dependabot alert, secret scanning, or code scanning settings. Those states remain **unknown**, not assumed disabled. [G4-SECURITY-AUDIT.md](G4-SECURITY-AUDIT.md) and [`audit-security.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-security.py) provide an administrator-authenticated, read-only settings/endpoint audit that prints no sensitive alert payloads. No scanning feature was turned on or claimed supported without verification of C++26 modules/reflection.
 
+## Maintainer security-settings audit and PR merge verification (2026-10-17)
+
+The maintainer ran the account-authenticated read-only `audit-security.py` and supplied its output. The full interpretation is in [G4-SECURITY-AUDIT.md](G4-SECURITY-AUDIT.md).
+
+**Verified enabled:**
+- `security_and_analysis.dependabot_security_updates` = `enabled`.
+- `security_and_analysis.secret_scanning` = `enabled`.
+- `security_and_analysis.secret_scanning_push_protection` = `enabled`.
+- Dependency vulnerability alerts endpoint returns HTTP **204**, the documented positive enabled status.
+
+**Verified disabled optional additions:** `secret_scanning_non_provider_patterns` and `secret_scanning_validity_checks`. These are genuine off settings, not proof that the core secret scanner or push protection is off.
+
+**Still unknown:** private vulnerability reporting endpoint returned HTTP 200, but this alone does not identify its `enabled` boolean. Code scanning default setup and alerts endpoints also returned HTTP 200, but no CodeQL `state`, successful analyses, or C++26 compiler/reflection coverage has been established. The improved [read-only audit script](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-security.py) now prints only safe allowlisted configuration state/boolean fields and avoids listing any alert details.
+
+**Dependabot PR lifecycle:** GitHub confirms three first-run major-update PRs **#11, #10 and #9 were actually merged** into `master` as normal **two-parent merge commits** `cc26fbb`, `de1a2d0`, and `d20f599`, respectively. This preserves the original proposed commit identities; the PRs were not squashed or rebased. Their merged versions affect artifact upload and Pages Actions, so reference CI, Pages publishing and GCC compatibility require green checks at the merged `master` head. No repo setting for merging was silently changed.
+
+**Validation:** `master` was observed at `d20f599` immediately after the three PR merges. Its mdBook publishing run [#38996369465](https://github.com/spwn02/Miracle/actions/runs/38996369465) passed; the reference CI [#38996369479](https://github.com/spwn02/Miracle/actions/runs/38996369479) was still in progress at that checkpoint. Do not treat the PRs' earlier branch CI checks as conclusive validation of subsequent combined merges.
+
 ## Open decisions and checks
 
 - [x] Action refs pinned and guard passed; independent reference CI runs #38995484739 and #38995614569 completed successfully.
@@ -96,7 +114,8 @@ Actual ruleset enforcement, target refs and no-bypass policy were verified. No d
 - [x] GCC sync job completes safely with the compatibility gate (actual protected-branch push still unproven because `Advance gcc` was skipped).
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
 - [x] Live `master`/`gcc` and `v*` rulesets activated and independently verified by REST (IDs `25286606`, `25286609`); post-protection CI/direct-commit and `gcc` synchronization verification remain separate.
-- [ ] Complete maintainer's read-only audit of private vulnerability reporting, dependency/secret/code scanning and security update availability; current states unknown.
+- [x] Authenticated security baseline checked: Dependabot alerts/updates, secret scanning and push protection confirmed enabled; optional pattern/validity checks confirmed off.
+- [ ] Confirm private reporting `enabled` boolean and code scanning `state`, then assess whether any C++26-aware analysis actually runs; endpoint HTTP 200 alone is insufficient.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
-**G4 remains open.** Milestone #1, Dependabot PR intake, both active branch/tag rulesets and post-protection reference CI/Pages are verified. Automatic PR merging is disabled. Actual post-protection `gcc` branch advancement, administrative security-feature settings, and formal maintainer acceptance are pending.
+**G4 remains open.** Milestone #1, SHA-pinned Actions, Dependabot PR handling, active branch/tag protection, reference CI/Pages baseline, and most security toggles are verified. A compatible protected-`gcc` push, private-reporting and CodeQL configuration status, and final maintainer acceptance are still pending.
