@@ -46,7 +46,7 @@
 
 The G5 workflow now runs `make docker-build NO_CACHE=1` and `make docker-test` as separate diagnosable steps, instead of maintaining another copy of the Docker invocation. It continues using a read-only host checkout and a disposable writable container copy, and it never publishes an image. Both the reference and G5 workflow run `check-makefile.py` in their early verification phase.
 
-**Evidence boundary:** isolated local Make tests passed before integration; on-repository reference CI and **actual G5 Docker execution via Make targets** must pass on the pushed revision before treating this orchestration change as accepted. This CLI addition does not replace the outstanding interactive Codespaces/devcontainer acceptance checks.
+**Verified on the implementation revision:** [reference CI #39002203719](https://github.com/spwn02/Miracle/actions/runs/39002203719) **passed**, including the new Make CLI tests. [G5 clean Docker #39002203712](https://github.com/spwn02/Miracle/actions/runs/39002203712) **passed**, including `make docker-build NO_CACHE=1`, `make docker-test`, **71/71 CTest cases**, and all three consumer modes. The [documentation build #39002266448](https://github.com/spwn02/Miracle/actions/runs/39002266448) also passed and deployed the Make usage guide. These are actual GitHub Actions results, not dry-run claims. The Make orchestration implementation is **verified**; interactive Codespaces/devcontainer acceptance remains separate.
 
 ## Verification evidence
 
