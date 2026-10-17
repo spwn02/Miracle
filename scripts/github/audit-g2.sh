@@ -63,7 +63,7 @@ gh api graphql -f query="$query" --jq '
     title: $p.title,
     url: $p.url,
     public: $p.public,
-    linked_repositories: [.repositories.nodes[].nameWithOwner],
+    linked_repositories: [($p.repositories.nodes // [])[] | .nameWithOwner],
     fields: [($p.fields.nodes // [])[] | select(.name != null) |
       {name, type: .__typename, dataType, options: [(.options // [])[] | .name]}],
     views: [($p.views.nodes // [])[] |
