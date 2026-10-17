@@ -3,10 +3,34 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** G2 verification blocked — Project #3 contains issues #1–#6; #7 absent from unfiltered listing; configuration query inconclusive
+**Status:** Structure and seven-item backlog VERIFIED; Auto-add filter and acceptance-unsafe default workflows require correction before G2 acceptance
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Latest maintainer acceptance audit — 2026-10-17
+
+The maintainer supplied the complete successful output of `scripts/github/audit-g2.sh` and screenshots of both Auto-add workflows.
+
+**Verified:**
+- Project #3 is public, open, linked exclusively to `spwn02/Miracle`.
+- The **existing** Status field has exactly `Backlog, Design, Ready, Implementing, Review, Verification, Accepted, Blocked` in the agreed order.
+- Custom `Phase`, `Area`, `Priority`, `Risk`, `Target release`, `Start date`, and `Target date` fields are present; Area/Priority/Risk options match the contract.
+- `All Work` is an unfiltered table; `Active` is a board with `-status:Accepted`; `Roadmap` is an unfiltered roadmap layout; `Verification Queue` is a table with `status:Review,Verification,Blocked`.
+- Issues #1–#6 have appropriate Phase and Area and `Backlog` status. Issue #7 is **now present** in Project #3 with `Backlog`; its Phase and Area are unassigned, correctly preserving an unscheduled phase (Area should be classified as Documentation during triage).
+- `gh issue view 7 --json projectItems` exposes **two different user-owned Projects**, `Roadmap` with `Todo` status and `Miracle Development` with `Backlog`. The earlier automated addition appears to have belonged to the separate Roadmap Project; the later manual Project #3 addition occurred at 01:33:08 UTC.
+- GitHub workflows `Auto-add to project` and `Auto-add sub-issues to project` are both enabled.
+
+**Remaining acceptance blocker shown in actual Project #3 screenshot:**
+- The **Auto-add to project** rule is configured for repository `Miracle` but filtered as `is:issue,pr is:open label:bug`. This excludes most development work, including `type:feature`, `type:documentation` and `type:infrastructure`, so it does **not** satisfy G2's general issue-intake contract.
+- Change the filter to **`is:issue`** (no `label:bug`, no `is:pr`). Save and keep the workflow on.
+- `Auto-add sub-issues to project` is enabled and its screenshot shows no problematic criteria. It can stay enabled.
+- `Auto-close issue`, `Item closed`, and `Pull request merged` are currently enabled. GitHub defaults can auto-close issues or move statuses to `Done` when an issue closes/PR merges. Since the historical `Done` choice was renamed `Accepted`, these automations risk bypassing the explicit author-acceptance gate. **Disable these three until their target statuses and acceptance implications have been individually reviewed.** Inspect `Pull request linked to issue` as well, but leave it only if it never assigns `Accepted`.
+- `Item added to project` may stay enabled when it sets newly added issues to `Backlog`.
+
+**G2 not formally accepted:** The filter correction and acceptance safeguards have to be confirmed from the current Project UI. Then verify normal new-issue intake through a *genuine* future issue (not a fabricated dummy) and record an explicit author acceptance decision.
+
+The audit originally printed `Machine-readable gates passed` despite this incorrect Auto-add filter because GitHub's public Project workflow GraphQL fields expose enablement, not the repository-specific filter rule. Treat browser workflow inspection as a required independent gate; machine-readable success alone is insufficient.
 
 ## Provisioned and observed
 
@@ -134,12 +158,12 @@ Project view configuration, saved filters and the Auto-add rule must still be ch
 - [x] Required repository labels created; current six issues classified.
 - [x] Milestone created and issue #2 association verified.
 - [x] Author reported repaired bootstrap run complete.
-- [ ] Independently inspect Project item-import results and Phase/Area values.
+- [x] Independently inspect Project #3 items and Phase/Area values for issues #1–#6 (issue #7 remains correctly unscheduled).
 - [x] Verify that new issue #7 triggered built-in Project auto-add and a bot status update (GitHub issue timeline).
-- [ ] Confirm #7 actually resides in Project #3 with expected non-accepted status.
-- [ ] Verify the existing Status field has all eight required options.
-- [ ] Verify the four saved views and filter/column behavior.
-- [ ] Enable and inspect issue Auto-add.
-- [ ] Verify real workflow transition and explicit author acceptance.
+- [x] Confirm #7 resides in Project #3 with `Backlog` and is also a member of the separate `Roadmap` Project.
+- [x] Verify the existing Status field has all eight required options, in the expected order.
+- [x] Verify the four saved view names, layouts and saved filter strings (column/grouping presentation not independently inspected).
+- [ ] Correct Auto-add filter from `is:issue,pr is:open label:bug` to `is:issue` and verify a real future issue enters Project #3 automatically.
+- [ ] Disable or inspect workflows that could auto-close issues or auto-assign `Accepted`; then verify a real workflow transition and explicit author acceptance.
 
 **Status is not ACCEPTED until the remaining gates pass.** Work on later infrastructure tasks can progress in parallel without misreporting G2 completion.
