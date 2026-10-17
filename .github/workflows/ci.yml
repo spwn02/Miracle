@@ -38,6 +38,8 @@ jobs:
           set -euo pipefail
           bash -n scripts/github/bootstrap-g2.sh
           bash -n scripts/github/audit-g2.sh
+          bash -n scripts/github/reconcile-infrastructure-milestone.sh
+          python3 scripts/github/check-workflow-pins.py
 
       - name: Install build tools
         shell: bash
