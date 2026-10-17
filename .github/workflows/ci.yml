@@ -37,6 +37,7 @@ jobs:
         run: |
           set -euo pipefail
           bash -n scripts/github/bootstrap-g2.sh
+          bash -n scripts/github/audit-g2.sh
 
       - name: Install build tools
         shell: bash
