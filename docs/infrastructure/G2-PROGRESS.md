@@ -31,6 +31,25 @@
 
 No retrospective historical tickets, fake due dates, automatic acceptance statuses or fictitious approvals were created.
 
+## Live auto-add evidence for issue #7 — 2026-10-17
+
+- GitHub issue [#7](https://github.com/spwn02/Miracle/issues/7) was created as a deferred, unscheduled contract migration task with `type:documentation` and no fabricated deadline.
+- Its GitHub issue-event timeline records `added_to_project_v2` by `github-project-automation[bot]` at **01:04:54 UTC**, followed by `project_v2_item_status_changed` from the same bot at **01:04:56 UTC**.
+- This establishes that GitHub Projects **auto-add and status automation fired** for the new issue. The repository-facing REST response does not identify the Project number or resulting status option. Confirmation of membership in *Project #3* and its effective status requires authenticated Project inspection.
+- An issue can be successfully added while not appearing in a filtered view; `All Work` should be used to inspect unfiltered current membership.
+
+### Final read-only Project audit
+
+The [`scripts/github/audit-g2.sh`](../../scripts/github/audit-g2.sh) script queries Project #3 using the maintainer's authenticated `gh` session. It reports current public visibility, linked repositories, fields/options, saved-view names/layouts/filters/grouping, enabled workflows, and actual issue items (including #7), plus the bot events.
+
+```bash
+git pull --ff-only origin master
+bash -n scripts/github/audit-g2.sh
+bash scripts/github/audit-g2.sh
+```
+
+It performs no writes and does not print tokens. The exact auto-add workflow **repository and filter configuration** and the saved views' practical usability still require browser verification.
+
 ## Owner's view setup report (2026-10-17)
 
 The maintainer reports that the G2 Project configuration steps are complete and observes multiple views containing the same six issues, plus a redundant default `View 1` tab. GitHub views are alternate layouts or filters of the **same** Project items, not copies of issues; repeating an issue across views is correct. Deleting the unused default `View 1` tab is appropriate when the named `All Work` view provides an equivalent comprehensive table. Deleting a view does not remove its issues.
@@ -76,6 +95,8 @@ Project view configuration, saved filters and the Auto-add rule must still be ch
 - [x] Milestone created and issue #2 association verified.
 - [x] Author reported repaired bootstrap run complete.
 - [ ] Independently inspect Project item-import results and Phase/Area values.
+- [x] Verify that new issue #7 triggered built-in Project auto-add and a bot status update (GitHub issue timeline).
+- [ ] Confirm #7 actually resides in Project #3 with expected non-accepted status.
 - [ ] Verify the existing Status field has all eight required options.
 - [ ] Verify the four saved views and filter/column behavior.
 - [ ] Enable and inspect issue Auto-add.
