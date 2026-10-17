@@ -1,91 +1,86 @@
 # G3 — Documentation Publishing: Operating Plan
 
-**Workstream:** G3, repository-backed documentation
-**Status:** Implementation baseline, pending live Pages deployment and contract-change propagation verification
+**Workstream:** G3 — repository-backed documentation
+**Status:** mdBook implementation deployed; publication and maintainer acceptance checks remain active
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
-**Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [G3 publishing issue #8](https://github.com/spwn02/Miracle/issues/8)
+**Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
-## One canonical source
+## 1. Canonical documentation model
 
-- Human-authored API usage, architecture, tooling and governance documents live in [`docs/`](../index.md).
-- [`mkdocs.yml`](https://github.com/spwn02/Miracle/blob/master/mkdocs.yml) defines navigation and uses MkDocs **1.6.1**, a pinned direct build dependency. MkDocs is a documentation-only tool and does not become a Miracle C++ runtime/build dependency.
-- The GitHub Pages site is **generated** in CI from `docs/`, not a separate editable body of contracts.
-- The [landing page](../index.md) is editorial navigation and describes the actual documentation; it never replaces an approved contract.
-- No generated C++ API reference is claimed; the existing API pages are hand-maintained guides whose claims require ordinary code/tests review.
-- Frozen contracts must not be rewritten, backfilled, or silently upgraded. Their separate provenance-preserving migration is [issue #7](https://github.com/spwn02/Miracle/issues/7).
+- The sole canonical content tree is [`docs/`](../index.md). GitHub commits retain the authority and history of every approved contract and C++ guide.
+- [`book.toml`](https://github.com/spwn02/Miracle/blob/master/book.toml) defines the mdBook site configuration. It points the book source directly to `docs/` and writes generated HTML into ignored `site/`.
+- [`docs/SUMMARY.md`](../SUMMARY.md) is the human-maintained Rust Book-style sidebar and chapter manifest. It includes all existing documents, including infrastructure evidence, without copying or changing the technical contract content.
+- The rendered book provides native mdBook sidebar, table of contents, in-book search, section navigation, edit-source links, and light/dark theme selection. The default `rust` theme and `navy` dark theme match Rust's familiar documentation conventions; no proprietary CSS framework is introduced.
+- Reference and API pages are hand-maintained prose: **no generated authoritative C++ API reference is claimed**.
+- The provenance-preserving migration of historically frozen Miracle contracts remains **separate, unscheduled issue [#7](https://github.com/spwn02/Miracle/issues/7)**.
 
-## Publishing architecture
+## 2. Deployment and dependencies
 
 ```text
-Git master: docs/**/*.md  +  mkdocs.yml
-                |
-          GitHub Actions
-        docs.yml (read-only build)
-                |
-          MkDocs 1.6.1
-                |
-       site/ HTML + search index
-                |
-     artifact (not a git branch)
-                |
-    deploy-pages / github-pages
-                |
-      public documentation site
+master: docs/**/*.md + docs/SUMMARY.md + book.toml
+                         |
+                     GitHub Actions
+                    docs.yml (build)
+                         |
+                    mdBook v0.5.4
+                  SHA-256-verified binary
+                         |
+                    site/*.html + search
+                         |
+                  GitHub Pages artifact
+                         |
+               deploy-pages (OIDC, master)
+                         |
+              https://spwn02.github.io/Miracle/
 ```
 
-`docs.yml` builds on documentation-changing pushes to `master`, matching pull requests (build only), and explicit dispatch. Only an authorized `master` job uploads to and deploys on GitHub Pages. Deployment uses built-in GitHub OIDC, `pages: write` and `id-token: write` in the deployment job, without a long-lived token, deploy key, webhook, or separate publishing branch.
+[The publishing workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/docs.yml) runs on documented changes to `master`, PRs (build only), and workflow dispatch. It fetches the immutable [mdBook v0.5.4](https://github.com/rust-lang/mdBook/releases/tag/v0.5.4) `x86_64-unknown-linux-gnu` binary and verifies archive SHA-256:
 
-The generated static website is expected at `https://spwn02.github.io/Miracle/` once GitHub Pages is enabled. This address is a **predicted default**, not a verified live deployment.
+```text
+3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7
+```
 
-`scripts/docs/verify-site.py` checks that **every** Markdown file under `docs/` produces a nonempty HTML page and that the navigation/search index exists. It does not pretend to validate compiler APIs or every hyperlink. Existing cross-tree Markdown references must be audited when polishing the site.
+No `cargo install`, LLVM rebuild, personal access token, GitHub Pages publishing branch, additional service, or custom domain is required in CI.
 
-## Administration needed once
+The build job requests read-only repository access. Only the `master` Pages deployment job receives `pages: write` and `id-token: write` for GitHub's managed publishing environment.
 
-The maintainer must select **Repository → Settings → Pages → Build and deployment → Source: GitHub Actions** (not `Deploy from a branch`). GitHub Pages is a public publishing surface. The `github-pages` environment will be used for deployment; restricting it to `master` in repository environment protection is recommended. No custom domain, CNAME, paid provider or DNS change is necessary for G3.
+## 3. Rust Book navigation and legacy URLs
 
-After initial setup, commits under `docs/` should publish automatically without a manual export step. `git push` is the only required source-update action.
+The chapter tree begins with Introduction, then Getting Started, Library Guides, Architecture & Contracts, and Infrastructure & Governance. The `SUMMARY.md` manifest must list every canonical Markdown document exactly once; `scripts/docs/verify-site.py` checks both coverage and generated nonempty chapter pages. New documentation pages require a deliberate chapter entry.
 
-## Navigation and Wiki policy
+**URL migration:** mdBook uses `chapter.html` instead of MkDocs' previous `chapter/index.html`. The native `[output.html.redirect]` table in `book.toml` generates redirect pages for all earlier chapter paths, keeping existing shared MkDocs URLs working when readers follow the site's links.
 
-The primary hierarchy is:
+This is a static documentation site. GitHub Wiki stays **optional** and may only index or automatically mirror canonical text; it must not contain independently edited copies of locked contracts.
 
-1. Overview and getting started.
-2. Compiler/toolchain support and build capabilities.
-3. API guides (Meta, Iter, Range, Diagnostics, Static string, Feature).
-4. Architecture, approved development protocol and infrastructure contract.
-5. Development Project/issues.
-6. Links to contribution, security and real release/change history in Git.
+## 4. Verification and acceptance
 
-The GitHub Wiki remains **optional**. It must not become an independent editable copy of locked contracts. A later index-only or generated read-only Wiki could link back to canonical pages; do not enable an empty wiki or manually duplicate docs just to satisfy a cosmetic checkbox.
+The workflow runs mdBook compilation plus [the site verifier](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-site.py). The verifier detects missing chapter source, incomplete sidebar listings, empty generated pages, broken legacy redirects, and absent search assets. It does **not** constitute full hyperlink crawling, screen-reader acceptance, or verification of C++ APIs.
 
-## G3 acceptance gates
+G3 can be accepted only after all of the following:
 
-- [ ] The documentation build completes from a clean runner, and the smoke verifier succeeds.
-- [ ] GitHub Pages is configured to deploy from **GitHub Actions**.
-- [ ] The `github-pages` deployment job succeeds with least privilege and provides a real URL.
-- [ ] Site is publicly accessible, navigation/search and links work, and mobile/keyboard browsing is usable.
-- [ ] A genuine, reviewed canonical documentation edit appears on the published site automatically, with no duplicate manual edit.
-- [ ] GitHub Wiki policy recorded and README/source-navigation links remain accurate.
-- [ ] Maintainer verifies evidence and explicitly accepts the workstream.
+- [ ] The pinned mdBook binary is checksum-verified and builds from a clean GitHub runner.
+- [ ] Every chapter and legacy redirect is present; in-book search index is produced.
+- [ ] GitHub Pages deployment succeeds and the public URL is observed in the actual deployment log.
+- [ ] Author confirms the Rust Book-style reading experience, theme switch, responsive navigation and search.
+- [ ] A real, reviewed canonical documentation edit appears on Pages automatically; no parallel manual Wiki edit was required.
+- [ ] The removal of MkDocs configuration is reflected in README, workstream ledger and local preview guidance.
+- [ ] Author explicitly accepts G3, and issues #3 and #8 are closed only with supporting evidence.
 
-The appearance of `docs.yml`, a workflow run, or a `site/` artifact alone does **not** establish G3 completion.
+See [G3-PROGRESS.md](G3-PROGRESS.md) for current evidence. Historical MkDocs runs are recorded as migration history, not represented as current technology.
 
-## Local preview
+## 5. Local workflow
 
-With Python 3.12 and an isolated environment:
+Install mdBook **v0.5.4** through a trusted package source or its official release (match the version, verify release integrity when using the archive), then run:
 
 ```sh
-python3 -m venv .venv-docs
-. .venv-docs/bin/activate
-python -m pip install "mkdocs==1.6.1"
-mkdocs serve
+mdbook serve --open
 ```
 
-To check output without publishing:
+For the same build verification that CI performs:
 
 ```sh
-mkdocs build --clean
-python scripts/docs/verify-site.py site
+mdbook build
+python3 scripts/docs/verify-site.py site
 ```
 
-The rendered `site/` and local `.venv-docs/` are build artifacts, not new sources of truth; do not commit them.
+`site/` is generated output and must never be committed. Changes to an approved contract still require the ordinary Miracle development/acceptance process.
