@@ -32,6 +32,12 @@ jobs:
           set -euo pipefail
           git diff --check HEAD^ HEAD
 
+      - name: Validate infrastructure shell syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/github/bootstrap-g2.sh
+
       - name: Install build tools
         shell: bash
         run: |
