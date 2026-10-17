@@ -3,7 +3,7 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G0 — Audit and Authority
-**Status:** Repository integration verified; final author-side local Git reconciliation not independently verified
+**Status:** ACCEPTED — local fast-forward reconciliation and repository smoke test confirmed by maintainer
 **Original audited remote revision:** `ebffbcbb99e5564d3a5e065d87f009771f38a009`
 **Approved protocol and initial audit commit:** `c0811bca5193f381002df9fd4c58eb8c3a60c628`
 **Governance closeout commit:** `e12d88dbaf19a950de9327ae8f78b215425e9909`
@@ -26,9 +26,13 @@
 - [x] README and CONTRIBUTING links verified.
 - [x] Historical audit preserved; findings assigned to the later workstreams.
 - [x] Closeout commit and CI/GCC workflow evidence confirmed remotely.
-- [ ] Owner confirms the designated local working tree is reconciled with published `master`; connected GitHub access cannot inspect local unpushed changes.
+- [x] Maintainer's local `master` successfully fast-forwarded to published commit `2ec2473` using `git pull --ff-only origin master` and the canonical CI-helper smoke test printed `PASS: unified scripts/ci layout, release metadata and GCC convergence fixtures`. This confirms branch synchronization at that checkpoint; it does **not** prove there are no unrelated uncommitted local changes.
 
-G0 will be recorded as **ACCEPTED** when the final author-side local reconciliation is confirmed. The outstanding check does not block implementation and verification of G1.
+**G0 ACCEPTED.** The maintainer's reported fast-forward to `2ec2473` and passing local smoke test close the previously open author-side synchronization gate. The independently verified remote reference CI, historical audit and governance contracts remain unchanged. This G0 closeout does not imply acceptance of later G1–G6 workstreams.
+
+## Acceptance record (2026-10-17)
+
+Evidence: successful owner-side fast-forward pull (`ae8a7a7 → 2ec2473`), original published protocol and locked infrastructure contract, historical audit, and green reference CI. The `master` branch will naturally advance with later work; G0 does not require perpetual equality of a local checkout and remote HEAD.
 
 ## Continuing program
 
