@@ -6,6 +6,8 @@ It is intentionally small at the dependency boundary and currently provides the 
 
 > **Status:** pre-1.0. The API is usable, but source and ABI compatibility are not guaranteed until the project reaches 1.0.
 
+**Documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/) — mdBook-powered, Rust-style reference and development guides built directly from the canonical [`docs/`](docs/index.md) tree.
+
 ### Philosophy
 
 Miracle is written in C++, but its API philosophy is strongly influenced by Rust.
@@ -169,7 +171,7 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 ## Design
 
-Browse the [documentation index](docs/index.md) for getting started, the existing API guides, architecture, and governance. The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) tracks the GitHub Pages site and will record its verified public URL when deployment succeeds.
+Browse [The Miracle Book](https://spwn02.github.io/Miracle/) (with a Rust Book-style sidebar, theme selector and search) or its [canonical documentation source](docs/index.md). The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) records deployment evidence and acceptance status.
 
 See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
 
