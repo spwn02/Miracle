@@ -60,11 +60,14 @@ def main() -> int:
             if phrase not in rendered:
                 errors.append(f"Landing page missing navigation/text: {phrase!r}")
 
-    # mdBook's built-in search emits searchindex.js or searchindex.json,
-    # depending on mdBook version. This is not MkDocs' search/ directory.
-    if not any(p.is_file() and p.stat().st_size > 0
-               for p in (*site.glob("searchindex.js"), *site.glob("searchindex.json"))):
-        errors.append("mdBook search index missing or empty.")
+    # mdBook 0.5 hashes static filenames by default, so the generated
+    # search index may be searchindex-<digest>.js rather than searchindex.js.
+    search_assets = tuple(site.glob("searchindex*.js")) + tuple(
+        site.glob("searchindex*.json")
+    )
+    if not any(p.is_file() and p.stat().st_size > 0 for p in search_assets):
+        available = sorted(p.name for p in site.glob("*search*"))
+        errors.append(f"mdBook search index missing or empty; found: {available}")
 
     if errors:
         for error in errors:
