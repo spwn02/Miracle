@@ -1,0 +1,24 @@
+[book]
+title = "The Miracle Book"
+description = "Guide, reference, architecture, and governance for the Miracle C++26 foundation library"
+authors = ["Miracle contributors"]
+language = "en"
+src = "docs"
+
+[build]
+build-dir = "site"
+create-missing = false
+
+[output.html]
+default-theme = "rust"
+preferred-dark-theme = "navy"
+site-url = "/Miracle/"
+git-repository-url = "https://github.com/spwn02/Miracle"
+edit-url-template = "https://github.com/spwn02/Miracle/edit/master/docs/{path}"
+smart-punctuation = true
+
+[output.html.search]
+enable = true
+limit-results = 20
+boost-title = 2
+boost-hierarchy = 2
