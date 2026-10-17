@@ -3,10 +3,26 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Structure and seven-item backlog VERIFIED; Auto-add filter and acceptance-unsafe default workflows require correction before G2 acceptance
+**Status:** G2 structurally verified; maintainer reports corrected Auto-add and safeguards; genuine G3 issue triggered automation, project-specific intake and author sign-off pending
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Subsequent automation check — G3 issue #8 (2026-10-17)
+
+After correcting the auto-add rule and acceptance-sensitive workflows, the maintainer reported that configuration was complete and authorized continuing to G3.
+
+A **genuine G3 documentation-publishing issue** [#8](https://github.com/spwn02/Miracle/issues/8) was created with `type:documentation` to track actual publishing work. The GitHub issue timeline records two `added_to_project_v2` events by `github-project-automation[bot]` at 01:46:17 UTC, followed by status updates at 01:46:18 and 01:46:19 UTC. This proves Project automation is running for **non-bug** issues, unlike the previous `label:bug`-restricted filter.
+
+Because the maintainer also has a separate account-owned `Roadmap` Project with automatic intake, the issue timeline does **not** identify which of the two Project-add events belongs to `Miracle Development` (#3). Before final G2 sign-off, the maintainer can confirm actual membership via:
+
+```bash
+gh issue view 8 --repo spwn02/Miracle --json projectItems
+```
+
+The output must include `Miracle Development`. The maintainer also reports adjusting the workflow filters and acceptance-safe settings; their **current live** configuration has not yet been re-inspected in a post-change screenshot. All other G2 structural fields and four saved views were independently verified in the earlier complete audit.
+
+**G2 is operationally usable and subsequent work may proceed. Formal acceptance of G2 (closing issue #2) still awaits project-specific issue #8 membership and explicit maintainer sign-off**, without fabricating approval.
 
 ## Latest maintainer acceptance audit — 2026-10-17
 
