@@ -89,7 +89,9 @@ Start with **GitHub Infrastructure — G2** for provisioning, routing, verificat
 
 ## 6. Automation policy
 
-Start with GitHub's **built-in auto-add** workflow for issues from `spwn02/Miracle`, after the Project is linked. Projects auto-add rules depend on account plan limits; use a single concise issue rule, not a sprawling collection of label-specific workflows. Set or change status only with a human-reviewed rule that cannot automatically mark a contract **Accepted**.
+Use GitHub's **built-in auto-add** workflow for repository `spwn02/Miracle`, with the exact filter **`is:issue`**. Do not constrain intake with `label:bug`, `type:*`, or `is:pr`: all genuine development issues should enter the Project and PRs are not auto-added. Projects auto-add rules depend on account plan limits; use a single concise issue rule, not a sprawling collection of label-specific workflows. The separate built-in sub-issue auto-add may remain enabled.
+
+**Acceptance safety:** the `Auto-close issue`, `Item closed`, and `Pull request merged` default workflows must be disabled or individually proven not to set `Accepted` or close issues without explicit maintainer acceptance. `Item added to project` may initialize `Backlog` but must never initialize `Accepted`. A UI review of these workflow rules is required: merely observing that the named workflow is enabled is not enough. Treat issue closure, PR merge and completion of CI as evidence to review, not a substitute for the human acceptance gate.
 
 Do not introduce PATs, Actions secrets, custom webhooks or a project-sync bot for initial G2 setup. If an automation requires account-level Projects permissions, it should run interactively under the maintainer's existing authenticated `gh` session.
 
