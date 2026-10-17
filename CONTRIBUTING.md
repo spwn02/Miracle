@@ -83,6 +83,8 @@ Where relevant, include coverage of failure paths, lifetime and ownership rules,
 
 Discuss changes to public APIs, significant algorithms, ownership models, module boundaries, or locked architectural invariants **before** implementing a conflicting design. Use a [Feature Proposal](https://github.com/spwn02/Miracle/issues/new?template=feature_proposal.yml) or [Architecture Proposal](https://github.com/spwn02/Miracle/issues/new?template=architecture_proposal.yml) as appropriate.
 
+For review style and history-preserving integration, follow the [Miracle Pull Request Workflow](docs/infrastructure/G4-PR-WORKFLOW.md). It explains line-specific comments, merge commits, and when an explicit local `git merge --ff-only` can safely advance `master` without rewriting commits. Dependabot PRs use the same review and verification standards.
+
 When opening a pull request:
 
 - Explain the motivation, change scope, affected contract/ADR (if any), and compatibility impact.
