@@ -50,6 +50,23 @@ bash scripts/github/audit-g2.sh
 
 It performs no writes and does not print tokens. The exact auto-add workflow **repository and filter configuration** and the saved views' practical usability still require browser verification.
 
+## Follow-up audit failure and corrective action (2026-10-17)
+
+The maintainer ran `bash scripts/github/audit-g2.sh` and received `cannot iterate over: null` before the issue-item section. The cause was an **audit jq filter bug**, not evidence of an invalid Project: nested `fields`, `views`, `workflows`, and `repositories` were resolved against the GraphQL response root instead of the Project object captured as `$p`.
+
+The four selectors were corrected in commits `b18f4e0` and `06d7534`. The revised filter was checked against representative GraphQL Project data. A new read-only `gh issue view 7 --json projectItems` check was added for direct membership verification.
+
+The maintainer also ran a CLI filter for issue [#7](https://github.com/spwn02/Miracle/issues/7) under Project #3 and received **no matching items**. That proves only that the filter did not find a matching `.content.url` entry in the returned items; it does **not** override the historical GitHub `added_to_project_v2` event or identify which Project received it. The corrected audit must inspect the actual issue's `projectItems` metadata and the complete Project item listing.
+
+To re-run after pulling:
+
+```bash
+git pull --ff-only origin master
+bash scripts/github/audit-g2.sh
+```
+
+If `gh issue view 7 --json projectItems` does not identify **Miracle Development Project #3**, check the Project's Auto-add workflow repository filter; only then add issue #7 manually with `gh project item-add 3 --owner spwn02 --url https://github.com/spwn02/Miracle/issues/7` as appropriate. Do not assert that an Auto-add event alone proves successful membership in Project #3.
+
 ## Owner's view setup report (2026-10-17)
 
 The maintainer reports that the G2 Project configuration steps are complete and observes multiple views containing the same six issues, plus a redundant default `View 1` tab. GitHub views are alternate layouts or filters of the **same** Project items, not copies of issues; repeating an issue across views is correct. Deleting the unused default `View 1` tab is appropriate when the named `All Work` view provides an equivalent comprehensive table. Deleting a view does not remove its issues.
