@@ -3,7 +3,7 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Project populated; owner reports UI configuration complete; independent validation and acceptance pending
+**Status:** G2 verification blocked — Project #3 contains issues #1–#6; #7 absent from unfiltered listing; configuration query inconclusive
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
@@ -49,6 +49,29 @@ bash scripts/github/audit-g2.sh
 ```
 
 It performs no writes and does not print tokens. The exact auto-add workflow **repository and filter configuration** and the saved views' practical usability still require browser verification.
+
+## Second maintainer audit and current blocker (2026-10-17)
+
+The maintainer ran the revised `audit-g2.sh` and supplied the raw console output. It confirmed actual Project #3 entries for issues #1–#6, with:
+`#1 G1 Infrastructure Backlog`, `#2 G2 Infrastructure Backlog`, `#3 G3 Documentation Backlog`, `#4 G4 Infrastructure Backlog`, `#5 G5 Infrastructure Backlog`, and `#6 G6 Infrastructure Backlog`.
+
+However, the section titled **G2 PROJECT CONFIGURATION** printed nothing, so none of the following were proven by that run: actual Status option inventory, four views and saved filters, public visibility, linked repository, or enabled workflow configuration.
+
+The unfiltered Project #3 issue-items report contained only #1–#6, and the filtered search for issue [#7](https://github.com/spwn02/Miracle/issues/7) returned nothing. The older `added_to_project_v2` event does not specify Project #3, so membership in the intended Project is **not established**. This is a real acceptance gap rather than merely a hidden card in a Project view.
+
+The script previously used `gh api graphql --jq` directly, allowing an empty output to pass without an error. Commit `aacda14` replaces this with **raw JSON responses, explicit nonempty/JSON/GraphQL-error checks, and a nonzero audit result** if any required gate cannot be verified. The GraphQL query was simplified to supported Project, repository, view and workflow fields. Interactive Project settings still require manual verification.
+
+If #7 remains absent, add it directly without creating a duplicate issue:
+
+```bash
+gh project item-add 3 --owner spwn02 \
+  --url https://github.com/spwn02/Miracle/issues/7
+
+gh project item-list 3 --owner spwn02 --limit 100 --format json \
+  --jq '.items[] | select(.content.url == "https://github.com/spwn02/Miracle/issues/7")'
+```
+
+This manually repairs the current membership; it does **not** prove that the ongoing Auto-add workflow is correctly scoped. Check the Project #3 **Settings → Workflows → Auto-add** repository/filter rule to prevent recurrence.
 
 ## Follow-up audit failure and corrective action (2026-10-17)
 
