@@ -129,6 +129,20 @@ The maintainer also identified `.github/scripts/` alongside `scripts/` as ambigu
 
 **Migration gate:** the files and workflow references move together in one Git commit. Follow-up reference CI, GCC compatibility/synchronization and release-provenance paths still require live validation. Do not fabricate a release tag for testing.
 
+## Canonical script migration — post-commit CI acceptance evidence
+
+Atomic commit [`00c5c87`](https://github.com/spwn02/Miracle/commit/00c5c8755b0fdf36a7f070ec044385b2258a6e58) was independently inspected through GitHub's commit/tree APIs. GitHub classifies each of the three helper relocations as a **rename**, with **exactly the same Git blob SHA** as its old location; `.github/scripts/` no longer exists.
+
+**Live GitHub Actions validation of that exact commit:**
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Reference C++26 CI | [#38999112561](https://github.com/spwn02/Miracle/actions/runs/38999112561) | **Success** — infrastructure checks (including helper smoke tests and legacy-path negative guard), self-tests/examples, `add_subdirectory`, `FetchContent`, and installed-package consumers all passed |
+| GitHub Pages mdBook | [#38999112521](https://github.com/spwn02/Miracle/actions/runs/38999112521) | **Success** — build and publication passed |
+| Sync master to gcc | [#38999112551](https://github.com/spwn02/Miracle/actions/runs/38999112551) | **Success** — candidate creation and GCC validation completed, but `Advance gcc` was **skipped** by the existing compatibility gate; no new GCC-branch ref write was tested |
+
+The script relocation and its live reference-CI/build validation are **complete**. The only still-unverified positive path is a future compatible update *into* protected `gcc`; do not force a branch write to fabricate that evidence.
+
 ## Open decisions and checks
 
 - [x] Action refs pinned and guard passed; independent reference CI runs #38995484739 and #38995614569 completed successfully.
