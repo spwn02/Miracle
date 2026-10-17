@@ -9,6 +9,12 @@
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
 **Tracking:** [#3 — G3 publishing](https://github.com/spwn02/Miracle/issues/3) · [#8 — Pages implementation](https://github.com/spwn02/Miracle/issues/8)
 
+## Maintainer visual acceptance and continued implementation
+
+After reviewing the published Rust Book-style site, the maintainer responded **“Amazing, this is gorgeous! Let's continue now.”** This provides positive acceptance evidence for the site's overall appearance and the decision to retain mdBook, but it is **not** a documented screen-reader, mobile, keyboard-only, or exhaustive search test. Those checks remain explicit before formal G3 workstream acceptance.
+
+Current publication was preserved while the next infrastructure workstream (G4) started. GitHub milestone [#1 — GitHub Infrastructure (G0–G6)](https://github.com/spwn02/Miracle/milestone/1) now covers both G3 issues (#3 and #8) as part of one program-level deliverable.
+
 ## Current implementation: mdBook (Rust Book style)
 
 The maintainer requested replacing the initial MkDocs site with **mdBook**, using Rust documentation conventions. The active deployment now consists of:
