@@ -25,6 +25,15 @@ cmake --version
 clangd --version
 ninja --version
 nvim --version | head -n 1
+# Compile and LINK against the configured libc++ and Ubuntu C runtime.
+# This also detects missing crt*.o and glibc development libraries before
+# the much heavier CMake module build starts.
+probe_dir="$(mktemp -d)"
+trap 'rm -rf "$probe_dir"' EXIT
+printf 'int main() { return 0; }\n' > "$probe_dir/main.cxx"
+"$CXX" -std=c++26 -stdlib=libc++ -fuse-ld=lld \
+  "$probe_dir/main.cxx" -o "$probe_dir/link-probe"
+"$probe_dir/link-probe"
 if [[ "${1:-}" == "--smoke" ]]; then
   echo "PASS: reference C++26 container toolchain smoke test"
   exit 0
