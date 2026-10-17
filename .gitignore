@@ -3,3 +3,7 @@
 /.*/
 !/.github/
 /contracts/
+
+# Generated documentation site (MkDocs)
+/site/
+/.venv-docs/
