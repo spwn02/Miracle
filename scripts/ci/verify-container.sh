@@ -24,6 +24,7 @@ cmake --version
 "$CXX" --version
 clangd --version
 ninja --version
+python3 -c 'import subprocess; v = subprocess.check_output(["ninja", "--version"], text=True).strip(); assert tuple(map(int, v.split(".")[:2])) >= (1, 11), v'
 nvim --version | head -n 1
 # Compile and LINK against the configured libc++ and Ubuntu C runtime.
 # This also detects missing crt*.o and glibc development libraries before
