@@ -1,0 +1,33 @@
+# One-time, auditable account-side reconciliation for existing milestone #1.
+# Remove this workflow once the verified mutation has succeeded.
+name: Reconcile infrastructure milestone (one-time)
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/reconcile-infrastructure-milestone.yml"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  reconcile:
+    name: Rename and populate G0-G6 milestone
+    if: github.repository == 'spwn02/Miracle'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Validate reconciliation script
+        run: bash -n scripts/github/reconcile-infrastructure-milestone.sh
+
+      - name: Reconcile milestone
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          bash scripts/github/reconcile-infrastructure-milestone.sh --apply
+          bash scripts/github/reconcile-infrastructure-milestone.sh --check
