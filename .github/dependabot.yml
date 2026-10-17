@@ -1,0 +1,25 @@
+# Dependabot only maintains GitHub Actions. Miracle's C++26 reference
+# compiler and coherent libc++ snapshot are pinned separately by contract.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "master"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Warsaw"
+    open-pull-requests-limit: 3
+    labels:
+      - "type:infrastructure"
+    groups:
+      # Keep routine changes reviewable without one PR per action.
+      actions-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Major changes remain separate for explicit compatibility review.
