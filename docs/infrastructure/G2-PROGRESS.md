@@ -3,7 +3,7 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Bootstrap reported successful; UI configuration and final acceptance pending
+**Status:** Project populated; owner reports UI configuration complete; independent validation and acceptance pending
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
@@ -31,6 +31,12 @@
 
 No retrospective historical tickets, fake due dates, automatic acceptance statuses or fictitious approvals were created.
 
+## Owner's view setup report (2026-10-17)
+
+The maintainer reports that the G2 Project configuration steps are complete and observes multiple views containing the same six issues, plus a redundant default `View 1` tab. GitHub views are alternate layouts or filters of the **same** Project items, not copies of issues; repeating an issue across views is correct. Deleting the unused default `View 1` tab is appropriate when the named `All Work` view provides an equivalent comprehensive table. Deleting a view does not remove its issues.
+
+The report does **not** independently prove the saved status options, view filters, workflow configuration or Phase/Area assignment. Project Settings and saved views require a UI check; this integration cannot retrieve the user-owned Project's configuration. The maintainer's `gh project item-list` attempt exposed an error in a previously published verification command: `--field` and `--format json` cannot be combined. The corrected alternatives are recorded below.
+
 ## Recovery from initial bootstrap syntax failure
 
 The initial `--apply` created Project #3, its fields, labels and milestone, then stopped at a corrupted here-document in the script's issue-import tail. The bug was repaired in commit `42c8e14` and a `bash -n` CI check was introduced in `a394bb8`. The corrected script is non-destructive on reruns, uses GitHub Project/field/option/item IDs, and assigns only factual Phase/Area metadata when importing real issues.
@@ -52,8 +58,12 @@ The initial `--apply` created Project #3, its fields, labels and milestone, then
 ```bash
 gh project view 3 --owner spwn02 --format json
 gh project field-list 3 --owner spwn02 --format json
+# Human-readable table with selected columns
 gh project item-list 3 --owner spwn02 --limit 20 \
-  --field Status --field Phase --field Area --format json
+  --field Status --field Phase --field Area
+
+# Full machine-readable item data (without --field)
+gh project item-list 3 --owner spwn02 --limit 20 --format json
 ```
 
 Project view configuration, saved filters and the Auto-add rule must still be checked in the GitHub UI. CLI output alone does not prove interactive behavior.
