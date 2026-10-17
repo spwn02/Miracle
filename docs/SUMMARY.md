@@ -33,3 +33,4 @@
 - [G2 — Progress](infrastructure/G2-PROGRESS.md)
 - [G3 — Operating Plan](infrastructure/G3-OPERATING-PLAN.md)
 - [G3 — Progress](infrastructure/G3-PROGRESS.md)
+- [G4 — Security and CI Progress](infrastructure/G4-PROGRESS.md)
