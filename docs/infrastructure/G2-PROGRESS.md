@@ -40,7 +40,7 @@ The audit originally printed `Machine-readable gates passed` despite this incorr
 - The finite `GitHub Infrastructure — G2` milestone was created. Its attachment to [issue #2](https://github.com/spwn02/Miracle/issues/2) was independently verified through the GitHub repository API after the maintainer reran the repaired bootstrap.
 - The maintainer reported completing the repaired `--apply` command. Its precise Project item-import and field-edit results remain unverified through this integration, which lacks access to GitHub user-owned Project administration.
 - The `type:infrastructure` label was assigned to the six genuine tracking issues directly and verified by the connected GitHub integration.
-- The bootstrap script is versioned at [`scripts/github/bootstrap-g2.sh`](../../scripts/github/bootstrap-g2.sh) and its shell syntax is now checked in CI.
+- The bootstrap script is versioned at [`scripts/github/bootstrap-g2.sh`](https://github.com/spwn02/Miracle/blob/master/scripts/github/bootstrap-g2.sh) and its shell syntax is now checked in CI.
 
 ## Real outstanding issues
 
@@ -64,7 +64,7 @@ No retrospective historical tickets, fake due dates, automatic acceptance status
 
 ### Final read-only Project audit
 
-The [`scripts/github/audit-g2.sh`](../../scripts/github/audit-g2.sh) script queries Project #3 using the maintainer's authenticated `gh` session. It reports current public visibility, linked repositories, fields/options, saved-view names/layouts/filters/grouping, enabled workflows, and actual issue items (including #7), plus the bot events.
+The [`scripts/github/audit-g2.sh`](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-g2.sh) script queries Project #3 using the maintainer's authenticated `gh` session. It reports current public visibility, linked repositories, fields/options, saved-view names/layouts/filters/grouping, enabled workflows, and actual issue items (including #7), plus the bot events.
 
 ```bash
 git pull --ff-only origin master
