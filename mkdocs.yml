@@ -44,6 +44,8 @@ nav:
   - Development:
       - Public roadmap: https://github.com/users/spwn02/projects/3
       - G2 project progress: infrastructure/G2-PROGRESS.md
+      - G3 documentation plan: infrastructure/G3-OPERATING-PLAN.md
+      - G3 publishing progress: infrastructure/G3-PROGRESS.md
       - Issue tracker: https://github.com/spwn02/Miracle/issues
   - Project:
       - README and quickstart: https://github.com/spwn02/Miracle#quick-start
