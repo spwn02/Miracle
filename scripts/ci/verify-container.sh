@@ -39,7 +39,12 @@ if [[ "${1:-}" == "--smoke" ]]; then
   exit 0
 fi
 
-cmake --preset tests --fresh -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE"
+if ! cmake --preset tests --fresh -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE"; then
+  echo "ERROR: container CMake configuration failed; capability probe logs follow:" >&2
+  find build/tests/CMakeFiles/MiracleCapabilities -name configure.log -type f \
+    -print -exec tail -n 160 {} \; 2>/dev/null || true
+  exit 1
+fi
 cmake --build --preset tests --parallel 2
 ctest --preset tests --output-on-failure
 
