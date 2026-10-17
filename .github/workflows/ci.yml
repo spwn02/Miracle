@@ -40,6 +40,13 @@ jobs:
           bash -n scripts/github/audit-g2.sh
           bash -n scripts/github/reconcile-infrastructure-milestone.sh
           python3 scripts/github/check-workflow-pins.py
+          python3 -m py_compile scripts/github/reconcile-rulesets.py
+          python3 - <<'PY'
+          import runpy
+          audit = runpy.run_path("scripts/github/reconcile-rulesets.py")
+          assert len(audit["load_desired"]()) == 2
+          print("PASS: ruleset JSON recipes are complete and valid.")
+          PY
 
       - name: Install build tools
         shell: bash
