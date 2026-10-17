@@ -9,7 +9,7 @@
 
 - The sole canonical content tree is [`docs/`](../index.md). GitHub commits retain the authority and history of every approved contract and C++ guide.
 - [`book.toml`](https://github.com/spwn02/Miracle/blob/master/book.toml) defines the mdBook site configuration. It points the book source directly to `docs/` and writes generated HTML into ignored `site/`.
-- [`docs/SUMMARY.md`](../SUMMARY.md) is the human-maintained Rust Book-style sidebar and chapter manifest. It includes all existing documents, including infrastructure evidence, without copying or changing the technical contract content.
+- [`docs/SUMMARY.md`](https://github.com/spwn02/Miracle/blob/master/docs/SUMMARY.md) is the human-maintained Rust Book-style sidebar and chapter manifest. It includes all existing documents, including infrastructure evidence, without copying or changing the technical contract content.
 - The rendered book provides native mdBook sidebar, table of contents, in-book search, section navigation, edit-source links, and light/dark theme selection. The default `rust` theme and `navy` dark theme match Rust's familiar documentation conventions; no proprietary CSS framework is introduced.
 - Reference and API pages are hand-maintained prose: **no generated authoritative C++ API reference is claimed**.
 - The provenance-preserving migration of historically frozen Miracle contracts remains **separate, unscheduled issue [#7](https://github.com/spwn02/Miracle/issues/7)**.
