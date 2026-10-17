@@ -106,6 +106,54 @@ Local editors that support the dev container specification detect `.devcontainer
 - The Dockerfile creates no credential files or tokens and does not ask for personal access tokens. Codespaces' platform-provided credentials are managed by the hosting platform; do not put them in this repository.
 - The actual Codespaces browser onboarding and cost/resource settings **must be verified by the maintainer**. A successful Docker build in CI is not equivalent to having opened a live Codespace.
 
+## Headless devcontainer lifecycle verification
+
+The container CI also exercises the **real `.devcontainer/devcontainer.json`**
+with the version-selected upstream Dev Containers CLI (`@devcontainers/cli@0.89.0`).
+This is separate from the clean Docker image build and C++26 consumer suite.
+The [lifecycle script](../../scripts/ci/verify-devcontainer-lifecycle.sh)
+uses a uniquely labeled disposable container, not a contributor's existing
+editor session. It does not create a Codespace, a prebuild, or a registry image.
+
+On a local **Linux/amd64 Docker host** with Node/npm and Docker available:
+
+```sh
+npm install --prefix /tmp/miracle-devcontainer-cli --no-audit --no-fund @devcontainers/cli@0.89.0
+DEVCONTAINER_CLI=/tmp/miracle-devcontainer-cli/node_modules/.bin/devcontainer \
+  bash scripts/ci/verify-devcontainer-lifecycle.sh
+```
+
+The test runs `devcontainer up` on the checked-in configuration, explicitly
+waits for `postCreateCommand`, verifies `vscode` as the non-root user,
+checks the selected compiler and tools, runs the existing container smoke
+probe, configures the CMake `tests` preset and checks
+`build/tests/compile_commands.json`. It writes an ignored marker in the live
+workspace, restarts **only the isolated test container**, and confirms that
+both container and host can still read the marker. It removes the test marker
+and container on exit. Generated CMake `build/tests` artifacts remain for
+clangd development and are normally ignored by Git.
+
+This automated test demonstrates a real **headless devcontainer lifecycle**,
+but cannot demonstrate graphical/editor attach, interactive clangd diagnostics,
+Codespaces' browser shell, billing, or cloud persistence. Record each gate
+separately; never mark live Codespaces acceptance as passing from CI alone.
+
+For the remaining manual acceptance:
+
+1. Reopen the `master` checkout in a local editor supporting Dev Containers.
+   Confirm the integrated terminal starts as `vscode` in
+   `/workspaces/Miracle` and `make verify` uses the pinned C++26 compiler.
+2. Confirm clangd resolves a Miracle module in the editor using the generated
+   `build/tests/compile_commands.json`, and reopen the environment after
+   editing an ordinary source file to verify editor-session persistence.
+3. **Only if the maintainer chooses to incur Codespaces usage**, open a
+   Codespace on `master`; independently verify terminal/working directory,
+   compiler, editor indexing, source persistence, storage and spending controls.
+   Stop/delete the Codespace when no longer needed.
+4. Add observed evidence and maintainer sign-off to
+   [G5 progress](G5-PROGRESS.md) and [issue #5](https://github.com/spwn02/Miracle/issues/5).
+   Do not close G5 for an unperformed Codespaces or editor gate.
+
 ## Observed clean-container results (2026-10-17)
 
 [Container workflow #39000812865](https://github.com/spwn02/Miracle/actions/runs/39000812865) built the Docker image from scratch using the public pinned archives and ran all C++26 tests/consumers as an unprivileged user. **71/71 CTest tests passed**. The three `add_subdirectory`, `FetchContent`, and installed `find_package` modes compiled, linked and ran. The matching [reference CI #39000813059](https://github.com/spwn02/Miracle/actions/runs/39000813059) was also green.
