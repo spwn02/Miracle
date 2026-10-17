@@ -11,6 +11,7 @@ on:
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
+      - "scripts/ci/verify-devcontainer-lifecycle.sh"
       - "scripts/ci/check-devcontainer.py"
   pull_request:
     branches: [master]
@@ -22,6 +23,7 @@ on:
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
+      - "scripts/ci/verify-devcontainer-lifecycle.sh"
       - "scripts/ci/check-devcontainer.py"
   workflow_dispatch:
 
@@ -51,6 +53,7 @@ jobs:
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py
           bash -n scripts/ci/verify-container.sh
+          bash -n scripts/ci/verify-devcontainer-lifecycle.sh
 
       - name: Build immutable reference image from a clean cache
         run: |
@@ -61,3 +64,19 @@ jobs:
         run: |
           set -euo pipefail
           make docker-test
+
+      - name: Install version-pinned Dev Containers CLI
+        run: |
+          set -euo pipefail
+          node --version
+          npm --version
+          npm install --prefix "$RUNNER_TEMP/g5-devcontainer-cli" \
+            --no-audit --no-fund @devcontainers/cli@0.89.0
+          "$RUNNER_TEMP/g5-devcontainer-cli/node_modules/.bin/devcontainer" --version
+
+      - name: Verify real headless devcontainer startup and restart persistence
+        env:
+          DEVCONTAINER_CLI: ${{ runner.temp }}/g5-devcontainer-cli/node_modules/.bin/devcontainer
+        run: |
+          set -euo pipefail
+          bash scripts/ci/verify-devcontainer-lifecycle.sh
