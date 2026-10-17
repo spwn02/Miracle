@@ -2,7 +2,7 @@
 """Read-only GitHub repository security-settings audit for Miracle.
 
 Uses the maintainer's authenticated GitHub CLI. Prints only HTTP status
-codes and safe settings flags, never vulnerability/secret alert payloads.
+codes and allowlisted security settings, never vulnerability/secret alert payloads.
 
 A 403 or 404 means inaccessible/unknown unless the repository owner
 independently verifies the feature in GitHub settings.
@@ -22,8 +22,7 @@ CHECKS = {
     "Dependency vulnerability alerts": f"repos/{REPO}/vulnerability-alerts",
     "Dependabot security updates": f"repos/{REPO}/automated-security-fixes",
     "Code scanning default setup": f"repos/{REPO}/code-scanning/default-setup",
-    "Code scanning alerts access": f"repos/{REPO}/code-scanning/alerts?per_page=1",
-    "Secret scanning alerts access": f"repos/{REPO}/secret-scanning/alerts?per_page=1",
+    # Do not call alert-list endpoints; their bodies can contain sensitive data.
 }
 
 
@@ -78,6 +77,38 @@ def main() -> int:
         else:
             result = "review manually"
         print(f"- {label}: HTTP {code or 'n/a'} — {result}")
+
+    print("\nAllowlisted configuration values (no alert payloads printed):")
+    for label, path, keys in (
+        ("Private vulnerability reporting",
+         f"repos/{REPO}/private-vulnerability-reporting", ("enabled",)),
+        ("Dependabot security updates",
+         f"repos/{REPO}/automated-security-fixes", ("enabled", "paused")),
+        ("Code scanning default setup",
+         f"repos/{REPO}/code-scanning/default-setup", ("state",)),
+    ):
+        status, payload = request(path)
+        if status != 200:
+            print(f"- {label}: UNKNOWN (GET failed)")
+            continue
+        try:
+            data = json.loads(payload)
+        except json.JSONDecodeError:
+            print(f"- {label}: UNKNOWN (invalid JSON)")
+            continue
+        if not isinstance(data, dict):
+            print(f"- {label}: UNKNOWN (unexpected response shape)")
+            continue
+        allowed = {}
+        for key in keys:
+            value = data.get(key)
+            if isinstance(value, bool):
+                allowed[key] = value
+            elif key == "state" and value in (
+                "configured", "not-configured", "in-progress", "failed"
+            ):
+                allowed[key] = value
+        print(f"- {label}: {allowed if allowed else 'UNKNOWN'}")
 
     print("\nReview exact values under:")
     print(f"  https://github.com/{REPO}/settings/security_analysis")
