@@ -41,6 +41,7 @@ jobs:
           bash -n scripts/github/audit-g2.sh
           bash -n scripts/github/reconcile-infrastructure-milestone.sh
           python3 scripts/github/check-workflow-pins.py
+          python3 scripts/github/check-workflow-security.py
           python3 -m py_compile scripts/github/reconcile-rulesets.py
           python3 -m py_compile scripts/github/audit-security.py
           python3 - <<'PY'
