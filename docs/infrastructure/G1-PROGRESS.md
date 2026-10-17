@@ -27,6 +27,18 @@ Miracle reference CI [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml
 
 G1.4 aligns contributor and reference-toolchain documentation to this verified **CI-pinned** identity. The mutable `cxx26` development branch and release-specific provenance remain separate concepts. Older release metadata is not rewritten by documentation updates.
 
+## G1.5 source-level verification — 2026-10-17
+
+The published `master` copies of all six Issue Template YAML files were inspected directly:
+
+- All five issue form names, the exact ordered field IDs, and required-field counts match the approved G1.1 contract.
+- No duplicate field IDs and no unapproved label, assignee, Issue Type, or Project properties were found.
+- Each form contains the security-reporting guidance; `config.yml` disables blank issues and links to the existing security and contribution policies without assuming Discussions exists.
+- The PR template contains contract/ADR references and a verification-evidence matrix.
+- The contributor guide, reference toolchain documentation, and README no longer represent the obsolete `clang-p2996` fork or `cxx26-2026.10.08` as the current pinned toolchain.
+
+These checks establish **source-level contract conformance**, not GitHub's live form renderer behavior or semantic validation of user input. The connected interface cannot access the live New Issue chooser or GitHub Community Standards page; interactive acceptance remains open.
+
 ## Outstanding operational work
 
 - The connected integration cannot prove real interactive form validation or PR template pre-population simply by reading committed YAML/Markdown.
