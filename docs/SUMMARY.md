@@ -35,3 +35,5 @@
 - [G3 — Progress](infrastructure/G3-PROGRESS.md)
 - [G4 — Security and CI Progress](infrastructure/G4-PROGRESS.md)
 - [G4 — Branch and Tag Protection](infrastructure/G4-RULESETS.md)
+- [G4 — Pull Request Workflow](infrastructure/G4-PR-WORKFLOW.md)
+- [G4 — Security Audit](infrastructure/G4-SECURITY-AUDIT.md)
