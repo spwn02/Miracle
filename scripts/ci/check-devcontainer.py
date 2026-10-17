@@ -48,6 +48,11 @@ def check(root: Path) -> list[str]:
         faults.append("devcontainer must use the canonical pinned Dockerfile")
     if descriptor.get("postCreateCommand") != "bash scripts/ci/verify-container.sh --smoke":
         faults.append("postCreate must validate the toolchain without expensive builds")
+    vscode_settings = descriptor.get("customizations", {}).get("vscode", {}).get("settings", {})
+    if vscode_settings.get("clangd.arguments") != [
+        "--compile-commands-dir=/workspaces/Miracle/build/tests"
+    ]:
+        faults.append("devcontainer clangd must resolve the CMake tests compilation database")
     if "prebuild" in json.dumps(descriptor).lower():
         faults.append("unapproved Codespaces prebuild setting")
     if "secrets" in json.dumps(descriptor).lower():
