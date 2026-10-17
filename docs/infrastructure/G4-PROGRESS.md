@@ -13,7 +13,7 @@
 - Added [`scripts/github/check-workflow-pins.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/check-workflow-pins.py) to reject version-tag refs, with a positive/negative self-test.
 - Added the pin guard and syntax checks for the program-wide milestone reconciliation script to reference CI.
 - Preserved the existing reference-toolchain pin, Pages deploy permissions, release provenance and `master` → `gcc` non-forced synchronization logic.
-- G2's milestone was incorrectly scoped to G2 alone. Added [`scripts/github/reconcile-infrastructure-milestone.sh`](https://github.com/spwn02/Miracle/blob/master/scripts/github/reconcile-infrastructure-milestone.sh) to **rename milestone #1** to `GitHub Infrastructure (G0–G6)` and associate issues #1–#6 and #8. Issue #7 remains an unscheduled separate documentation task. Account-side reconciliation requires the maintainer's authenticated `gh` session; the script itself is not proof that the rename was applied.
+- Corrected milestone **#1 in place** to [`GitHub Infrastructure (G0–G6)`](https://github.com/spwn02/Miracle/milestone/1). The [one-time GitHub Actions reconciliation](https://github.com/spwn02/Miracle/actions/runs/38994367818) passed with narrowly scoped `issues: write` permission. Follow-up reads of issues #1–#6 and #8 confirm their assignment to milestone #1; deferred contract migration issue #7 has no milestone. The temporary elevated workflow was removed in commit `c6f52f4`; [`scripts/github/reconcile-infrastructure-milestone.sh`](https://github.com/spwn02/Miracle/blob/master/scripts/github/reconcile-infrastructure-milestone.sh) remains a reusable maintainer utility.
 
 ## GitHub Actions permission inventory
 
@@ -29,7 +29,7 @@ The `master` and `gcc` branches were both unprotected at the start of G4 and no 
 
 ## Open decisions and checks
 
-- [ ] Pin-guard and complete reference CI green on final commit.
+- [x] Action refs resolved to published Git SHAs and pin-guard/syntax steps passed on pinned reference CI; the full final-commit CI run still needs its conclusion checked.
 - [ ] GitHub Pages mdBook deploy remains green with pinned actions.
 - [ ] `gcc` sync and compatibility continue successfully.
 - [ ] Decide whether Dependabot may open automated GitHub Actions update PRs. The maintainer requested no PRs for direct infrastructure implementation; do not silently enable update bots.
@@ -37,4 +37,4 @@ The `master` and `gcc` branches were both unprotected at the start of G4 and no 
 - [ ] Review private security-reporting availability and actual repository security settings, without making unsupported claims.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
-**No branch/tag rulesets or Dependabot bots have been enabled by this ledger.**
+**Milestone #1 was verified; no branch/tag rulesets or Dependabot bots have been enabled.**
