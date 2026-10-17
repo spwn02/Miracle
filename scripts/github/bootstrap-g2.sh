@@ -14,7 +14,7 @@ usage() {
 Usage: scripts/github/bootstrap-g2.sh --check | --apply
 
 --check  Inspect existing project/labels/milestones without mutating them.
---apply  Create/reuse the GitHub Project; link the repo; add fields, labels and milestone.
+--apply  Create/reuse the GitHub Project; link the repo; add fields, labels and milestone; import issues #1-#6.
 
 Requirements: authenticated GitHub CLI with permission for spwn02/Miracle
 and the GitHub Projects 'project' OAuth scope.
@@ -206,7 +206,7 @@ Complete these steps in the GitHub Project UI:
   2. Create saved views: All Work (table), Active (board by Status),
      Roadmap (timeline), Verification Queue (table).
   3. Set the single built-in Auto-add workflow to new issues from spwn02/Miracle.
-  4. Add the outstanding G1.5 and G2/G3/G4/G5/G6 issues by their URLs.
+  4. Verify that existing issues #1-#6 were imported with correct Phase/Area.
   5. Confirm Project visibility and status transitions, then record G2 evidence.
 No fabricated due dates, automatic acceptance, or project PATs are required.
 NEXT
