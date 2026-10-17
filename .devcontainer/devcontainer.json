@@ -16,7 +16,10 @@
       "settings": {
         "C_Cpp.intelliSenseEngine": "disabled",
         "clangd.path": "/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clangd",
-        "cmake.configureOnOpen": false
+        "cmake.configureOnOpen": false,
+        "clangd.arguments": [
+          "--compile-commands-dir=/workspaces/Miracle/build/tests"
+        ]
       }
     }
   }
