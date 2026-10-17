@@ -4,6 +4,5 @@
 !/.github/
 /contracts/
 
-# Generated documentation site (MkDocs)
+# Generated documentation site (mdBook)
 /site/
-/.venv-docs/
