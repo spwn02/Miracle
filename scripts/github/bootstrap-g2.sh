@@ -144,6 +144,57 @@ else
   echo "Created milestone: $MILESTONE_TITLE"
 fi
 
+# Seed only genuine, already-opened infrastructure work; don't backfill
+# imaginary historical tasks or assign unreviewed priorities/deadlines.
+existing_urls="$(gh project item-list "$project_numbers" --owner "$OWNER" \
+  --limit 100 --format json --jq '.items[].content.url')"
+for number in 1 2 3 4 5 6; do
+  url="https://github.com/$REPO/issues/$number"
+  # The six URLs are explicit G1.5/G2-G6 tasks recorded in G2-PROGRESS.md.
+  # A missing issue should stop bootstrap instead of silently inventing work.
+  if ! gh issue view "$number" --repo "$REPO" --json url --jq '.url' >/dev/null; then
+    echo "Required issue $number not found; review the G2 progress ledger." >&2
+    exit 1
+  fi
+  if grep -Fxq "$url" <<< "$existing_urls"; then
+    echo "Issue already in Project: #$number"
+  else
+    gh project item-add "$project_numbers" --owner "$OWNER" --url "$url" >/dev/null
+    existing_urls+=
+gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.url'
+
+cat <<'NEXT'
+Complete these steps in the GitHub Project UI:
+  1. Edit the EXISTING Status field:
+     Backlog, Design, Ready, Implementing, Review, Verification, Accepted, Blocked
+  2. Create saved views: All Work (table), Active (board by Status),
+     Roadmap (timeline), Verification Queue (table).
+  3. Set the single built-in Auto-add workflow to new issues from spwn02/Miracle.
+  4. Verify that real outstanding issues #1-#6 appear with correct Phase/Area.
+  5. Confirm Project visibility and status transitions, then record G2 evidence.
+No fabricated due dates, automatic acceptance, or project PATs are required.
+NEXT
+\n'"$url"
+    echo "Added issue #$number"
+  fi
+done
+
+# Set only factual planning metadata. Status, Priority and Risk still require
+# human triage; Accepted must never be assigned automatically.
+for entry in "1 G1 Infrastructure" "2 G2 Infrastructure" \
+             "3 G3 Documentation" "4 G4 Infrastructure" \
+             "5 G5 Infrastructure" "6 G6 Infrastructure"; do
+  read -r number phase area <<< "$entry"
+  issue_url="https://github.com/$REPO/issues/$number"
+  gh project item-edit "$project_numbers" --owner "$OWNER" \
+    --url "$issue_url" --field "Phase" --text "$phase" >/dev/null
+  gh project item-edit "$project_numbers" --owner "$OWNER" \
+    --url "$issue_url" --field "Area" --value "$area" >/dev/null
+done
+
+# Only the actual G2 provisioning task belongs to the finite G2 milestone.
+gh issue edit 2 --repo "$REPO" --milestone "$MILESTONE_TITLE" >/dev/null
+
 echo
 echo "GitHub Project bootstrap finished (subject to the link warning above)."
 gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.url'
