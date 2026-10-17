@@ -8,6 +8,12 @@
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
 
+## Cross-workstream milestone reconciliation
+
+The maintainer clarified that milestones represent **complete deliverables**, not individual G-subphases. Existing GitHub milestone #1 was renamed **in place** from `GitHub Infrastructure — G2` to [`GitHub Infrastructure (G0–G6)`](https://github.com/spwn02/Miracle/milestone/1) by [verified one-time workflow](https://github.com/spwn02/Miracle/actions/runs/38994367818). The historical issue milestone ID is preserved; no duplicate milestone was created.
+
+Issues **#1–#6 and #8** were verified with milestone #1, while unscheduled, deferred frozen-contract migration **#7** intentionally remains outside the milestone. The elevated one-time workflow was deleted after successful verification. The updated bootstrap calls an idempotent reconciliation script on future maintainer runs.
+
 ## Subsequent automation check — G3 issue #8 (2026-10-17)
 
 After correcting the auto-add rule and acceptance-sensitive workflows, the maintainer reported that configuration was complete and authorized continuing to G3.
