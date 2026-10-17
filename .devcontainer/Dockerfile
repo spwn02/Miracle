@@ -9,6 +9,8 @@ ARG CXX26_ASSET=clang-cxx26-2026.10.09.2-linux-x86_64
 ARG CXX26_ARCHIVE_SHA256=7965d447d32022557fc767bb5b8524e9ca6d9318b5d0c0ba3457b32e6632a1e8
 ARG CXX26_MANIFEST_SHA256=178c91d2f7d2bf59532223581563eee5c3babbd136b4c4496f92c69971b6ffb1
 ARG CXX26_SUMS_SHA256=8ed3810fa391f056ad840c9331a3598bb24257a16fb1f05e9752bbd7301c1b5a
+ARG NINJA_VERSION=1.13.2
+ARG NINJA_SHA256=5749cbc4e668273514150a80e387a957f933c6ed3f5f11e03fb30955e2bbead6
 ARG CMAKE_VERSION=4.4.3
 ARG CMAKE_SHA256=d6c83076c575bc00b823522ac974bda66d0af05d6ddc30e739c12385cf32c6cc
 
@@ -61,11 +63,24 @@ RUN set -eux; \
     rm /tmp/cmake.tar.gz; \
     /opt/cmake/bin/cmake --version
 
+# Ubuntu 22.04 ships Ninja 1.10, which cannot generate C++ modules.
+# Use the SHA-256-pinned upstream Ninja binary needed by CMake 4.4.
+RUN set -eux; \
+    curl --fail --location --retry 3 --silent --show-error \
+      "https://github.com/ninja-build/ninja/releases/download/v$NINJA_VERSION/ninja-linux.zip" \
+      -o /tmp/ninja.zip; \
+    printf '%s  %s\n' "$NINJA_SHA256" /tmp/ninja.zip | sha256sum --check; \
+    install -d /opt/ninja; \
+    python3 -m zipfile -e /tmp/ninja.zip /opt/ninja; \
+    chmod 0755 /opt/ninja/ninja; \
+    rm /tmp/ninja.zip; \
+    /opt/ninja/ninja --version
+
 ENV CXX26_TOOLCHAIN_ROOT=/opt/cxx26/clang-cxx26-2026.10.09.2
 ENV CXX26_CMAKE_TOOLCHAIN_FILE=/opt/cxx26/clang-cxx26-2026.10.09.2/share/clang-cxx26/toolchain.cmake
 ENV CC=/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clang
 ENV CXX=/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clang++
-ENV PATH="/opt/cmake/bin:/opt/cxx26/clang-cxx26-2026.10.09.2/bin:${PATH}"
+ENV PATH="/opt/ninja:/opt/cmake/bin:/opt/cxx26/clang-cxx26-2026.10.09.2/bin:${PATH}"
 ENV LD_LIBRARY_PATH=/opt/cxx26/clang-cxx26-2026.10.09.2/lib
 ENV LANG=C.UTF-8
 
