@@ -11,7 +11,7 @@
 
 - Read GitHub's current Projects, roadmap, auto-add, and CLI guidance.
 - Published the proposed G2 schema with explicit authority boundaries, eight Status values, seven custom fields, and four saved views.
-- Added [`scripts/github/bootstrap-g2.sh`](../../scripts/github/bootstrap-g2.sh) for a user-authorized, credential-free bootstrap from the maintainer's GitHub CLI session.
+- Added [`scripts/github/bootstrap-g2.sh`](../../scripts/github/bootstrap-g2.sh) for a user-authorized, credential-free bootstrap from the maintainer's GitHub CLI session. The script also imports real issues #1–#6 and assigns only factual Phase/Area metadata; it does **not** assign acceptance, priority, risk or due dates.
 - Opened real, current infrastructure tracking issues:
   - [#1 — G1.5 interactive acceptance](https://github.com/spwn02/Miracle/issues/1)
   - [#2 — G2 Project setup](https://github.com/spwn02/Miracle/issues/2)
@@ -40,7 +40,7 @@ bash scripts/github/bootstrap-g2.sh --apply
 
 The `--check` command is read-only and `--apply` creates or reuses the public Project and creates missing fields/labels/milestone. The script is intentionally committed as a normal text file, so invoke it with `bash` rather than assuming executable permissions.
 
-After bootstrap, configure the existing Status field and views in GitHub. Link the six actual issues and enable a single auto-add rule for new repository issues. Keep dates empty unless justified.
+After bootstrap, configure the existing Status field and views in GitHub. Verify that the six actual issues were linked automatically, then enable a single auto-add rule for future repository issues. Keep dates empty unless justified.
 
 ## Verification still required
 
