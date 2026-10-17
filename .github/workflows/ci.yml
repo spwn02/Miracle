@@ -44,6 +44,7 @@ jobs:
           python3 scripts/github/check-workflow-security.py
           python3 scripts/ci/test-ci-helpers.py
           python3 scripts/ci/check-devcontainer.py
+          python3 scripts/ci/check-makefile.py
           python3 -m py_compile scripts/ci/verify-reference-toolchain.py
           bash -n scripts/ci/verify-container.sh
           python3 -m py_compile scripts/github/reconcile-rulesets.py

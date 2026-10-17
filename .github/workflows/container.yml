@@ -6,6 +6,8 @@ on:
     paths:
       - ".devcontainer/**"
       - ".dockerignore"
+      - "Makefile"
+      - "scripts/ci/check-makefile.py"
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
@@ -15,6 +17,8 @@ on:
     paths:
       - ".devcontainer/**"
       - ".dockerignore"
+      - "Makefile"
+      - "scripts/ci/check-makefile.py"
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
@@ -43,6 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/ci/check-devcontainer.py
+          python3 scripts/ci/check-makefile.py
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py
           bash -n scripts/ci/verify-container.sh
@@ -50,20 +55,9 @@ jobs:
       - name: Build immutable reference image from a clean cache
         run: |
           set -euo pipefail
-          docker build --platform linux/amd64 --no-cache \
-            --progress plain -f .devcontainer/Dockerfile \
-            -t miracle-cxx26:g5 .
+          make docker-build NO_CACHE=1
 
       - name: Verify installed environment and run canonical consumers
         run: |
           set -euo pipefail
-          docker run --rm --platform linux/amd64 \
-            --mount "type=bind,source=$PWD,target=/miracle-source,readonly" \
-            miracle-cxx26:g5 \
-            bash -c '
-              set -euo pipefail
-              mkdir -p /tmp/miracle
-              cp -R /miracle-source/. /tmp/miracle/
-              cd /tmp/miracle
-              bash scripts/ci/verify-container.sh
-            '
+          make docker-test

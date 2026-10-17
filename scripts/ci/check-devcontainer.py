@@ -51,9 +51,9 @@ def check(root: Path) -> list[str]:
         faults.append("unapproved Codespaces prebuild setting")
     if "secrets" in json.dumps(descriptor).lower():
         faults.append("no secrets belong in checked-in devcontainer configuration")
-    if "docker build --platform linux/amd64 --no-cache" not in workflow:
+    if "make docker-build NO_CACHE=1" not in workflow:
         faults.append("container CI must actually build clean amd64 image")
-    if "bash scripts/ci/verify-container.sh" not in workflow:
+    if "make docker-test" not in workflow:
         faults.append("container CI must run full reference/consumer verification")
     if "permissions:\n  contents: read" not in workflow:
         faults.append("container CI must have read-only token permissions")
