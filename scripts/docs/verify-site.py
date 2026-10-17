@@ -51,6 +51,19 @@ def main() -> int:
         if not html.is_file() or html.stat().st_size == 0:
             errors.append(f"Missing or empty mdBook chapter: {html}")
 
+    # Legacy MkDocs used /chapter/ and /infrastructure/chapter/ URLs.
+    # mdBook redirects those paths to the canonical /chapter.html pages.
+    for chapter in chapters:
+        if chapter == Path("index.md"):
+            continue
+        redirect = site / chapter.with_suffix("") / "index.html"
+        if not redirect.is_file():
+            errors.append(f"Missing legacy MkDocs URL redirect: {redirect}")
+        elif chapter.with_suffix(".html").name not in redirect.read_text(
+            encoding="utf-8"
+        ):
+            errors.append(f"Legacy redirect has unexpected destination: {redirect}")
+
     homepage = site / "index.html"
     if not homepage.is_file():
         errors.append("The mdBook landing page site/index.html is missing.")
@@ -75,7 +88,7 @@ def main() -> int:
         return 1
 
     print(f"PASS: {len(chapters)} canonical mdBook chapters rendered, "
-          "SUMMARY.md complete, navigation and search present.")
+          "SUMMARY.md complete, legacy redirects, navigation and search present.")
     return 0
 
 
