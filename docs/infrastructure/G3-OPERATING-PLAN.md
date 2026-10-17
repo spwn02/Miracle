@@ -7,8 +7,8 @@
 
 ## One canonical source
 
-- Human-authored API usage, architecture, tooling and governance documents live in [`docs/`](../).
-- [`mkdocs.yml`](../../mkdocs.yml) defines navigation and uses MkDocs **1.6.1**, a pinned direct build dependency. MkDocs is a documentation-only tool and does not become a Miracle C++ runtime/build dependency.
+- Human-authored API usage, architecture, tooling and governance documents live in [`docs/`](../index.md).
+- [`mkdocs.yml`](https://github.com/spwn02/Miracle/blob/master/mkdocs.yml) defines navigation and uses MkDocs **1.6.1**, a pinned direct build dependency. MkDocs is a documentation-only tool and does not become a Miracle C++ runtime/build dependency.
 - The GitHub Pages site is **generated** in CI from `docs/`, not a separate editable body of contracts.
 - The [landing page](../index.md) is editorial navigation and describes the actual documentation; it never replaces an approved contract.
 - No generated C++ API reference is claimed; the existing API pages are hand-maintained guides whose claims require ordinary code/tests review.
