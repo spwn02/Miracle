@@ -48,6 +48,15 @@ The G5 workflow now runs `make docker-build NO_CACHE=1` and `make docker-test` a
 
 **Verified on the implementation revision:** [reference CI #39002203719](https://github.com/spwn02/Miracle/actions/runs/39002203719) **passed**, including the new Make CLI tests. [G5 clean Docker #39002203712](https://github.com/spwn02/Miracle/actions/runs/39002203712) **passed**, including `make docker-build NO_CACHE=1`, `make docker-test`, **71/71 CTest cases**, and all three consumer modes. The [documentation build #39002266448](https://github.com/spwn02/Miracle/actions/runs/39002266448) also passed and deployed the Make usage guide. These are actual GitHub Actions results, not dry-run claims. The Make orchestration implementation is **verified**; interactive Codespaces/devcontainer acceptance remains separate.
 
+## Headless devcontainer lifecycle — merged verification (2026-10-17)
+
+- [PR #12](https://github.com/spwn02/Miracle/pull/12) was reviewed and **squash-merged** into `master` at [`a6ffd7b`](https://github.com/spwn02/Miracle/commit/a6ffd7bf4632417194fb4233bb10808da81bedb6). It adds isolated execution of the tracked `.devcontainer/devcontainer.json` via the version-selected Dev Containers CLI, startup/post-create validation, non-root `vscode`, reference toolchain smoke, a CMake compilation database, and persistence across a real container restart. VS Code clangd is configured to read `build/tests/compile_commands.json`.
+- [Clean container and lifecycle CI #39003187140](https://github.com/spwn02/Miracle/actions/runs/39003187140) **SUCCESS** on PR head `d6e60de`: no-cache pinned Docker build, **71/71 tests**, **3/3 CMake consumers**, pinned CLI, and the *actual headless devcontainer lifecycle* executed and passed. The CLI logged a nonfatal image-name inspection warning before successfully building and starting the digest-pinned container; monitor compatibility on future CLI upgrades.
+- [Reference C++26 CI #39003187065](https://github.com/spwn02/Miracle/actions/runs/39003187065), [mdBook #39003187158](https://github.com/spwn02/Miracle/actions/runs/39003187158), and [code scanning #39003188730](https://github.com/spwn02/Miracle/actions/runs/39003188730) all **SUCCESS** on the same PR revision.
+- **Proven:** headless devcontainer startup, post-create commands, workspace permissions and persistence through container restart. **Not proven:** graphical editor attach, interactive clangd diagnostics, browser Codespaces startup, storage/billing behavior, or maintainer sign-off. No paid Codespace/prebuild or image publication was created.
+
+**G5 remains OPEN** under [issue #5](https://github.com/spwn02/Miracle/issues/5); only the automated headless devcontainer gate is newly accepted.
+
 ## Verification evidence
 
 - [x] Source/JSON/Dockerfile and workflow configuration passed reference CI checks.
