@@ -64,11 +64,11 @@ gh api graphql -f query="$query" --jq '
     url: $p.url,
     public: $p.public,
     linked_repositories: [.repositories.nodes[].nameWithOwner],
-    fields: [.fields.nodes[] | select(.name != null) |
+    fields: [($p.fields.nodes // [])[] | select(.name != null) |
       {name, type: .__typename, dataType, options: [(.options // [])[] | .name]}],
-    views: [.views.nodes[] |
+    views: [($p.views.nodes // [])[] |
       {name, number, layout, filter, groupBy: [(.groupByFields.nodes // [])[] | .name]}],
-    workflows: [.workflows.nodes[] | {name, enabled}]
+    workflows: [($p.workflows.nodes // [])[] | {name, enabled}]
   } end'
 
 echo "===== G2 ISSUE ITEMS ====="
@@ -76,6 +76,9 @@ gh project item-list 3 --owner spwn02 --limit 100 --format json --jq '
   [.items[] |
     select((.content.url // "") | startswith("https://github.com/spwn02/Miracle/issues/")) |
     {issue: .content.url, status: .status, phase: .phase, area: .area}]'
+
+echo "===== ISSUE #7 PROJECT MEMBERSHIP ====="
+gh issue view 7 --repo spwn02/Miracle --json projectItems --jq '.projectItems'
 
 echo "===== ISSUE #7 AUTOMATION EVENTS ====="
 gh api "repos/spwn02/Miracle/issues/7/events?per_page=50" --jq '
