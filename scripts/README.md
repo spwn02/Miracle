@@ -2,7 +2,7 @@
 
 All project automation lives beneath this **single** top-level `scripts/` directory.
 
-- `ci/` — GCC validation, GCC convergence reporting, release provenance and CI helper tests
+- `ci/` — GCC validation, GCC convergence reporting, release provenance, G5 container/toolchain verification and CI helper tests
 - `github/` — repository/Project configuration, security audits and workflow guards
 - `docs/` — mdBook site verification
 

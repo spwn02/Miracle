@@ -1,0 +1,69 @@
+name: G5 reference container
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".devcontainer/**"
+      - ".dockerignore"
+      - ".github/workflows/container.yml"
+      - "scripts/ci/verify-reference-toolchain.py"
+      - "scripts/ci/verify-container.sh"
+      - "scripts/ci/check-devcontainer.py"
+  pull_request:
+    branches: [master]
+    paths:
+      - ".devcontainer/**"
+      - ".dockerignore"
+      - ".github/workflows/container.yml"
+      - "scripts/ci/verify-reference-toolchain.py"
+      - "scripts/ci/verify-container.sh"
+      - "scripts/ci/check-devcontainer.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: g5-container-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reference-container:
+    name: Clean C++26 Docker build and consumers
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Validate G5 configuration
+        run: |
+          set -euo pipefail
+          python3 scripts/ci/check-devcontainer.py
+          python3 scripts/github/check-workflow-pins.py
+          python3 scripts/github/check-workflow-security.py
+          bash -n scripts/ci/verify-container.sh
+
+      - name: Build immutable reference image from a clean cache
+        run: |
+          set -euo pipefail
+          docker build --platform linux/amd64 --no-cache \
+            --progress plain -f .devcontainer/Dockerfile \
+            -t miracle-cxx26:g5 .
+
+      - name: Verify installed environment and run canonical consumers
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/amd64 \
+            --mount "type=bind,source=$PWD,target=/miracle-source,readonly" \
+            miracle-cxx26:g5 \
+            bash -c '
+              set -euo pipefail
+              mkdir -p /tmp/miracle
+              cp -R /miracle-source/. /tmp/miracle/
+              cd /tmp/miracle
+              bash scripts/ci/verify-container.sh
+            '

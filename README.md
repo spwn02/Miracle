@@ -185,6 +185,10 @@ See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-C
 
 Follow [Miracle Development — the public roadmap and work tracker](https://github.com/users/spwn02/projects/3), and consult the [G2 progress ledger](docs/infrastructure/G2-PROGRESS.md) for configuration and acceptance status.
 
+## Reference C++26 development container
+
+The [G5 developer environment guide](docs/infrastructure/G5-OPERATING-PLAN.md) explains the pinned Linux/amd64 Docker image and Codespaces/devcontainer workflow. It uses the same coherent `clang-cxx26`/libc++ snapshot as reference CI, CMake 4.4.3, Ninja, clangd and Neovim; Docker and Codespaces acceptance status is tracked separately in [G5 progress](docs/infrastructure/G5-PROGRESS.md).
+
 ## Contributing and community
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup, or use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) to report a defect or submit a proposal.
