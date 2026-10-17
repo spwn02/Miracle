@@ -3,7 +3,7 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Publishing implementation #8 complete; G3 parent #3 remains open for independent accessibility/navigation acceptance
+**Status:** Publishing subtask #8 CLOSED (completed); G3 parent #3 OPEN for independent accessibility/navigation acceptance
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
@@ -62,7 +62,7 @@ The maintainer confirmed that the GitHub Pages site **works** and later explicit
 
 After publication, further real canonical edits (including this G3 ledger, new G4 book chapters and security updates) triggered successful builds and deployments through the same `docs.yml` workflow. Most recently the site was rebuilt and deployed on [commit `2ec2473`](https://github.com/spwn02/Miracle/commit/2ec2473aac07d23501a179a37ee1e699db5226dd) in [run #38999347401](https://github.com/spwn02/Miracle/actions/runs/38999347401). GitHub's deployment result and the maintainer's observed live site support that publishing is functional, not only configured. The existing verifier covers canonical Markdown chapters, navigation inventory, search artifact and historical MkDocs URL redirects.
 
-**Publishing subtask [#8](https://github.com/spwn02/Miracle/issues/8) can be marked completed** on that evidence. This does **not** imply complete G3 program acceptance: we have not independently demonstrated a full keyboard/screen-reader/mobile regression, every outbound link's validity, or a client-observed render of a particular most-recent paragraph. Those stricter experience checks remain with parent [#3](https://github.com/spwn02/Miracle/issues/3), instead of inventing a browser validation result.
+**Publishing subtask [#8](https://github.com/spwn02/Miracle/issues/8) was closed `completed`** on that evidence. This does **not** imply complete G3 program acceptance: we have not independently demonstrated a full keyboard/screen-reader/mobile regression, every outbound link's validity, or a client-observed render of a particular most-recent paragraph. Those stricter experience checks remain with parent [#3](https://github.com/spwn02/Miracle/issues/3), instead of inventing a browser validation result.
 
 ## Remaining G3 acceptance
 

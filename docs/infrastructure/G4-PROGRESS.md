@@ -1,7 +1,7 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-17
-**Status:** Actions, least-privilege token handling, rulesets, Dependabot and baseline secret/dependency security implemented; private reporting/CodeQL states and final acceptance pending
+**Status:** G4 implementation consolidated and validated; security settings confirmed, full acceptance held for actual release/GCC/CodeQL evidence
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
@@ -142,6 +142,14 @@ Atomic commit [`00c5c87`](https://github.com/spwn02/Miracle/commit/00c5c8755b0fd
 | Sync master to gcc | [#38999112551](https://github.com/spwn02/Miracle/actions/runs/38999112551) | **Success** — candidate creation and GCC validation completed, but `Advance gcc` was **skipped** by the existing compatibility gate; no new GCC-branch ref write was tested |
 
 The script relocation and its live reference-CI/build validation are **complete**. The only still-unverified positive path is a future compatible update *into* protected `gcc`; do not force a branch write to fabricate that evidence.
+
+## Maintainer local smoke test and closeout triage
+
+The maintainer reported a successful local fast-forward to [`2ec2473`](https://github.com/spwn02/Miracle/commit/2ec2473aac07d23501a179a37ee1e699db5226dd) and ran `python3 scripts/ci/test-ci-helpers.py` locally, obtaining **PASS: unified scripts/ci layout, release metadata and GCC convergence fixtures**.
+
+On that same Git commit, the full [reference CI #38999347402](https://github.com/spwn02/Miracle/actions/runs/38999347402), [mdBook Pages #38999347401](https://github.com/spwn02/Miracle/actions/runs/38999347401), and [GCC sync workflow #38999347406](https://github.com/spwn02/Miracle/actions/runs/38999347406) all completed **successfully**. A successful sync workflow must not be reported as successful protected-`gcc` advancement when its `Advance gcc` step was skipped.
+
+The original G4 issue is [kept open for verification](https://github.com/spwn02/Miracle/issues/4): a genuine release run for an approved `v*` tag, a future GCC-compatible branch advancement, actual CodeQL analysis limitations for experimental C++26 semantics, and explicit author phase acceptance. All planned code/script consolidation is complete; no fictitious release or destructive branch test was made.
 
 ## Open decisions and checks
 

@@ -8,6 +8,12 @@
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
 
+## Current issue disposition
+
+The program-wide milestone remains **GitHub Infrastructure (G0–G6)**. Genuine publication subtask [#8](https://github.com/spwn02/Miracle/issues/8) was closed **completed** after mdBook publishing succeeded, without closing broader G3 acceptance parent #3. This is an implementation completion record, **not** proof that issue #8's automatic Project intake targeted Project #3, or that Project workflow settings prevented premature `Accepted` assignments.
+
+[G2 issue #2](https://github.com/spwn02/Miracle/issues/2) remains open in verification. Confirm the precise `gh issue view 8 --json projectItems` output, the UI Auto-add rule and acceptance-sensitive workflows, and a real status transition before formal acceptance.
+
 ## Cross-workstream milestone reconciliation
 
 The maintainer clarified that milestones represent **complete deliverables**, not individual G-subphases. Existing GitHub milestone #1 was renamed **in place** from `GitHub Infrastructure — G2` to [`GitHub Infrastructure (G0–G6)`](https://github.com/spwn02/Miracle/milestone/1) by [verified one-time workflow](https://github.com/spwn02/Miracle/actions/runs/38994367818). The historical issue milestone ID is preserved; no duplicate milestone was created.
