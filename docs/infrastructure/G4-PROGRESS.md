@@ -1,7 +1,7 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-17
-**Status:** Actions pinning, rulesets, Dependabot and baseline secret/dependency security verified; CodeQL/private-reporting states and final acceptance pending
+**Status:** Actions, least-privilege token handling, rulesets, Dependabot and baseline secret/dependency security implemented; private reporting/CodeQL states and final acceptance pending
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
@@ -107,9 +107,24 @@ The maintainer ran the account-authenticated read-only `audit-security.py` and s
 
 **Validation:** `master` was observed at `d20f599` immediately after the three PR merges. Its mdBook publishing run [#38996369465](https://github.com/spwn02/Miracle/actions/runs/38996369465) passed; the reference CI [#38996369479](https://github.com/spwn02/Miracle/actions/runs/38996369479) was still in progress at that checkpoint. Do not treat the PRs' earlier branch CI checks as conclusive validation of subsequent combined merges.
 
+## Least-privilege checkout and workflow regression checks (2026-10-17)
+
+After the maintainer confirmed running the second security audit (without sharing its `Allowlisted configuration values` output), G4 continued on repository-level controls that can be verified independently.
+
+**Committed implementation:**
+- `ci.yml`, `gcc.yml`, `docs.yml` and `release.yml` use `actions/checkout` with `persist-credentials: false`. Their checkout steps only require public repository files; the release creation step obtains its separate GitHub token explicitly. PR-triggered workflows no longer retain the checkout credential for later checked-out code execution.
+- `sync-gcc.yml` now has read-only **root** permissions, with `contents: write` scoped explicitly to its synchronization job. Its checkout credential remains available because the job performs the legitimate, non-forced `gcc` push.
+- [`scripts/github/check-workflow-security.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/check-workflow-security.py) statically verifies these **Miracle-specific** invariants: root `contents: read`, read-only checkouts, no `pull_request_target` / `workflow_run` escalation, Pages deployment restricted to `master` and never PRs, and write permissions limited to the intentional sync/release/Pages jobs. Four **negative mutation fixtures** ensure prohibited input variants cause the guard to fail.
+- The guard is integrated into `ci.yml` before installing the expensive compiler toolchain. This is an additional regression check, **not** a general YAML or workflow-security analyzer.
+
+**Observed GitHub test evidence:** The first run after integration, [reference CI #38998543324](https://github.com/spwn02/Miracle/actions/runs/38998543324), successfully completed `Validate infrastructure shell syntax`, including the SHA pin guard and new workflow-trust policy checker. The full compiler/consumer test outcome remains independently trackable in that run.
+
+**Security-feature state remains bounded by evidence:** The maintainer said they ran the revised read-only security script, but did not supply its configuration-value section. Thus **private vulnerability reporting `enabled`** and **CodeQL default setup `state`** remain unverified. No change was made to either feature, and we must not claim that C++26 reflection/modules have effective CodeQL analysis without successful configured scans.
+
 ## Open decisions and checks
 
 - [x] Action refs pinned and guard passed; independent reference CI runs #38995484739 and #38995614569 completed successfully.
+- [x] Read-only checkout credentials disabled where possible, GCC write permission job-scoped, workflow-trust guard/negative fixtures executed successfully in CI early step (run #38998543324).
 - [x] GitHub Pages mdBook deploy passed after branch protection (run #38995614555).
 - [x] GCC sync job completes safely with the compatibility gate (actual protected-branch push still unproven because `Advance gcc` was skipped).
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
