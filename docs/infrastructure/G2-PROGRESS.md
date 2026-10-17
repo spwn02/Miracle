@@ -3,7 +3,7 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Current workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Design and repository bootstrap implemented; GitHub Projects administration and interactive acceptance pending
+**Status:** Project created/linked and fields/labels/milestone provisioned (owner terminal evidence); issue import and views pending
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
 
@@ -20,6 +20,22 @@
   - [#5 — G5 Development environments](https://github.com/spwn02/Miracle/issues/5)
   - [#6 — G6 Discussions / end-to-end acceptance](https://github.com/spwn02/Miracle/issues/6)
 - All new Issues describe **future or unfinished work**; no artificial historical issues or acceptance records were created.
+
+## Bootstrap execution and recovery — 2026-10-17
+
+The maintainer ran `--check` and `--apply`. Their terminal output confirms:
+
+- Public user-owned Project [#3 — Miracle Development](https://github.com/users/spwn02/projects/3) was created.
+- Project #3 was linked to `spwn02/Miracle`.
+- Seven custom Project fields were created: Phase, Area, Priority, Risk, Target release, Start date, Target date.
+- Nine repository labels were created and the `GitHub Infrastructure — G2` milestone was created.
+- The initial `--apply` stopped at a Bash parsing error: `unexpected EOF while looking for matching '\''`. Issue import and metadata were **not** confirmed in that run.
+
+The script's issue-seeding tail had been accidentally corrupted by a duplicated here-document and split quoted string. It was replaced in commit `42c8e14`, retaining the already-safe creation steps, and a Bash syntax validation step was added to CI in commit `a394bb8`. The revised issue-seeding code uses GitHub's explicit Project/item/field/option IDs, avoids duplicating existing items, and sets factual Phase/Area values for issues #1–#6 without manufacturing an acceptance status or deadlines.
+
+**Resume command:** `git pull --ff-only origin master && bash scripts/github/bootstrap-g2.sh --check && bash scripts/github/bootstrap-g2.sh --apply`
+
+**Not yet independently verified:** Successful execution of the repaired script against Project #3, the presence of all six issues in the Project, and the live saved views/auto-add workflow.
 
 ## Tooling limitation
 
