@@ -30,6 +30,7 @@ The image targets **Linux/amd64** and matches the Ubuntu 22.04 reference CI host
 | Published SHA256SUMS file | `sha256:8ed3810fa391f056ad840c9331a3598bb24257a16fb1f05e9752bbd7301c1b5a` |
 | CMake | Official Kitware 4.4.3 Linux x86-64 archive, `sha256:d6c83076c575bc00b823522ac974bda66d0af05d6ddc30e739c12385cf32c6cc` |
 | Ninja | Official Ninja 1.13.2 Linux x86-64 zip, `sha256:5749cbc4e668273514150a80e387a957f933c6ed3f5f11e03fb30955e2bbead6` |
+| Neovim | Official Neovim 0.12.5 Linux x86-64 tarball, `sha256:bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875` |
 
 The same reference snapshot/source/asset identity is used by existing [CI](https://github.com/spwn02/Miracle/blob/master/.github/workflows/ci.yml). Container builds verify all published checksums, parse the manifest, unpack the matching compiler/runtime bundle, compare its installed metadata, and verify the expected module descriptor. Standard-library/compiler consistency is subsequently exercised by the actual test and consumer builds.
 
@@ -75,6 +76,12 @@ Local editors that support the dev container specification detect `.devcontainer
 The first clean-run gate found missing Ubuntu C runtime developer startup objects; installing `build-essential` and `libc6-dev` fixed native C linkage without changing the reference Clang/libc++ selection. The next run uncovered Ubuntu 22.04's outdated Ninja 1.10.1, inadequate for CMake C++ modules. An upstream SHA-256-pinned Ninja **1.13.2** binary resolved that failure. The small container smoke gate now checks real compile/link capability and Ninja >=1.11 before expensive C++26 tests.
 
 This establishes a working, compiler-coherent **Docker** environment. It does not by itself prove that a local editor has attached to the devcontainer or that a billable Codespaces instance has opened and worked interactively.
+
+## Modern Neovim and final regression
+
+Ubuntu 22.04's packaged Neovim 0.6.1 is too old for many current Neovim/LSP workflows. The development image now installs **official Neovim 0.12.5** with an independently verified upstream SHA-256, rather than relying on the distribution version or a mutable `stable` tag. Its smoke test runs both `nvim --version` and `nvim --headless --clean '+quit'`.
+
+The **final** clean [Docker workflow #39001300054](https://github.com/spwn02/Miracle/actions/runs/39001300054) and matching [reference C++26 CI #39001300184](https://github.com/spwn02/Miracle/actions/runs/39001300184), at [commit `7ab69e2`](https://github.com/spwn02/Miracle/commit/7ab69e244d893f7d84e7d8b5d90c0f72ed0ea01a), both succeeded after this editor upgrade. The immutable C++26 compiler/runtime release is unchanged.
 
 ## CI and acceptance
 

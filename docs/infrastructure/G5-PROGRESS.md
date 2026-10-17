@@ -11,7 +11,7 @@
 - Official Ubuntu 22.04 **Linux/amd64** base image pinned by manifest SHA-256.
 - Immutable reference compiler `cxx26-2026.10.09.2` and source revision from existing reference CI; pinned and verified compiler tarball, release manifest and published SHA256SUMS.
 - Matching packaged libc++ runtime and `import std` metadata used; no distribution Clang/libstdc++ swap.
-- Verified Kitware CMake 4.4.3 archive, Ninja, clangd, Python, Git and Neovim.
+- Verified Kitware CMake 4.4.3, pinned Ninja 1.13.2 and **official pinned Neovim 0.12.5** archives, with clangd, Python and Git.
 - Non-root `vscode` devcontainer with a quick post-create toolchain smoke check; no prebuild or registry.
 - Source-controlled, read-only [G5 Docker validation workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml) that builds the image **without Docker cache** and runs reference tests/examples and all three consumer modes.
 - Self-contained reference toolchain manifest validator and static identity/configuration guard.
@@ -28,6 +28,17 @@
 **Validation history:** [Initial run #39000489439](https://github.com/spwn02/Miracle/actions/runs/39000489439) exposed missing Ubuntu C runtime developer libraries; `build-essential`/`libc6-dev` resolved that. [Run #39000708216](https://github.com/spwn02/Miracle/actions/runs/39000708216) exposed Ninja 1.10.1's lack of C++ modules; pinned Ninja 1.13.2 resolved it. Failures are retained as real evidence, not silently represented as successes.
 
 **Unverified:** interactive local editor attach, Codespaces startup/working directory/retention/billing, ARM/emulation performance, and fully immutable Ubuntu APT dependencies. No Codespace, prebuild or public image was created.
+
+## Final G5 image validation (Neovim 0.12.5)
+
+[Commit `7ab69e2`](https://github.com/spwn02/Miracle/commit/7ab69e244d893f7d84e7d8b5d90c0f72ed0ea01a) upgraded the prior Ubuntu Neovim 0.6.1 binary to an **official SHA-256-pinned Neovim 0.12.5** release, and hardened the version/headless startup smoke check.
+
+- [Clean Docker workflow #39001300054](https://github.com/spwn02/Miracle/actions/runs/39001300054): **success** — immutable toolchain/CMake/Ninja/Neovim assets verified, container started, full C++26 test/consumer job passed.
+- [Reference CI #39001300184](https://github.com/spwn02/Miracle/actions/runs/39001300184): **success**.
+- The previously validated clean run recorded **71/71 tests and all three CMake consumers**. The final post-Neovim upgrade Docker job completed the same validation step successfully.
+- **No compiler/runtime revision changed** and no Codespaces prebuild, user secret, image registry or paid Codespace was created.
+
+**G5's source, clean Docker build and full container tests are implemented and accepted as technical evidence.** The **phase issue remains open** until an actual editor/devcontainer attach, Codespaces open and maintainer final sign-off. Do not conflate container CI with interactive Codespaces acceptance.
 
 ## Verification evidence
 
