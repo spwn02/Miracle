@@ -169,6 +169,8 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 ## Design
 
+Browse the [documentation index](docs/index.md) for getting started, the existing API guides, architecture, and governance. The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) tracks the GitHub Pages site and will record its verified public URL when deployment succeeds.
+
 See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
 
 See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
