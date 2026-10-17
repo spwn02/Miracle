@@ -85,7 +85,7 @@ Avoid redundant `priority:*`, `risk:*`, `area:*`, or `status:*` labels while tho
 
 ## 5. Milestones
 
-Start with **GitHub Infrastructure — G2** for provisioning, routing, verification and project-view setup. Other G-workstream milestones may be added as their scope becomes active; avoid backdating milestone completion or allocating fictional due dates. Miracle product Phase 6 milestones should be defined when Phase 6's roadmap and acceptance gate are approved.
+Use **one program-level milestone**, **GitHub Infrastructure (G0–G6)**, to cover the entire governance program: audit, intake/governance, project management, documentation, security/CI, development environments and Discussions/end-to-end acceptance. Track individual G0–G6 workstreams with Project Phase and separate issues, not separate milestones. Include genuine infrastructure issues #1–#6 and #8; leave unscheduled historical-contract migration issue #7 outside the milestone. Reuse and rename the previously created G2-only milestone **#1** so existing issue links/history survive. Do not set imaginary target dates. Define future Miracle product Phase 6 milestones only when their deliverables and acceptance gates are approved.
 
 ## 6. Automation policy
 
@@ -102,7 +102,7 @@ The repository provides `scripts/github/bootstrap-g2.sh` to perform repeatable P
 1. Confirm whether a `Miracle Development` Project already exists.
 2. Provision or reuse the public, linked project and reconcile the field schema.
 3. Create the four views and configure issue auto-add.
-4. Establish repo labels and a finite G2 milestone.
+4. Establish repo labels and the single program-wide G0–G6 infrastructure milestone.
 5. Confirm real outstanding infrastructure issues #1–#6 were imported by the bootstrap script; leave Status, Priority, Risk and dates for honest human triage.
 6. Move one testable real issue from Backlog through its appropriate statuses, recording evidence and review without a fake acceptance record.
 7. Verify Project visibility, link from repository, view filters, workflow behavior and status transitions.
