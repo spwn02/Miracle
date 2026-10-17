@@ -1,0 +1,23 @@
+{
+  "name": "Miracle — pinned C++26",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/Miracle",
+  "postCreateCommand": "bash scripts/ci/verify-container.sh --smoke",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "ms-vscode.cmake-tools"
+      ],
+      "settings": {
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "clangd.path": "/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clangd",
+        "cmake.configureOnOpen": false
+      }
+    }
+  }
+}

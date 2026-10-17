@@ -1,0 +1,10 @@
+# Build context for .devcontainer/Dockerfile: only the toolchain verifier is copied.
+.git
+.github
+.devcontainer/devcontainer.json
+build/
+site/
+.venv/
+CMakeUserPresets.json
+*.tar.zst
+*.tar.gz
