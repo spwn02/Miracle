@@ -14,7 +14,7 @@ usage() {
 Usage: scripts/github/bootstrap-g2.sh --check | --apply
 
 --check  Inspect existing project/labels/milestones without mutating them.
---apply  Create/reuse the GitHub Project; link the repo; add fields, labels and milestone; import issues #1-#6.
+--apply  Create/reuse the GitHub Project and import real infrastructure issues #1-#6.
 
 Requirements: authenticated GitHub CLI with permission for spwn02/Miracle
 and the GitHub Projects 'project' OAuth scope.
@@ -144,59 +144,71 @@ else
   echo "Created milestone: $MILESTONE_TITLE"
 fi
 
-# Seed only genuine, already-opened infrastructure work; don't backfill
-# imaginary historical tasks or assign unreviewed priorities/deadlines.
-existing_urls="$(gh project item-list "$project_numbers" --owner "$OWNER" \
-  --limit 100 --format json --jq '.items[].content.url')"
-for number in 1 2 3 4 5 6; do
-  url="https://github.com/$REPO/issues/$number"
-  # The six URLs are explicit G1.5/G2-G6 tasks recorded in G2-PROGRESS.md.
-  # A missing issue should stop bootstrap instead of silently inventing work.
-  if ! gh issue view "$number" --repo "$REPO" --json url --jq '.url' >/dev/null; then
-    echo "Required issue $number not found; review the G2 progress ledger." >&2
-    exit 1
-  fi
-  if grep -Fxq "$url" <<< "$existing_urls"; then
-    echo "Issue already in Project: #$number"
-  else
-    gh project item-add "$project_numbers" --owner "$OWNER" --url "$url" >/dev/null
-    existing_urls+=
-gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.url'
+# Seed only genuine, already-opened infrastructure work; do not backfill
+# historical issues or assign unreviewed priorities or target dates.
+project_id="$(gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.id')"
+phase_field_id="$(gh project field-list "$project_numbers" --owner "$OWNER" --limit 100 \
+  --format json --jq '.fields[] | select(.name == "Phase") | .id')"
+area_field_id="$(gh project field-list "$project_numbers" --owner "$OWNER" --limit 100 \
+  --format json --jq '.fields[] | select(.name == "Area") | .id')"
+infra_option_id="$(gh project field-list "$project_numbers" --owner "$OWNER" --limit 100 \
+  --format json --jq '.fields[] | select(.name == "Area") | .options[] | select(.name == "Infrastructure") | .id')"
+docs_option_id="$(gh project field-list "$project_numbers" --owner "$OWNER" --limit 100 \
+  --format json --jq '.fields[] | select(.name == "Area") | .options[] | select(.name == "Documentation") | .id')"
 
-cat <<'NEXT'
-Complete these steps in the GitHub Project UI:
-  1. Edit the EXISTING Status field:
-     Backlog, Design, Ready, Implementing, Review, Verification, Accepted, Blocked
-  2. Create saved views: All Work (table), Active (board by Status),
-     Roadmap (timeline), Verification Queue (table).
-  3. Set the single built-in Auto-add workflow to new issues from spwn02/Miracle.
-  4. Verify that real outstanding issues #1-#6 appear with correct Phase/Area.
-  5. Confirm Project visibility and status transitions, then record G2 evidence.
-No fabricated due dates, automatic acceptance, or project PATs are required.
-NEXT
-\n'"$url"
-    echo "Added issue #$number"
+for item in "$project_id" "$phase_field_id" "$area_field_id" "$infra_option_id" "$docs_option_id"; do
+  if [[ -z "$item" || "$item" == "null" ]]; then
+    echo "Unable to resolve required Project or field IDs; inspect project #$project_numbers." >&2
+    exit 1
   fi
 done
 
-# Set only factual planning metadata. Status, Priority and Risk still require
-# human triage; Accepted must never be assigned automatically.
 for entry in "1 G1 Infrastructure" "2 G2 Infrastructure" \
              "3 G3 Documentation" "4 G4 Infrastructure" \
              "5 G5 Infrastructure" "6 G6 Infrastructure"; do
   read -r number phase area <<< "$entry"
   issue_url="https://github.com/$REPO/issues/$number"
-  gh project item-edit "$project_numbers" --owner "$OWNER" \
-    --url "$issue_url" --field "Phase" --text "$phase" >/dev/null
-  gh project item-edit "$project_numbers" --owner "$OWNER" \
-    --url "$issue_url" --field "Area" --value "$area" >/dev/null
+
+  # Do not quietly assume the hard-coded issue list is still current.
+  actual_url="$(gh issue view "$number" --repo "$REPO" --json url --jq '.url')"
+  if [[ "$actual_url" != "$issue_url" ]]; then
+    echo "Unexpected/missing issue #$number: $actual_url" >&2
+    exit 1
+  fi
+
+  item_id="$(gh project item-list "$project_numbers" --owner "$OWNER" \
+    --limit 1000 --format json \
+    --jq ".items[] | select(.content.url == \"$issue_url\") | .id")"
+  if [[ -z "$item_id" ]]; then
+    item_id="$(gh project item-add "$project_numbers" --owner "$OWNER" \
+      --url "$issue_url" --format json --jq '.id')"
+    echo "Added issue #$number"
+  else
+    echo "Issue already in Project: #$number"
+  fi
+  if [[ -z "$item_id" || "$item_id" == "null" ]]; then
+    echo "GitHub did not return an item ID for issue #$number" >&2
+    exit 1
+  fi
+
+  gh project item-edit --id "$item_id" --project-id "$project_id" \
+    --field-id "$phase_field_id" --text "$phase" >/dev/null
+
+  if [[ "$area" == "Documentation" ]]; then
+    option_id="$docs_option_id"
+  else
+    option_id="$infra_option_id"
+  fi
+  gh project item-edit --id "$item_id" --project-id "$project_id" \
+    --field-id "$area_field_id" --single-select-option-id "$option_id" >/dev/null
+  echo "Set #$number: Phase=$phase, Area=$area"
 done
 
-# Only the actual G2 provisioning task belongs to the finite G2 milestone.
+# Only the actual G2 provisioning task belongs in the finite G2 milestone.
 gh issue edit 2 --repo "$REPO" --milestone "$MILESTONE_TITLE" >/dev/null
 
 echo
-echo "GitHub Project bootstrap finished (subject to the link warning above)."
+echo "GitHub Project bootstrap finished."
 gh project view "$project_numbers" --owner "$OWNER" --format json --jq '.url'
 
 cat <<'NEXT'
@@ -205,8 +217,8 @@ Complete these steps in the GitHub Project UI:
      Backlog, Design, Ready, Implementing, Review, Verification, Accepted, Blocked
   2. Create saved views: All Work (table), Active (board by Status),
      Roadmap (timeline), Verification Queue (table).
-  3. Set the single built-in Auto-add workflow to new issues from spwn02/Miracle.
-  4. Verify that existing issues #1-#6 were imported with correct Phase/Area.
-  5. Confirm Project visibility and status transitions, then record G2 evidence.
-No fabricated due dates, automatic acceptance, or project PATs are required.
+  3. Enable Auto-add for new issues in spwn02/Miracle.
+  4. Verify actual issues #1-#6 have the expected Phase and Area values.
+  5. Confirm visibility and status transitions, then record G2 acceptance evidence.
+No invented deadlines, automatic acceptance, or personal tokens are required.
 NEXT
