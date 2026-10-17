@@ -3,7 +3,7 @@
 **Scope:** Docker CLI development, devcontainers and Codespaces, Linux x86-64
 **Authority:** [GitHub Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), §8/§10
 **Tracker:** [Infrastructure issue #5](https://github.com/spwn02/Miracle/issues/5)
-**Status:** Clean Docker build and all consumer checks passed; interactive Codespaces/devcontainer acceptance pending
+**Status:** Docker, headless devcontainer and Neovim/clangd LSP checks passed; interactive editor/Codespaces acceptance pending
 **Progress:** [G5-PROGRESS.md](G5-PROGRESS.md)
 
 ## Purpose and authority
