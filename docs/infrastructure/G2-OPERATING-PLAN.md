@@ -93,7 +93,7 @@ Start with GitHub's **built-in auto-add** workflow for issues from `spwn02/Mirac
 
 Do not introduce PATs, Actions secrets, custom webhooks or a project-sync bot for initial G2 setup. If an automation requires account-level Projects permissions, it should run interactively under the maintainer's existing authenticated `gh` session.
 
-The repository provides `scripts/github/bootstrap-g2.sh` to perform repeatable Project creation, field provisioning and repo label setup without storing credentials. **Views and the built-in Status options still require interactive Project configuration.**
+The repository provides `scripts/github/bootstrap-g2.sh` to perform repeatable Project creation, field provisioning, repo label/milestone setup, and import of genuine outstanding issues #1–#6 without storing credentials. **Views and the built-in Status options still require interactive Project configuration.**
 
 ## 7. Delivery and acceptance
 
@@ -101,7 +101,7 @@ The repository provides `scripts/github/bootstrap-g2.sh` to perform repeatable P
 2. Provision or reuse the public, linked project and reconcile the field schema.
 3. Create the four views and configure issue auto-add.
 4. Establish repo labels and a finite G2 milestone.
-5. Add real outstanding infrastructure tasks to the Project, using their real GitHub issue URLs.
+5. Confirm real outstanding infrastructure issues #1–#6 were imported by the bootstrap script; leave Status, Priority, Risk and dates for honest human triage.
 6. Move one testable real issue from Backlog through its appropriate statuses, recording evidence and review without a fake acceptance record.
 7. Verify Project visibility, link from repository, view filters, workflow behavior and status transitions.
 8. Record Project URL, GitHub issue references, setup commands/versions and acceptance evidence in `G2-PROGRESS.md`.
