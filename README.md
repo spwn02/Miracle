@@ -179,6 +179,8 @@ See [Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md) for contract-drive
 
 See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md) for public project governance and operational roadmap.
 
+Follow [Miracle Development — the public roadmap and work tracker](https://github.com/users/spwn02/projects/3), and consult the [G2 progress ledger](docs/infrastructure/G2-PROGRESS.md) for configuration and acceptance status.
+
 ## Contributing and community
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup, or use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) to report a defect or submit a proposal.
