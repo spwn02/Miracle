@@ -12,12 +12,13 @@ ARG CXX26_SUMS_SHA256=8ed3810fa391f056ad840c9331a3598bb24257a16fb1f05e9752bbd730
 ARG CMAKE_VERSION=4.4.3
 ARG CMAKE_SHA256=d6c83076c575bc00b823522ac974bda66d0af05d6ddc30e739c12385cf32c6cc
 
-# Runtime dependencies are from Ubuntu 22.04 apt. The reference compiler,
-# its matching libc++ and CMake tarballs are pinned separately by SHA-256.
+# Ubuntu's build-essential/libc6-dev supply the C runtime crt*.o and native
+# linker support files, NOT an alternate selected C++ compiler/standard library.
+# The reference compiler, its matching libc++ and CMake are SHA-256 pinned.
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-      bash ca-certificates curl git ninja-build python3 python3-venv \
+      bash build-essential libc6-dev ca-certificates curl git ninja-build python3 python3-venv \
       zstd tar xz-utils neovim sudo \
       libstdc++6 libgcc-s1 libatomic1 zlib1g libzstd1 libxml2 \
       libz3-4 libedit2 libtinfo6 libncurses6 libssl3; \
