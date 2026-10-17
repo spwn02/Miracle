@@ -1,0 +1,52 @@
+site_name: Miracle Documentation
+site_description: Canonical documentation for the Miracle C++26 foundation library
+site_url: https://spwn02.github.io/Miracle/
+repo_name: spwn02/Miracle
+repo_url: https://github.com/spwn02/Miracle
+edit_uri: edit/master/docs/
+
+docs_dir: docs
+site_dir: site
+use_directory_urls: true
+
+theme:
+  name: mkdocs
+  navigation_depth: 3
+  highlightjs: true
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - fenced_code
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Overview: index.md
+  - Getting started:
+      - Compiler support: compiler-support.md
+      - Reference toolchain: reference-toolchain.md
+      - Build capabilities: capabilities.md
+  - Guides:
+      - Diagnostics and panic: diagnostics.md
+      - Meta and reflection: meta.md
+      - Iter: iter.md
+      - Range: range.md
+      - Static string: static-string.md
+      - Feature engine: feature.md
+  - Architecture and contracts:
+      - Architecture: architecture.md
+      - Development Protocol v1.0: DEVELOPMENT_PROTOCOL.md
+      - Infrastructure Contract: infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md
+  - Development:
+      - Public roadmap: https://github.com/users/spwn02/projects/3
+      - G2 project progress: infrastructure/G2-PROGRESS.md
+      - Issue tracker: https://github.com/spwn02/Miracle/issues
+  - Project:
+      - README and quickstart: https://github.com/spwn02/Miracle#quick-start
+      - Contributing: https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md
+      - Changelog: https://github.com/spwn02/Miracle/blob/master/CHANGELOG.md
+      - Security: https://github.com/spwn02/Miracle/blob/master/SECURITY.md
