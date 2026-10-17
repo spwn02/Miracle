@@ -179,9 +179,11 @@ See [Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md) for contract-drive
 
 See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md) for public project governance and operational roadmap.
 
-## Contributing and security
+## Contributing and community
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup, or use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) to report a defect or submit a proposal.
+
+Community policies: [Support](SUPPORT.md), [Code of Conduct](CODE_OF_CONDUCT.md), [Accessibility](ACCESSIBILITY.md), and [Security](SECURITY.md). Report potential vulnerabilities privately according to the Security policy, not in a public issue.
 
 ## License
 
