@@ -54,13 +54,30 @@ A minimal, version-controlled proposal now lives in [G4-RULESETS.md](G4-RULESETS
 
 **Current status: NOT APPLIED.** Source commits cannot activate repository protection. The connected GitHub integration cannot modify repository administrative rulesets, and the infrastructure contract reserves that change to the maintainer's reviewed configuration. Once the maintainer runs `--apply`, capture the actual ruleset IDs and verify that normal `master` CI and a `gcc` synchronization still succeed. A ruleset definition's `enforcement: active` does not mean GitHub is currently enforcing it.
 
+## Live ruleset activation verified (2026-10-17)
+
+The maintainer ran `reconcile-rulesets.py --check`, `--apply`, and `--verify` after synchronizing local `master`. The read-only preflight reported both recipes missing; the explicit apply created the rulesets, and the post-apply verification passed.
+
+A **separate live GitHub REST read** confirmed the following actual repository state:
+
+| Protection | GitHub rule ID | Target refs | Effective rules |
+| --- | --- | --- | --- |
+| [Development branches](https://github.com/spwn02/Miracle/rules/25286606) | `25286606` | `refs/heads/master`, `refs/heads/gcc` | `deletion`, `non_fast_forward` |
+| [Release tags](https://github.com/spwn02/Miracle/rules/25286609) | `25286609` | `refs/tags/v*` | `deletion`, `update` |
+
+Both live responses reported **`enforcement: active`**, an **empty `bypass_actors`** array, and `current_user_can_bypass: never`. Subsequently, GitHub's branch metadata reported `protected: true` for both `master` and `gcc`. The published G4 JSON recipes and ruleset fingerprints match those results; no extra ruleset or permissive bypass was introduced.
+
+The preceding successful reference CI, Pages deployment and `master` → `gcc` sync occurred **before ruleset activation**, so their success is not by itself a post-protection integration test. The present ledger update is the first ordinary direct-to-`master` write used to exercise the newly protected branch. Its resulting Actions executions require independent inspection before reporting runtime validation. A `Sync master to gcc` workflow marked successful can choose *not to advance* `gcc` if the compatibility candidate is unsupported; log the actual result before claiming push compatibility.
+
+**Release-tag enforcement:** the live ruleset configuration is proven, but no destructive tag update was attempted and no artificial release was created. The next legitimate release can verify permitted first creation without risking historical tags.
+
 ## Open decisions and checks
 
 - [x] Action refs resolved to published Git SHAs and pin-guard/syntax steps passed on pinned reference CI; the full final-commit CI run still needs its conclusion checked.
 - [ ] GitHub Pages mdBook deploy remains green with pinned actions.
 - [ ] `gcc` sync and compatibility continue successfully.
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
-- [ ] Review and apply the minimal `master`/`gcc` and `v*` rulesets using the documented maintainer-controlled `--apply`; verify real GitHub enforcement, normal direct pushes and `gcc` sync.
+- [x] Live `master`/`gcc` and `v*` rulesets activated and independently verified by REST (IDs `25286606`, `25286609`); post-protection CI/direct-commit and `gcc` synchronization verification remain separate.
 - [ ] Review private security-reporting availability and actual repository security settings, without making unsupported claims.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
