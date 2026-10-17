@@ -81,14 +81,22 @@ A routine edit of this ledger was **accepted directly on protected `master`**, c
 
 Actual ruleset enforcement, target refs and no-bypass policy were verified. No destructive force push or tag rewrite was attempted. The next legitimate supported GCC revision and normal new release tag can validate those remaining positive paths without manufacturing unsafe changes.
 
+## Final post-protection CI and G4 security-audit preparation
+
+**Reference C++26 CI now confirmed green**, as reported by the maintainer and independently observed in [run #38995484739](https://github.com/spwn02/Miracle/actions/runs/38995484739) on `561c8c6`; subsequent [run #38995614569](https://github.com/spwn02/Miracle/actions/runs/38995614569) on `be6ca58` also passed. [mdBook publishing #38995614555](https://github.com/spwn02/Miracle/actions/runs/38995614555) succeeded under protection. GCC workflow runs remained successful but the actual `Advance gcc` step was skipped because the current compiler cannot validate the candidate; do not claim an actual post-protection `gcc` push was tested.
+
+**Pull request history policy:** GitHub's current repository settings allow merge commits, squash merging, and rebase merging; no auto-merge. [G4-PR-WORKFLOW.md](G4-PR-WORKFLOW.md) establishes preservation-first review comments and recommends **Create a merge commit** or an explicit local `git merge --ff-only` when ancestry allows. Neither requires rewriting existing commits. Any restriction of the repository's available UI merge methods remains a separate maintainer setting decision.
+
+**Security availability audit:** Current public metadata and the connected GitHub integration do not expose authoritative private vulnerability, Dependabot alert, secret scanning, or code scanning settings. Those states remain **unknown**, not assumed disabled. [G4-SECURITY-AUDIT.md](G4-SECURITY-AUDIT.md) and [`audit-security.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-security.py) provide an administrator-authenticated, read-only settings/endpoint audit that prints no sensitive alert payloads. No scanning feature was turned on or claimed supported without verification of C++26 modules/reflection.
+
 ## Open decisions and checks
 
-- [x] Action refs resolved to published Git SHAs and pin-guard/syntax steps passed on pinned reference CI; the full final-commit CI run still needs its conclusion checked.
-- [ ] GitHub Pages mdBook deploy remains green with pinned actions.
-- [ ] `gcc` sync and compatibility continue successfully.
+- [x] Action refs pinned and guard passed; independent reference CI runs #38995484739 and #38995614569 completed successfully.
+- [x] GitHub Pages mdBook deploy passed after branch protection (run #38995614555).
+- [x] GCC sync job completes safely with the compatibility gate (actual protected-branch push still unproven because `Advance gcc` was skipped).
 - [x] Maintainer explicitly authorized Dependabot update PRs on 2026-10-17; [.github/dependabot.yml](https://github.com/spwn02/Miracle/blob/master/.github/dependabot.yml) now defines the GitHub Actions-only policy (weekly Monday 09:00 Europe/Warsaw, maximum three open PRs, minor/patch grouped, majors separate, `type:infrastructure` label). PRs target `master`; no auto-merge is configured. Verify the first actual Dependabot run and PR before considering the integration fully validated.
 - [x] Live `master`/`gcc` and `v*` rulesets activated and independently verified by REST (IDs `25286606`, `25286609`); post-protection CI/direct-commit and `gcc` synchronization verification remain separate.
-- [ ] Review private security-reporting availability and actual repository security settings, without making unsupported claims.
+- [ ] Complete maintainer's read-only audit of private vulnerability reporting, dependency/secret/code scanning and security update availability; current states unknown.
 - [ ] Verify affected failure modes and record maintainer acceptance.
 
-**Milestone #1 was verified. Dependabot Actions version updates are now configured to open reviewable PRs. Branch/tag rulesets and automated PR merging have not been enabled.**
+**G4 remains open.** Milestone #1, Dependabot PR intake, both active branch/tag rulesets and post-protection reference CI/Pages are verified. Automatic PR merging is disabled. Actual post-protection `gcc` branch advancement, administrative security-feature settings, and formal maintainer acceptance are pending.
