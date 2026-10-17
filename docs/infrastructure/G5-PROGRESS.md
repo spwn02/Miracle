@@ -1,7 +1,7 @@
 # G5 — Docker, devcontainers and Codespaces: Progress
 
 **Updated:** 2026-10-17
-**Status:** Docker build/test acceptance VERIFIED; interactive Codespaces and editor workflow pending
+**Status:** Docker, headless devcontainer and Neovim/clangd protocol gates VERIFIED; interactive editor/Codespaces acceptance pending
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Issue:** [#5](https://github.com/spwn02/Miracle/issues/5)
 **Contract:** [G5 operating plan](G5-OPERATING-PLAN.md)
@@ -57,11 +57,22 @@ The G5 workflow now runs `make docker-build NO_CACHE=1` and `make docker-test` a
 
 **G5 remains OPEN** under [issue #5](https://github.com/spwn02/Miracle/issues/5); only the automated headless devcontainer gate is newly accepted.
 
+## Headless Neovim / clangd protocol — merged verification (2026-10-17)
+
+[PR #13](https://github.com/spwn02/Miracle/pull/13) was reviewed and **squash-merged** into `master` at [`7b15cee`](https://github.com/spwn02/Miracle/commit/7b15cee763f417b7c13ae8e22bac6a6ba6583124). The existing isolated devcontainer CI lifecycle now executes [`verify-nvim-lsp.lua`](../../scripts/ci/verify-nvim-lsp.lua). Neovim 0.12's built-in LSP client opens `src/private/Error.cxx`, checks that its generated CMake compilation database entry selects the pinned `clang++`, initializes pinned `clangd`, attaches to the C++ buffer, and receives a nonempty `textDocument/documentSymbol` response.
+
+- [Clean container workflow #39005531835](https://github.com/spwn02/Miracle/actions/runs/39005531835) **SUCCESS** on `3ceaf6c`: actual log records `PASS: Neovim LSP attached to pinned clangd and received Miracle C++ source symbols`; full **71/71 CTest**, **3/3 CMake consumers**, and the headless devcontainer restart-persistence probe also passed.
+- [Reference C++26 CI #39005531845](https://github.com/spwn02/Miracle/actions/runs/39005531845), [mdBook #39005531833](https://github.com/spwn02/Miracle/actions/runs/39005531833) and [code scanning #39005534763](https://github.com/spwn02/Miracle/actions/runs/39005534763) **SUCCESS** on the same revision.
+- **Proven:** actual Neovim↔clangd LSP protocol interaction with nonempty project source-symbol response and pinned compile database/compiler. **Not proven:** interactive keyboard/editor ergonomics, accurate C++26 module/reflection diagnostics in a live session, VS Code extension attachment, real Codespaces startup/storage/billing, or maintainer sign-off.
+
+The LSP evidence upgrades automation coverage, **not** the manual exit gates. G5 issue #5 remains **OPEN**.
+
 ## Verification evidence
 
 - [x] Source/JSON/Dockerfile and workflow configuration passed reference CI checks.
 - [x] Clean Docker image built and passed pinned archive/manifest/checksum verification (run #39000812865).
 - [x] C++26 test suite/examples and all three consumer modes passed inside the image (71/71 tests).
+- [x] Real headless devcontainer startup, restart persistence and Neovim↔clangd document-symbol request passed in CI (#39005531835).
 - [ ] Local Docker devcontainer opens and clangd/Neovim workflow is usable.
 - [ ] Maintainer successfully opens Codespaces and checks toolchain and workspace behavior.
 - [ ] Maintainer explicitly accepts G5.
