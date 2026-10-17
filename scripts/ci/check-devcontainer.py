@@ -71,6 +71,7 @@ def check(root: Path) -> list[str]:
         " --no-lockfile", "run-user-commands", "docker restart",
         'test "$(id -un)" = vscode',
         "compile_commands.json", "verify-container.sh --smoke",
+        "verify-nvim-lsp.lua",
     ):
         if fragment not in lifecycle:
             faults.append(f"missing headless devcontainer lifecycle invariant: {fragment}")

@@ -127,7 +127,11 @@ The test runs `devcontainer up` on the checked-in configuration, explicitly
 waits for `postCreateCommand`, verifies `vscode` as the non-root user,
 checks the selected compiler and tools, runs the existing container smoke
 probe, configures the CMake `tests` preset and checks
-`build/tests/compile_commands.json`. The Dev Containers VS Code settings
+`build/tests/compile_commands.json`. It also runs a headless Neovim
+LSP client against the pinned clangd and requires an actual C++ source-symbol
+response using the generated compilation database. This exercises real editor
+protocol traffic, but does not prove interactive navigation or diagnostics.
+The Dev Containers VS Code settings
 pass this exact directory to clangd (its default search does not traverse
 `build/tests/`); first generate the database with `make configure`.
 The test then writes an ignored marker in the live

@@ -12,6 +12,7 @@ on:
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
       - "scripts/ci/verify-devcontainer-lifecycle.sh"
+      - "scripts/ci/verify-nvim-lsp.lua"
       - "scripts/ci/check-devcontainer.py"
   pull_request:
     branches: [master]
@@ -24,6 +25,7 @@ on:
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
       - "scripts/ci/verify-devcontainer-lifecycle.sh"
+      - "scripts/ci/verify-nvim-lsp.lua"
       - "scripts/ci/check-devcontainer.py"
   workflow_dispatch:
 

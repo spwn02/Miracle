@@ -64,7 +64,7 @@ echo "G5: exercise remoteUser, live workspace mount, toolchain, and clangd input
     cmake --preset tests --fresh -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE"
     test -s build/tests/compile_commands.json
     clangd --version
-    nvim --headless --clean "+quit"
+    nvim --headless --clean -c "luafile scripts/ci/verify-nvim-lsp.lua"
     mkdir -p build
     printf "persisted\n" > "$1"
   ' bash "$marker"
