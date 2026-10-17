@@ -71,6 +71,16 @@ The preceding successful reference CI, Pages deployment and `master` → `gcc` s
 
 **Release-tag enforcement:** the live ruleset configuration is proven, but no destructive tag update was attempted and no artificial release was created. The next legitimate release can verify permitted first creation without risking historical tags.
 
+## First positive-path checks under active rulesets
+
+A routine edit of this ledger was **accepted directly on protected `master`**, commit [`561c8c6`](https://github.com/spwn02/Miracle/commit/561c8c6079f55339b7d854bab1fc9b430e16d5a2). This proves the minimal no-deletion/no-force-push policy does not prohibit normal direct fast-forward development.
+
+- [Post-protection documentation run #38995484861](https://github.com/spwn02/Miracle/actions/runs/38995484861): **success**; the Rust-style mdBook site built and deployed.
+- [Post-protection synchronization run #38995484766](https://github.com/spwn02/Miracle/actions/runs/38995484766): **workflow success, no push**. Candidate merge, GCC validation, convergence report and upload succeeded; its log explicitly stated that the current GCC could not satisfy the master candidate. `Advance gcc` was **skipped** and `gcc` remained at `2822de260944093672d3eec2462be0a4e7c2401f`. This is an existing compatibility gate, not evidence of a ruleset rejection. A successful push *into the now-protected `gcc`* remains unproven.
+- [Post-protection reference CI #38995484739](https://github.com/spwn02/Miracle/actions/runs/38995484739): at the time of this entry, infrastructure checks and toolchain installation had passed, but the self-tests/consumer build and final conclusion were still **pending**.
+
+Actual ruleset enforcement, target refs and no-bypass policy were verified. No destructive force push or tag rewrite was attempted. The next legitimate supported GCC revision and normal new release tag can validate those remaining positive paths without manufacturing unsafe changes.
+
 ## Open decisions and checks
 
 - [x] Action refs resolved to published Git SHAs and pin-guard/syntax steps passed on pinned reference CI; the full final-commit CI run still needs its conclusion checked.
