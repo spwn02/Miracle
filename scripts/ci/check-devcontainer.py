@@ -24,10 +24,12 @@ def check(root: Path) -> list[str]:
             faults.append(f"{key} must be identical to reference CI")
     for name in (
         "CXX26_ARCHIVE_SHA256", "CXX26_MANIFEST_SHA256",
-        "CXX26_SUMS_SHA256", "CMAKE_SHA256", "NINJA_SHA256",
+        "CXX26_SUMS_SHA256", "CMAKE_SHA256", "NINJA_SHA256", "NVIM_SHA256",
     ):
         if not re.search(rf"(?m)^ARG {name}=[a-f0-9]{{64}}$", docker):
             faults.append(f"missing valid full SHA-256 pin: {name}")
+    if "ARG NVIM_VERSION=0.12.5" not in docker:
+        faults.append("Modern Neovim version must be immutable")
     if "ARG NINJA_VERSION=1.13.2" not in docker:
         faults.append("Ninja 1.13.2 must be pinned for C++ modules")
     if not re.search(r"(?m)^FROM --platform=linux/amd64 ubuntu:22\.04@sha256:[a-f0-9]{64}$", docker):
