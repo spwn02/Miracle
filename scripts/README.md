@@ -1,6 +1,6 @@
 # Repository scripts
 
-All project automation lives beneath this **single** top-level `scripts/` directory.
+All project automation scripts live beneath this **single** top-level `scripts/` directory. The root [`Makefile`](../Makefile) provides a thin command-line facade over these scripts, CMake presets and Docker; it does not form a second scripts tree.
 
 - `ci/` — GCC validation, GCC convergence reporting, release provenance, G5 container/toolchain verification and CI helper tests
 - `github/` — repository/Project configuration, security audits and workflow guards
@@ -9,6 +9,7 @@ All project automation lives beneath this **single** top-level `scripts/` direct
 GitHub Actions workflow YAML remains under `.github/workflows/`; GitHub configuration under `.github/` is not a second scripts directory.
 
 ```sh
+python3 scripts/ci/check-makefile.py
 python3 scripts/ci/test-ci-helpers.py
 python3 scripts/github/check-workflow-security.py
 ```

@@ -40,6 +40,14 @@
 
 **G5's source, clean Docker build and full container tests are implemented and accepted as technical evidence.** The **phase issue remains open** until an actual editor/devcontainer attach, Codespaces open and maintainer final sign-off. Do not conflate container CI with interactive Codespaces acceptance.
 
+## Developer Make orchestrator (2026-10-17)
+
+[Commit `182385c`](https://github.com/spwn02/Miracle/commit/182385c3818d8458b71dceeb25f2191d2b54a644) added the root Makefile, and a dedicated dry-run/negative-fixture test for its CLI. It delegates host operations to existing CMake presets and G5 image operations to the exact Dockerfile and `verify-container.sh`; it refuses missing reference toolchain configuration. There are no new C++ build rules or release operations.
+
+The G5 workflow now runs `make docker-build NO_CACHE=1` and `make docker-test` as separate diagnosable steps, instead of maintaining another copy of the Docker invocation. It continues using a read-only host checkout and a disposable writable container copy, and it never publishes an image. Both the reference and G5 workflow run `check-makefile.py` in their early verification phase.
+
+**Evidence boundary:** isolated local Make tests passed before integration; on-repository reference CI and **actual G5 Docker execution via Make targets** must pass on the pushed revision before treating this orchestration change as accepted. This CLI addition does not replace the outstanding interactive Codespaces/devcontainer acceptance checks.
+
 ## Verification evidence
 
 - [x] Source/JSON/Dockerfile and workflow configuration passed reference CI checks.

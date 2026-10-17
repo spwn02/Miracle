@@ -185,6 +185,17 @@ See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-C
 
 Follow [Miracle Development — the public roadmap and work tracker](https://github.com/users/spwn02/projects/3), and consult the [G2 progress ledger](docs/infrastructure/G2-PROGRESS.md) for configuration and acceptance status.
 
+## Developer commands
+
+The root [`Makefile`](Makefile) is a thin interface over the existing **CMake presets**, pinned Docker image and mdBook. It does not choose a compiler, introduce alternate build rules or change CMake's authority.
+
+```sh
+make help
+make docker-verify NO_CACHE=1   # No host C++26 compiler required
+```
+
+With the reference compiler already activated (`CXX26_CMAKE_TOOLCHAIN_FILE` set), use `make verify` for a fresh local test build, or `make PRESET=release configure` then `make PRESET=release build`. The [G5 operating plan](docs/infrastructure/G5-OPERATING-PLAN.md) documents target options and command behavior.
+
 ## Reference C++26 development container
 
 The [G5 developer environment guide](docs/infrastructure/G5-OPERATING-PLAN.md) explains the pinned Linux/amd64 Docker image and Codespaces/devcontainer workflow. It uses the same coherent `clang-cxx26`/libc++ snapshot as reference CI, CMake 4.4.3, Ninja, clangd and Neovim; Docker and Codespaces acceptance status is tracked separately in [G5 progress](docs/infrastructure/G5-PROGRESS.md).

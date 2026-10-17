@@ -36,6 +36,43 @@ The same reference snapshot/source/asset identity is used by existing [CI](https
 
 **Limitation:** The Docker base digest, compiler archive and CMake archive are immutable, but Ubuntu package repositories provide current packages at build time. Without an APT snapshot, this is **reproducible compiler identity and build recipe**, not a mathematically byte-for-byte identical total filesystem. Maintain security updates explicitly and preserve the pinned reference components; do not claim a fully hermetic dependency closure.
 
+## Root Make orchestration (recommended CLI)
+
+The [root `Makefile`](https://github.com/spwn02/Miracle/blob/master/Makefile) offers a small, discoverable command-line entry point. **CMakePresets.json remains the only build configuration** and `.devcontainer/Dockerfile` remains the image recipe. `make` does not install the compiler, rewrite the selected toolchain, use system Clang as a fallback or generate any release tags.
+
+| Command | Effect |
+| --- | --- |
+| `make` / `make help` | List supported commands and override variables |
+| `make configure [PRESET=tests\|debug\|release]` | Fresh configure with the explicitly selected reference toolchain |
+| `make build [PRESET=...]` | Build the selected preset; configure first only if absent |
+| `make test` | Build and run the `tests` preset, independent of `PRESET` |
+| `make verify` | Fresh reference-toolchain configuration, build and tests |
+| `make clean PRESET=release` | CMake's normal `clean` target, **not** a destructive directory deletion |
+| `make docker-build` | Build the pinned `linux/amd64` image |
+| `make docker-smoke` | Verify installed image's compiler, linker, Ninja, clangd and Neovim |
+| `make docker-test` | Run all C++26 tests and consumers with a disposable writable checkout |
+| `make docker-verify NO_CACHE=1` | Build without cache, then run complete container tests |
+| `make docker-shell` | Temporary writable copy of repository inside container; host checkout read-only |
+| `make docs` / `make docs-serve` | Validate or serve the canonical mdBook |
+
+```sh
+# Host workflow: activate the coherent installed reference compiler first.
+source /path/to/clang-cxx26/share/clang-cxx26/activate.sh
+make verify
+make PRESET=release configure
+make PRESET=release build JOBS=4
+
+# Alternative: no host-side reference compiler installation.
+make docker-verify NO_CACHE=1
+make docker-shell
+```
+
+`TOOLCHAIN=/absolute/path/to/toolchain.cmake` can explicitly override the value exported as `CXX26_CMAKE_TOOLCHAIN_FILE`. An absent toolchain is an **error for host configuration**, not permission to silently switch compilers. The `build` target reuses CMake's already configured cache; if the intended toolchain changes, rerun `make configure` explicitly. `PRESET` is limited to `tests`, `debug` and `release`; `JOBS` defaults to 2. `IMAGE` and `DOCKER` select the Docker tag and CLI; no image is pushed anywhere.
+
+Docker commands need the image already built (or use `docker-verify`). `docker-shell` copies a read-only bind mount into a **disposable** container directory, so edits inside it do not persist; use a proper devcontainer for live editing. On Apple Silicon, these Docker commands select `linux/amd64` and may run under emulation.
+
+The same Make targets are used by the [clean G5 GitHub Actions workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml). The read-only [Make CLI test](https://github.com/spwn02/Miracle/blob/master/scripts/ci/check-makefile.py) checks help, forwarding, Docker commands, safety guards and negative inputs without requiring Docker for every reference-CI run.
+
 ## Local Docker
 
 Requirements: Docker or compatible BuildKit with Linux/amd64 support, internet access to Ubuntu APT and the public GitHub releases, enough RAM and free disk space for a C++26 build. Begin with **8 GiB RAM and several GiB free disk**, preferably **16 GiB+** for parallel C++ module builds; these are practical planning recommendations, not measured hard minima. Apple Silicon / ARM hosts need amd64 emulation and may be much slower.
