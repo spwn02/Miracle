@@ -3,76 +3,64 @@
 **Updated:** 2026-10-17
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Site source and build verified; deployment blocked on maintainer's GitHub Pages enablement; end-to-end publication acceptance pending
+**Status:** mdBook 0.5.4 deployed successfully; visual/navigation acceptance and release of G3 remain pending
+**Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
-**Plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
-**Tracking:** [Issue #3 — G3](https://github.com/spwn02/Miracle/issues/3) · [Issue #8 — Pages implementation](https://github.com/spwn02/Miracle/issues/8)
+**Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
+**Tracking:** [#3 — G3 publishing](https://github.com/spwn02/Miracle/issues/3) · [#8 — Pages implementation](https://github.com/spwn02/Miracle/issues/8)
 
-## Committed G3 implementation
+## Current implementation: mdBook (Rust Book style)
 
-- [`docs/index.md`](../index.md) is the public documentation landing page. It describes actual pre-1.0 features and links to the canonical technical documents without copying their frozen contracts.
-- [`mkdocs.yml`](https://github.com/spwn02/Miracle/blob/master/mkdocs.yml) configures the navigation and read-only Markdown rendering from the existing `docs/` directory.
-- [`.github/workflows/docs.yml`](https://github.com/spwn02/Miracle/blob/master/.github/workflows/docs.yml) builds the site with a directly pinned `mkdocs==1.6.1` on `master` pushes, documentation PRs (build only), and manual dispatch. The deploy job requests only GitHub Pages/OIDC write permissions.
-- [`scripts/docs/verify-site.py`](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-site.py) checks every canonical Markdown file produces HTML plus overview/navigation and search-index smoke checks. It is **not** an API correctness or full hyperlink accessibility test.
-- Out-of-`docs/` references in editable infrastructure progress ledgers were converted to direct GitHub source URLs to avoid MkDocs treating root repository files as missing documentation pages.
-- The GitHub Wiki remains an **optional index or generated mirror**, not an independently managed source of contract truth.
-- No domain, Pages token, webhook, generated API reference, or change to Miracle's C++ code was introduced.
+The maintainer requested replacing the initial MkDocs site with **mdBook**, using Rust documentation conventions. The active deployment now consists of:
 
-## Actual GitHub Actions evidence
+- [`book.toml`](https://github.com/spwn02/Miracle/blob/master/book.toml): mdBook source `docs/`, output `site/`, native `rust` theme and `navy` dark preference, repository/edit links, search and original source provenance.
+- [`docs/SUMMARY.md`](https://github.com/spwn02/Miracle/blob/master/docs/SUMMARY.md): complete sidebar organizing **21 canonical Markdown chapters**, with all previous documentation present exactly once.
+- [`docs/index.md`](../index.md): introductory page and truthful guide links; product architecture/contracts remain in canonical Git Markdown, unchanged.
+- [`docs.yml`](https://github.com/spwn02/Miracle/blob/master/.github/workflows/docs.yml): prebuilt official **mdBook v0.5.4 Linux GNU** binary with published archive SHA-256 `3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7`; no `cargo install` or LLVM build in CI.
+- [`scripts/docs/verify-site.py`](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-site.py): requires every `SUMMARY.md` chapter to exist, be rendered and indexed, detects missing search assets and checks legacy redirects.
+- [`README.md`](https://github.com/spwn02/Miracle/blob/master/README.md): links the public Rust-style book and canonical documents.
 
-The first fully populated [documentation workflow run](https://github.com/spwn02/Miracle/actions/runs/38992378865) showed:
+**Legacy link compatibility:** The old MkDocs layout used `/topic/` directory URLs. mdBook uses `/topic.html`. `book.toml` now provides **20 native redirect pages** from the old directory-based URLs to the equivalent chapters. Generated redirects are verified in CI; they are not independent documentation copies.
 
-- [x] Checkout, Python setup, MkDocs 1.6.1 installation.
-- [x] `python -m mkdocs build --clean`.
-- [x] `python scripts/docs/verify-site.py site`.
-- [ ] `actions/configure-pages@v5` **failed:** `Get Pages site failed: Not Found`. GitHub explicitly instructs enabling Pages and setting the build source to GitHub Actions.
-- [ ] Artifact upload and deployment were skipped because Pages could not be configured.
+The old `mkdocs.yml` was removed once mdBook had passed both rendering and deployment. `site/` remains ignored build output; no extra branch, paid service, API token, deploy key or custom domain is required.
 
-The initial build logged nine **source-link warnings** from infrastructure progress documents that link to repository-root files outside `docs/`; these links were subsequently corrected in tracked Markdown. A clean warning-free build and actual public deployment still need verification after the latest commits.
+## Observed validation and deployment
 
-The actual documentation URL remains **unverified** until a successful Pages deployment reports its `page_url`. The typical project URL `https://spwn02.github.io/Miracle/` must not be described as live yet.
+- [Successful mdBook build + GitHub Pages deployment, run #38993575669](https://github.com/spwn02/Miracle/actions/runs/38993575669): archive integrity check, mdBook build, chapter/search verifier, artifact upload and Pages deployment all passed.
+- [Successful full redirect smoke test + Pages deployment, run #38993669295](https://github.com/spwn02/Miracle/actions/runs/38993669295): mdBook build, **21 canonical chapters**, **20 legacy redirects**, navigation/search checks, upload, deployment all passed.
+- [Successful updated documentation deployment, run #38993715168](https://github.com/spwn02/Miracle/actions/runs/38993715168): latest operating-plan update built and published.
+- Deployment logs reported the environment URL `https://spwn02.github.io/Miracle/`. The maintainer previously confirmed GitHub Pages publishing worked on the same repository.
+- Newer changes to the README and removal of `mkdocs.yml` do not change the book source, binary, or render pipeline. The final workflow build will be checked after updating this progress ledger.
 
-## Follow-up strict-build validation
+**Limit of verification:** CI checks generated pages and redirects. It does not independently test every link, screen reader behavior, mobile layouts, browser theme persistence, or whether a particular newly edited paragraph appears on the public CDN. Those remain explicit acceptance checks.
 
-The [strict-build documentation workflow run](https://github.com/spwn02/Miracle/actions/runs/38992585203) on commit `02fb429` confirmed:
+## Historical MkDocs baseline (superseded; retained for provenance)
 
-- `mkdocs build --clean --strict` **passed** with no unresolved MkDocs warnings.
-- `verify-site.py site` **passed**, including canonical pages, landing navigation and search index.
-- `configure-pages@v5` still **failed with `Get Pages site failed: Not Found`**, because the repository's Pages site was not yet enabled/configured. The upload/deploy steps therefore remain unverified.
+Before the mdBook request, G3 initially shipped a MkDocs 1.6.1 configuration. The [strict-build run #38992585203](https://github.com/spwn02/Miracle/actions/runs/38992585203) passed `mkdocs build --clean --strict` and the original smoke check. It originally failed at GitHub Pages configuration until the maintainer enabled **Settings → Pages → Source: GitHub Actions**. The subsequent [Pages run #38993190545](https://github.com/spwn02/Miracle/actions/runs/38993190545) succeeded and established initial publication.
 
-This establishes a clean *build* but does not establish a live website. The deployment remains gated on the maintainer's GitHub repository setting, not on missing C++ toolchain dependencies.
+This historical evidence does **not** describe the current renderer. The old `mkdocs.yml` remains available only in earlier Git commits, for example [the last pre-migration baseline](https://github.com/spwn02/Miracle/blob/0f22f90074b8f69a82c9ecfebe6589f746abbdc1/mkdocs.yml).
 
-## Maintainer action: enable Pages
+## G2 integration check
 
-In [repository Pages settings](https://github.com/spwn02/Miracle/settings/pages):
-
-1. Under **Build and deployment → Source**, select **GitHub Actions**, not branch-based publishing.
-2. Do not add a custom domain or extra secrets.
-3. Optionally restrict the `github-pages` deployment environment to `master` in repository environment settings.
-
-Then run the already-committed **Documentation (GitHub Pages)** workflow from Actions (workflow dispatch), or push a genuine documentation change to `master`. Confirm the build, artifact upload, and deployment jobs succeed.
-
-## G2 integration check with genuine G3 issue
-
-[Issue #8](https://github.com/spwn02/Miracle/issues/8) is a real publishing-work task, rather than a fake intake test. GitHub's issue timeline recorded **two automated `added_to_project_v2` events** immediately after issue creation. At least one target is probably the separately configured Roadmap project; project-specific membership cannot be inferred from these events. For G2 acceptance, verify:
+A real publishing task, [issue #8](https://github.com/spwn02/Miracle/issues/8), triggered two automatic `added_to_project_v2` events on creation. The issue's Project membership and its practical status in **Miracle Development Project #3**, not merely the separate **Roadmap** Project, should be confirmed via:
 
 ```sh
 gh issue view 8 --repo spwn02/Miracle --json projectItems
 ```
 
-The output must include **Miracle Development** with `Backlog` or an appropriate active state. Check that the maintainer's changed `Auto-add` workflow uses repository `Miracle`, filter `is:issue`, and acceptance-sensitive automations are disabled/verified. No completed/accepted state is implied by the bot event.
+Issue #7 (historic frozen-contract migration) remains unscheduled and no development contracts are silently rewritten.
 
-## G3 acceptance checklist
+## Remaining G3 acceptance
 
-- [x] Canonical site source and navigation committed; no rewritten contracts.
-- [x] Documentation build and site smoke checks passed in GitHub Actions.
-- [x] Pages workflow uses no personal token and separates read-only build from privileged deploy.
-- [x] Optional Wiki policy documented.
-- [x] Updated MkDocs build passes with `--strict` and zero unresolved documentation-link warnings.
-- [ ] GitHub Pages enabled with GitHub Actions publishing source.
-- [ ] Site deployed and real public URL recorded.
-- [ ] Public landing page, navigation/search and desktop/mobile/keyboard access verified.
-- [ ] Real reviewed documentation change propagates from Git to Pages automatically with no manual copy.
-- [ ] Author reviews evidence and explicitly accepts G3.
+- [x] Read-only publication from canonical `docs/`, without duplicating frozen contracts.
+- [x] Native mdBook Rust-style theme, search, sidebar and chapter manifest configured.
+- [x] Official mdBook v0.5.4 binary integrity verified on runner.
+- [x] All 21 chapters and 20 legacy redirects validated in successful Actions builds.
+- [x] Pages deployment completed and the actual Pages environment URL recorded.
+- [x] MkDocs retired and README/local build guidance migrated to mdBook.
+- [x] GitHub Wiki remains optional and nonauthoritative.
+- [ ] Maintainer confirms dark/light theme, mobile and keyboard/sidebar navigation, in-book search and content appearance on the live site.
+- [ ] A genuine canonical text edit is observed on the public deployed site without manual re-publication.
+- [ ] Maintainer explicitly accepts G3 and records acceptance evidence on issues #3/#8.
 
-**Do not close issue #3 or #8 or claim a live website until Pages actually works and acceptance evidence is recorded.**
+**G3 has not yet been formally accepted.** Do not close tracking issues or imply browser-level accessibility and navigation acceptance from CI alone.
