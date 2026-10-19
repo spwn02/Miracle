@@ -1,22 +1,22 @@
-# G5 — Reproducible Reference-C++26 Developer Environments
+# G5 — Reproducible C++26 Docker environment
 
-**Scope:** Docker CLI development, devcontainers and Codespaces, Linux x86-64
-**Authority:** [GitHub Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), §8/§10
-**Tracker:** [Infrastructure issue #5](https://github.com/spwn02/Miracle/issues/5)
-**Status:** Docker, headless devcontainer and Neovim/clangd LSP checks passed; interactive editor/Codespaces acceptance pending
-**Progress:** [G5-PROGRESS.md](G5-PROGRESS.md)
+**Scope:** Docker CLI/Neovim/clangd, Linux/amd64 (local Linux and emulated/remote amd64 on macOS)
+**Authority:** [GitHub Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), §8/§10, plus the maintainer's [2026-10-19 scope decision](G5-PROGRESS.md)
+**Tracker:** [Issue #5](https://github.com/spwn02/Miracle/issues/5)
+**Status:** Docker-only migration in verification; local devcontainer and maintainer approval reported passed; Codespaces explicitly declined
+**Evidence:** [G5 progress ledger](G5-PROGRESS.md)
 
-## Purpose and authority
+## Maintainer scope decision — 2026-10-19
 
-Miracle's authoritative C++26 toolchain is a **coherent Clang, libc++, libc++abi and standard-module unit** from a single immutable release. Neither an arbitrary distribution Clang nor a moving compiler development branch is a replacement. This setup does not modify the existing CMake presets, library API, or compiler contract.
+The maintainer reported that the **previous local interactive devcontainer passed**, approved G5 for the **revised Docker-only development workflow**, and explicitly **declined Codespaces because it is paid**. The prior devcontainer test is legitimate historical acceptance evidence. Codespaces startup, storage, billing and browser editor were **not executed**; they are **not passed** and have been removed from the active implementation scope by explicit decision, not waived as test successes.
 
-The image targets **Linux/amd64** and matches the Ubuntu 22.04 reference CI host ABI. The Docker base image is locked to an official amd64 manifest digest. Current container source:
+Miracle now exposes **one [root Dockerfile](../../Dockerfile)**. Neither `.devcontainer/devcontainer.json` nor a Dev Containers CLI is required. There are no Codespaces prebuilds, images pushed to registries, checked-in credentials, or paid cloud instances. This does not change the authoritative C++26 compiler, CMake preset, library API or CI test criteria.
 
-- [Dockerfile](https://github.com/spwn02/Miracle/blob/master/.devcontainer/Dockerfile)
-- [devcontainer.json](https://github.com/spwn02/Miracle/blob/master/.devcontainer/devcontainer.json)
-- [clean container validation](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml)
-- [toolchain identity checker](https://github.com/spwn02/Miracle/blob/master/scripts/ci/verify-reference-toolchain.py)
-- [CMake/consumer test entry point](https://github.com/spwn02/Miracle/blob/master/scripts/ci/verify-container.sh)
+The original infrastructure contract described devcontainer/Codespaces support as **proposed** and the G5 release gate as demonstrated reproducible compiler-compatible builds; the explicit maintainer scope change is recorded in that contract, this plan and [issue #5](https://github.com/spwn02/Miracle/issues/5).
+
+## Reference compiler identity
+
+Miracle's single compiler/runtime identity is Clang + matching libc++/libc++abi and standard-module metadata from one signed-off immutable release. Distribution Clang/libstdc++ must not substitute for the reference unit. Docker targets Ubuntu 22.04 and `linux/amd64`.
 
 ## Provenance contract
 
@@ -36,153 +36,71 @@ The same reference snapshot/source/asset identity is used by existing [CI](https
 
 **Limitation:** The Docker base digest, compiler archive and CMake archive are immutable, but Ubuntu package repositories provide current packages at build time. Without an APT snapshot, this is **reproducible compiler identity and build recipe**, not a mathematically byte-for-byte identical total filesystem. Maintain security updates explicitly and preserve the pinned reference components; do not claim a fully hermetic dependency closure.
 
-## Root Make orchestration (recommended CLI)
 
-The [root `Makefile`](https://github.com/spwn02/Miracle/blob/master/Makefile) offers a small, discoverable command-line entry point. **CMakePresets.json remains the only build configuration** and `.devcontainer/Dockerfile` remains the image recipe. `make` does not install the compiler, rewrite the selected toolchain, use system Clang as a fallback or generate any release tags.
+## CLI workflow
 
-| Command | Effect |
+The root [Makefile](../../Makefile) is a convenience interface; **CMakePresets.json remains authoritative**. `make` does not install a compiler on your host, publish an image, build LLVM from source or generate a release.
+
+| Command | Action |
 | --- | --- |
-| `make` / `make help` | List supported commands and override variables |
-| `make configure [PRESET=tests\|debug\|release]` | Fresh configure with the explicitly selected reference toolchain |
-| `make build [PRESET=...]` | Build the selected preset; configure first only if absent |
-| `make test` | Build and run the `tests` preset, independent of `PRESET` |
-| `make verify` | Fresh reference-toolchain configuration, build and tests |
-| `make clean PRESET=release` | CMake's normal `clean` target, **not** a destructive directory deletion |
-| `make docker-build` | Build the pinned `linux/amd64` image |
-| `make docker-smoke` | Verify installed image's compiler, linker, Ninja, clangd and Neovim |
-| `make docker-test` | Run all C++26 tests and consumers with a disposable writable checkout |
-| `make docker-verify NO_CACHE=1` | Build without cache, then run complete container tests |
-| `make docker-shell` | Temporary writable copy of repository inside container; host checkout read-only |
-| `make docs` / `make docs-serve` | Validate or serve the canonical mdBook |
+| `make docker-build` | Build verified pinned image from the root Dockerfile |
+| `make docker-dev` | Open a persistent **writable host-bind workspace** in an interactive Bash container; runs as the host UID/GID |
+| `make docker-smoke` | Run reference toolchain compile/link smoke in a disposable container |
+| `make docker-test` | Execute all C++26 self-tests and three consumer modes in a disposable copy |
+| `make docker-verify NO_CACHE=1` | Clean image build and complete test/consumer verification |
+| `make docker-shell` | Temporary **nonpersistent** writable copy of a read-only host checkout |
+| `make configure`, `make build`, `make test`, `make verify` | Use the pinned selected toolchain with the canonical CMake presets (inside Docker or activated on host) |
+| `make docs`, `make docs-serve` | mdBook build and local preview |
+
+From a normal Linux user account with Docker access:
 
 ```sh
-# Host workflow: activate the coherent installed reference compiler first.
-source /path/to/clang-cxx26/share/clang-cxx26/activate.sh
-make verify
-make PRESET=release configure
-make PRESET=release build JOBS=4
-
-# Alternative: no host-side reference compiler installation.
-make docker-verify NO_CACHE=1
-make docker-shell
-```
-
-`TOOLCHAIN=/absolute/path/to/toolchain.cmake` can explicitly override the value exported as `CXX26_CMAKE_TOOLCHAIN_FILE`. An absent toolchain is an **error for host configuration**, not permission to silently switch compilers. The `build` target reuses CMake's already configured cache; if the intended toolchain changes, rerun `make configure` explicitly. `PRESET` is limited to `tests`, `debug` and `release`; `JOBS` defaults to 2. `IMAGE` and `DOCKER` select the Docker tag and CLI; no image is pushed anywhere.
-
-Docker commands need the image already built (or use `docker-verify`). `docker-shell` copies a read-only bind mount into a **disposable** container directory, so edits inside it do not persist; use a proper devcontainer for live editing. On Apple Silicon, these Docker commands select `linux/amd64` and may run under emulation.
-
-The same Make targets are used by the [clean G5 GitHub Actions workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml). The read-only [Make CLI test](https://github.com/spwn02/Miracle/blob/master/scripts/ci/check-makefile.py) checks help, forwarding, Docker commands, safety guards and negative inputs without requiring Docker for every reference-CI run.
-
-## Local Docker
-
-Requirements: Docker or compatible BuildKit with Linux/amd64 support, internet access to Ubuntu APT and the public GitHub releases, enough RAM and free disk space for a C++26 build. Begin with **8 GiB RAM and several GiB free disk**, preferably **16 GiB+** for parallel C++ module builds; these are practical planning recommendations, not measured hard minima. Apple Silicon / ARM hosts need amd64 emulation and may be much slower.
-
-```sh
-docker build --platform linux/amd64 -f .devcontainer/Dockerfile -t miracle-cxx26:g5 .
-docker run --rm -it --platform linux/amd64 \
-  --mount "type=bind,source=$PWD,target=/miracle-source,readonly" \
-  miracle-cxx26:g5 bash
-```
-
-Inside the running shell, copy source into a writable container path and test:
-
-```sh
-cp -R /miracle-source/. /tmp/miracle/
-cd /tmp/miracle
+git clone https://github.com/spwn02/Miracle.git
+cd Miracle
+make docker-build
+make docker-dev
+# Inside the Docker shell, in /workspace/Miracle:
 bash scripts/ci/verify-container.sh --smoke
-bash scripts/ci/verify-container.sh
+make verify
+nvim src/private/Error.cxx
 ```
 
-Full validation runs the normal CMake `tests` preset, tests/examples, `add_subdirectory`, `FetchContent`, and installed-package consumers with the activated coherent reference toolchain. The resulting `build/` directory stays in the disposable container in the above procedure.
+`make docker-dev` uses a bind mount of the **real checkout**, not an ephemeral copy. Edits and `build/` output survive container exit because they live on the host. It supplies `--user "$(id -u):$(id -g)"` and `HOME=/tmp` so files are written with host UID/GID rather than root. Avoid using this target as root and do not store credentials under the temporary container home.
 
-For regular editing, use a devcontainer (below) so your editor's workspace is bind-mounted and persistent. `nvim`, `clangd`, Git, Ninja, CMake and a non-root `vscode` account are already available. Nothing needs to rebuild LLVM or fetch separate libc++ headers.
+The image defaults to a non-root `miracle` user (UID 1000) and `/workspace/Miracle` directory; the live shell intentionally overrides UID/GID to match your host. Neither `whoami` nor a named passwd entry is guaranteed when your host UID differs from 1000; use `id -u` to verify. This is not a failure.
 
-## Devcontainer and Codespaces
-
-Local editors that support the dev container specification detect `.devcontainer/devcontainer.json`; GitHub Codespaces uses the same file. The configuration builds this Dockerfile, opens `/workspaces/Miracle` as `vscode`, and runs a **toolchain-only post-create smoke check**, not an expensive compile or an installation script. The devcontainer includes VS Code clangd/CMake extension suggestions; use CLI and Neovim independently of VS Code.
-
-- Codespaces consumes billable compute and storage subject to your GitHub plan and quotas. **No prebuilds are enabled**, no Codespace is auto-created, and no registry push/published image is configured. Check [GitHub Codespaces billing documentation](https://docs.github.com/en/billing/concepts/product-billing/github-codespaces) before creating one.
-- The container is deliberately `linux/amd64`. On ARM hosts, image building and module compilation may require emulation or a remote amd64 Docker host. ARM is **not** validated by this phase.
-- The Dockerfile creates no credential files or tokens and does not ask for personal access tokens. Codespaces' platform-provided credentials are managed by the hosting platform; do not put them in this repository.
-- The actual Codespaces browser onboarding and cost/resource settings **must be verified by the maintainer**. A successful Docker build in CI is not equivalent to having opened a live Codespace.
-
-## Headless devcontainer lifecycle verification
-
-The container CI also exercises the **real `.devcontainer/devcontainer.json`**
-with the version-selected upstream Dev Containers CLI (`@devcontainers/cli@0.89.0`).
-This is separate from the clean Docker image build and C++26 consumer suite.
-The [lifecycle script](../../scripts/ci/verify-devcontainer-lifecycle.sh)
-uses a uniquely labeled disposable container, not a contributor's existing
-editor session. It does not create a Codespace, a prebuild, or a registry image.
-
-On a local **Linux/amd64 Docker host** with Node/npm and Docker available:
+Equivalent direct Docker command:
 
 ```sh
-npm install --prefix /tmp/miracle-devcontainer-cli --no-audit --no-fund @devcontainers/cli@0.89.0
-DEVCONTAINER_CLI=/tmp/miracle-devcontainer-cli/node_modules/.bin/devcontainer \
-  bash scripts/ci/verify-devcontainer-lifecycle.sh
+docker build --platform linux/amd64 -f Dockerfile -t miracle-cxx26:g5 .
+docker run --rm -it --platform linux/amd64 \
+  --user "$(id -u):$(id -g)" --env HOME=/tmp \
+  --mount "type=bind,source=$PWD,target=/workspace/Miracle" \
+  --workdir /workspace/Miracle miracle-cxx26:g5 bash
 ```
 
-The test runs `devcontainer up` on the checked-in configuration, explicitly
-waits for `postCreateCommand`, verifies `vscode` as the non-root user,
-checks the selected compiler and tools, runs the existing container smoke
-probe, configures the CMake `tests` preset and checks
-`build/tests/compile_commands.json`. It also runs a headless Neovim
-LSP client against the pinned clangd and requires an actual C++ source-symbol
-response using the generated compilation database. This exercises real editor
-protocol traffic, but does not prove interactive navigation or diagnostics.
-The Dev Containers VS Code settings
-pass this exact directory to clangd (its default search does not traverse
-`build/tests/`); first generate the database with `make configure`.
-The test then writes an ignored marker in the live
-workspace, restarts **only the isolated test container**, and confirms that
-both container and host can still read the marker. It removes the test marker
-and container on exit. Generated CMake `build/tests` artifacts remain for
-clangd development and are normally ignored by Git.
+**Host prerequisites:** Docker with `linux/amd64` support, internet access for the first image build, and sufficient free space/RAM (start with 8 GiB RAM; 16 GiB+ for parallel module work). On Apple Silicon, expect `amd64` emulation overhead; ARM performance has not been validated. Docker-group membership gives root-equivalent privileges on Linux; use a trusted host and do not weaken Docker socket permissions.
 
-This automated test demonstrates a real **headless devcontainer lifecycle**,
-but cannot demonstrate graphical/editor attach, interactive clangd diagnostics,
-Codespaces' browser shell, billing, or cloud persistence. Record each gate
-separately; never mark live Codespaces acceptance as passing from CI alone.
+The pinned toolchain and tool downloads are checksum-verified and version-fixed. Ubuntu APT packages remain time-dependent; this is compiler/build-recipe reproducibility, **not** a fully hermetic or byte-identical filesystem.
 
-For the remaining manual acceptance:
+## Docker-only integration gate
 
-1. Reopen the `master` checkout in a local editor supporting Dev Containers.
-   Confirm the integrated terminal starts as `vscode` in
-   `/workspaces/Miracle` and `make verify` uses the pinned C++26 compiler.
-2. Confirm clangd resolves a Miracle module in the editor using the generated
-   `build/tests/compile_commands.json`, and reopen the environment after
-   editing an ordinary source file to verify editor-session persistence.
-3. **Only if the maintainer chooses to incur Codespaces usage**, open a
-   Codespace on `master`; independently verify terminal/working directory,
-   compiler, editor indexing, source persistence, storage and spending controls.
-   Stop/delete the Codespace when no longer needed.
-4. Add observed evidence and maintainer sign-off to
-   [G5 progress](G5-PROGRESS.md) and [issue #5](https://github.com/spwn02/Miracle/issues/5).
-   Do not close G5 for an unperformed Codespaces or editor gate.
+The [G5 container workflow](../../.github/workflows/container.yml) performs the no-cache image build and canonical [reference test/consumer suite](../../scripts/ci/verify-container.sh), including **71 CTest cases** and the three `add_subdirectory`, `FetchContent`, and installed `find_package` modes.
 
-## Observed clean-container results (2026-10-17)
+The [Docker workspace acceptance script](../../scripts/ci/verify-docker-workspace.sh) additionally creates a disposable **host-side copy** of the checkout, mounts it read/write with matching UID/GID, runs CMake configuration and confirms `build/tests/compile_commands.json`, and executes the [Neovim/clangd LSP probe](../../scripts/ci/verify-nvim-lsp.lua). The probe opens real Miracle C++ source and requests symbols via `textDocument/documentSymbol`. A fresh second Docker container must observe the generated marker and compilation database from the first; the host also verifies persistence. The script removes its temporary copy, **never the developer's checkout**.
 
-[Container workflow #39000812865](https://github.com/spwn02/Miracle/actions/runs/39000812865) built the Docker image from scratch using the public pinned archives and ran all C++26 tests/consumers as an unprivileged user. **71/71 CTest tests passed**. The three `add_subdirectory`, `FetchContent`, and installed `find_package` modes compiled, linked and ran. The matching [reference CI #39000813059](https://github.com/spwn02/Miracle/actions/runs/39000813059) was also green.
+Local reproducibility:
 
-The first clean-run gate found missing Ubuntu C runtime developer startup objects; installing `build-essential` and `libc6-dev` fixed native C linkage without changing the reference Clang/libc++ selection. The next run uncovered Ubuntu 22.04's outdated Ninja 1.10.1, inadequate for CMake C++ modules. An upstream SHA-256-pinned Ninja **1.13.2** binary resolved that failure. The small container smoke gate now checks real compile/link capability and Ninja >=1.11 before expensive C++26 tests.
+```sh
+make docker-build NO_CACHE=1
+bash scripts/ci/verify-docker-workspace.sh
+make docker-test
+```
 
-This establishes a working, compiler-coherent **Docker** environment. It does not by itself prove that a local editor has attached to the devcontainer or that a billable Codespaces instance has opened and worked interactively.
+Automated LSP protocol success proves a real source-symbol exchange, **not** accurate live C++26 diagnostics or interactive keyboard ergonomics; these remain separate statements. No Codespaces acceptance is implied.
 
-## Modern Neovim and final regression
+## Historical evidence and boundaries
 
-Ubuntu 22.04's packaged Neovim 0.6.1 is too old for many current Neovim/LSP workflows. The development image now installs **official Neovim 0.12.5** with an independently verified upstream SHA-256, rather than relying on the distribution version or a mutable `stable` tag. Its smoke test runs both `nvim --version` and `nvim --headless --clean '+quit'`.
+Earlier devcontainer integration and manual local acceptance are retained in the [G5 progress ledger](G5-PROGRESS.md), including [PR #12](https://github.com/spwn02/Miracle/pull/12), [PR #13](https://github.com/spwn02/Miracle/pull/13) and the successful [headless Neovim↔clangd container CI](https://github.com/spwn02/Miracle/actions/runs/39005531835) (71/71 CTest, 3/3 consumers). They document how the working image was reached, not a requirement to retain VS Code integration.
 
-The **final** clean [Docker workflow #39001300054](https://github.com/spwn02/Miracle/actions/runs/39001300054) and matching [reference C++26 CI #39001300184](https://github.com/spwn02/Miracle/actions/runs/39001300184), at [commit `7ab69e2`](https://github.com/spwn02/Miracle/commit/7ab69e244d893f7d84e7d8b5d90c0f72ed0ea01a), both succeeded after this editor upgrade. The immutable C++26 compiler/runtime release is unchanged.
-
-## CI and acceptance
-
-The [G5 workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml) is scoped to actual container input changes, manual dispatch and matching PRs. On an Ubuntu 22.04 GitHub runner it:
-
-1. Runs static configuration/security checks.
-2. Performs a **clean `linux/amd64` Docker build** from the pinned reference artifacts.
-3. Starts a container as the unprivileged user, copies the checkout into a temporary writable path, and runs all CMake and consumer tests.
-
-The workflow publishes no image and requires only `contents: read`. It does not claim Codespaces cost-free operation or silently create billable prebuilds.
-
-Exit gates: passing clean image build, self-tests/examples, all three consumer modes, external editor/devcontainer construction, actual Codespaces open, documentation and maintainer approval. Record skipped/unavailable gates rather than fabricate successes. Track empirical results in [G5-PROGRESS.md](G5-PROGRESS.md).
+**Current acceptance policy:** mark local interactive setup as *maintainer-reported pass*, Codespaces as *declined/not tested*, and new Docker-only CI as *pending until the workflow actually succeeds*. The explicit G5 sign-off applies only to the revised scope. Do not close an unverified gate or rewrite historical test outcomes.
