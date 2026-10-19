@@ -76,7 +76,7 @@ gh issue view 6 --repo spwn02/Miracle --json projectItems
 bash scripts/github/audit-g2.sh
 ```
 
-**Membership verified (2026-10-19):** The maintainer supplied `gh issue view 6 --repo spwn02/Miracle --json projectItems` output showing `Miracle Development` / `Backlog` and separate `Roadmap` / `Todo`. That establishes real issue #6 membership in Project #3. It does **not** validate the configured `is:issue` Auto-add filter, future issue intake, Project view filters, workflow safety or an `Accepted` transition. Keep those independent checks open; `Backlog` is a current reported status, **not G6 acceptance**. 
+**Membership verified (2026-10-19):** The maintainer supplied `gh issue view 6 --repo spwn02/Miracle --json projectItems` output showing `Miracle Development` / `Backlog` and separate `Roadmap` / `Todo`. That establishes real issue #6 membership in Project #3. It does **not** validate the configured `is:issue` Auto-add filter, future issue intake, Project view filters, workflow safety or an `Accepted` transition. Keep those independent checks open; `Backlog` is a current reported status, **not G6 acceptance**.
 
 The results must show the actual `Miracle Development` project, valid workflow settings, and the acceptance status only when the maintainer authorizes it. **Do not equate an auto-add event with Project #3 membership**.
 
