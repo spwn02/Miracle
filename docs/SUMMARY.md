@@ -39,3 +39,5 @@
 - [G4 — Security Audit](infrastructure/G4-SECURITY-AUDIT.md)
 - [G5 — Development Environments](infrastructure/G5-OPERATING-PLAN.md)
 - [G5 — Progress](infrastructure/G5-PROGRESS.md)
+- [G6 — Community Operating Plan](infrastructure/G6-OPERATING-PLAN.md)
+- [G6 — Acceptance Progress](infrastructure/G6-PROGRESS.md)
