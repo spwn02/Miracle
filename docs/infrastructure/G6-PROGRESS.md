@@ -1,10 +1,16 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-19
-**Status:** IN PROGRESS — Discussions verified, Project #3 workflows now acceptance-safe as configured, real issue #8 membership confirmed; causal auto-intake, real status transition and G6 author acceptance pending
+**Status:** IN PROGRESS — Discussions and real owner-controlled Project #3 status transition verified; causal auto-intake and remaining G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Genuine Project #3 status transition — owner evidence (2026-10-19)
+
+The maintainer manually moved actual issue #6 from `Backlog` to `Implementing` in Miracle Development Project #3. Owner-supplied before/after `gh issue view 6 --repo spwn02/Miracle --json projectItems` results identify status option `f75ad846` (`Backlog`) becoming `ada290ce` (`Implementing`), while the separate Roadmap Project remains `Todo`. GitHub's issue #6 timeline independently records a status-change event by `spwn02` at 2026-10-19 15:20:32 UTC. The event alone omits the target Project ID; the CLI snapshots identify the Project.
+
+**G2/G6 verified:** genuine maintainer-authorized Project #3 status transition; no `Accepted` status implied. The previously risky automatic PR-linked `Design` transition was disabled by the maintainer. Remaining gates include causal automatic enrollment for a future real non-bug issue, live reporting and private-support checks, actual Q&A accepted-answer behavior, release provenance and final G6 author acceptance. Keep G6 issue #6 open.
 
 ## Follow-up: maintainer disables PR status regression; issue #8 Project #3 confirmed (2026-10-19)
 
@@ -104,7 +110,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Design → implementation PR | **VERIFIED** | Reviewed and merged [PR #16](https://github.com/spwn02/Miracle/pull/16), commit `43050d7`; parent issue #6 stays open |
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
-| Project #3 / authentic issue #8 intake | **REAL MEMBERSHIP VERIFIED; AUTO-ADD CAUSALITY AND TRANSITIONS PENDING** | CLI confirms issue #6 and non-bug closed issue #8 in `Miracle Development / Backlog`, with #8 separately `Roadmap / Done`; screenshot confirms `is:issue` filter and PR-linked workflow Off. Bot project-add events lack target IDs, so automatic enrollment specifically into Project #3 is not conclusively established |
+| Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
 | Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **PARTIAL / UNVERIFIED** | Infrastructure-only PR: no tag or release required; existing v0.5.27 observed, full release provenance not audited |
