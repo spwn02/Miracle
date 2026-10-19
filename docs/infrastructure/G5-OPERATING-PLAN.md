@@ -3,7 +3,7 @@
 **Scope:** Docker CLI/Neovim/clangd, Linux/amd64 (local Linux and emulated/remote amd64 on macOS)
 **Authority:** [GitHub Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), §8/§10, plus the maintainer's [2026-10-19 scope decision](G5-PROGRESS.md)
 **Tracker:** [Issue #5](https://github.com/spwn02/Miracle/issues/5)
-**Status:** Docker-only implementation CI VERIFIED and maintainer APPROVED; Codespaces declined, NOT TESTED; issue #5 remains open
+**Status:** G5 Docker-only scope ACCEPTED and CLOSED (2026-10-19); Codespaces DECLINED / NOT TESTED, excluded
 **Evidence:** [G5 progress ledger](G5-PROGRESS.md)
 
 ## Maintainer scope decision — 2026-10-19
@@ -107,4 +107,4 @@ Earlier devcontainer integration and manual local acceptance are retained in the
 
 **Verified Docker-only run:** [G5 #39192903330](https://github.com/spwn02/Miracle/actions/runs/39192903330) **SUCCESS** at PR revision `6f131985` (**71/71 CTest**, **3/3 consumers**, real writable mount/LSP/persistence). [Reference CI #39192903211](https://github.com/spwn02/Miracle/actions/runs/39192903211), [documentation #39192903142](https://github.com/spwn02/Miracle/actions/runs/39192903142) and [code scanning #39192905595](https://github.com/spwn02/Miracle/actions/runs/39192905595) **SUCCESS**. [PR #14](https://github.com/spwn02/Miracle/pull/14) squash-merged as [`4965346`](https://github.com/spwn02/Miracle/commit/4965346cc1c2ee4d1e52a9929498728a18812558).
 
-**Current acceptance policy:** local interactive setup is *maintainer-reported pass* (historical), Docker-only technical verification is *CI-passed*, and Codespaces is *declined/not tested*. Maintainer sign-off applies only to revised Docker scope. Keep issue #5 open with the original Codespaces gate unchecked; do not claim it passed or rewrite historical evidence.
+**Final acceptance (2026-10-19):** the maintainer reported the local setup is working and explicitly authorized G5 closure. Docker-only technical verification passed CI; local interactive usability and final acceptance are maintainer-reported. [Issue #5](https://github.com/spwn02/Miracle/issues/5) is **closed as completed for the revised Docker-only scope**. Its historical Codespaces checkbox remains **unchecked: declined/not tested**, excluded by explicit maintainer decision; no Codespaces behavior or cost was verified. Do not rewrite the historical evidence or interpret closure as Codespaces acceptance.
