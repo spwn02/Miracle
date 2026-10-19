@@ -1,7 +1,6 @@
-# Build context for .devcontainer/Dockerfile: only the toolchain verifier is copied.
+# Build context for root Dockerfile: only the toolchain verifier is copied.
 .git
 .github
-.devcontainer/devcontainer.json
 build/
 site/
 .venv/

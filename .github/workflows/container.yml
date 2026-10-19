@@ -1,32 +1,32 @@
-name: G5 reference container
+name: G5 reference Docker image
 
 on:
   push:
     branches: [master]
     paths:
-      - ".devcontainer/**"
+      - "Dockerfile"
       - ".dockerignore"
       - "Makefile"
       - "scripts/ci/check-makefile.py"
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
-      - "scripts/ci/verify-devcontainer-lifecycle.sh"
+      - "scripts/ci/verify-docker-workspace.sh"
       - "scripts/ci/verify-nvim-lsp.lua"
-      - "scripts/ci/check-devcontainer.py"
+      - "scripts/ci/check-docker.py"
   pull_request:
     branches: [master]
     paths:
-      - ".devcontainer/**"
+      - "Dockerfile"
       - ".dockerignore"
       - "Makefile"
       - "scripts/ci/check-makefile.py"
       - ".github/workflows/container.yml"
       - "scripts/ci/verify-reference-toolchain.py"
       - "scripts/ci/verify-container.sh"
-      - "scripts/ci/verify-devcontainer-lifecycle.sh"
+      - "scripts/ci/verify-docker-workspace.sh"
       - "scripts/ci/verify-nvim-lsp.lua"
-      - "scripts/ci/check-devcontainer.py"
+      - "scripts/ci/check-docker.py"
   workflow_dispatch:
 
 permissions:
@@ -50,12 +50,12 @@ jobs:
       - name: Validate G5 configuration
         run: |
           set -euo pipefail
-          python3 scripts/ci/check-devcontainer.py
+          python3 scripts/ci/check-docker.py
           python3 scripts/ci/check-makefile.py
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py
           bash -n scripts/ci/verify-container.sh
-          bash -n scripts/ci/verify-devcontainer-lifecycle.sh
+          bash -n scripts/ci/verify-docker-workspace.sh
 
       - name: Build immutable reference image from a clean cache
         run: |
@@ -67,18 +67,7 @@ jobs:
           set -euo pipefail
           make docker-test
 
-      - name: Install version-pinned Dev Containers CLI
+      - name: Verify writable Docker workspace, CMake database and Neovim clangd LSP
         run: |
           set -euo pipefail
-          node --version
-          npm --version
-          npm install --prefix "$RUNNER_TEMP/g5-devcontainer-cli" \
-            --no-audit --no-fund @devcontainers/cli@0.89.0
-          "$RUNNER_TEMP/g5-devcontainer-cli/node_modules/.bin/devcontainer" --version
-
-      - name: Verify real headless devcontainer startup and restart persistence
-        env:
-          DEVCONTAINER_CLI: ${{ runner.temp }}/g5-devcontainer-cli/node_modules/.bin/devcontainer
-        run: |
-          set -euo pipefail
-          bash scripts/ci/verify-devcontainer-lifecycle.sh
+          bash scripts/ci/verify-docker-workspace.sh

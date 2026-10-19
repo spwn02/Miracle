@@ -145,6 +145,12 @@ The environment should support CLI/Neovim/clangd usage, local Docker and Codespa
 
 Use one provenance policy across local container, CI and Codespaces; never silently substitute distribution Clang for the reference compiler. Avoid embedding secrets or personal machine paths in container definitions.
 
+### G5 maintainer-scoped amendment (2026-10-19)
+
+The owner expressly chose **regular Docker only**, declining Codespaces because of potential charges after reporting that the prior **local interactive devcontainer worked** and approving G5 for the revised Docker-only workflow. For G5 operations, a single root Dockerfile, non-root Docker CLI/Neovim/clangd workflow, unchanged pinned reference toolchain, and reproducible build/test/consumer validation replace the previously **proposed** devcontainer/Codespaces implementation detail. Existing Dev Containers integration is retired; Codespaces is **declined/not tested**, never counted as a completed test or acceptance result.
+
+This scoped amendment does not relax reference compiler/libc++ coherence, no-secret rules, check provenance, or §10's demand for actual build/test evidence. G5 remains open pending verification of the replacement Docker-only implementation; later Codespaces support would require a new explicit budget/scope decision.
+
 ## 9. Release and operational reporting
 
 GitHub Releases correspond to actually tagged/validated versions. A release announcement may link to the relevant Project milestone, changelog entry and CI provenance. A phase's completion does not automatically mandate a new release; release approval remains with the author.

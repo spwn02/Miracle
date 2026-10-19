@@ -1,4 +1,4 @@
-# Miracle command-line entry point; CMake presets and G5 Dockerfile remain authoritative.
+# Miracle command-line entry point; CMake presets and root Dockerfile remain authoritative.
 .DEFAULT_GOAL := help
 SHELL := /bin/sh
 
@@ -14,7 +14,7 @@ ifneq ($(filter $(PRESET),tests debug release),$(PRESET))
 $(error Unknown PRESET '$(PRESET)'; use tests, debug or release)
 endif
 
-.PHONY: help configure build test verify clean docker-build docker-shell docker-smoke docker-test docker-verify docs docs-serve
+.PHONY: help configure build test verify clean docker-build docker-dev docker-shell docker-smoke docker-test docker-verify docs docs-serve
 
 help: ## Show the developer commands
 	@printf '%s\n' \
@@ -29,6 +29,7 @@ help: ## Show the developer commands
 	  '  make docker-smoke                          Quick reference compiler check in image' \
 	  '  make docker-test                           Full container tests + consumers' \
 	  '  make docker-verify                         Build image then run full container tests' \
+	  '  make docker-dev                            Live writable checkout mounted in Docker' \
 	  '  make docker-shell                          Temporary writable checkout in container' \
 	  '  make docs                                  Build and verify mdBook' \
 	  '  make docs-serve                            Serve mdBook locally' \
@@ -61,7 +62,7 @@ clean: ## Clean configured preset; never remove arbitrary directories
 	cmake --build --preset "$(PRESET)" --target clean
 
 docker-build: ## Build the pinned G5 image for Linux/amd64
-	$(DOCKER) build --platform linux/amd64 $(if $(filter 1,$(NO_CACHE)),--no-cache,) -f .devcontainer/Dockerfile -t "$(IMAGE)" .
+	$(DOCKER) build --platform linux/amd64 $(if $(filter 1,$(NO_CACHE)),--no-cache,) -f Dockerfile -t "$(IMAGE)" .
 
 docker-smoke: ## Run toolchain smoke test without compiling Miracle
 	$(DOCKER) run --rm --platform linux/amd64 \
@@ -75,6 +76,13 @@ docker-test: ## Run C++26 tests and all 3 consumer modes inside the G5 image
 
 docker-verify: docker-build ## Build the image and run the complete container suite
 	@$(MAKE) --no-print-directory docker-test IMAGE="$(IMAGE)" DOCKER="$(DOCKER)"
+
+docker-dev: ## Run shell with live host checkout mounted writable as host UID/GID
+	$(DOCKER) run --rm -it --platform linux/amd64 \
+	  --user "$$(id -u):$$(id -g)" --env HOME=/tmp \
+	  --mount 'type=bind,source=$(CURDIR),target=/workspace/Miracle' \
+	  --workdir /workspace/Miracle \
+	  "$(IMAGE)" bash
 
 docker-shell: ## Open Bash in temporary writable image workspace (source is read-only)
 	$(DOCKER) run --rm -it --platform linux/amd64 \
