@@ -1,6 +1,6 @@
 # G6 — Community and End-to-End Acceptance
 
-**Status:** IN PROGRESS; repository-source checks in implementation, Discussions requires owner action
+**Status:** IN PROGRESS; Discussions enabled and required categories configured (screenshot + repo API), Q&A live answer flow and other acceptance pending
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 1, 4, 9–12
 **Tracker:** [G6 issue #6](https://github.com/spwn02/Miracle/issues/6)
 **Evidence:** [G6 progress ledger](G6-PROGRESS.md)
@@ -13,14 +13,18 @@ The underlying authority remains repository-tracked contracts and the maintainer
 
 ## 1. Discussion categories — owner-administered
 
-At the initial G6 audit on **2026-10-19**, the public repository API returned `has_discussions: false`. GitHub Discussions was **not enabled**. The connected integration has no repository-settings or Discussions-category write actions; this must be performed by the maintainer. Do not add links in public navigation until the feature and categories actually exist.
+At the initial G6 audit on **2026-10-19**, the public repository API reported `has_discussions: false`. **Later that day**, the maintainer supplied a screenshot of the live **Manage discussion categories** screen, showing **Announcements**, **Ideas**, **Q&A** (**Answers enabled**), and **Show and tell**; optional **General** and **Polls** also exist. A fresh public repository API check then returned **`has_discussions: true`**. These are independent pieces of evidence for **activation and category configuration**, not a test of a real accepted answer.
+
+The navigational links in [Support](../../SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve this newly enabled repository's individual category pages; **click-through checks remain pending**. No fabricated Discussion was created.
+
+Owner-facing follow-up:
 
 Maintainer checklist:
 
-1. Navigate to [Miracle Settings](https://github.com/spwn02/Miracle/settings) → **General** → **Features**, and enable **Discussions**.
-2. Open [Discussion categories](https://github.com/spwn02/Miracle/discussions/categories) and configure four distinct routes: **Q&A** (answerable; accepted-answer behavior), **Ideas**, **Announcements** (maintainer news), and **Show & Tell** (community projects/examples). Remove or leave unrelated default categories only after review; do not claim exactly four categories unless inspected.
-3. Confirm the public [Discussions page](https://github.com/spwn02/Miracle/discussions) renders the categories, and validate Q&A question/answer selection through an **authentic** question when available; do not post meaningless test content in public discussion threads.
-4. Report the configured category names/slugs and screenshots or command output. Until this is proven, keep the G6 Discussions gate unchecked.
+1. **Completed, verified:** [Miracle Settings](https://github.com/spwn02/Miracle/settings) → **General** → **Features**, **Discussions** enabled (`has_discussions: true`).
+2. **Completed, screenshot-verified:** [Discussion categories](https://github.com/spwn02/Miracle/discussions/categories) show **Q&A** (Answers enabled), **Ideas**, **Announcements**, and **Show and tell**. General/Polls are valid optional categories, not missing or additional required gates.
+3. **Pending:** Open the public [Discussions page](https://github.com/spwn02/Miracle/discussions) and click each advertised category link; validate Q&A marking an answer using an **authentic** question when one exists. Do not post meaningless test content to satisfy the gate.
+4. **Partially verified:** screenshot proves names and Q&A setting; API proves activation. Exact URL slug click-through and actual accepted-answer behavior remain **unverified**.
 
 Optional read-only maintainer terminal check:
 
@@ -35,7 +39,7 @@ gh api graphql -f query='query {
 }'
 ```
 
-Only after real confirmation, update `SUPPORT.md`, `.github/ISSUE_TEMPLATE/config.yml`, `README.md`, and contributor guidance with **specific live category links**. Route open-ended questions to Discussions while keeping **actionable** bugs, proposals, compiler defects and infrastructure requests in structured Issues. Product API proposals remain subject to formal design-contract approval even if discussed publicly.
+`SUPPORT.md`, `.github/ISSUE_TEMPLATE/config.yml`, `README.md`, and contributor guidance now advertise the configured categories using conventional GitHub category URL slugs; navigation remains subject to actual human click-through verification. Route open-ended questions to Discussions while keeping **actionable** bugs, proposals, compiler defects and infrastructure requests in structured Issues. Product API proposals remain subject to formal design-contract approval even if discussed publicly.
 
 ## 2. Existing community surface
 
@@ -76,7 +80,7 @@ The results must show the actual `Miracle Development` project, valid workflow s
 
 ## 4. Definition of done
 
-- [ ] Actual Discussions enabled, four required categories visually and/or API verified; Q&A capability tested with a real thread.
+- [x] Discussions enabled and four required categories visually confirmed; GitHub Q&A **Answers enabled** setting visible. **Still pending:** a real accepted-answer workflow (do not conflate configuration with behavior).
 - [ ] Routing to live Discussions categories updated without regressing security or actionable issue intake.
 - [ ] Actual issue → reviewed PR → verified commit/CI → docs publication → explicit acceptance trail recorded in [G6 ledger](G6-PROGRESS.md).
 - [ ] Contributor forms, PR prepopulation, community standards and confidentiality routes inspected in GitHub UI, distinguishing absent private moderation inbox from private vulnerability reporting.

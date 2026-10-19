@@ -13,7 +13,16 @@ Miracle is a pre-1.0 C++26 foundation library maintained as an open-source proje
 - **Security vulnerabilities:** Follow [SECURITY.md](SECURITY.md). Do not disclose a vulnerability in a public issue.
 - **Community-conduct concerns:** Follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), not the library bug tracker.
 
-Before filing an issue, search [existing issues](https://github.com/spwn02/Miracle/issues). Questions that do not yet fit a specific defect or proposal may be raised through an appropriate issue form when actionable. General Q&A is planned for GitHub Discussions but is **not yet enabled**.
+Before filing an issue, search [existing issues](https://github.com/spwn02/Miracle/issues) and [Discussions](https://github.com/spwn02/Miracle/discussions). General support and exploratory conversations belong in Discussions; actionable defects and concrete implementation proposals belong in the issue forms.
+
+## Discussions
+
+- **[Q&A](https://github.com/spwn02/Miracle/discussions/categories/q-a):** Community questions and help with Miracle or the reference C++26 toolchain. This category has GitHub's **Answers enabled**; an answer-selection workflow has not yet been tested with a real question.
+- **[Ideas](https://github.com/spwn02/Miracle/discussions/categories/ideas):** Early-stage feature brainstorming and design exploration; a discussion is **not** a locked Design Contract or an approved implementation issue.
+- **[Announcements](https://github.com/spwn02/Miracle/discussions/categories/announcements):** Maintainer news and important repository updates.
+- **[Show and tell](https://github.com/spwn02/Miracle/discussions/categories/show-and-tell):** Share experiments, C++26 examples, tools and projects using Miracle.
+
+The optional **General** and **Polls** categories also exist. They are not required G6 entry points. Do **not** disclose vulnerabilities, credentials, private reports or conduct allegations in public Discussions. Use the security and conduct reporting routes above instead.
 
 ## What to include
 

@@ -213,7 +213,7 @@ Run `make docker-verify NO_CACHE=1` for the full disposable reference tests and 
 
 ## Contributing and community
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup, or use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) to report a defect or submit a proposal.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup. Use [GitHub Discussions](https://github.com/spwn02/Miracle/discussions) for community Q&A, early-stage ideas, announcements and project showcases; use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) for actionable defects or proposals.
 
 Community policies: [Support](SUPPORT.md), [Code of Conduct](CODE_OF_CONDUCT.md), [Accessibility](ACCESSIBILITY.md), and [Security](SECURITY.md). Report potential vulnerabilities privately according to the Security policy, not in a public issue.
 
