@@ -1,12 +1,22 @@
 # Miracle GitHub Infrastructure — G2 Progress
 
-**Updated:** 2026-10-17
+**Updated:** 2026-10-19
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** G2 structurally verified; maintainer reports corrected Auto-add and safeguards; genuine G3 issue triggered automation, project-specific intake and author sign-off pending
+**Status:** G2 Auto-add filter and critical workflow disablement visually VERIFIED; actual future target-Project automatic intake, remaining enabled workflow actions, state transition and author sign-off pending
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Latest Project #3 workflow UI verification (2026-10-19)
+
+The maintainer supplied a **live screenshot of Miracle Development Project #3 → Settings → Workflows → Auto-add to project**. It shows the workflow **On**, repository selection **Miracle**, and exact filter **`is:issue`** (no `label:bug`, `is:pr` or other restrictive terms). The workflow's action is **Add the item to the project**. This independently resolves the previously unverified **UI configuration** of the broad issue-intake rule.
+
+The workflow navigation shows **four enabled workflows**: `Auto-add sub-issues to project`, `Auto-add to project`, `Item added to project`, and `Pull request linked to issue`. It shows `Auto-close issue`, `Item closed`, and `Pull request merged` **Off**, satisfying the specific instruction to disable those three potentially unsafe defaults. Also displayed Off: `Auto-archive items`, `Code changes requested`, `Code review approved`, `Item reopened`.
+
+**Not proved by the overview screenshot:** the configured *actions* of enabled `Item added to project` and `Pull request linked to issue` (inspect these before declaring the acceptance safeguards complete), whether a **new real non-bug issue** is automatically entered into Project #3 under the rule, or an actual Project #3 status transition honoring owner-controlled `Accepted`. The user previously provided `gh issue view 6 --repo spwn02/Miracle --json projectItems` identifying `Miracle Development / Backlog` and a separate `Roadmap / Todo`: current membership is verified, **but issue #6 may have been manually added**, so this does not independently validate future automatic intake. No status was changed by the assistant; formal G2 acceptance is still pending.
+
+Historical sections below retain the **older** incorrect `label:bug` UI configuration as historical evidence, not a description of the current state.
 
 ## Current issue disposition
 
@@ -191,7 +201,10 @@ Project view configuration, saved filters and the Auto-add rule must still be ch
 - [x] Confirm #7 resides in Project #3 with `Backlog` and is also a member of the separate `Roadmap` Project.
 - [x] Verify the existing Status field has all eight required options, in the expected order.
 - [x] Verify the four saved view names, layouts and saved filter strings (column/grouping presentation not independently inspected).
-- [ ] Correct Auto-add filter from `is:issue,pr is:open label:bug` to `is:issue` and verify a real future issue enters Project #3 automatically.
-- [ ] Disable or inspect workflows that could auto-close issues or auto-assign `Accepted`; then verify a real workflow transition and explicit author acceptance.
+- [x] Confirm Project #3 Auto-add is **On** with repository `Miracle` and exact filter `is:issue` — maintainer screenshot on 2026-10-19.
+- [ ] Verify a **new real non-bug issue** enters target Project #3 automatically (rather than only the separate `Roadmap` Project).
+- [x] Verify `Auto-close issue`, `Item closed`, and `Pull request merged` are **Off** in the Project #3 workflow UI.
+- [ ] Inspect the enabled `Item added to project` and `Pull request linked to issue` **actions** for any path that would bypass owner-controlled `Accepted`.
+- [ ] Verify a real workflow status transition and explicit author acceptance.
 
 **Status is not ACCEPTED until the remaining gates pass.** Work on later infrastructure tasks can progress in parallel without misreporting G2 completion.
