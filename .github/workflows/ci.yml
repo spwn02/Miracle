@@ -42,6 +42,7 @@ jobs:
           bash -n scripts/github/reconcile-infrastructure-milestone.sh
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py
+          python3 scripts/github/check-community-surface.py
           python3 scripts/ci/test-ci-helpers.py
           python3 scripts/ci/check-docker.py
           python3 scripts/ci/check-makefile.py
