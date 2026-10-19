@@ -67,6 +67,8 @@ nvim src/private/Error.cxx
 
 `make docker-dev` uses a bind mount of the **real checkout**, not an ephemeral copy. Edits and `build/` output survive container exit because they live on the host. It supplies `--user "$(id -u):$(id -g)"` and `HOME=/tmp` so files are written with host UID/GID rather than root. Avoid using this target as root and do not store credentials under the temporary container home.
 
+**Workspace preflight:** `make docker-dev` now checks for stale `CMakeCache.txt` directories before starting Docker and **rejects `sudo`/root invocation** rather than silently writing root-owned output. `make configure`/`make verify` check their selected CMake preset too. Nested Switch capability caches can retain the old `/workspaces/Miracle` devcontainer path even after `cmake --fresh`, while plain Docker mounts at `/workspace/Miracle`. If the preflight reports incompatible paths, exit the container and **move the affected `build/<preset>` directory to an unused backup name** (for example `mv build/tests build/tests.pre-docker-migration`) before retrying. If an earlier sudo session created root-owned artifacts, repair their ownership explicitly on the host. The preflight never deletes, renames or `chown`s files automatically.
+
 The image defaults to a non-root `miracle` user (UID 1000) and `/workspace/Miracle` directory; the live shell intentionally overrides UID/GID to match your host. Neither `whoami` nor a named passwd entry is guaranteed when your host UID differs from 1000; use `id -u` to verify. This is not a failure.
 
 Equivalent direct Docker command:

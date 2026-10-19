@@ -41,6 +41,7 @@ help: ## Show the developer commands
 configure: ## Configure explicitly with coherent pinned C++26 toolchain
 	@test -n "$(TOOLCHAIN)" || { printf '%s\n' 'ERROR: reference toolchain not selected. Source share/clang-cxx26/activate.sh or pass TOOLCHAIN=/path/to/toolchain.cmake; otherwise use make docker-verify.' >&2; exit 2; }
 	@test -f "$(TOOLCHAIN)" || { printf 'ERROR: missing reference toolchain file: %s\n' '$(TOOLCHAIN)' >&2; exit 2; }
+	@python3 scripts/ci/check-build-cache.py --expected-root "$(CURDIR)" --preset "$(PRESET)"
 	cmake --preset "$(PRESET)" --fresh -DCMAKE_TOOLCHAIN_FILE="$(TOOLCHAIN)"
 
 build: ## Build selected CMake preset; configure once if required
@@ -78,6 +79,7 @@ docker-verify: docker-build ## Build the image and run the complete container su
 	@$(MAKE) --no-print-directory docker-test IMAGE="$(IMAGE)" DOCKER="$(DOCKER)"
 
 docker-dev: ## Run shell with live host checkout mounted writable as host UID/GID
+	@python3 scripts/ci/check-build-cache.py --expected-root /workspace/Miracle --require-non-root
 	$(DOCKER) run --rm -it --platform linux/amd64 \
 	  --user "$$(id -u):$$(id -g)" --env HOME=/tmp \
 	  --mount 'type=bind,source=$(CURDIR),target=/workspace/Miracle' \
