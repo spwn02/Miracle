@@ -1,16 +1,28 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-19
-**Status:** IN PROGRESS — Discussions/category navigation, issue #6 Project #3 membership and project Auto-add rule verified; actual future auto-intake, enabled workflow actions and final G6 acceptance pending
+**Status:** IN PROGRESS — Discussions and Project #3 membership/Auto-add/enabled actions verified as configuration; genuine intake/status transition, live Q&A and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Project #3 — remaining enabled workflow actions verified (2026-10-19)
+
+The maintainer provided **three Project #3 workflow detail screenshots**:
+
+- `Item added to project` (**On**): for an issue or PR newly added to the Project, `Set value → Status: Backlog`.
+- `Pull request linked to issue` (**On**): when a PR is linked to an issue, `Set value → Status: Design`.
+- `Auto-add sub-issues to project` (**On**): when a Project item has sub-issues, `Add sub-issues to the project`, without itself assigning `Accepted`.
+
+**Configuration-level result:** All four enabled workflows (including previously reviewed issue Auto-add with filter `is:issue`) now have their visible actions inspected. None targets `Accepted`. The `Auto-close issue`, `Item closed` and `Pull request merged` workflows remain screenshot-confirmed **Off**. This checks the **direct-acceptance bypass** concern at the level of configured workflow actions.
+
+**Residual risk:** `Pull request linked → Design` could reset a task already at `Implementing`, `Review`, or `Verification` to `Design`. The screenshots do not establish conditional skip behavior. **Recommend disabling this workflow** (or documenting/validating deliberate behavior) rather than allowing status regression; no Project setting has been changed by the assistant. **Runtime** auto-add of a genuine new non-bug issue, real transitions and explicit maintainer acceptance remain **unverified**. See [G2 progress](G2-PROGRESS.md).
 
 ## Project #3 — Auto-add and workflow UI evidence (2026-10-19)
 
 The maintainer supplied a screenshot from **Miracle Development → Settings → Workflows**. The `Auto-add to project` workflow is visibly **On**, restricted to repository **Miracle**, uses exactly **`is:issue`** as its filter and performs **Add the item to the project**. The screenshot also shows **Auto-add sub-issues to project**, **Item added to project**, and **Pull request linked to issue** enabled. Crucially, **Auto-close issue**, **Item closed**, and **Pull request merged** are **Off**; no default workflow among those three can automatically mark a completion by running while disabled.
 
-This verifies **current configuration**, distinct from the prior `gh issue view 6 --json projectItems` output showing actual membership. The currently enabled `Item added to project` and `Pull request linked to issue` actions are **not visible** in the screenshot; neither can be certified acceptance-safe yet. The new-issue auto-add *result* and Project #3's acceptance-sensitive status transitions also remain **unverified**. This screenshot alone does not demonstrate that a future new real issue enters Project #3 without manual intervention or that `Accepted` requires maintainer action. Refer to the [G2 verification ledger](G2-PROGRESS.md) for the independent workstream gate.
+This verifies **current configuration**, distinct from the prior `gh issue view 6 --json projectItems` output showing actual membership. The original workflow-overview screenshot did **not** show enabled actions, but subsequent workflow-detail screenshots now **verify** their configured targets: `Backlog`, `Design`, and add sub-issues; none sets `Accepted`. A real new-issue auto-add *result* and Project #3's acceptance-sensitive status transitions remain **unverified**. This screenshot alone does not demonstrate that a future new real issue enters Project #3 without manual intervention or that `Accepted` requires maintainer action. Refer to the [G2 verification ledger](G2-PROGRESS.md) for the independent workstream gate.
 
 ## Project #3 — real issue membership verified (2026-10-19)
 
@@ -79,7 +91,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Design → implementation PR | **VERIFIED** | Reviewed and merged [PR #16](https://github.com/spwn02/Miracle/pull/16), commit `43050d7`; parent issue #6 stays open |
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
-| Issue #6 in Project #3 | **MEMBERSHIP AND AUTO-ADD CONFIG VERIFIED; WORKFLOW BEHAVIOR PENDING** | CLI: `Miracle Development / Backlog` and separate `Roadmap / Todo`. Screenshot: Auto-add On, repository `Miracle`, filter `is:issue`; auto-close, item-close and PR-merged workflows Off. Actual new-issue intake and enabled actions/transition remain unverified |
+| Issue #6 in Project #3 | **MEMBERSHIP AND ALL ENABLED ACTIONS CONFIG VERIFIED; RUNTIME PENDING** | CLI confirms `Miracle Development / Backlog`; screenshots show `is:issue` auto-add, `Item added → Backlog`, `PR linked → Design`, sub-issue addition and three close/merge defaults Off. No automatic `Accepted`, but potential backward `Design` transition; actual new-issue intake and status transition untested |
 | Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **PARTIAL / UNVERIFIED** | Infrastructure-only PR: no tag or release required; existing v0.5.27 observed, full release provenance not audited |
