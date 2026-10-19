@@ -1,4 +1,4 @@
-# Miracle G5: pinned Linux/x86-64 reference environment.
+# Miracle G5: Docker-only pinned Linux/x86-64 reference environment.
 # The single-platform digest is the official Ubuntu 22.04 amd64 image.
 FROM --platform=linux/amd64 ubuntu:22.04@sha256:08ea48a03a3e78ebc7cd526e6a275053223aadd88bfc09cc49b06d5281525fde
 
@@ -97,9 +97,9 @@ ENV PATH="/opt/nvim-linux-x86_64/bin:/opt/ninja:/opt/cmake/bin:/opt/cxx26/clang-
 ENV LD_LIBRARY_PATH=/opt/cxx26/clang-cxx26-2026.10.09.2/lib
 ENV LANG=C.UTF-8
 
-# Codespaces and local devcontainers use an ordinary, non-root user.
-RUN useradd --create-home --uid 1000 --shell /bin/bash vscode \
-    && install -d -o vscode -g vscode /workspaces/Miracle
-USER vscode
-WORKDIR /workspaces/Miracle
-CMD ["sleep", "infinity"]
+# Default non-root Docker user; bind mounts may override to matching host UID/GID.
+RUN useradd --create-home --uid 1000 --shell /bin/bash miracle \
+    && install -d -o miracle -g miracle /workspace/Miracle
+USER miracle
+WORKDIR /workspace/Miracle
+CMD ["bash"]

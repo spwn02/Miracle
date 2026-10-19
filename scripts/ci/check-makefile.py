@@ -30,7 +30,7 @@ def requires(actual: str, *fragments: str) -> None:
 
 def main() -> int:
     help_output = invoke("help")
-    requires(help_output, "make configure", "make verify", "make docker-build", "make docker-verify", "make docs")
+    requires(help_output, "make configure", "make verify", "make docker-build", "make docker-dev", "make docker-verify", "make docs")
 
     configure = invoke("-n", "configure", "PRESET=release", "TOOLCHAIN=/tmp/cxx26/toolchain.cmake")
     requires(configure, 'cmake --preset "release" --fresh', 'CMAKE_TOOLCHAIN_FILE="/tmp/cxx26/toolchain.cmake"')
@@ -41,10 +41,12 @@ def main() -> int:
     requires(invoke("-n", "verify", "TOOLCHAIN=/tmp/cxx26/toolchain.cmake"),
              'cmake --preset "tests" --fresh', 'ctest --preset tests')
     requires(invoke("-n", "docker-verify", "NO_CACHE=1", "DOCKER=mock-docker", "IMAGE=my-cxx26:test"),
-             "mock-docker build --platform linux/amd64 --no-cache", "-f .devcontainer/Dockerfile",
+             "mock-docker build --platform linux/amd64 --no-cache", "-f Dockerfile",
              "mock-docker run --rm --platform linux/amd64", '"my-cxx26:test"',
              "bash scripts/ci/verify-container.sh'")
     requires(invoke("-n", "docker-smoke"), "bash scripts/ci/verify-container.sh --smoke")
+    requires(invoke("-n", "docker-dev"), "--user", "id -u", "id -g",
+             "type=bind", "target=/workspace/Miracle", "--env HOME=/tmp", "--workdir /workspace/Miracle")
     requires(invoke("-n", "docker-shell"), "readonly", "exec bash")
     requires(invoke("-n", "docs"), "mdbook build", "python3 scripts/docs/verify-site.py site")
     clean = invoke("-n", "clean", "PRESET=debug")
