@@ -149,7 +149,7 @@ Use one provenance policy across local container, CI and Codespaces; never silen
 
 The owner expressly chose **regular Docker only**, declining Codespaces because of potential charges after reporting that the prior **local interactive devcontainer worked** and approving G5 for the revised Docker-only workflow. For G5 operations, a single root Dockerfile, non-root Docker CLI/Neovim/clangd workflow, unchanged pinned reference toolchain, and reproducible build/test/consumer validation replace the previously **proposed** devcontainer/Codespaces implementation detail. Existing Dev Containers integration is retired; Codespaces is **declined/not tested**, never counted as a completed test or acceptance result.
 
-This scoped amendment does not relax reference compiler/libc++ coherence, no-secret rules, check provenance, or §10's demand for actual build/test evidence. G5 remains open pending verification of the replacement Docker-only implementation; later Codespaces support would require a new explicit budget/scope decision.
+This scoped amendment does not relax reference compiler/libc++ coherence, no-secret rules, check provenance, or §10's demand for actual build/test evidence. The replacement Docker-only implementation passed clean CI ([#39192903330](https://github.com/spwn02/Miracle/actions/runs/39192903330)), full 71/71 tests, all three consumers, and writable-workspace/LSP checks, and merged via [PR #14](https://github.com/spwn02/Miracle/pull/14). G5 issue #5 remains open to retain the explicitly unverified, declined Codespaces gate; later Codespaces support requires a separate budget/scope decision.
 
 ## 9. Release and operational reporting
 
