@@ -1,7 +1,7 @@
 # G5 — Docker-only development: Progress and acceptance
 
 **Updated:** 2026-10-19
-**Status:** Maintainer approved revised Docker-only scope; migration validation pending. Codespaces declined, not tested.
+**Status:** Revised Docker-only scope APPROVED and CI VERIFIED; Codespaces DECLINED / NOT TESTED. Issue #5 remains open.
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Issue:** [#5](https://github.com/spwn02/Miracle/issues/5)
 **Contract:** [G5 operating plan](G5-OPERATING-PLAN.md)
@@ -13,10 +13,10 @@ The maintainer explicitly reported these manual acceptance results in the G5 con
 - **Local interactive devcontainer — PASS (maintainer-reported).** This is human sign-off, not independent observation from GitHub CI. The prior automated Docker and LSP checks are independently documented below.
 - **Codespaces — DECLINED / NOT TESTED.** The maintainer does not wish to use paid Codespaces. No Codespace has been created, no cloud-storage/billing/browser acceptance was performed. This check remains **unverified**; it is **removed from the active Docker-only implementation scope**, not represented as a pass.
 - **G5 final approval — APPROVED for the revised Docker-only scope.** The maintainer requested replacement of the old Dev Containers configuration by a plain Dockerfile.
-- **Current implementation — [Docker-only PR #14](https://github.com/spwn02/Miracle/pull/14).** Migrate the pinned image to [`Dockerfile`](../../Dockerfile), retire `.devcontainer/devcontainer.json` and Dev Containers CLI, add persistent `make docker-dev` and direct Docker workspace/LSP verification. Preserve existing compiler/libc++ checksums and 71 self-tests/3 consumer modes.
-- **New Docker-only CI — PENDING**, until the migration branch's clean-image, CMake consumers, source/diagnostic and LSP/persistent bind-mount checks complete successfully.
+- **Merged Docker-only implementation — [PR #14](https://github.com/spwn02/Miracle/pull/14), squash commit [`4965346`](https://github.com/spwn02/Miracle/commit/4965346cc1c2ee4d1e52a9929498728a18812558).** Root [`Dockerfile`](../../Dockerfile), no `.devcontainer/devcontainer.json`, no Dev Containers CLI, new persistent `make docker-dev`, unchanged checksummed compiler/libc++ and full test suite.
+- **New Docker-only CI — VERIFIED on PR head `6f131985`.** [Clean G5 Docker workflow #39192903330](https://github.com/spwn02/Miracle/actions/runs/39192903330) **SUCCESS**: no-cache pinned image, **71/71 tests**, **3/3 consumers**, real Neovim↔clangd LSP and persistence across fresh Docker containers. [Reference CI #39192903211](https://github.com/spwn02/Miracle/actions/runs/39192903211), [documentation #39192903142](https://github.com/spwn02/Miracle/actions/runs/39192903142), and [code scanning #39192905595](https://github.com/spwn02/Miracle/actions/runs/39192905595) **SUCCESS**. These are verified PR revision runs, not fabricated post-merge results.
 
-**Acceptance reconciliation:** The original [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md) proposed Codespaces support; on 2026-10-19 the maintainer deliberately reduced operational scope to **Docker-only**. The historical acceptance claims below remain point-in-time records. Codespaces cannot be checked as verified. **Keep [issue #5](https://github.com/spwn02/Miracle/issues/5) open until the revised Docker-only implementation is independently revalidated.**
+**Acceptance reconciliation:** The original [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md) proposed Codespaces support; on 2026-10-19 the maintainer deliberately reduced operational scope to **Docker-only**. The historical acceptance claims below remain point-in-time records. Codespaces cannot be checked as verified. **The revised Docker-only implementation is independently revalidated and merged.** [Issue #5](https://github.com/spwn02/Miracle/issues/5) remains **OPEN** with Codespaces unchecked as **declined/not tested**, per instruction not to close any unverified acceptance gate.
 
 ## Historical implementation and verification evidence (2026-10-17)
 
@@ -89,8 +89,8 @@ The LSP evidence upgrades automation coverage, **not** the manual exit gates. G5
 - [x] Actual Neovim↔clangd protocol and document-symbol response — **CI verified** on historical devcontainer image #39005531835.
 - [x] Interactive local devcontainer usability — **maintainer reported pass** on 2026-10-19 (historical environment).
 - [x] Maintainer approves Docker-only scope — **explicitly approved** on 2026-10-19.
-- [ ] Clean **root Dockerfile** build, full C++26 suite and consumers after migration — **pending new CI result**.
-- [ ] Direct Docker bind-mount persistence and Neovim/clangd protocol on the new Docker-only image — **pending new CI result**.
+- [x] Clean **root Dockerfile** build, full **71/71** C++26 suite and **3/3** consumers — [Docker CI #39192903330](https://github.com/spwn02/Miracle/actions/runs/39192903330), **SUCCESS** on PR revision `6f131985`.
+- [x] Direct Docker writable bind mount, matching host UID/GID, CMake compilation database, Neovim↔clangd symbol response and persistence across fresh containers — **SUCCESS** in #39192903330.
 - [ ] GitHub Codespaces live startup/billing/storage/interactive acceptance — **DECLINED, NOT TESTED, excluded from revised implementation**. Do not mark passed.
 
-**G5 issue #5 remains OPEN** while Docker-only changes are verified. No cloud charges, Codespaces prebuild, registry publication or reference compiler upgrade is required.
+**G5 issue #5 remains OPEN** solely to preserve the explicitly declined, unverified Codespaces acceptance checkbox and trace the narrower operational scope. Docker-only implementation is technically verified and maintainer-approved. No cloud charges, Codespaces prebuild, registry publication or reference compiler upgrade occurred.
