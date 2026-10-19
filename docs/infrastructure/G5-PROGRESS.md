@@ -1,10 +1,22 @@
 # G5 — Docker-only development: Progress and acceptance
 
 **Updated:** 2026-10-19
-**Status:** Revised Docker-only scope APPROVED and CI VERIFIED; Codespaces DECLINED / NOT TESTED. Issue #5 remains open.
+**Status:** ACCEPTED — G5 Docker-only scope completed and maintainer signed off (2026-10-19); Codespaces excluded, DECLINED / NOT TESTED.
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Issue:** [#5](https://github.com/spwn02/Miracle/issues/5)
 **Contract:** [G5 operating plan](G5-OPERATING-PLAN.md)
+
+## Final G5 closeout — maintainer acceptance (2026-10-19)
+
+**Decision:** The maintainer confirmed that the local setup is working (“Everything is fine”) and expressly authorized closing G5. This is an author/maintainer **final acceptance statement**, not an independent recording of the exact commands run on that local machine. It supersedes earlier pending-local-retest language while preserving the historical failure and remediation evidence below.
+
+**Accepted scope:** a Docker-only, Linux/amd64 development environment using the root [Dockerfile](../../Dockerfile), pinned coherent C++26 compiler/libc++, CMake/Ninja/Neovim/clangd, non-root persistent `make docker-dev` and non-destructive stale-CMake-cache/sudo preflight. Dev Containers integration has been retired by owner direction.
+
+**Verification:** [post-merge Docker workflow #39204493579](https://github.com/spwn02/Miracle/actions/runs/39204493579) **SUCCESS** on [`afe9623`](https://github.com/spwn02/Miracle/commit/afe9623ff0c8c3265f9192947f479d7a56f84cbc), and [post-merge reference CI #39204548009](https://github.com/spwn02/Miracle/actions/runs/39204548009), [documentation #39204548154](https://github.com/spwn02/Miracle/actions/runs/39204548154), and [master-to-gcc sync #39204548185](https://github.com/spwn02/Miracle/actions/runs/39204548185) **SUCCESS** on the subsequent ledger revision [`bf9f2b3`](https://github.com/spwn02/Miracle/commit/bf9f2b3ec5e9a8418ebc3b84ab23ad754c51c08a). The fully exercised [PR #15 Docker/reference runs](https://github.com/spwn02/Miracle/pull/15) passed **71/71** CTest cases, **3/3** consumer modes, Docker workspace persistence, and real Neovim↔clangd LSP source symbols. The negative fixtures verified detection of the stale nested Switch cache and rejection of root/sudo without modifying build artifacts.
+
+**Scope exception:** GitHub Codespaces was expressly **declined because of potential costs**, never deployed or tested. Its former checkbox is preserved **unchecked** in [issue #5](https://github.com/spwn02/Miracle/issues/5) as an out-of-scope historical requirement, **not an incomplete requirement of the approved Docker-only workstream**. Closing issue #5 with reason **completed** means the **revised workstream** was accepted; it does not claim Codespaces passed. Any future Codespaces support requires a separately authorized scope and budget.
+
+**Disposition:** G5 **ACCEPTED and CLOSED** under the maintainer-approved Docker-only scope, effective 2026-10-19. No tag or release is implied by this infrastructure acceptance.
 
 ## Docker workspace cache and sudo preflight — fixed (2026-10-19)
 
@@ -13,9 +25,9 @@ The maintainer encountered a **local post-migration `make verify` failure** afte
 - [PR #15](https://github.com/spwn02/Miracle/pull/15) was reviewed and **squash-merged** as [`afe9623`](https://github.com/spwn02/Miracle/commit/afe9623ff0c8c3265f9192947f479d7a56f84cbc). A new **read-only** [workspace preflight](../../scripts/ci/check-build-cache.py) checks top-level and nested preset CMake caches against the correct absolute mount path before `make docker-dev` or `make configure`/`verify`. `docker-dev` now **refuses root/sudo**. It never deletes, moves or changes an existing build tree.
 - [Reference C++26 CI #39204012132](https://github.com/spwn02/Miracle/actions/runs/39204012132) **SUCCESS**: checked stale nested Switch cache/valid cache/preset scoping/root-rejection/non-destructive fixtures, **71/71 CTest cases** and all three consumers.
 - [G5 clean Docker #39204012168](https://github.com/spwn02/Miracle/actions/runs/39204012168) **SUCCESS**: full test suite and consumers, actual Neovim↔clangd LSP source symbols, writable workspace persistence; [documentation #39204012143](https://github.com/spwn02/Miracle/actions/runs/39204012143) and [code scanning #39204017813](https://github.com/spwn02/Miracle/actions/runs/39204017813) **SUCCESS** at the same PR revision.
-- **Remaining local observation:** the maintainer has not yet reported rerunning `make verify` after moving the incompatible `build/tests` tree to an unused backup and fixing any sudo-created file ownership. CI proves the guard and canonical build pass; it does **not** establish that the original machine's stale caches were automatically repaired.
+- **Historical local follow-up:** the exact recovery command sequence on the maintainer's host was not independently recorded. The maintainer subsequently stated that everything is working and explicitly approved G5 closeout on 2026-10-19. CI validates the guard and canonical suite; it does not certify which local repair commands were used.
 
-Codespaces stays **declined/unverified**; G5 issue #5 remains **OPEN**. This is a Docker-only reliability fix, not a new compiler or G5 scope change.
+Codespaces stays **declined/unverified**. G5 was subsequently **closed on 2026-10-19** for the approved Docker-only scope, after the maintainer's final confirmation. This remains a Docker-only reliability fix, not a compiler or G5 scope change.
 
 ## Current authoritative decision (2026-10-19)
 
@@ -104,4 +116,4 @@ The LSP evidence upgrades automation coverage, **not** the manual exit gates. G5
 - [x] Direct Docker writable bind mount, matching host UID/GID, CMake compilation database, Neovim↔clangd symbol response and persistence across fresh containers — **SUCCESS** in #39192903330.
 - [ ] GitHub Codespaces live startup/billing/storage/interactive acceptance — **DECLINED, NOT TESTED, excluded from revised implementation**. Do not mark passed.
 
-**G5 issue #5 remains OPEN** solely to preserve the explicitly declined, unverified Codespaces acceptance checkbox and trace the narrower operational scope. Docker-only implementation is technically verified and maintainer-approved. No cloud charges, Codespaces prebuild, registry publication or reference compiler upgrade occurred.
+**G5 issue #5 is CLOSED as completed under the revised Docker-only scope** following explicit maintainer final sign-off. The Codespaces checkbox remains **unchecked: DECLINED / NOT TESTED** and out of scope; this is not an acceptance claim for Codespaces. No cloud charges, Codespaces prebuild, registry publication or reference compiler upgrade occurred.
