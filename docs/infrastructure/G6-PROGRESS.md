@@ -12,9 +12,16 @@ The maintainer provided an actual GitHub **Manage discussion categories** screen
 
 A fresh public GitHub repository read after the screenshot returned **`has_discussions: true`** (previous initial audit: `false`). This establishes that Discussions is now enabled, independently of the screenshot. The category screenshot proves the configured category names and answers setting, **not** that someone posted a real Q&A question and selected an accepted answer.
 
-[SUPPORT.md](../../SUPPORT.md), [issue chooser](../../.github/ISSUE_TEMPLATE/config.yml), README and contributor guidance are being updated to link to the actual category names using GitHub's **conventional default slugs**. Newly created per-category URLs have not been directly fetched/validated by the available integration (attempts to open the newly enabled GitHub page failed due to cache availability). Record category **click-through and real answer-selection** as separate open checks rather than claim completed navigation.
+[SUPPORT.md](../../SUPPORT.md), [issue chooser](../../.github/ISSUE_TEMPLATE/config.yml), README and contributor guidance **now link** to the configured category names using GitHub's conventional default slugs through [merged PR #17](https://github.com/spwn02/Miracle/pull/17). Newly created per-category URLs were not independently fetched/validated by the available integration (attempts to open the newly enabled pages failed due to cache availability). Record category **click-through and real answer-selection** as separate open checks rather than claim completed navigation.
 
 **Current accepted evidence:** feature enabled and four categories correctly configured. **Still outstanding:** browser links and genuine accepted-answer experience, Project #3 membership/automation and live community reporting checks.
+
+## Discussions navigation: real PR, CI and Pages evidence (2026-10-19)
+
+- [PR #17](https://github.com/spwn02/Miracle/pull/17) reviewed and **merged with a history-preserving merge commit** [`9c5c7e8`](https://github.com/spwn02/Miracle/commit/9c5c7e82a066c93a8992305da1be1bc433006b9c). The patch updates support/README/contributor help, the GitHub new-issue chooser, and G6 documentation and regression guard, **without modifying Issues' actionable routes or private security reporting**.
+- [PR-head reference CI #39213814726](https://github.com/spwn02/Miracle/actions/runs/39213814726) **SUCCESS**: **71/71 CTest cases**, all **3/3** consumer modes, and the G6 route guard with **nine negative fixtures** passed.
+- [PR-head mdBook #39213814711](https://github.com/spwn02/Miracle/actions/runs/39213814711) **SUCCESS**. [Post-merge GitHub Pages #39214184308](https://github.com/spwn02/Miracle/actions/runs/39214184308) **SUCCESS**, including rendered navigation and successful `Deploy site`; [post-merge reference C++26 #39214184313](https://github.com/spwn02/Miracle/actions/runs/39214184313) and [master-to-gcc sync #39214184363](https://github.com/spwn02/Miracle/actions/runs/39214184363) **SUCCESS**.
+- **Not yet verified:** GitHub live category URL click-through for each link, real accepted answer to a genuine Q&A question, Project #3 workflow acceptance, the private/community moderation channel, or author G6 sign-off. **Do not close #6.**
 
 ## Genuine G6 issue → implementation → CI → documentation trace (2026-10-19)
 
@@ -47,7 +54,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Genuine intake issue | **Observed** | Existing [G6 issue #6](https://github.com/spwn02/Miracle/issues/6) with real acceptance criteria |
 | Community source routes | **CI-VERIFIED (static)** | [#39206579960](https://github.com/spwn02/Miracle/actions/runs/39206579960) passed five negative fixtures; not a live GitHub UI test |
 | Discussions enabled and four categories | **VERIFIED — configuration only** | Screenshot shows required names and Q&A Answers enabled; fresh repository API reports `has_discussions: true`. Real answered thread **not tested** |
-| Public navigation after Discussions | **IN PROGRESS** | Route links added using GitHub default slugs; exact per-category click-through **not yet verified** |
+| Public navigation after Discussions | **SOURCE/CI VERIFIED; UI PENDING** | [PR #17](https://github.com/spwn02/Miracle/pull/17) merged; nine fixture guard passed, Pages deployed; direct category link click-through still **unverified** |
 | Design → implementation PR | **VERIFIED** | Reviewed and merged [PR #16](https://github.com/spwn02/Miracle/pull/16), commit `43050d7`; parent issue #6 stays open |
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
