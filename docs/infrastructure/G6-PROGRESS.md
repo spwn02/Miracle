@@ -1,10 +1,23 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-19
-**Status:** IN PROGRESS — Discussions activation, required category configuration, and user-tested category navigation verified; real Q&A answer selection and end-to-end G6 acceptance pending
+**Status:** IN PROGRESS — Discussions/category navigation and issue #6 membership in Miracle Development verified; automation, genuine Q&A and full G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Project #3 — real issue membership verified (2026-10-19)
+
+The maintainer ran the read-only command `gh issue view 6 --repo spwn02/Miracle --json projectItems` and supplied its actual JSON output. It reports **two separate Project memberships** for the same real G6 issue:
+
+| Project title returned | Status name returned |
+| --- | --- |
+| `Roadmap` | `Todo` |
+| `Miracle Development` | `Backlog` |
+
+This **verifies that issue #6 is a member of the intended [Miracle Development Project #3](https://github.com/users/spwn02/projects/3)** and that its current reported Project status is **Backlog**, not `Accepted`. The separate `Roadmap` Project is expected to have its own `Todo` status; do not confuse these views.
+
+**Not established by this command:** how or when the issue was added, that the `is:issue` Auto-add rule is correct for future issues, Project view filters, field/status automation safeguards, Phase/Area assignments, or a proper author-approval transition. Historical G2 evidence includes manual Project assignment for existing issues, so **membership alone must not be presented as proof of working automatic intake**. The user can inspect **Project #3 → Settings → Workflows** and use [the read-only G2 audit](../../scripts/github/audit-g2.sh) for the remaining configuration gates. Since G6 implementation is already active, changing the card from `Backlog` to `Implementing` may be appropriate **only as an explicit maintainer project-management decision**; never set `Accepted` automatically.
 
 ## Discussion activation and category evidence (2026-10-19)
 
@@ -16,28 +29,28 @@ A fresh public GitHub repository read after the screenshot returned **`has_discu
 
 **Additional maintainer UI evidence (2026-10-19):** The maintainer explicitly reported that **all four advertised category links open correctly** and provided a screenshot showing the **Ideas** page selected, with `is:open category:Ideas` and `There are no matching discussions`. Empty categories are an expected initial condition; no synthetic post has been created. This is **maintainer-reported browser verification** of navigation, not a machine-verified HTTP check for every category and not a test of creating/answering a real Q&A post.
 
-**Current accepted evidence:** Discussions enabled, all four categories configured, and all four links confirmed working by the maintainer. **Still outstanding:** genuine Q&A accepted-answer experience, Project #3 membership/automation and live community reporting checks.
+**Current accepted evidence:** Discussions enabled, four categories configured, their links confirmed working by the maintainer, and G6 issue #6 genuinely present in Miracle Development Project #3. **Still outstanding:** genuine Q&A accepted-answer experience, Project #3 automation/view safeguards and live community reporting checks.
 
 ## Discussions navigation: real PR, CI and Pages evidence (2026-10-19)
 
 - [PR #17](https://github.com/spwn02/Miracle/pull/17) reviewed and **merged with a history-preserving merge commit** [`9c5c7e8`](https://github.com/spwn02/Miracle/commit/9c5c7e82a066c93a8992305da1be1bc433006b9c). The patch updates support/README/contributor help, the GitHub new-issue chooser, and G6 documentation and regression guard, **without modifying Issues' actionable routes or private security reporting**.
 - [PR-head reference CI #39213814726](https://github.com/spwn02/Miracle/actions/runs/39213814726) **SUCCESS**: **71/71 CTest cases**, all **3/3** consumer modes, and the G6 route guard with **nine negative fixtures** passed.
 - [PR-head mdBook #39213814711](https://github.com/spwn02/Miracle/actions/runs/39213814711) **SUCCESS**. [Post-merge GitHub Pages #39214184308](https://github.com/spwn02/Miracle/actions/runs/39214184308) **SUCCESS**, including rendered navigation and successful `Deploy site`; [post-merge reference C++26 #39214184313](https://github.com/spwn02/Miracle/actions/runs/39214184313) and [master-to-gcc sync #39214184363](https://github.com/spwn02/Miracle/actions/runs/39214184363) **SUCCESS**.
-- **Verified after PR #17:** The maintainer reports all four category links open correctly, with screenshot evidence for the Ideas category. **Not yet verified:** an accepted answer on a genuine Q&A question, Project #3 workflow acceptance, the private/community moderation channel, or author G6 sign-off. **Do not close #6.**
+- **Verified after PR #17:** The maintainer reports all four category links open correctly, with screenshot evidence for the Ideas category. The `gh issue view 6 --json projectItems` output also confirms issue #6 in Project #3 with status `Backlog`. **Not yet verified:** an accepted answer on a genuine Q&A question, Project #3 workflow/auto-add acceptance, the private/community moderation channel, or author G6 sign-off. **Do not close #6.**
 
 ## Genuine G6 issue → implementation → CI → documentation trace (2026-10-19)
 
 This is a **real, observed workflow**, not a fabricated demonstration:
 
-1. **Intake:** existing [G6 issue #6](https://github.com/spwn02/Miracle/issues/6), with authentic infrastructure goal/criteria. GitHub timeline shows Project auto-add/status events; it does **not** identify Project #3 or prove correct automation.
+1. **Intake:** existing [G6 issue #6](https://github.com/spwn02/Miracle/issues/6), with authentic infrastructure goal/criteria. The maintainer's `gh issue view 6 --json projectItems` output now **explicitly confirms Miracle Development membership and Backlog status**. Historical GitHub timeline Project-add events alone did not identify Project #3 and still do **not** prove correctly configured ongoing automation.
 2. **Design/authority:** repository-locked [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md) §4/§9–§10, this [operating plan](G6-OPERATING-PLAN.md) and G6 ledger; no new product API or contract amendment was silently approved.
 3. **Implementation/review:** [PR #16](https://github.com/spwn02/Miracle/pull/16) reviewed with explicit remaining gates and merged using a **history-preserving merge commit** [`43050d7`](https://github.com/spwn02/Miracle/commit/43050d70f4cbad41e65501b0428b4a60836b5b0c). PR-head SHA: `63e88c1b788d774389c17100f4e6d630758b816c`.
 4. **Verification:** [PR-head reference C++26 CI #39206579960](https://github.com/spwn02/Miracle/actions/runs/39206579960) **SUCCESS**: new G6 source-route + **five negative fixtures** passed, **71/71** CTest cases and all three consumer modes passed. [PR-head mdBook #39206579929](https://github.com/spwn02/Miracle/actions/runs/39206579929) **SUCCESS**. On the merge commit, [reference CI #39206970818](https://github.com/spwn02/Miracle/actions/runs/39206970818) **SUCCESS** and [`master`→`gcc` sync #39206970799](https://github.com/spwn02/Miracle/actions/runs/39206970799) **SUCCESS**.
 5. **Release-facing documentation:** [post-merge GitHub Pages #39206970782](https://github.com/spwn02/Miracle/actions/runs/39206970782) **SUCCESS**, including generated G6 operating-plan and progress chapters, navigation/search verification, and successful `Deploy site` job. Direct public CDN/browser appearance was **not** independently checked by the available integration; this is confirmed Actions deployment evidence, not a UI accessibility audit.
-6. **Acceptance:** **NOT YET ACCEPTED.** Discussions activation and category configuration are verified, and all category links are **maintainer-reported working**. Real Q&A accepted-answer behavior and Project #3 remain unverified, G1.5/G2/G3/G4 acceptance issues are independently open, and no final G6 sign-off was supplied.
+6. **Acceptance:** **NOT YET ACCEPTED.** Discussions activation, category configuration and maintainer-tested links are verified; issue #6's **Project #3 membership is confirmed** but ongoing Project workflows/views are not. Real Q&A accepted-answer behavior remains untested, G1.5/G2/G3/G4 acceptance issues remain independently open, and no final G6 sign-off was supplied.
 7. **Release/versioning:** This PR adds infrastructure process docs/tests, not a library release; no new tag/release was generated. Existing `v0.5.27` public release and its comparison link were observed, but its end-to-end CI/tag/release provenance was **not** audited. Thus the complete release-documentation acceptance gate remains **open** until genuine applicable release evidence or an explicitly approved narrower acceptance interpretation exists.
 
-**Actual demonstrated path:** issue #6 → reviewed PR #16 → passing reference CI → merge commit → successful mdBook Pages deployment. **Category navigation subsequently verified by maintainer. Not yet demonstrated:** real Q&A accepted-answer participation, correct Project #3 transitions, remaining live reporter/maintainer UI, release provenance, and final author acceptance.
+**Actual demonstrated path:** issue #6 → reviewed PR #16 → passing reference CI → merge commit → successful mdBook Pages deployment. **Category navigation and current issue #6 Project #3 membership subsequently verified by maintainer. Not yet demonstrated:** real Q&A accepted-answer participation, Project automation/status transitions and safeguards, remaining live reporter/maintainer UI, release provenance, and final author acceptance.
 
 ## Baseline read-only repository audit (2026-10-19)
 
@@ -60,7 +73,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Design → implementation PR | **VERIFIED** | Reviewed and merged [PR #16](https://github.com/spwn02/Miracle/pull/16), commit `43050d7`; parent issue #6 stays open |
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
-| Issue #6 in Project #3 | **UNVERIFIED** | Maintainer to check `gh issue view 6 --json projectItems` and workflows |
+| Issue #6 in Project #3 | **MEMBERSHIP VERIFIED; WORKFLOWS PENDING** | Maintainer-supplied `gh issue view 6 --json projectItems`: `Miracle Development` / `Backlog`, plus separate `Roadmap` / `Todo`. No evidence yet that Auto-add rule, views or acceptance-safe workflows work correctly |
 | Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **PARTIAL / UNVERIFIED** | Infrastructure-only PR: no tag or release required; existing v0.5.27 observed, full release provenance not audited |
