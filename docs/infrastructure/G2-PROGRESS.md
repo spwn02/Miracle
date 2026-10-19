@@ -3,10 +3,16 @@
 **Updated:** 2026-10-19
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** G2 Project configuration and acceptance-safe workflows screenshot-verified; real documentation issue #8 in Project #3, but causal automatic intake, a real controlled status transition and author sign-off remain pending
+**Status:** Project configuration and real maintainer-authorized status transition verified; causal auto-intake into Project #3 and final G2 acceptance pending
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Maintainer-authorized Project status transition (2026-10-19)
+
+The maintainer manually moved authentic G6 issue #6 from `Backlog` to `Implementing` in Miracle Development Project #3. The before/after `gh issue view 6 --repo spwn02/Miracle --json projectItems` results identify the two options (`f75ad846` and `ada290ce`) and show that the separate Roadmap project stayed at `Todo`. GitHub's issue #6 timeline independently records `project_v2_item_status_changed` by `spwn02` at 2026-10-19 15:20:32 UTC; that event alone does not identify the Project, so the two CLI snapshots provide the Project-specific evidence.
+
+**Verified:** a real owner-authorized Project #3 status transition without assigning `Accepted`. **Still open:** independently attributable automatic enrollment of a new non-bug issue into Project #3 and explicit maintainer G2 phase acceptance. Issue #2 remains open.
 
 ## Follow-up: disable status regression; verify real issue #8 membership (2026-10-19)
 
@@ -237,6 +243,7 @@ Project view configuration, saved filters and the Auto-add rule must still be ch
 - [ ] Prove *automatic* future enrollment specifically into target Project #3 (event lacks target Project ID; current membership could have changed manually).
 - [x] Verify `Auto-close issue`, `Item closed`, and `Pull request merged` are **Off** in the Project #3 workflow UI.
 - [x] Inspect workflow actions; none directly sets `Accepted`. `PR linked → Design` **was disabled by maintainer**; three safe configured workflows remain enabled.
-- [ ] Verify a real workflow status transition and explicit author acceptance.
+- [x] Verify actual maintainer-authorized Project #3 status transition: real issue #6 `Backlog → Implementing`, with before/after projectItems and owner event.
+- [ ] Obtain final G2 author acceptance after remaining causal auto-add acceptance.
 
 **Status is not ACCEPTED until the remaining gates pass.** Work on later infrastructure tasks can progress in parallel without misreporting G2 completion.
