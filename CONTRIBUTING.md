@@ -7,8 +7,8 @@ Miracle is pre-1.0. An issue or pull request is a proposal for review, **not** a
 ## Before contributing
 
 - Read the [Development Protocol](docs/DEVELOPMENT_PROTOCOL.md) for the project's design, review, and acceptance process. Existing locked contracts remain authoritative unless explicitly amended.
-- Browse [existing issues](https://github.com/spwn02/Miracle/issues) and the [documentation](docs/).
-- Use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) for a library bug, compiler/toolchain problem, feature proposal, architectural change, or infrastructure request.
+- Browse [existing issues](https://github.com/spwn02/Miracle/issues), [Discussions](https://github.com/spwn02/Miracle/discussions) for community questions and exploratory ideas, and the [documentation](docs/).
+- Use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) for an actionable library bug, compiler/toolchain problem, concrete feature proposal, architectural change, or infrastructure request. For unanswered community questions, visit [Q&A](https://github.com/spwn02/Miracle/discussions/categories/q-a); for preliminary brainstorming, visit [Ideas](https://github.com/spwn02/Miracle/discussions/categories/ideas). A Discussion is not an approved contract.
 - For general support routes, consult [SUPPORT.md](SUPPORT.md); for conduct concerns, consult [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 - **Do not disclose security vulnerabilities in a public issue or pull request.** Follow [SECURITY.md](SECURITY.md).
 - Accessibility barriers in the documentation or contribution workflow can be reported as infrastructure requests; see [ACCESSIBILITY.md](ACCESSIBILITY.md).

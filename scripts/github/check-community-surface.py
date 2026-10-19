@@ -33,6 +33,8 @@ def scan_text(source: dict[str, str]) -> list[str]:
     require(chooser, "blank_issues_enabled: false")
     require(chooser, REPO + "/blob/master/SECURITY.md")
     require(chooser, REPO + "/blob/master/CONTRIBUTING.md")
+    require(chooser, REPO + "/discussions/categories/q-a")
+    require(chooser, REPO + "/discussions/categories/ideas")
     for form in FORMS:
         path = ".github/ISSUE_TEMPLATE/" + form
         require(path, "name:")
@@ -42,7 +44,11 @@ def scan_text(source: dict[str, str]) -> list[str]:
 
     require("SUPPORT.md", "[SECURITY.md](SECURITY.md)")
     require("SUPPORT.md", "[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)")
-    require("SUPPORT.md", "not yet enabled")
+    for category in ("q-a", "ideas", "announcements", "show-and-tell"):
+        require("SUPPORT.md", REPO + "/discussions/categories/" + category)
+    require("SUPPORT.md", "Answers enabled")
+    require("README.md", REPO + "/discussions")
+    require("CONTRIBUTING.md", REPO + "/discussions/categories/q-a")
     require("SECURITY.md", "private vulnerability reporting")
     require("CODE_OF_CONDUCT.md", "confidential")
     require("CONTRIBUTING.md", "docs/DEVELOPMENT_PROTOCOL.md")
@@ -60,7 +66,7 @@ def scan_text(source: dict[str, str]) -> list[str]:
             errors.append(path + ": empty or missing")
         require("docs/SUMMARY.md", "infrastructure/" + page)
 
-    require("docs/infrastructure/G6-PROGRESS.md", "has_discussions: false")
+    require("docs/infrastructure/G6-PROGRESS.md", "has_discussions: true")
     require("docs/infrastructure/G6-OPERATING-PLAN.md", "Project #3")
     return errors
 
@@ -94,6 +100,14 @@ def negative_fixtures(base: dict[str, str]) -> list[str]:
          REPO + "/blob/master/SECURITY.md"),
         ("removed PR verification evidence", ".github/PULL_REQUEST_TEMPLATE.md",
          "Verification evidence"),
+        ("removed Q&A issue chooser route", ".github/ISSUE_TEMPLATE/config.yml",
+         REPO + "/discussions/categories/q-a"),
+        ("removed Ideas issue chooser route", ".github/ISSUE_TEMPLATE/config.yml",
+         REPO + "/discussions/categories/ideas"),
+        ("removed support Show and tell route", "SUPPORT.md",
+         REPO + "/discussions/categories/show-and-tell"),
+        ("removed contributing Q&A route", "CONTRIBUTING.md",
+         REPO + "/discussions/categories/q-a"),
         ("missing G6 documentation navigation", "docs/SUMMARY.md",
          "infrastructure/G6-PROGRESS.md"),
     )
@@ -119,8 +133,8 @@ def main() -> int:
         for error in errors:
             print("ERROR:", error, file=sys.stderr)
         return 1
-    print("PASS: G6 source routes, policies, issue/PR intake, mdBook navigation and 5 negative fixtures")
-    print("NOTE: GitHub Discussions, live forms, private contact and Project #3 require independent checks.")
+    print("PASS: G6 source routes, policies, issue/PR intake, mdBook navigation and 9 negative fixtures")
+    print("NOTE: GitHub category click-through, real Q&A answers, live forms, private contact and Project #3 require independent checks.")
     return 0
 
 
