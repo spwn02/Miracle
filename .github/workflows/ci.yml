@@ -45,6 +45,7 @@ jobs:
           python3 scripts/ci/test-ci-helpers.py
           python3 scripts/ci/check-docker.py
           python3 scripts/ci/check-makefile.py
+          python3 scripts/ci/test-build-cache-guard.py
           python3 -m py_compile scripts/ci/verify-reference-toolchain.py
           bash -n scripts/ci/verify-container.sh
           python3 -m py_compile scripts/github/reconcile-rulesets.py

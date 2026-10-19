@@ -41,6 +41,8 @@ def check(root: Path) -> list[str]:
             faults.append(f"missing Dockerfile invariant: {fragment}")
     if (root / ".devcontainer/devcontainer.json").exists() or (root / ".devcontainer/Dockerfile").exists():
         faults.append("Docker-only G5 must not depend on a devcontainer")
+    if "check-build-cache.py" not in makefile or "--require-non-root" not in makefile:
+        faults.append("docker-dev must refuse root and incompatible existing CMake caches")
     if "-f Dockerfile" not in makefile or "docker-dev:" not in makefile:
         faults.append("Makefile must expose root Dockerfile and persistent docker-dev target")
     for fragment in (

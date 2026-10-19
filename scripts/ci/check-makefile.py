@@ -34,6 +34,7 @@ def main() -> int:
 
     configure = invoke("-n", "configure", "PRESET=release", "TOOLCHAIN=/tmp/cxx26/toolchain.cmake")
     requires(configure, 'cmake --preset "release" --fresh', 'CMAKE_TOOLCHAIN_FILE="/tmp/cxx26/toolchain.cmake"')
+    requires(configure, "check-build-cache.py", '--expected-root "', '--preset "release"')
     requires(invoke("-n", "build", "PRESET=debug", "TOOLCHAIN=/tmp/cxx26/toolchain.cmake"),
              'cmake --build --preset "debug"', '--parallel "2"')
     requires(invoke("-n", "test", "TOOLCHAIN=/tmp/cxx26/toolchain.cmake"),
@@ -45,6 +46,8 @@ def main() -> int:
              "mock-docker run --rm --platform linux/amd64", '"my-cxx26:test"',
              "bash scripts/ci/verify-container.sh'")
     requires(invoke("-n", "docker-smoke"), "bash scripts/ci/verify-container.sh --smoke")
+    requires(invoke("-n", "docker-dev"), "check-build-cache.py",
+             "--expected-root /workspace/Miracle", "--require-non-root")
     requires(invoke("-n", "docker-dev"), "--user", "id -u", "id -g",
              "type=bind", "target=/workspace/Miracle", "--env HOME=/tmp", "--workdir /workspace/Miracle")
     requires(invoke("-n", "docker-shell"), "readonly", "exec bash")

@@ -203,6 +203,7 @@ Miracle uses a single [root Dockerfile](Dockerfile) with the same coherent `clan
 ```sh
 make docker-build
 make docker-dev    # live bind-mounted checkout; edits persist on host
+# Do not run this target with sudo; it checks for root and incompatible CMake caches.
 # In Docker shell:
 bash scripts/ci/verify-container.sh --smoke
 make verify
