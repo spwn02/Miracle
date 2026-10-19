@@ -1,10 +1,16 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-19
-**Status:** IN PROGRESS — Discussions/category navigation and issue #6 membership in Miracle Development verified; automation, genuine Q&A and full G6 acceptance pending
+**Status:** IN PROGRESS — Discussions/category navigation, issue #6 Project #3 membership and project Auto-add rule verified; actual future auto-intake, enabled workflow actions and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Project #3 — Auto-add and workflow UI evidence (2026-10-19)
+
+The maintainer supplied a screenshot from **Miracle Development → Settings → Workflows**. The `Auto-add to project` workflow is visibly **On**, restricted to repository **Miracle**, uses exactly **`is:issue`** as its filter and performs **Add the item to the project**. The screenshot also shows **Auto-add sub-issues to project**, **Item added to project**, and **Pull request linked to issue** enabled. Crucially, **Auto-close issue**, **Item closed**, and **Pull request merged** are **Off**; no default workflow among those three can automatically mark a completion by running while disabled.
+
+This verifies **current configuration**, distinct from the prior `gh issue view 6 --json projectItems` output showing actual membership. The currently enabled `Item added to project` and `Pull request linked to issue` actions are **not visible** in the screenshot; neither can be certified acceptance-safe yet. The new-issue auto-add *result* and Project #3's acceptance-sensitive status transitions also remain **unverified**. This screenshot alone does not demonstrate that a future new real issue enters Project #3 without manual intervention or that `Accepted` requires maintainer action. Refer to the [G2 verification ledger](G2-PROGRESS.md) for the independent workstream gate.
 
 ## Project #3 — real issue membership verified (2026-10-19)
 
@@ -17,7 +23,7 @@ The maintainer ran the read-only command `gh issue view 6 --repo spwn02/Miracle 
 
 This **verifies that issue #6 is a member of the intended [Miracle Development Project #3](https://github.com/users/spwn02/projects/3)** and that its current reported Project status is **Backlog**, not `Accepted`. The separate `Roadmap` Project is expected to have its own `Todo` status; do not confuse these views.
 
-**Not established by this command:** how or when the issue was added, that the `is:issue` Auto-add rule is correct for future issues, Project view filters, field/status automation safeguards, Phase/Area assignments, or a proper author-approval transition. Historical G2 evidence includes manual Project assignment for existing issues, so **membership alone must not be presented as proof of working automatic intake**. The user can inspect **Project #3 → Settings → Workflows** and use [the read-only G2 audit](../../scripts/github/audit-g2.sh) for the remaining configuration gates. Since G6 implementation is already active, changing the card from `Backlog` to `Implementing` may be appropriate **only as an explicit maintainer project-management decision**; never set `Accepted` automatically.
+**Not established by this command alone:** how or when the issue was added, correct automatic enrollment of future issues, Project view filters, Phase/Area assignments, or a proper author-approval transition. The later workflow screenshot independently verifies the `is:issue` rule and the three disabled close/merge defaults, but does not exercise automatic intake or show the two remaining enabled workflow actions. Historical G2 evidence includes manual Project assignment for existing issues, so **membership alone must not be presented as proof of working automatic intake**. The user can inspect **Project #3 → Settings → Workflows** and use [the read-only G2 audit](../../scripts/github/audit-g2.sh) for the remaining configuration gates. Since G6 implementation is already active, changing the card from `Backlog` to `Implementing` may be appropriate **only as an explicit maintainer project-management decision**; never set `Accepted` automatically.
 
 ## Discussion activation and category evidence (2026-10-19)
 
@@ -73,7 +79,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Design → implementation PR | **VERIFIED** | Reviewed and merged [PR #16](https://github.com/spwn02/Miracle/pull/16), commit `43050d7`; parent issue #6 stays open |
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
-| Issue #6 in Project #3 | **MEMBERSHIP VERIFIED; WORKFLOWS PENDING** | Maintainer-supplied `gh issue view 6 --json projectItems`: `Miracle Development` / `Backlog`, plus separate `Roadmap` / `Todo`. No evidence yet that Auto-add rule, views or acceptance-safe workflows work correctly |
+| Issue #6 in Project #3 | **MEMBERSHIP AND AUTO-ADD CONFIG VERIFIED; WORKFLOW BEHAVIOR PENDING** | CLI: `Miracle Development / Backlog` and separate `Roadmap / Todo`. Screenshot: Auto-add On, repository `Miracle`, filter `is:issue`; auto-close, item-close and PR-merged workflows Off. Actual new-issue intake and enabled actions/transition remain unverified |
 | Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **PARTIAL / UNVERIFIED** | Infrastructure-only PR: no tag or release required; existing v0.5.27 observed, full release provenance not audited |
