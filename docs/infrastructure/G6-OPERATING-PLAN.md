@@ -76,18 +76,26 @@ gh issue view 6 --repo spwn02/Miracle --json projectItems
 bash scripts/github/audit-g2.sh
 ```
 
-**Membership verified (2026-10-19):** The maintainer supplied `gh issue view 6 --repo spwn02/Miracle --json projectItems` output showing `Miracle Development` / `Backlog` and separate `Roadmap` / `Todo`. That establishes real issue #6 membership in Project #3. It does **not** validate the configured `is:issue` Auto-add filter, future issue intake, Project view filters, workflow safety or an `Accepted` transition. Keep those independent checks open; `Backlog` is a current reported status, **not G6 acceptance**.
+**Project membership and transition verified (2026-10-19):** The maintainer's original `gh issue view 6 --repo spwn02/Miracle --json projectItems` response showed `Miracle Development / Backlog` and separate `Roadmap / Todo`. A later owner-authorized action moved issue #6 to `Implementing` in Project #3, with Roadmap unchanged; before/after CLI and GitHub's owner-authored status-change event confirm this real transition. The `is:issue` auto-add configuration and disabled acceptance-bypassing workflows were also reviewed, but a future genuine non-bug issue's **causal automatic enrollment specifically into Project #3** remains unverified. `Implementing` is not `Accepted`.
 
 The results must show the actual `Miracle Development` project, valid workflow settings, and the acceptance status only when the maintainer authorizes it. **Do not equate an auto-add event with Project #3 membership**.
+
+## Genuine historical release-provenance audit (2026-10-19)
+
+Public [release v0.5.27](https://github.com/spwn02/Miracle/releases/tag/v0.5.27) (ID `414415213`) was published **2026-10-16 00:47:37 UTC**. GitHub's actual tag reference `refs/tags/v0.5.27` resolves to source commit `e1e5817c651d124d02930b86510e2b05fb7c7d2d`.
+
+[Release workflow #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086) **succeeded on this exact commit**. The reusable reference CI job `116750205166` passed **71/71 CTest** and three consumer modes. The dependent release job `116751054300` passed `Validate release provenance`, `Write release provenance` and `Create GitHub release`; its log shows the same `SOURCE_REVISION`. The tagged workflow validates the tag/version pairing and `master` ancestry. The resulting published release contains `release-metadata.json`, uploaded by `github-actions[bot]` (asset ID `645665032`, 608 bytes, API SHA-256 `27a7a78fea1df167a79e6e7386bc62efe4faf257212d5fa09f8453248cba9635`), and a real GitHub version-comparison link.
+
+**Evidence boundary:** The released metadata bytes and individual JSON field values have **not** been independently downloaded/read; the successful creation and public attachment are verified. The infrastructure-only G6 work did not require a new C++ library release, and no tag/release was created for this audit. [CHANGELOG.md](../../CHANGELOG.md) remains the product change log.
 
 ## 4. Definition of done
 
 - [x] Discussions enabled and four required categories visually confirmed; GitHub Q&A **Answers enabled** setting visible. **Still pending:** a real accepted-answer workflow (do not conflate configuration with behavior).
-- [ ] Routing to live Discussions categories updated without regressing security or actionable issue intake.
+- [x] Routing to live Discussions categories updated by PR #17, with nine negative route fixtures and owner-confirmed click-through. Actual confidential-reporting UI behavior remains a separate open gate.
 - [ ] Actual issue → reviewed PR → verified commit/CI → docs publication → explicit acceptance trail recorded in [G6 ledger](G6-PROGRESS.md).
 - [ ] Contributor forms, PR prepopulation, community standards and confidentiality routes inspected in GitHub UI, distinguishing absent private moderation inbox from private vulnerability reporting.
 - [ ] Project #3 membership/views/automation and published mdBook chapter verified without manufactured status changes.
-- [ ] Release documentation/provenance accurately marked as applicable or **not applicable**, without fabricated tags/releases.
+- [x] Existing real [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27) traced to [Release workflow #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086) with tagged source commit, 71/71 tests, three consumer modes, provenance generation and public metadata attachment. G6 infrastructure docs have no new product release, as intended. Downloaded metadata JSON fields not independently inspected.
 - [ ] Author explicitly accepts G6. Only then close [issue #6](https://github.com/spwn02/Miracle/issues/6).
 
 **Never close G6 merely because a static check passes or a PR merges.**
