@@ -6,6 +6,17 @@
 **Issue:** [#5](https://github.com/spwn02/Miracle/issues/5)
 **Contract:** [G5 operating plan](G5-OPERATING-PLAN.md)
 
+## Docker workspace cache and sudo preflight — fixed (2026-10-19)
+
+The maintainer encountered a **local post-migration `make verify` failure** after using `sudo make docker-dev` with a persistent checkout. Their Switch capability `configure.log` recorded a **stale nested CMake cache** created under the previous devcontainer path `/workspaces/Miracle` while the current Docker-only mount is `/workspace/Miracle`. `cmake --fresh` does not reset that nested Switch project cache. `sudo make docker-dev` also maps the working checkout as UID 0 inside Docker and risks leaving root-owned build outputs.
+
+- [PR #15](https://github.com/spwn02/Miracle/pull/15) was reviewed and **squash-merged** as [`afe9623`](https://github.com/spwn02/Miracle/commit/afe9623ff0c8c3265f9192947f479d7a56f84cbc). A new **read-only** [workspace preflight](../../scripts/ci/check-build-cache.py) checks top-level and nested preset CMake caches against the correct absolute mount path before `make docker-dev` or `make configure`/`verify`. `docker-dev` now **refuses root/sudo**. It never deletes, moves or changes an existing build tree.
+- [Reference C++26 CI #39204012132](https://github.com/spwn02/Miracle/actions/runs/39204012132) **SUCCESS**: checked stale nested Switch cache/valid cache/preset scoping/root-rejection/non-destructive fixtures, **71/71 CTest cases** and all three consumers.
+- [G5 clean Docker #39204012168](https://github.com/spwn02/Miracle/actions/runs/39204012168) **SUCCESS**: full test suite and consumers, actual Neovim↔clangd LSP source symbols, writable workspace persistence; [documentation #39204012143](https://github.com/spwn02/Miracle/actions/runs/39204012143) and [code scanning #39204017813](https://github.com/spwn02/Miracle/actions/runs/39204017813) **SUCCESS** at the same PR revision.
+- **Remaining local observation:** the maintainer has not yet reported rerunning `make verify` after moving the incompatible `build/tests` tree to an unused backup and fixing any sudo-created file ownership. CI proves the guard and canonical build pass; it does **not** establish that the original machine's stale caches were automatically repaired.
+
+Codespaces stays **declined/unverified**; G5 issue #5 remains **OPEN**. This is a Docker-only reliability fix, not a new compiler or G5 scope change.
+
 ## Current authoritative decision (2026-10-19)
 
 The maintainer explicitly reported these manual acceptance results in the G5 continuation:
