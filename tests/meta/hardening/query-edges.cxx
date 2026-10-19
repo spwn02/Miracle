@@ -1,5 +1,6 @@
 import std;
 import Miracle.Meta;
+
 using Miracle::meta::query;
 
 consteval auto boundaries() -> bool {
@@ -70,11 +71,11 @@ consteval auto unwinding() -> bool {
   std::array input{1};
   int alive{};
   try {
-    query(input)
-        .map([&](int) consteval { return Tracked{alive}; })
-        .map([](Tracked &&value) consteval { return Tracked{*value.alive}; })
-        .inspect([](const Tracked &) consteval -> void { throw 17; })
-        .count();
+    auto _ = query(input)
+                 .map([&](int) consteval { return Tracked{alive}; })
+                 .map([](Tracked &&value) consteval { return Tracked{*value.alive}; })
+                 .inspect([](const Tracked &) consteval -> void { throw 17; })
+                 .count();
   } catch (int value) {
     return value == 17 && alive == 0;
   }
