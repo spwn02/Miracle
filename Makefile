@@ -79,7 +79,7 @@ docker-verify: docker-build ## Build the image and run the complete container su
 
 docker-dev: ## Run shell with live host checkout mounted writable as host UID/GID
 	$(DOCKER) run --rm -it --platform linux/amd64 \
-	  --user "$(id -u):$(id -g)" --env HOME=/tmp \
+	  --user "$$(id -u):$$(id -g)" --env HOME=/tmp \
 	  --mount 'type=bind,source=$(CURDIR),target=/workspace/Miracle' \
 	  --workdir /workspace/Miracle \
 	  "$(IMAGE)" bash
