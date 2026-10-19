@@ -15,7 +15,7 @@ The underlying authority remains repository-tracked contracts and the maintainer
 
 At the initial G6 audit on **2026-10-19**, the public repository API reported `has_discussions: false`. **Later that day**, the maintainer supplied a screenshot of the live **Manage discussion categories** screen, showing **Announcements**, **Ideas**, **Q&A** (**Answers enabled**), and **Show and tell**; optional **General** and **Polls** also exist. A fresh public repository API check then returned **`has_discussions: true`**. These are independent pieces of evidence for **activation and category configuration**, not a test of a real accepted answer.
 
-The navigational links in [Support](../../SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve this newly enabled repository's individual category pages; **click-through checks remain pending**. No fabricated Discussion was created.
+The navigational links in [Support](../../SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve individual category pages; the maintainer subsequently **confirmed that all four advertised links open correctly** in a real browser and supplied a screenshot of the selected empty **Ideas** category. The UI check is maintainer-reported. No fabricated Discussion was created.
 
 Owner-facing follow-up:
 
@@ -23,8 +23,8 @@ Maintainer checklist:
 
 1. **Completed, verified:** [Miracle Settings](https://github.com/spwn02/Miracle/settings) → **General** → **Features**, **Discussions** enabled (`has_discussions: true`).
 2. **Completed, screenshot-verified:** [Discussion categories](https://github.com/spwn02/Miracle/discussions/categories) show **Q&A** (Answers enabled), **Ideas**, **Announcements**, and **Show and tell**. General/Polls are valid optional categories, not missing or additional required gates.
-3. **Pending:** Open the public [Discussions page](https://github.com/spwn02/Miracle/discussions) and click each advertised category link; validate Q&A marking an answer using an **authentic** question when one exists. Do not post meaningless test content to satisfy the gate.
-4. **Partially verified:** screenshot proves names and Q&A setting; API proves activation. Exact URL slug click-through and actual accepted-answer behavior remain **unverified**.
+3. **Category navigation completed (maintainer-reported):** All four links open correctly. The owner supplied a screenshot of the Ideas category, which currently has no matching discussions. **Still pending:** Validate Q&A answer selection using an authentic question when one exists; no meaningless test content is required.
+4. **Configuration and navigation verified:** category setup screenshot + API activation + maintainer-reported click-through of all four URLs. Actual accepted-answer behavior remains **unverified**.
 
 Optional read-only maintainer terminal check:
 
@@ -39,7 +39,7 @@ gh api graphql -f query='query {
 }'
 ```
 
-`SUPPORT.md`, `.github/ISSUE_TEMPLATE/config.yml`, `README.md`, and contributor guidance now advertise the configured categories using conventional GitHub category URL slugs; navigation remains subject to actual human click-through verification. Route open-ended questions to Discussions while keeping **actionable** bugs, proposals, compiler defects and infrastructure requests in structured Issues. Product API proposals remain subject to formal design-contract approval even if discussed publicly.
+`SUPPORT.md`, `.github/ISSUE_TEMPLATE/config.yml`, `README.md`, and contributor guidance now advertise the configured categories using conventional GitHub category URL slugs; navigation was subsequently confirmed by the maintainer opening all four category links. Route open-ended questions to Discussions while keeping **actionable** bugs, proposals, compiler defects and infrastructure requests in structured Issues. Product API proposals remain subject to formal design-contract approval even if discussed publicly.
 
 ## 2. Existing community surface
 
