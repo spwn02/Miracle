@@ -35,15 +35,23 @@ This policy does not forbid respectful disagreement, justified negative code rev
 
 ## Reporting concerns
 
-For objectionable content on GitHub, use the relevant **Report content** option when available. GitHub may offer a route to report to repository administrators or to GitHub Support depending on the repository and the reporting feature's availability.
+For project-specific Code of Conduct concerns, contact the Miracle maintainer privately at **[spwn02.dev@gmail.com](mailto:spwn02.dev@gmail.com)**.
 
-For abuse that violates GitHub's platform rules, use [GitHub's abuse-reporting instructions](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam).
+Use the subject line `Miracle — Code of Conduct Report` to help distinguish conduct reports from ordinary project correspondence.
 
-For project-specific concerns that require private communication, check the [maintainer's GitHub profile](https://github.com/spwn02) for an available private contact method and request a private channel before sharing sensitive details. **Miracle does not currently advertise a verified confidential project-specific reporting inbox.** Do not post names, private messages, personal information, or confidential allegations in a public issue to work around that limitation.
+When reporting a concern, include only the information necessary to understand the incident:
 
-Security vulnerabilities follow the separate [security policy](SECURITY.md), not this community-conduct reporting path.
+- A brief description of the behavior.
+- Relevant GitHub links and approximate dates or times.
+- Supporting context or evidence you are comfortable providing.
 
-When reporting, provide only the relevant links, approximate time, description of behavior, and available context. Do not feel obliged to engage further with the person involved.
+Do not disclose passwords, credentials, unnecessary personal information, or confidential allegations in public issues, pull requests, or discussions. You are not required to confront or engage further with the person involved.
+
+**Alternative reporting channels:** For objectionable content on GitHub, use the relevant **Report content** action when available. For violations of GitHub's platform rules, follow [GitHub's abuse-reporting instructions](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam).
+
+If the concern involves the project maintainer, or you are uncomfortable reporting directly to them, GitHub's reporting mechanisms may provide an alternative where applicable. Miracle currently has no independent project-specific moderation or appeals body.
+
+Security vulnerabilities must follow the separate [security policy](SECURITY.md). The conduct-reporting mailbox is not a substitute for private vulnerability reporting.
 
 ## Moderation and enforcement
 
@@ -57,9 +65,9 @@ The repository maintainer is responsible for interpreting and applying this poli
 
 Actions should be proportionate to the behavior and consider participant safety, context, and prior incidents. The maintainer should avoid conflicts of interest where practical, communicate reasons when safe to do so, and not disclose sensitive reports unnecessarily.
 
-A person affected by a moderation decision may request reconsideration through any available private maintainer contact; an appeal does not guarantee reversal. GitHub's own platform enforcement is separate from Miracle's moderation.
+A person affected by a moderation decision may request reconsideration through the designated private conduct-reporting email address. An appeal does not guarantee reversal. GitHub's own platform enforcement is separate from Miracle's moderation.
 
-Reports will be handled with care and discretion, but **absolute confidentiality or a particular response time cannot be promised** without a dedicated private reporting channel.
+Reports will be handled with care and discretion. Information will be disclosed only when reasonably necessary for review, safety, or enforcement. Email is not inherently anonymous or end-to-end encrypted. **Absolute confidentiality, anonymity, and a particular response time cannot be guaranteed.**
 
 ## Scope and reference
 
