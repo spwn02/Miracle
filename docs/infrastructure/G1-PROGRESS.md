@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; live chooser/forms, community standards and policy navigation partially verified. Security chooser opens policy from both entries; private vulnerability reporting state unverified. Submission blocking, PR prefill and acceptance pending
+**Status:** G1.1–G1.4 implemented; live chooser/forms, community standards and policy navigation partially verified. Private vulnerability reporting ENABLED per maintainer confirmation; external reporter flow, confidential conduct reporting, submission blocking, PR prefill and acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -16,6 +16,16 @@
 | G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified** (Code of conduct, security policy, templates etc.) | Follow policy links and assess confidential moderation contact; Accessibility is not separately listed in the screenshot |
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
+
+## G1.5 private vulnerability reporting — setting confirmed, detailed review deferred (2026-10-20)
+
+The maintainer **explicitly confirmed that Private vulnerability reporting is enabled** and supplied a screenshot of the repository's **Security and quality → Security Advisories** page. The authenticated owner view displays **New draft security advisory** and advisory-state tabs. This is **owner-confirmed setting evidence** plus a live screenshot of the **maintainer-facing advisories interface**; the GitHub App connection did not independently read the private administrative toggle.
+
+The maintainer also stated that vulnerabilities have already been documented and directed that their detailed review take place **at the finishing stage**. The screenshot's visible published-advisory view is empty; this does **not** establish whether the maintainer's documented vulnerabilities exist elsewhere, whether any confidential reports have been received or their status, and must not be interpreted as such. No vulnerability details were requested, copied, posted or changed.
+
+**Correction to the earlier hypothesis below:** The private-reporting feature is **not assumed disabled**; the owner says it is **enabled**. The two identically named entries that were reported to navigate to `SECURITY.md` remain a **separate chooser UX observation**. The owner-facing **New draft security advisory** action is not the same as an external reporter's form. **Not verified:** an unaffiliated contributor's ability to open the private reporting form, successful confidential delivery, and the Code of Conduct confidential contact path. Do not mark these end-to-end reporting gates complete or create a synthetic advisory.
+
+**Deferred security finishing-stage task:** revisit documented vulnerabilities with the maintainer, assess private reporting visibility and disclosure/triage procedure without posting sensitive details in public Issues. Maintain the locked G1.1 chooser label unless the maintainer approves an amendment.
 
 ## G1.5 security chooser duplicate and missing private form — user browser observation (2026-10-20)
 
@@ -101,7 +111,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 - [ ] Verify actual PR template pre-population when creating a PR.
 - [x] Verify **GitHub Community Standards recognition** of all eight visible entries (description, README, Code of Conduct, contributing, license, security policy, issue templates, PR template) — screenshot 2026-10-20.
 - [x] Verify GitHub browser navigation and rendering for the **Security policy** and **Contributing guide** destinations — maintainer screenshots (2026-10-20).
-- [ ] Verify **private vulnerability reporting availability** and an appropriate confidential **conduct-reporting route**, without submitting dummy or sensitive reports; individual links inside the guide remain unexercised.
+- [x] Confirm **Private vulnerability reporting is enabled** — explicit maintainer statement (2026-10-20); owner's Security Advisories page screenshot shows the **New draft security advisory** maintainer action.
+- [ ] Verify the **external contributor's private reporting form** and confidential **conduct-reporting path** without submitting dummy or sensitive reports; actual delivery and review of existing documented vulnerabilities are deferred to final security hardening.
 - [ ] Record review outcomes and explicit author acceptance.
 
 **Next action:** G1.5 — independent user-facing verification and closeout; no fictional issue or PR is required to claim completion.
