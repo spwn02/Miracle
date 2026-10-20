@@ -1,9 +1,9 @@
 # Miracle GitHub Infrastructure — G3 Progress
 
-**Updated:** 2026-10-17
+**Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Publishing subtask #8 CLOSED (completed); G3 parent #3 OPEN for independent accessibility/navigation acceptance
+**Status:** Publishing subtask #8 CLOSED; maintainer reports live keyboard/Tab, sidebar, search/results, and mobile-width navigation PASSED. G3 parent #3 remains OPEN for screen-reader semantics, representative source/link checks and explicit phase sign-off
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
@@ -64,6 +64,19 @@ After publication, further real canonical edits (including this G3 ledger, new G
 
 **Publishing subtask [#8](https://github.com/spwn02/Miracle/issues/8) was closed `completed`** on that evidence. This does **not** imply complete G3 program acceptance: we have not independently demonstrated a full keyboard/screen-reader/mobile regression, every outbound link's validity, or a client-observed render of a particular most-recent paragraph. Those stricter experience checks remain with parent [#3](https://github.com/spwn02/Miracle/issues/3), instead of inventing a browser validation result.
 
+## Live user-experience verification — maintainer report (2026-10-20)
+
+The maintainer independently used the deployed [Miracle Book](https://spwn02.github.io/Miracle/) and explicitly reported: **“Tab, sidebar, search, resize to a mobile width, navigation and search results all work as expected”**. This is **firsthand owner-reported browser verification**, not a synthetic CI assertion. It covers:
+
+- **Tab / keyboard navigation:** reported working.
+- **Sidebar and chapter navigation:** reported working.
+- **Search interaction and actual search results:** reported working.
+- **Responsive/mobile-width layout and navigation after resizing:** reported working.
+
+The report makes no claim about a specific screen reader or assistive technology, alternate browser/OS, every interactive control at every viewport, exhaustive outbound links, or byte-for-byte agreement of a newly updated rendered paragraph with the canonical Markdown source. The site verifier and prior deployment jobs independently cover source chapter generation, search artifacts and redirects, but cannot substitute for those remaining manual checks.
+
+**Acceptance:** Mark the owner-tested keyboard, sidebar, search and responsive checks **PASSED**. **Do not** mark a full screen-reader accessibility audit, link crawl, or final G3 approval complete. [Parent issue #3](https://github.com/spwn02/Miracle/issues/3) stays open pending the separate checks and explicit maintainer G3 sign-off.
+
 ## Remaining G3 acceptance
 
 - [x] Read-only publication from canonical `docs/`, without duplicating frozen contracts.
@@ -74,8 +87,10 @@ After publication, further real canonical edits (including this G3 ledger, new G
 - [x] MkDocs retired and README/local build guidance migrated to mdBook.
 - [x] GitHub Wiki remains optional and nonauthoritative.
 - [x] Maintainer confirms live site works and approves the Rust Book visual design; theme/sidebar/search generation is tested in CI.
-- [ ] Full mobile/keyboard/screen-reader interaction and representative live search behavior still need explicit hands-on verification.
+- [x] **Maintainer-reported hands-on pass:** Tab/keyboard navigation, sidebar and chapters, actual search results, and mobile-width responsive behavior (2026-10-20).
+- [ ] **Screen-reader semantics and assistive-technology usability** — no dedicated test reported.
+- [ ] Spot-check representative external documentation links and compare a specific current paragraph with its canonical Markdown source in the live deployed site.
 - [x] Genuine canonical docs edits automatically generated and deployed new Pages versions through Actions, with no manual mirrored edits; direct client-observed verification of an individual updated paragraph remains untested.
 - [ ] Maintainer explicitly accepts **full G3** experience and records remaining browser accessibility/navigation checks on parent #3; publishing implementation #8 is complete.
 
-**Full G3 is not formally accepted.** Close completed implementation subtask #8 only, while retaining parent #3 for outstanding accessibility/navigation verification and explicit G3 acceptance; do not infer screen-reader/keyboard coverage from CI.
+**Full G3 is not formally accepted.** The owner has now directly verified keyboard/Tab, sidebar, search/results and mobile-width navigation; screen-reader semantics, representative live links and source-to-page paragraph comparison, and explicit phase acceptance remain open on parent #3. Subtask #8 is already closed.
