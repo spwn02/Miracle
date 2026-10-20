@@ -102,6 +102,26 @@ async function main() {
     const page = await context.newPage();
     let violations = 0;
     for (const entry of pages) violations += await audit(page, address + entry);
+    // Validate *actual* keyboard activation of the semantic sidebar button.
+    await page.goto(address + pages[0], { waitUntil: "networkidle" });
+    const toggle = page.locator("#mdbook-sidebar-toggle");
+    const initialState = await toggle.getAttribute("aria-expanded");
+    if (!["true", "false"].includes(initialState) || await toggle.getAttribute("role") !== "button") {
+      throw new Error("Sidebar lacks a usable button role/aria-expanded state");
+    }
+    await toggle.focus();
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
+    const nextState = await toggle.getAttribute("aria-expanded");
+    if (nextState === initialState) {
+      throw new Error("Enter did not change the sidebar's advertised expanded state");
+    }
+    await page.keyboard.press("Space");
+    await page.waitForTimeout(100);
+    if (await toggle.getAttribute("aria-expanded") !== initialState) {
+      throw new Error("Space did not restore the sidebar state");
+    }
+    console.log("PASS: sidebar keyboard Enter/Space and aria-expanded state");
     await page.setViewportSize({ width: 390, height: 844 });
     violations += await audit(page, address + pages[0]);
     if (violations) throw new Error(violations + " WCAG rule violation(s) across audited pages");
