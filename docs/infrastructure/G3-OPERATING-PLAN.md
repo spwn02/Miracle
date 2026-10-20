@@ -1,7 +1,7 @@
 # G3 — Documentation Publishing: Operating Plan
 
 **Workstream:** G3 — repository-backed documentation
-**Status:** mdBook live content and UX verified; automated Chrome AX-tree/axe WCAG audit passed on 3 samples after corrections. Actual screen-reader session and explicit G3 sign-off remain open
+**Status:** mdBook content and browser AX/axe checks passed; owner reports real screen-reader usability works (software/browser unspecified). Explicit G3 approval and recorded accessibility scope limits remain open
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
 **Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
@@ -52,6 +52,8 @@ The chapter tree begins with Introduction, then Getting Started, Library Guides,
 
 This is a static documentation site. GitHub Wiki stays **optional** and may only index or automatically mirror canonical text; it must not contain independently edited copies of locked contracts.
 
+**Real screen-reader report (2026-10-20):** After being asked to verify landmarks/headings, sidebar and toggle announcements, search/results and checklist state using a real screen reader, the maintainer replied **"Yes, it works flawlessly."** This is **maintainer-reported positive assistive-technology usability evidence** rather than independently recorded speech output. Product, OS, browser and exact announcements were not supplied. Axe's three-page/viewport scan still reported **2/2/1 incomplete checks**. Record these limitations and obtain explicit phase sign-off separately.
+
 ## 4. Verification and acceptance
 
 The workflow runs mdBook compilation plus [the site verifier](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-site.py). The verifier detects missing chapter source, incomplete sidebar listings, empty generated pages, broken legacy redirects, and absent search assets. It does **not** constitute full hyperlink crawling, screen-reader acceptance, or verification of C++ APIs.
@@ -64,7 +66,7 @@ G3 can be accepted only after all of the following:
 - [x] Author reports correct Rust Book-style reading experience and actual responsive navigation/search results, including keyboard Tab and sidebar interaction (2026-10-20).
 - [x] Verify representative external links and live canonical Markdown paragraphs by **post-deployment public HTTP** in [Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839); 2/2 paragraphs and 3/3 outbound links passed.
 - [x] Verify generated mdBook's **browser AX tree and axe-core WCAG A/AA samples** (PR #22, post-merge Pages #39379255036; zero automated violations, incomplete/manual-review items remain).
-- [ ] Separately verify **actual screen-reader speech and assistive-technology interaction**; neither a browser AX tree nor axe results substitute for Orca/VoiceOver/NVDA. Theme-switch experience was not newly tested.
+- [x] Maintainer reports successful **real screen-reader interaction** in response to targeted headings, sidebar, search, and checklist checks (2026-10-20). Assistive-tech product/browser not specified, no speech transcript or exhaustive coverage; theme switch was not newly tested.
 - [ ] A real, reviewed canonical documentation edit appears on Pages automatically; no parallel manual Wiki edit was required.
 - [ ] The removal of MkDocs configuration is reflected in README, workstream ledger and local preview guidance.
 - [ ] Author explicitly accepts G3, and issues #3 and #8 are closed only with supporting evidence.
