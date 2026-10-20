@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; owner screenshots verify chooser, Bug Report inline validation, eight Community Standards and live Security/Contributing page destinations. Submission blocking, PR template prefill, confidential contact and final sign-off pending
+**Status:** G1.1–G1.4 implemented; live chooser/forms, community standards and policy navigation partially verified. Security chooser opens policy from both entries; private vulnerability reporting state unverified. Submission blocking, PR prefill and acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -16,6 +16,16 @@
 | G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified** (Code of conduct, security policy, templates etc.) | Follow policy links and assess confidential moderation contact; Accessibility is not separately listed in the screenshot |
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
+
+## G1.5 security chooser duplicate and missing private form — user browser observation (2026-10-20)
+
+The maintainer reports **both** similarly named **Report a security vulnerability** entries in the live GitHub New Issue chooser open `SECURITY.md`, **not** a private reporting form. The supplied screenshot depicts the two entries (first GitHub native shield icon; second our externally linked policy entry), but **does not show the destination pages**; their destination behavior is a **maintainer-reported observation**.
+
+The custom chooser entry is deterministically configured in [`.github/ISSUE_TEMPLATE/config.yml`](../../.github/ISSUE_TEMPLATE/config.yml) with `name: Report a security vulnerability` and `url: https://github.com/spwn02/Miracle/blob/master/SECURITY.md`. That explains **one** of the redirects and redundant naming. The first entry is GitHub's native security-policy / reporting route. According to [GitHub's private vulnerability reporting setup guide](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository), the private reporting form requires a **separately enabled repository setting**; when enabled, a `Report a vulnerability` button is available on the Security Advisories page. **The actual repo private-vulnerability-reporting setting was not read**: the connected integration cannot access that restricted admin endpoint. Therefore its disabled state is a **hypothesis**, not a verified fact, and no report-delivery gate has passed.
+
+**Required owner check:** Open **Settings → Security and quality → Advanced Security → Private vulnerability reporting**. Enable if disabled; inspect the [Security Advisories](https://github.com/spwn02/Miracle/security/advisories) page for the reporting entry point, without creating/submitting a report. A separate **UX cleanup proposal** would rename the redundant custom chooser entry to **Read security reporting policy**, but its current label is explicitly prescribed by the [locked G1.1 Issue Intake Contract](G1.1-ISSUE-INTAKE-CONTRACT.md). **Do not change the contract or config without explicit owner approval.**
+
+**Disposition:** **Public security policy route verified; confidential private-report form remains UNVERIFIED.** This is an uncovered acceptance gap, not proof GitHub's native control is broken. G1.5 and G6 remain open.
 
 ## G1.5 live security and contributing documentation navigation — screenshot evidence (2026-10-20)
 
