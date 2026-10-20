@@ -28,6 +28,13 @@
         document.querySelectorAll("main pre code").forEach((code) => {
             code.setAttribute("tabindex", "0");
         });
+        document.querySelectorAll("main .table-wrapper").forEach((region) => {
+            if (region.scrollWidth > region.clientWidth + 1) {
+                region.setAttribute("tabindex", "0");
+                region.setAttribute("role", "region");
+                region.setAttribute("aria-label", "Scrollable documentation table");
+            }
+        });
     }
     function initialize() {
         enableAccessibleSidebarToggle();
