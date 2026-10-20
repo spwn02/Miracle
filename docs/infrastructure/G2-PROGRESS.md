@@ -8,6 +8,36 @@
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
 
+## Final read-only auto-add investigation — 2026-10-20
+
+An independent fresh GitHub REST read of [Issue #8 event history](https://api.github.com/repos/spwn02/Miracle/issues/8/events?per_page=100) confirms **two** distinct `added_to_project_v2` events from `github-project-automation[bot]`, both at `2026-10-17T01:46:17Z`, event IDs **33496925448** and **33496925618**, followed by two bot status-change events at 01:46:18Z and 01:46:19Z. There are no manual `added_to_project_v2` events shown for #8 in this returned history. This is an authentic non-bug documentation issue, and previous maintainer `gh issue view 8 --json projectItems` output establishes membership in both `Roadmap` and target `Miracle Development` Project #3. The REST project-event payload itself **does not expose which project received which event**, so it should not alone be represented as target-specific causality.
+
+**New deterministic non-mutating verification route:** GitHub's public GraphQL schema exposes `AddedToProjectV2Event.project { number title }` and `wasAutomated`. The maintainer may run this command using an authenticated `gh` session with Project read access:
+
+```sh
+gh api graphql -f query='
+query {
+  repository(owner: "spwn02", name: "Miracle") {
+    issue(number: 8) {
+      timelineItems(first: 100, itemTypes: [ADDED_TO_PROJECT_V2_EVENT]) {
+        nodes {
+          ... on AddedToProjectV2Event {
+            createdAt
+            actor { login }
+            wasAutomated
+            project { number title url }
+          }
+        }
+      }
+    }
+  }
+}' --jq '.data.repository.issue.timelineItems.nodes[] | {project: .project.number, title: .project.title, actor: .actor.login, automated: .wasAutomated, createdAt}'
+```
+
+**Acceptance criterion:** At least one event must identify `project: 3`, `automated: true`, and the bot actor for real Issue #8 (not just separate Roadmap membership). Preserve the returned JSON as maintainer-provided verification evidence. A GraphQL error or missing Project node is **not** positive evidence; check GitHub CLI authorization before retrying. No synthetic issue or PR should be created for this check.
+
+The real Project #3 `Backlog → Implementing` transition, corrected `is:issue` auto-add UI setting and safe workflows were already verified on 2026-10-19. **G2 stays in Verification until the project-specific query result is inspected and explicit maintainer sign-off is recorded.** Previous dated entries below are chronological evidence, not additional independent open blockers.
+
 ## Maintainer-authorized Project status transition (2026-10-19)
 
 The maintainer manually moved authentic G6 issue #6 from `Backlog` to `Implementing` in Miracle Development Project #3. The before/after `gh issue view 6 --repo spwn02/Miracle --json projectItems` results identify the two options (`f75ad846` and `ada290ce`) and show that the separate Roadmap project stayed at `Todo`. GitHub's issue #6 timeline independently records `project_v2_item_status_changed` by `spwn02` at 2026-10-19 15:20:32 UTC; that event alone does not identify the Project, so the two CLI snapshots provide the Project-specific evidence.
