@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; owner screenshots verify chooser, Bug Report inline validation, and GitHub recognition of eight visible Community Standards. Actual submission blocking, PR template prefill, policy-link behavior, confidential contact and final acceptance pending
+**Status:** G1.1–G1.4 implemented; owner screenshots verify chooser, Bug Report inline validation, eight Community Standards and live Security/Contributing page destinations. Submission blocking, PR template prefill, confidential contact and final sign-off pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -16,6 +16,15 @@
 | G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified** (Code of conduct, security policy, templates etc.) | Follow policy links and assess confidential moderation contact; Accessibility is not separately listed in the screenshot |
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
+
+## G1.5 live security and contributing documentation navigation — screenshot evidence (2026-10-20)
+
+The maintainer provided **two real GitHub browser screenshots**:
+
+- [Security policy](https://github.com/spwn02/Miracle/security/policy): GitHub's **Security and quality → Security policy** view renders `SECURITY.md`, including the **Reporting a vulnerability** section. It instructs reporters not to publish details in normal GitHub issues, to use GitHub private vulnerability reporting **when available**, or to request a private channel from the maintainer through their GitHub profile. The screenshot demonstrates **policy navigation and rendering**, **not** that the private vulnerability-reporting entry is enabled or that a confidential report can be delivered.
+- [Contributing guide](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md): GitHub renders the `CONTRIBUTING.md` Markdown preview, showing **Before contributing**, the Development Protocol link, existing Issues, Discussions, New Issue chooser, Q&A, Ideas, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` and the **Reference toolchain** heading. It proves the **guide itself opens and renders**; individual embedded links have **not** each been clicked.
+
+**Verified:** both requested **GitHub page destinations** load correctly in the maintainer's browser, consistent with the Issue chooser's security/contributor routes. **Pending:** actual private vulnerability intake and confidential conduct-report delivery, individual embedded links as needed, PR template prepopulation, invalid-form submit blocking and formal author sign-off. No security report, issue or PR was submitted.
 
 ## G1.5 live Community Standards recognition — screenshot evidence (2026-10-20)
 
@@ -64,7 +73,7 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 ## Outstanding operational work
 
 - The maintainer screenshot now proves **inline empty-required-field validation** in the live Bug Report form; source checks alone could not. Actual submission blocking, other forms' behavior, and PR template pre-population remain unverified.
-- Security/Code of Conduct reporting uses existing GitHub routes; a verified confidential maintainer contact is not yet established.
+- Security and Contributing pages are now confirmed to open in GitHub; private vulnerability-reporting availability and confidential Code of Conduct contact/delivery have **not** been verified.
 - `G0-PROGRESS.md` records pending **author-side local repository reconciliation**, which cannot be inferred from successful remote pushes.
 - G2 will introduce formal labels, issue types/project automation only after their configuration has been reviewed.
 
@@ -81,7 +90,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 - [ ] Verify actual **submission blocking** with incomplete required fields, remaining issue forms and security/contributing link destinations without publishing a dummy issue or report.
 - [ ] Verify actual PR template pre-population when creating a PR.
 - [x] Verify **GitHub Community Standards recognition** of all eight visible entries (description, README, Code of Conduct, contributing, license, security policy, issue templates, PR template) — screenshot 2026-10-20.
-- [ ] Verify the policy/documentation **link destinations** in the browser and the separate confidential reporting path.
+- [x] Verify GitHub browser navigation and rendering for the **Security policy** and **Contributing guide** destinations — maintainer screenshots (2026-10-20).
+- [ ] Verify **private vulnerability reporting availability** and an appropriate confidential **conduct-reporting route**, without submitting dummy or sensitive reports; individual links inside the guide remain unexercised.
 - [ ] Record review outcomes and explicit author acceptance.
 
 **Next action:** G1.5 — independent user-facing verification and closeout; no fictional issue or PR is required to claim completion.
