@@ -57,6 +57,9 @@ jobs:
       - name: Check generated navigation and pages
         run: python scripts/docs/verify-site.py site
 
+      - name: Test public Pages probe using offline negative fixtures
+        run: python3 scripts/docs/verify-live-site.py --self-test
+
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -83,3 +86,11 @@ jobs:
       - name: Deploy site
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: Checkout canonical source for post-deployment verification
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Compare actual public Pages with canonical source and check external links
+        run: python3 scripts/docs/verify-live-site.py
