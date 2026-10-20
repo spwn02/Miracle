@@ -124,17 +124,26 @@ async function audit(page, url, theme = "rust") {
       const selector = node.target.join(" ");
       const contrast = await page.evaluate((sel) => {
         const element = document.querySelector(sel);
-        const sidebar = element?.closest(".sidebar");
-        if (!element || !sidebar) return null;
+        if (!element) return null;
         const fg = getComputedStyle(element).color;
-        const bg = getComputedStyle(sidebar).backgroundColor;
         function rgb(text) {
           const matches = text.match(/[0-9]+(?:\.[0-9]+)?/g);
           if (!matches || matches.length < 3) return null;
-          return matches.slice(0, 3).map(Number);
+          return matches.map(Number);
         }
-        const x = rgb(fg), y = rgb(bg);
-        if (!x || !y) return null;
+        const x = rgb(fg);
+        if (!x || (x.length > 3 && x[3] < 0.999)) return null;
+        let y = null;
+        for (let node = element; node; node = node.parentElement) {
+          const style = getComputedStyle(node);
+          if (style.backgroundImage !== "none") return null;
+          const color = rgb(style.backgroundColor);
+          if (color && (color.length === 3 || color[3] >= 0.999)) {
+            y = color;
+            break;
+          }
+        }
+        if (!y) return null;
         function luminance(values) {
           const v = values.map(c => {
             c /= 255;
@@ -146,7 +155,7 @@ async function audit(page, url, theme = "rust") {
         return (Math.max(a,b) + 0.05) / (Math.min(a,b) + 0.05);
       }, selector);
       if (contrast === null || contrast < 4.5) {
-        throw new Error("Unresolved partially obscured sidebar contrast: " + selector +
+        throw new Error("Unresolved axe-incomplete contrast: " + selector +
           " ratio=" + contrast + " theme=" + theme + " " + url);
       }
     }
