@@ -61,6 +61,7 @@ def internal_path(site: Path, page: Path, link: str) -> tuple[Path, str]:
 
 
 def crawl(site: Path) -> tuple[list[str], set[str], int, int]:
+    site = site.resolve()
     pages = sorted(site.rglob("*.html"))
     if not pages:
         raise ValueError(f"No generated pages in {site}")
@@ -101,7 +102,7 @@ def crawl(site: Path) -> tuple[list[str], set[str], int, int]:
                 errors.append(f"{page.relative_to(site)}: missing target {link}")
             if frag and target.is_file():
                 fragments += 1
-                if target.suffix == ".html" and frag not in inventory.get(target, parse_html(target)).targets:
+                if target.suffix == ".html" and frag not in inventory[target].targets if target in inventory else parse_html(target).targets:
                     errors.append(f"{page.relative_to(site)}: missing fragment {link}")
     print(f"LINK INVENTORY: {len(pages)} rendered HTML files, {checked} internal references, "
           f"{fragments} fragments, {len(external)} unique external URL(s)")
