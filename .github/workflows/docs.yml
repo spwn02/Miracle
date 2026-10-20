@@ -62,6 +62,9 @@ jobs:
           python3 scripts/docs/verify-links.py --self-test
           python3 scripts/docs/verify-links.py site
 
+      - name: Probe all distinct external URLs before merging
+        run: python3 scripts/docs/verify-links.py site --external
+
       - name: Prove locked-contract rendering in a throwaway copy only
         run: python3 scripts/docs/verify-contract-propagation.py
 
