@@ -49,6 +49,14 @@ class MainContent(HTMLParser):
                 values = tuple((k, v) for k, v in attrs if k in ("alt", "checked", "disabled", "type"))
                 self.content.append((tag, repr(values)))
 
+    def handle_startendtag(self, tag, attrs) -> None:
+        # HTMLParser's default invokes handle_endtag even for self-closing
+        # void elements. Those never increment depth in handle_starttag.
+        self.handle_starttag(tag, attrs)
+        if tag not in ("img", "input", "br", "hr", "meta", "link", "source",
+                       "wbr", "area", "base", "embed", "track", "col"):
+            self.handle_endtag(tag)
+
     def handle_endtag(self, tag) -> None:
         if self.depth:
             if tag in ("script", "style", "svg"):
