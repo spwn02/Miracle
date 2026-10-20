@@ -47,10 +47,21 @@ function serve() {
 
 async function audit(page, url, theme = "rust") {
   await page.goto(url, { waitUntil: "networkidle", timeout: 45000 });
-  await page.evaluate(selected => {
-    document.documentElement.classList.remove("rust", "light", "navy", "coal", "ayu");
-    document.documentElement.classList.add(selected);
-  }, theme);
+  // Use the actual mdBook menu: a CSS-class-only switch leaves syntax
+  // highlighting and persisted theme assets in the previous color scheme.
+  if (theme === "navy") {
+    await page.locator("#mdbook-theme-toggle").click();
+    await page.locator("#mdbook-theme-navy").click();
+    if (!(await page.locator("html").getAttribute("class") || "").includes("navy")) {
+      throw new Error("Theme menu failed to switch to Navy");
+    }
+  }
+  // The toggle's controlled menu exists, even when hidden until activation:
+  // axe marks that closed-popup relationship INCOMPLETE, so assert it directly.
+  const control = await page.locator("#mdbook-theme-toggle").getAttribute("aria-controls");
+  if (control !== "mdbook-theme-list" || await page.locator("#mdbook-theme-list").count() !== 1) {
+    throw new Error("Theme popup aria-controls points to a missing element");
+  }
   const title = await page.title();
   if (!title.includes("Miracle")) throw new Error("Expected Miracle page title: " + title);
 
