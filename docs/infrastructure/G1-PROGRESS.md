@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; owner screenshots verify live five-form chooser and Bug Report inline required-field validation. Submission blocking, other forms, PR template and remaining G1.5 browser checks pending
+**Status:** G1.1–G1.4 implemented; owner screenshots verify chooser, Bug Report inline validation, and GitHub recognition of eight visible Community Standards. Actual submission blocking, PR template prefill, policy-link behavior, confidential contact and final acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -13,9 +13,15 @@
 | --- | --- | --- | --- |
 | G1.1 — Issue intake | `.github/ISSUE_TEMPLATE/{bug_report,compiler_issue,feature_proposal,architecture_proposal,infrastructure_issue,config}.yml`; [locked contract](G1.1-ISSUE-INTAKE-CONTRACT.md) | **Live chooser verified by maintainer screenshot**; source structure reviewed | Verify required/optional field behavior and security policy link interaction inside the live forms |
 | G1.2 — Pull request intake | [PR template](https://github.com/spwn02/Miracle/blob/master/.github/PULL_REQUEST_TEMPLATE.md) | Implementation complete | Verify template pre-population in GitHub's live PR interface without falsely asserting a test PR exists |
-| G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | Documents implemented | Verify GitHub community recognition and links; owner should assess confidential moderation contact |
+| G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified** (Code of conduct, security policy, templates etc.) | Follow policy links and assess confidential moderation contact; Accessibility is not separately listed in the screenshot |
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
+
+## G1.5 live Community Standards recognition — screenshot evidence (2026-10-20)
+
+The maintainer supplied an actual screenshot from the repository's GitHub **Insights → Community → Community standards** view. Each of the **eight visible checklist entries displays GitHub's check mark**: **Description**, **README**, **Code of conduct**, **Contributing**, **License**, **Security policy**, **Issue templates**, and **Pull request template**. This establishes GitHub's **live recognition** of these community files/settings, not merely their presence in repository source.
+
+**Verified:** GitHub's actual Community Standards dashboard recognizes all eight displayed entries, including policies, issue templates and the PR template. The screenshot ends at the Pull request template row; no claims are made about any content below the visible capture. **Not established:** whether the linked pages were clicked and inspected, whether the PR template prepopulates a newly opened PR, whether private vulnerability/conduct reporting reaches an appropriate maintainer, or explicit overall G1 sign-off. No artificial PR or confidential report was created.
 
 ## G1.5 live Bug Report form validation — screenshot evidence (2026-10-20)
 
@@ -31,7 +37,7 @@ The maintainer supplied a screenshot from the **live GitHub Create new issue cho
 
 **UI finding (nonblocking):** GitHub's native private vulnerability-report entry and the separately configured `SECURITY.md` policy link have identical **Report a security vulnerability** display names. These are two **different routes**, not two vulnerability issue forms. The [locked G1.1 intake contract](G1.1-ISSUE-INTAKE-CONTRACT.md) explicitly specifies the custom policy link label, so this audit **does not rename it without a contract decision**.
 
-**Verified at the initial chooser stage:** all five custom forms and contact routes render. A subsequent screenshot independently verifies that **Bug Report** opens and its empty required **Affected revision** field displays inline validation. **Still open:** all other forms, actual submission gating, security/contribution link destinations, private-report delivery, PR template prepopulation, Community Standards and final G1 acceptance. No dummy issue, security report or PR was created.
+**Verified at the initial chooser stage:** all five custom forms and contact routes render. Subsequent screenshots confirm that **Bug Report** opens with inline required-field validation and that **GitHub Community Standards recognizes eight visible entries**. **Still open:** other forms, actual submission gating, security/contribution link destinations, private-report delivery, PR template prepopulation and final G1 acceptance. No dummy issue, security report or PR was created.
 
 ## Compiler/toolchain consistency
 
@@ -74,7 +80,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 - [x] Open the live Bug Report form and observe **inline required-field validation**: empty `Affected revision` shows red `Field can not be empty` (owner screenshot, 2026-10-20).
 - [ ] Verify actual **submission blocking** with incomplete required fields, remaining issue forms and security/contributing link destinations without publishing a dummy issue or report.
 - [ ] Verify actual PR template pre-population when creating a PR.
-- [ ] Verify community standards recognition and links.
+- [x] Verify **GitHub Community Standards recognition** of all eight visible entries (description, README, Code of Conduct, contributing, license, security policy, issue templates, PR template) — screenshot 2026-10-20.
+- [ ] Verify the policy/documentation **link destinations** in the browser and the separate confidential reporting path.
 - [ ] Record review outcomes and explicit author acceptance.
 
 **Next action:** G1.5 — independent user-facing verification and closeout; no fictional issue or PR is required to claim completion.
