@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — Community Standards, chooser, Bug Report inline validation, Security/Contributing destinations verified; confidential intake, Project auto-add and final acceptance pending
+**Status:** IN PROGRESS — community onboarding and public policy navigation verified; duplicate security chooser UX observed, private reporting availability remains unverified; Project auto-add and final acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Security reporting chooser — user-observed gap (2026-10-20)
+
+The maintainer reports that both identically labelled **Report a security vulnerability** options in the GitHub New Issue chooser redirect to `SECURITY.md`, rather than opening a private vulnerability-report form. The screenshot shows two entries, one with GitHub's native shield icon and the other an external-link icon. **The reported redirects are user observations**, not independently captured destination screenshots.
+
+The second route is expected from our explicit [issue chooser config](../../.github/ISSUE_TEMPLATE/config.yml) pointing to `SECURITY.md`; the duplicate label is part of the [locked G1.1 contract](G1.1-ISSUE-INTAKE-CONTRACT.md). The first entry is GitHub-native. GitHub documents that [private vulnerability reporting must be enabled separately](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository) in **Settings → Security and quality → Advanced Security**. An enabled repository's Security Advisories page provides the private **Report a vulnerability** path. **No authenticated administrative setting was read**, so do not claim private reporting is disabled; it is a plausible cause pending confirmation.
+
+**Acceptance next step:** Maintainer inspect/enable the **Private vulnerability reporting** setting (if appropriate), verify the Advisories reporting form is available without submitting a synthetic vulnerability, and separately approve any G1.1 contract amendment to rename the duplicate custom policy link. **Private disclosure and delivery remain unverified**; this is not a completed security gate.
 
 ## Security policy and contributor onboarding — live page verification (2026-10-20)
 
