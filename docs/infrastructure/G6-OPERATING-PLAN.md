@@ -22,7 +22,7 @@ Owner-facing follow-up:
 Maintainer checklist:
 
 1. **Completed, verified:** [Miracle Settings](https://github.com/spwn02/Miracle/settings) → **General** → **Features**, **Discussions** enabled (`has_discussions: true`).
-2. **Completed, screenshot-verified:** [Discussion categories](https://github.com/spwn02/Miracle/discussions/categories) show **Q&A** (Answers enabled), **Ideas**, **Announcements**, and **Show and tell**. General/Polls are valid optional categories, not missing or additional required gates.
+2. **Completed, screenshot-verified:** [Discussion categories](https://github.com/spwn02/Miracle/discussions) show **Q&A** (Answers enabled), **Ideas**, **Announcements**, and **Show and tell**. General/Polls are valid optional categories, not missing or additional required gates.
 3. **Category navigation completed (maintainer-reported):** All four links open correctly. The owner supplied a screenshot of the Ideas category, which currently has no matching discussions. **Still pending:** Validate Q&A answer selection using an authentic question when one exists; no meaningless test content is required.
 4. **Configuration and navigation verified:** category setup screenshot + API activation + maintainer-reported click-through of all four URLs. Actual accepted-answer behavior remains **unverified**.
 
