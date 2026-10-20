@@ -3,10 +3,45 @@
 **Updated:** 2026-10-19
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Project configuration and real maintainer-authorized status transition verified; Issue #8's target Project #3 add attributed to GitHub's automation bot, but GraphQL `wasAutomated: false` prevents unqualified workflow-causality proof; formal G2 owner acceptance pending
+**Status:** Runtime auto-enrollment and initial Backlog status directly verified for two genuine non-bug issues; the GraphQL `wasAutomated: false` flag contradicts GitHub's documented Projects-bot attribution and remains an upstream metadata question. Formal G2 author acceptance pending by explicit maintainer instruction.
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## New issue #24 — direct Project #3 intake and Backlog status confirmed (2026-10-20)
+
+The maintainer ran the exact read-only GraphQL query of the **new genuine G4 work item [#24](https://github.com/spwn02/Miracle/issues/24)** and returned two events, both for **Miracle Development Project #3**:
+
+```json
+[
+  {
+    "actor": "github-project-automation",
+    "automated": false,
+    "createdAt": "2026-10-20T12:34:48Z",
+    "previousStatus": null,
+    "project": 3,
+    "status": null,
+    "type": "AddedToProjectV2Event"
+  },
+  {
+    "actor": "github-project-automation",
+    "automated": false,
+    "createdAt": "2026-10-20T12:34:48Z",
+    "previousStatus": "",
+    "project": 3,
+    "status": "Backlog",
+    "type": "ProjectV2ItemStatusChangedEvent"
+  }
+]
+```
+
+**Functional evidence:** The authentic new *non-bug* issue was created at 12:34:44Z with no Project assignment in the issue-creation API call. Four seconds later, the GitHub Projects automation actor added it to **target Project #3**, then initialized **Backlog** at the same recorded second. This reproduces the authentic older [#8](https://github.com/spwn02/Miracle/issues/8) Project #3 bot attribution with a fresh controlled case. The Project #3 workflow was previously checked in the maintainer's UI as enabled for `spwn02/Miracle` with filter `is:issue`, alongside enabled `Item added → Backlog` and disabled premature-acceptance workflows.
+
+**Independent GitHub documentation corroboration:** The [GitHub Projects adding-items guide](https://docs.github.com/en/issues/planning-and-tracking-with-projects/managing-items-in-your-project/adding-items-to-your-project) states that changes made by a **built-in workflow** are attributed to `@github-project-automation`. Its [auto-add documentation](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/adding-items-automatically) documents adding newly created repository issues matching a filter. Thus the **target Project #3 automated intake and Backlog initialization are functionally verified**, not merely inferred from retrospective membership. The exact GitHub workflow identity/correlation is not separately exposed in these event payloads.
+
+**API metadata discrepancy (do not conceal):** Both `AddedToProjectV2Event.wasAutomated` and `ProjectV2ItemStatusChangedEvent.wasAutomated` equal `false`, despite bot attribution and the known configured workflows. GitHub's [GraphQL Projects schema](https://docs.github.com/en/graphql/reference/projects) describes that boolean as whether a workflow produced the event. The two independent genuine cases (**#8 and #24**) show the same surprising value; no GitHub statement found confirms its cause. **Do not assert the Boolean is corrected, that GitHub has acknowledged a bug, or that the internal event provenance is conclusively explained.** This is an external GitHub telemetry/semantics discrepancy, not evidence that Miracle's intake path malfunctioned.
+
+**Maintainer closeout preference:** The maintainer previously rejected closing G2 with this discrepancy left as an unexamined waiver. The functional gate now has strong runtime evidence, but the inconsistent API flag remains an unresolved question for GitHub to explain/correct. Keep G2 #2 **open** until that strict concern is resolved or the maintainer gives an explicit changed acceptance decision; no such decision has yet been given. No further test-only GitHub Issues or project mutations are warranted.
 
 ## Second genuine-issue runtime auto-add experiment — 2026-10-20
 
