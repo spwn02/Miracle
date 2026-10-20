@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; owner screenshot verifies live five-form chooser, but required-field behavior, PR template and remaining G1.5 browser checks are pending
+**Status:** G1.1–G1.4 implemented; owner screenshots verify live five-form chooser and Bug Report inline required-field validation. Submission blocking, other forms, PR template and remaining G1.5 browser checks pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -17,13 +17,21 @@
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
 
+## G1.5 live Bug Report form validation — screenshot evidence (2026-10-20)
+
+The maintainer opened the genuine [Bug Report issue form](https://github.com/spwn02/Miracle/issues/new?template=bug_report.yml) without creating a new issue. The live screenshot shows the form title, security/credential-redaction guidance, **Affected revision** (marked required), **Affected area** (unstarred dropdown showing `None`), and **Observed behavior** (marked required, with a Markdown editor). The **Affected revision** input is empty and GitHub renders the red inline validation message **`Field can not be empty`**. No dummy issue was submitted.
+
+**Verified:** Live Bug Report form rendering, presence of required/optional field indicators, and inline empty-required-field validation on `Affected revision`. The warning appears in the browser interface rather than being inferred from committed YAML.
+
+**Not yet verified:** Whether the **Submit new issue** action is actually blocked while mandatory fields remain empty, whether each other issue form enforces its required fields, security/contributing URL click-through, PR template prepopulation or private-report delivery. A draft's sidebar showing no Project association is not evidence against later Project auto-add (which occurs after issue creation).
+
 ## G1.5 real New Issue chooser screenshot — verified (2026-10-20)
 
 The maintainer supplied a screenshot from the **live GitHub Create new issue chooser**. It shows all **five contract-required structured forms**: Architecture Proposal, Bug Report, Compiler / Toolchain Issue, Feature Proposal and Infrastructure Request. It also displays the contribution guide, Q&A and Ideas community entry points, the repository-specific security policy link, and GitHub's own **Report a security vulnerability** entry. The `Blank issue` control is visibly **Maintainers only**; its presence for the owner does not establish that the public can bypass the configured `blank_issues_enabled: false` restriction.
 
 **UI finding (nonblocking):** GitHub's native private vulnerability-report entry and the separately configured `SECURITY.md` policy link have identical **Report a security vulnerability** display names. These are two **different routes**, not two vulnerability issue forms. The [locked G1.1 intake contract](G1.1-ISSUE-INTAKE-CONTRACT.md) explicitly specifies the custom policy link label, so this audit **does not rename it without a contract decision**.
 
-**Verified:** actual chooser renders all five custom forms and configured contact routes. **Not yet verified:** clicking each form and inspecting required/optional fields, attempting an incomplete issue form without submitting it, navigating each security/contributing link, actual confidential vulnerability reporting, PR template prepopulation, community standards recognition, or formal maintainer G1 acceptance. No dummy issue, security report or PR was created.
+**Verified at the initial chooser stage:** all five custom forms and contact routes render. A subsequent screenshot independently verifies that **Bug Report** opens and its empty required **Affected revision** field displays inline validation. **Still open:** all other forms, actual submission gating, security/contribution link destinations, private-report delivery, PR template prepopulation, Community Standards and final G1 acceptance. No dummy issue, security report or PR was created.
 
 ## Compiler/toolchain consistency
 
@@ -49,7 +57,7 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 
 ## Outstanding operational work
 
-- The connected integration cannot prove real interactive form validation or PR template pre-population simply by reading committed YAML/Markdown.
+- The maintainer screenshot now proves **inline empty-required-field validation** in the live Bug Report form; source checks alone could not. Actual submission blocking, other forms' behavior, and PR template pre-population remain unverified.
 - Security/Code of Conduct reporting uses existing GitHub routes; a verified confidential maintainer contact is not yet established.
 - `G0-PROGRESS.md` records pending **author-side local repository reconciliation**, which cannot be inferred from successful remote pushes.
 - G2 will introduce formal labels, issue types/project automation only after their configuration has been reviewed.
@@ -63,7 +71,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 - [x] Reference toolchain document reconciled with CI source and snapshot.
 - [x] README includes project-governance/community entry points.
 - [x] Verify live GitHub New Issue chooser displays exactly five custom forms and expected contact routes — owner screenshot (2026-10-20).
-- [ ] Verify actual per-form required-field blocking, optional fields, and link click-through without submitting a dummy issue or confidential report.
+- [x] Open the live Bug Report form and observe **inline required-field validation**: empty `Affected revision` shows red `Field can not be empty` (owner screenshot, 2026-10-20).
+- [ ] Verify actual **submission blocking** with incomplete required fields, remaining issue forms and security/contributing link destinations without publishing a dummy issue or report.
 - [ ] Verify actual PR template pre-population when creating a PR.
 - [ ] Verify community standards recognition and links.
 - [ ] Record review outcomes and explicit author acceptance.
