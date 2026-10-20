@@ -1,7 +1,7 @@
 # G3 — Documentation Publishing: Operating Plan
 
 **Workstream:** G3 — repository-backed documentation
-**Status:** mdBook implementation deployed; publication and maintainer acceptance checks remain active
+**Status:** mdBook deployed; owner-reported keyboard, sidebar, search/results and mobile-width usability checks PASSED (2026-10-20). Screen-reader, live source/link spot-checks and explicit G3 sign-off remain open
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
 **Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
@@ -61,7 +61,8 @@ G3 can be accepted only after all of the following:
 - [ ] The pinned mdBook binary is checksum-verified and builds from a clean GitHub runner.
 - [ ] Every chapter and legacy redirect is present; in-book search index is produced.
 - [ ] GitHub Pages deployment succeeds and the public URL is observed in the actual deployment log.
-- [ ] Author confirms the Rust Book-style reading experience, theme switch, responsive navigation and search.
+- [x] Author reports correct Rust Book-style reading experience and actual responsive navigation/search results, including keyboard Tab and sidebar interaction (2026-10-20).
+- [ ] Separately verify screen-reader semantics, representative external links and a live paragraph against canonical Markdown; theme-switch behavior is not newly confirmed by this report.
 - [ ] A real, reviewed canonical documentation edit appears on Pages automatically; no parallel manual Wiki edit was required.
 - [ ] The removal of MkDocs configuration is reflected in README, workstream ledger and local preview guidance.
 - [ ] Author explicitly accepts G3, and issues #3 and #8 are closed only with supporting evidence.
