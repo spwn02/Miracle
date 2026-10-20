@@ -1,7 +1,7 @@
 # G3 — Documentation Publishing: Operating Plan
 
 **Workstream:** G3 — repository-backed documentation
-**Status:** ACCEPTED — maintainer approved G3 on 2026-10-20 with AX/axe incomplete items and representative test limits explicitly recorded; G3 issues #3 and #8 completed
+**Status:** ACCEPTED & hardening verified (2026-10-20): PR #23 merged, 66 accessibility audits passed, 29/29 full public chapter bodies matched and all 1,107 internal links + 848 anchors resolved. Residual owner-only URL and universal AT coverage are bounded, not falsely certified
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
 **Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
@@ -76,6 +76,8 @@ G3 can be accepted only after all of the following:
 See [G3-PROGRESS.md](G3-PROGRESS.md) for current evidence. Historical MkDocs runs are recorded as migration history, not represented as current technology.
 
 **Public-site verification:** [`scripts/docs/verify-live-site.py`](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-live-site.py) runs offline comparison/negative fixtures on pull requests. Following a successful `master` Pages deployment, it GETs the **public** G3 chapter and homepage, compares two source-derived paragraphs with rendered HTML, checks that three source-declared external URLs occur in the homepage HTML and verifies they resolve. The check passed in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839). Its scope is representative, not a full crawl or a screen-reader audit.
+
+**Post-acceptance hardening:** [PR #23](https://github.com/spwn02/Miracle/pull/23) (merge [`61dfd48`](https://github.com/spwn02/Miracle/commit/61dfd483b7716b3ac143f3e6fa3d69427c9edd5d)) added permanent whole-site navigation/fragment validation, 196 distinct outbound URL probes, complete chapter-body parity after the actual Pages deployment, all-chapter accessibility with secondary checks for known axe incomplete cases, and an isolated frozen-contract rendering mutation that never changes authoritative bytes. [Post-merge Pages #39403645833](https://github.com/spwn02/Miracle/actions/runs/39403645833) passed every documented deployment step; 29/29 chapter bodies matched live, 195/196 external URLs passed anonymously and the one owner-only GitHub Settings link remains marked indeterminate. No failed actionable G3 gate is pending; finite test scope and unavailable screen-reader/browser combinations are not portrayed as universal WCAG certification.
 
 ## 5. Local workflow
 

@@ -6,6 +6,12 @@
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
 
+## G3 post-acceptance comprehensive hardening — verified (2026-10-20)
+
+[Real G3 PR #23](https://github.com/spwn02/Miracle/pull/23) merged as [`61dfd48`](https://github.com/spwn02/Miracle/commit/61dfd483b7716b3ac143f3e6fa3d69427c9edd5d) after PR-head CI and all-chapter docs checks passed. Actual [master Pages deployment #39403645833](https://github.com/spwn02/Miracle/actions/runs/39403645833) passed: 29/29 full main-content chapter comparisons against public GitHub Pages, 66 desktop/mobile/navy Chromium AX-tree + axe WCAG tests, supplemental checks on known incomplete ARIA/theme and obscured-text contrast, 1,107 internal links, 848 fragments, and 195 of 196 external HTTP links. One owner-authenticated GitHub Settings URL is genuinely **not testable anonymously**, not a verified broken link. Hermetic contract-content mutation proved mdBook propagation while preserving frozen source. Prior human Apple VoiceOver + Safari usability is verified by the maintainer, not by CI.
+
+This provides comprehensive **G3 documentation hardening evidence** to the larger end-to-end chain without reopening already accepted [G3 #3](https://github.com/spwn02/Miracle/issues/3). **Do not infer complete universal WCAG compliance, NVDA/Orca testing, confidential vulnerability delivery, Project #3 auto-add or G6 acceptance.** Those are separate evidence boundaries/workstreams.
+
 ## G3 formally accepted — explicit maintainer sign-off (2026-10-20)
 
 The maintainer **explicitly approved G3 — Documentation Publishing** after confirmed Apple VoiceOver + Safari use and the Chrome AX-tree/axe remediation checks. This closes [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) as completed; [implementation issue #8](https://github.com/spwn02/Miracle/issues/8) was already closed. Canonical [G3 evidence ledger](G3-PROGRESS.md) records the acceptance decision and its limits: 2/2/1 incomplete axe checks, representative page/link checks rather than full coverage, no independently captured screen-reader speech, and no deliberately modified frozen contract solely for deployment validation.
