@@ -29,11 +29,13 @@ class MainContent(HTMLParser):
 
     def handle_starttag(self, tag, attrs) -> None:
         attrs_map = dict(attrs)
-        if tag == "main" and self.depth == 0:
-            self.depth = 1
+        if tag == "main" and not self.main_seen:
             self.main_seen = True
+            self.depth = 1
         elif self.depth:
-            self.depth += 1
+            if tag not in ("img", "input", "br", "hr", "meta", "link", "source",
+                           "wbr", "area", "base", "embed", "track", "col"):
+                self.depth += 1
         else:
             return
         if tag in ("script", "style", "svg"):
