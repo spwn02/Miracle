@@ -8,6 +8,26 @@
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
 
+## Second genuine-issue runtime auto-add experiment — 2026-10-20
+
+To validate observable behavior rather than accepting the ambiguous `wasAutomated: false` metadata by waiver, a **genuine, actionable G4 security subtask** was filed: [Issue #24 — verify CodeQL reference-C++26 modules/reflection coverage](https://github.com/spwn02/Miracle/issues/24). It tracks a documented unresolved G4 security-analysis gate under parent [G4 issue #4](https://github.com/spwn02/Miracle/issues/4). It has actual acceptance criteria, the existing `type:infrastructure` label and program milestone #1. It is **not** a disposable automation fixture or fabricated historical work.
+
+The GitHub issue-creation action did **not** add the item manually to any Project. A fresh read of the actual [GitHub issue #24 REST events](https://api.github.com/repos/spwn02/Miracle/issues/24/events?per_page=100) found the following events:
+
+| UTC, October 20 | Event | Actor | ID |
+| --- | --- | --- | --- |
+| 12:34:44 | Issue creation / program milestone assignment | Repository issue creator | — |
+| 12:34:48 | `added_to_project_v2` | `github-project-automation[bot]` | `33741360340` |
+| 12:34:48 | `project_v2_item_status_changed` | `github-project-automation[bot]` | `33741360834` |
+| 12:34:48 | `added_to_project_v2` | `github-project-automation[bot]` | `33741362080` |
+| 12:34:49 | `project_v2_item_status_changed` | `github-project-automation[bot]` | `33741362347` |
+
+**Established:** For this *new genuine non-bug issue*, GitHub added it to two Projects and set their statuses within 4–5 seconds of creation, with the GitHub Projects automation bot as actor and **no manual Project additions by the assistant**. This strengthens the operational auto-enrollment evidence independently of 2026-10-17 Issue #8. The REST event payload **does not identify the two destination Project numbers** or include GraphQL's `wasAutomated` property.
+
+**Final target-specific check:** Execute the identical read-only GraphQL timeline query from the prior section, substituting `issue(number: 24)`, and inspect `project.number`, `actor.login`, `wasAutomated` and `createdAt` for the 12:34:48 UTC `AddedToProjectV2Event` entries. Record whether one is Project #3 and preserve any `wasAutomated: false` unchanged. Even a second successful functional run does not by itself prove what caused GitHub's internal boolean classification; do not describe the inconsistency as fixed without provider evidence.
+
+**G2 closeout not yet executed:** The maintainer explicitly rejected accepting the prior `wasAutomated=false` ambiguity as a waived limitation. Until the targeted new-issue GraphQL output is inspected and the evidence boundary is resolved to their satisfaction, Issue #2 remains in Verification. No Project settings were modified and no artificial issue was filed.
+
 ## Project-specific GraphQL result received — 2026-10-20
 
 The maintainer executed the read-only `gh api graphql` query below (published in the immediately preceding checkpoint) and supplied the actual JSON result, **not an inferred or synthetic value**:
