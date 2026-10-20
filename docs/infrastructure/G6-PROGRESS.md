@@ -1,16 +1,22 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — live five-form issue chooser, community routes, Project status transition and v0.5.27 provenance verified; form validation/privacy, auto-add and final G6 acceptance pending
+**Status:** IN PROGRESS — live chooser and Bug Report inline validation verified alongside community, Project transition and release evidence; form submission gating/privacy, auto-add and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Live Bug Report form and inline validation — owner visual evidence (2026-10-20)
+
+The maintainer opened [the actual Bug Report form](https://github.com/spwn02/Miracle/issues/new?template=bug_report.yml) and provided a screenshot. It shows the required **Affected revision** field empty with a red GitHub inline validation message **`Field can not be empty`**; the **Affected area** dropdown is unstarred, and **Observed behavior** is visibly required. The form includes security/reporting guidance, but the screenshot does **not** show the user following or verifying the policy link destination. No issue was submitted.
+
+**G1/G6 verified:** one real issue form renders correctly and GitHub performs inline required-field validation. **Not yet verified:** clicking `Submit new issue` while the form remains invalid and confirming submission is blocked, other forms' validation, confidential reporting, PR template prepopulation or Project automatic intake of a new issue. The draft form's `Projects: No projects` sidebar cannot refute issue auto-add because no GitHub issue has been created.
 
 ## Live GitHub issue chooser — owner visual evidence (2026-10-20)
 
 The maintainer supplied an actual screenshot of Miracle's **Create new issue** page. It displays the **five** structured GitHub issue forms (Architecture Proposal, Bug Report, Compiler / Toolchain Issue, Feature Proposal and Infrastructure Request), along with Contributing guide, Q&A, Ideas, a link to `SECURITY.md`, and GitHub's native private vulnerability-report entry. `Blank issue` is displayed to the owner as **Maintainers only**, consistent with the source configuration `blank_issues_enabled: false` being a public-chooser setting, not a way to prevent maintainer-authored blank issues.
 
-**Verified:** forms and contact/navigation choices **render together on GitHub**; no fabricated issue submission was needed. **Not yet verified:** open individual forms and exercise required-field blocking, follow confidential security reporting and conduct paths, or establish live PR template prepopulation. GitHub displays two same-named security entries because one is its native security feature and the other is our policy link. The name of the custom link is specified by the [locked G1.1 contract](G1.1-ISSUE-INTAKE-CONTRACT.md); it has **not** been silently modified.
+**Verified at chooser stage:** forms and contact/navigation choices render together. **Subsequent screenshot:** Bug Report form opens and displays an inline error for empty required `Affected revision`. **Not yet verified:** full submit-action blocking, validation of the other forms, confidential security reporting and conduct paths, or live PR template prepopulation. GitHub displays two same-named security entries because one is its native security feature and the other is our policy link. The name of the custom link is specified by the [locked G1.1 contract](G1.1-ISSUE-INTAKE-CONTRACT.md); it has **not** been silently modified.
 
 The same screenshot advances [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) and the G6 public onboarding gate, **but not confidential-report delivery or final G6 acceptance**.
 
@@ -127,7 +133,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
-| Browser/UI intake and private route | **PARTIAL — LIVE CHOOSER VERIFIED** | Maintainer screenshot of all five forms plus Q&A/Ideas/contributing/security navigation. Per-form required-field validation, PR template, private reporting route and community standards remain **unverified** |
+| Browser/UI intake and private route | **PARTIAL — CHOOSER + BUG REPORT INLINE VALIDATION VERIFIED** | Owner screenshots: chooser with all five forms; Bug Report empty required `Affected revision` triggers `Field can not be empty`. Actual submission blocking, remaining forms, PR template, confidential reporting and Community Standards **unverified** |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
