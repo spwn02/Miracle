@@ -71,16 +71,18 @@ async function audit(page, url) {
       issue.id,
       issue.impact,
       issue.description,
-      issue.nodes.slice(0, 6).map(node => node.target.join(" "))
+      issue.nodes.slice(0, 10).map(node => ({
+        target: node.target.join(" "),
+        html: node.html.slice(0, 800),
+        message: node.failureSummary?.slice(0, 1200),
+      }))
     );
   }
   console.log(
     "AXE summary:",
     JSON.stringify({ url, violations: results.violations.length, passes: results.passes.length, incomplete: results.incomplete.length })
   );
-  if (results.violations.length) {
-    throw new Error(results.violations.length + " WCAG rule(s) failed at " + url);
-  }
+  return results.violations.length;
 }
 
 async function main() {
@@ -98,9 +100,11 @@ async function main() {
   try {
     const context = await browser.newContext({ viewport: { width: 1300, height: 900 } });
     const page = await context.newPage();
-    for (const entry of pages) await audit(page, address + entry);
+    let violations = 0;
+    for (const entry of pages) violations += await audit(page, address + entry);
     await page.setViewportSize({ width: 390, height: 844 });
-    await audit(page, address + pages[0]);
+    violations += await audit(page, address + pages[0]);
+    if (violations) throw new Error(violations + " WCAG rule violation(s) across audited pages");
     console.log("PASS: generated Miracle Book WCAG semantics and Chrome accessibility tree");
     console.log("LIMIT: this is NOT a screen-reader speech/interaction test");
   } finally {
