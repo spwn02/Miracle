@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-20
 **Workstream:** G1 — Governance & Contribution Experience
-**Status:** G1.1–G1.4 implemented; live chooser/forms, community standards and policy navigation partially verified. Private vulnerability reporting ENABLED per maintainer confirmation; external reporter flow, confidential conduct reporting, submission blocking, PR prefill and acceptance pending
+**Status:** G1.1–G1.4 implemented; live chooser/forms, community standards and policy navigation partially verified. Private vulnerability reporting enabled, and external reporter entry maintainer-reported verified. Confidential conduct email is published and maintainer-confirmed receiving. Form submit-blocking, PR prefill and final acceptance remain pending.
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Design baseline:** [Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md)
 **Integration policy for this infrastructure work:** Author explicitly authorized AI-authored DevOps files and direct pushes to `master`; this exception does not amend product-development protocol requirements.
@@ -13,9 +13,17 @@
 | --- | --- | --- | --- |
 | G1.1 — Issue intake | `.github/ISSUE_TEMPLATE/{bug_report,compiler_issue,feature_proposal,architecture_proposal,infrastructure_issue,config}.yml`; [locked contract](G1.1-ISSUE-INTAKE-CONTRACT.md) | **Live chooser verified by maintainer screenshot**; source structure reviewed | Verify required/optional field behavior and security policy link interaction inside the live forms |
 | G1.2 — Pull request intake | [PR template](https://github.com/spwn02/Miracle/blob/master/.github/PULL_REQUEST_TEMPLATE.md) | Implementation complete | Verify template pre-population in GitHub's live PR interface without falsely asserting a test PR exists |
-| G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified** (Code of conduct, security policy, templates etc.) | Follow policy links and assess confidential moderation contact; Accessibility is not separately listed in the screenshot |
+| G1.3 — Community governance | [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md), [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md), [Accessibility](https://github.com/spwn02/Miracle/blob/master/ACCESSIBILITY.md) | **Community Standards recognition visually verified**; conduct contact published and maintainer-confirmed receiving | Follow remaining policy links where necessary; Accessibility is not separately listed in the screenshot |
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
-| G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
+| G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Verify five form submit-blocking behaviors and real PR template prefill; obtain author acceptance |
+
+## G1.5 conduct contact published and reporter entry confirmed by maintainer — 2026-10-20
+
+The maintainer approved using **spwn02.dev@gmail.com** as the private Code of Conduct reporting address and confirmed that the mailbox receives messages. The approved amendment was published to `master` as [commit `3aa90f1`](https://github.com/spwn02/Miracle/commit/3aa90f10cb4f127b8c0a33cb46ea55cf47bbb33b), updating only `CODE_OF_CONDUCT.md` in that commit. It names the contact, provides subject-line and minimal-evidence guidance, distinguishes conduct from security reports, identifies alternative GitHub reporting routes, and avoids promises of anonymity, absolute confidentiality or a response-time guarantee. The maintainer's reachability statement is user confirmation, **not an independently observed outside-in delivery test**. `SECURITY.md` and the G1.1 issue form contract were not modified.
+
+The maintainer additionally stated that they completed **G1.5 Step 3**, previously described as opening the **non-admin/external reporter-facing private vulnerability reporting form without submission**. Record this as **maintainer-reported live browser verification**, not as independently inspected screenshots, simulated report delivery or a security finding review. No confidential report was submitted and detailed vulnerability review remains deferred.
+
+**Still pending for G1.5:** live submit-blocking evidence for all five incomplete issue forms, PR body template prepopulation in the genuine new-PR composer, and explicit acceptance after reviewing the verified scope. The authenticated GitHub connector cannot substitute for those browser observations. No synthetic issues or PRs should be created to fill the gap.
 
 ## G1.5 independent read-only recheck — 2026-10-20
 
@@ -110,8 +118,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 
 ## Outstanding operational work
 
-- The maintainer screenshot now proves **inline empty-required-field validation** in the live Bug Report form; source checks alone could not. Actual submission blocking, other forms' behavior, and PR template pre-population remain unverified.
-- Security and Contributing pages are now confirmed to open in GitHub; private vulnerability-reporting availability and confidential Code of Conduct contact/delivery have **not** been verified.
+- The maintainer screenshot proves **inline empty-required-field validation** in the live Bug Report form; actual submission blocking, other forms' behavior, and PR template pre-population remain unverified.
+- Security and Contributing pages are confirmed to open in GitHub. The maintainer reports verifying the non-admin vulnerability form entry point and receiving mail at the newly published private conduct contact; confidential report delivery itself was not tested.
 - `G0-PROGRESS.md` records pending **author-side local repository reconciliation**, which cannot be inferred from successful remote pushes.
 - G2 will introduce formal labels, issue types/project automation only after their configuration has been reviewed.
 
@@ -130,7 +138,8 @@ These checks establish **source-level contract conformance**, not GitHub's live 
 - [x] Verify **GitHub Community Standards recognition** of all eight visible entries (description, README, Code of Conduct, contributing, license, security policy, issue templates, PR template) — screenshot 2026-10-20.
 - [x] Verify GitHub browser navigation and rendering for the **Security policy** and **Contributing guide** destinations — maintainer screenshots (2026-10-20).
 - [x] Confirm **Private vulnerability reporting is enabled** — explicit maintainer statement (2026-10-20); owner's Security Advisories page screenshot shows the **New draft security advisory** maintainer action.
-- [ ] Verify the **external contributor's private reporting form** and confidential **conduct-reporting path** without submitting dummy or sensitive reports; actual delivery and review of existing documented vulnerabilities are deferred to final security hardening.
+- [x] **External reporter entry point:** maintainer reports checking the non-admin private vulnerability form (2026-10-20); no screenshot independently assessed or synthetic report sent; actual delivery and vulnerability review deferred.
+- [x] **Conduct contact:** [Code of Conduct](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md) publishes `spwn02.dev@gmail.com` (commit `3aa90f1`), and maintainer confirmed mailbox receives messages; no invented confidential report.
 - [ ] Record review outcomes and explicit author acceptance.
 
-**Next action:** G1.5 — independent user-facing verification and closeout; no fictional issue or PR is required to claim completion.
+**Next action:** Complete live submit-blocking checks for all five issue forms, verify genuine PR-template prefill, then obtain explicit author G1.5 acceptance; no fictional issue or PR is required.
