@@ -1,10 +1,42 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
-**Updated:** 2026-10-17
+**Updated:** 2026-10-20
 **Status:** G4 implementation consolidated and validated; security settings confirmed, full acceptance held for actual release/GCC/CodeQL evidence
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
+
+## October 20 current-state security/CI verification — continuing G4 while G2 support pending
+
+**Workstream separation:** G2 functional Project #3 intake and Backlog initialization succeeded, but [GitHub Support ticket #4883332](G2-PROGRESS.md) is still awaiting provider clarification of bot-attributed `wasAutomated: false` events. This does not block independent G4 work, and G2 is not silently marked accepted.
+
+A fresh REST and workflow-job inspection found:
+
+| Verification surface | Current real evidence | Limit |
+| --- | --- | --- |
+| Protected development branches | [Active ruleset #25286606](https://github.com/spwn02/Miracle/rules/25286606): `deletion`, `non_fast_forward`, `refs/heads/master` and `refs/heads/gcc`, empty bypass actors | No destructive push was attempted |
+| Protected version tags | [Active ruleset #25286609](https://github.com/spwn02/Miracle/rules/25286609): `deletion`, `update`, `refs/tags/v*`, empty bypass actors | A legitimate new release under these rules has not occurred |
+| Latest `master` CI | [Run #39469042190](https://github.com/spwn02/Miracle/actions/runs/39469042190) on `9add359e443b2f39c1fc4ac33be6994b2be9733b`: **success**; infrastructure guards, pinned toolchain, self-tests/examples and all three consumers passed | This is reference-C++26 CI, not a CodeQL scan |
+| Latest Pages | [Run #39469042209](https://github.com/spwn02/Miracle/actions/runs/39469042209) on same commit: **success** | Publishing does not validate tag release or GCC push |
+| Latest GCC sync | [Run #39469042283](https://github.com/spwn02/Miracle/actions/runs/39469042283) on same commit: **success** candidate validation/report, but **`Advance gcc` skipped** and protected `gcc` remains at `2822de260944093672d3eec2462be0a4e7c2401f` | Actual protected `gcc` advancement not proven; do not force a compatibility-bypassing push |
+| Dependabot PR [#18](https://github.com/spwn02/Miracle/pull/18) | `actions/checkout` v6 → v7.0.1, full SHA pins and `persist-credentials: false` preserved where applicable; PR-head [CI #39376903488](https://github.com/spwn02/Miracle/actions/runs/39376903488), [Docs #39376903522](https://github.com/spwn02/Miracle/actions/runs/39376903522), [Docker #39376903605](https://github.com/spwn02/Miracle/actions/runs/39376903605) succeeded; PR remains open, REST `mergeable_state: clean` at audit | Major version bump; branch checks predate current `master`, no author review/merge |
+| Dependabot PR [#19](https://github.com/spwn02/Miracle/pull/19) | `actions/configure-pages` v5 → v6, full SHA pin; PR-head [CI #39379442818](https://github.com/spwn02/Miracle/actions/runs/39379442818) and [Docs #39379442782](https://github.com/spwn02/Miracle/actions/runs/39379442782) succeeded; PR remains open, REST `mergeable_state: clean` at audit | Major version bump; no author review/merge |
+
+**CodeQL visibility boundary:** A GitHub connection read of `/code-scanning/default-setup` and `/code-scanning/analyses` was rejected by the connector's URL allowlist, **not by an authoritative GitHub security-setting response**. Therefore no claim about CodeQL default-setup state, successful analyses, scanned C++26 semantics, query coverage or lack thereof follows from this failed read. Earlier maintainer authentication confirmed `default-setup.state: configured`, but **actual analysis requires a fresh authenticated owner-side read**.
+
+**Next reproducible owner-side read-only checks** (do not retrieve private code-scanning alerts or secrets):
+
+```bash
+gh api repos/spwn02/Miracle/code-scanning/default-setup \
+  --jq '{state, languages, query_suite, updated_at}'
+
+gh api 'repos/spwn02/Miracle/code-scanning/analyses?per_page=10' \
+  --jq '.[] | {id, created_at, tool: .tool.name, analysis_key, category, ref, commit_sha, results_count, rules_count, error}'
+```
+
+Share only sanitized metadata and any returned permission/status error. **Do not treat analysis metadata alone as evidence that CodeQL understands experimental C++26 modules or reflection**; subsequent workflow/build/log assessment is required. These are read-only authenticated commands requiring appropriate `security_events`/repository access.
+
+**G4 remains OPEN** for meaningful CodeQL C++26 analysis evidence ([Issue #24](https://github.com/spwn02/Miracle/issues/24)), a legitimate new release running against current protected `v*` rules, a genuine GCC-compatible protected-`gcc` ref update when compiler support permits, and explicit author approval. Open Dependabot #18/#19 are reviewable, not automatically approved. No compatibility gate, tag protection, or secure reporting setting was relaxed.
 
 ## Security analysis coverage audit scoped — 2026-10-20
 
