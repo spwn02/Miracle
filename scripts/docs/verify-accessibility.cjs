@@ -107,6 +107,54 @@ async function audit(page, url, theme = "rust") {
     url, theme, violations: results.violations.length,
     passes: results.passes.length, incomplete: unresolved,
   }));
+  // An incomplete axe result is not a PASS. Check the actual DOM invariant
+  // for the two known mdBook overlay/hidden-popup uncertainties. Fail closed
+  // on any newly surfaced kind of inconclusive result.
+  for (const issue of results.incomplete) {
+    if (issue.id === "aria-valid-attr-value") {
+      if (issue.nodes.some(n => n.target.join(" ") !== "#mdbook-theme-toggle")) {
+        throw new Error("Unexpected unresolved ARIA attribute target");
+      }
+      continue; // The referenced theme-menu ID was independently asserted above.
+    }
+    if (issue.id !== "color-contrast") {
+      throw new Error("Unreviewed axe incomplete rule: " + issue.id);
+    }
+    for (const node of issue.nodes) {
+      const selector = node.target.join(" ");
+      const contrast = await page.evaluate((sel) => {
+        const element = document.querySelector(sel);
+        const sidebar = element?.closest(".sidebar");
+        if (!element || !sidebar) return null;
+        const fg = getComputedStyle(element).color;
+        const bg = getComputedStyle(sidebar).backgroundColor;
+        function rgb(text) {
+          const matches = text.match(/[0-9]+(?:\.[0-9]+)?/g);
+          if (!matches || matches.length < 3) return null;
+          return matches.slice(0, 3).map(Number);
+        }
+        const x = rgb(fg), y = rgb(bg);
+        if (!x || !y) return null;
+        function luminance(values) {
+          const v = values.map(c => {
+            c /= 255;
+            return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+          });
+          return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+        }
+        const a = luminance(x), b = luminance(y);
+        return (Math.max(a,b) + 0.05) / (Math.min(a,b) + 0.05);
+      }, selector);
+      if (contrast === null || contrast < 4.5) {
+        throw new Error("Unresolved partially obscured sidebar contrast: " + selector +
+          " ratio=" + contrast + " theme=" + theme + " " + url);
+      }
+    }
+  }
+  if (results.incomplete.length) {
+    console.log("PASS: supplementary DOM/palette checks for " +
+      results.incomplete.length + " axe-incomplete sidebar/popup rule(s)");
+  }
   return results.violations.length;
 }
 
