@@ -1,0 +1,27 @@
+/* Narrow, opt-in mdBook v0.5.4 accessibility corrections.
+   Keep Rust Book visual language; avoid copying/upstream-forking its theme. */
+
+/* The stock Rust theme's #2b79a2 links fail 4.5:1 on light backgrounds,
+   especially its muted blockquotes. */
+.rust { --links: #0b4668; }
+
+/* Expose sufficiently tall sidebar and table-of-contents click targets. */
+#mdbook-sidebar a,
+.sidebar a,
+a.header-in-summary {
+    box-sizing: border-box;
+    min-height: 24px;
+    line-height: 24px;
+    display: inline-block;
+}
+
+/* Keep the compact icons visually familiar while enlarging their hit boxes. */
+a[title="Print this book"],
+a[title="Git repository"] {
+    box-sizing: border-box;
+    display: inline-flex;
+    min-width: 32px;
+    min-height: 32px;
+    align-items: center;
+    justify-content: center;
+}
