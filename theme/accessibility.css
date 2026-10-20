@@ -3,7 +3,7 @@
 
 /* The stock Rust theme's #2b79a2 links fail 4.5:1 on light backgrounds,
    especially its muted blockquotes. */
-.rust { --links: #0b4668; }
+.rust { --links: #0b4668; --sidebar-active: #9ad0ff; }
 
 /* Expose sufficiently tall sidebar and table-of-contents click targets. */
 #mdbook-sidebar a,
@@ -28,3 +28,6 @@ a[title="Git repository"] {
 
 /* Underline prose links so that color alone does not convey link identity. */
 .content a { text-decoration: underline; text-underline-offset: 0.12em; }
+
+/* Navy theme: preserve the Rust Book palette but keep active/sidebar links AA-readable. */
+.navy { --links: #9cd4f4; --sidebar-active: #9cd4f4; }

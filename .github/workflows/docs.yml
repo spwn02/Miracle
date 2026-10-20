@@ -57,6 +57,20 @@ jobs:
       - name: Check generated navigation and pages
         run: python scripts/docs/verify-site.py site
 
+      - name: Crawl all rendered site links, fragments and error-path fixtures
+        run: |
+          python3 scripts/docs/verify-links.py --self-test
+          python3 scripts/docs/verify-links.py site
+
+      - name: Probe all distinct external URLs before merging
+        run: python3 scripts/docs/verify-links.py site --external
+
+      - name: Prove locked-contract rendering in a throwaway copy only
+        run: python3 scripts/docs/verify-contract-propagation.py
+
+      - name: Test complete-chapter parity negative fixtures
+        run: python3 scripts/docs/verify-published-content.py --self-test
+
       - name: Test public Pages probe using offline negative fixtures
         run: python3 scripts/docs/verify-live-site.py --self-test
 
@@ -99,3 +113,26 @@ jobs:
 
       - name: Compare actual public Pages with canonical source and check external links
         run: python3 scripts/docs/verify-live-site.py
+
+      - name: Rebuild canonical Pages with the exact pinned mdBook snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="v0.5.4"
+          archive="mdbook-${version}-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --retry 3 \
+            "https://github.com/rust-lang/mdBook/releases/download/${version}/${archive}" \
+            --output "$RUNNER_TEMP/mdbook.tar.gz"
+          echo "3f28de05dafca9d0f2eab99c662116b0e37b89b1d96a08f8f430b9eeae958cd7  $RUNNER_TEMP/mdbook.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/mdbook-bin"
+          tar -xzf "$RUNNER_TEMP/mdbook.tar.gz" -C "$RUNNER_TEMP/mdbook-bin" mdbook
+          echo "$RUNNER_TEMP/mdbook-bin" >> "$GITHUB_PATH"
+
+      - name: Rebuild the public comparison baseline
+        run: mdbook build
+
+      - name: Verify all chapter bodies against public Pages
+        run: python3 scripts/docs/verify-published-content.py
+
+      - name: Check every external URL referenced in the generated site
+        run: python3 scripts/docs/verify-links.py site --external

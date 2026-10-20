@@ -9,7 +9,10 @@ const path = require("node:path");
 const { chromium } = require("playwright-core");
 const AxeBuilder = require("@axe-core/playwright").default;
 
-const pages = ["/index.html", "/infrastructure/G3-PROGRESS.html"];
+const summary = fs.readFileSync(path.resolve("docs/SUMMARY.md"), "utf8");
+const pages = [...new Set([...summary.matchAll(/\]\(([^)]+)\.md\)/g)].map(m => "/" + m[1] + ".html"))];
+const samples = ["/index.html", "/infrastructure/G3-PROGRESS.html", "/meta.html", "/diagnostics.html"];
+if (pages.length < 20) throw new Error("Expected all mdBook chapters from SUMMARY.md");
 const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const mime = {
   ".html": "text/html; charset=utf-8",
@@ -42,8 +45,23 @@ function serve() {
   });
 }
 
-async function audit(page, url) {
+async function audit(page, url, theme = "rust") {
   await page.goto(url, { waitUntil: "networkidle", timeout: 45000 });
+  // Use the actual mdBook menu: a CSS-class-only switch leaves syntax
+  // highlighting and persisted theme assets in the previous color scheme.
+  if (theme === "navy") {
+    await page.locator("#mdbook-theme-toggle").click();
+    await page.locator("#mdbook-theme-navy").click();
+    if (!(await page.locator("html").getAttribute("class") || "").includes("navy")) {
+      throw new Error("Theme menu failed to switch to Navy");
+    }
+  }
+  // The toggle's controlled menu exists, even when hidden until activation:
+  // axe marks that closed-popup relationship INCOMPLETE, so assert it directly.
+  const control = await page.locator("#mdbook-theme-toggle").getAttribute("aria-controls");
+  if (control !== "mdbook-theme-list" || await page.locator("#mdbook-theme-list").count() !== 1) {
+    throw new Error("Theme popup aria-controls points to a missing element");
+  }
   const title = await page.title();
   if (!title.includes("Miracle")) throw new Error("Expected Miracle page title: " + title);
 
@@ -78,10 +96,74 @@ async function audit(page, url) {
       }))
     );
   }
-  console.log(
-    "AXE summary:",
-    JSON.stringify({ url, violations: results.violations.length, passes: results.passes.length, incomplete: results.incomplete.length })
-  );
+  const unresolved = results.incomplete.map(item => ({
+    id: item.id, impact: item.impact,
+    targets: item.nodes.slice(0, 4).map(n => ({
+      selector: n.target.join(" "),
+      reason: n.any.concat(n.all, n.none).map(x => x.message).filter(Boolean).slice(0, 2),
+    })),
+  }));
+  console.log("AXE summary:", JSON.stringify({
+    url, theme, violations: results.violations.length,
+    passes: results.passes.length, incomplete: unresolved,
+  }));
+  // An incomplete axe result is not a PASS. Check the actual DOM invariant
+  // for the two known mdBook overlay/hidden-popup uncertainties. Fail closed
+  // on any newly surfaced kind of inconclusive result.
+  for (const issue of results.incomplete) {
+    if (issue.id === "aria-valid-attr-value") {
+      if (issue.nodes.some(n => n.target.join(" ") !== "#mdbook-theme-toggle")) {
+        throw new Error("Unexpected unresolved ARIA attribute target");
+      }
+      continue; // The referenced theme-menu ID was independently asserted above.
+    }
+    if (issue.id !== "color-contrast") {
+      throw new Error("Unreviewed axe incomplete rule: " + issue.id);
+    }
+    for (const node of issue.nodes) {
+      const selector = node.target.join(" ");
+      const contrast = await page.evaluate((sel) => {
+        const element = document.querySelector(sel);
+        if (!element) return null;
+        const fg = getComputedStyle(element).color;
+        function rgb(text) {
+          const matches = text.match(/[0-9]+(?:\.[0-9]+)?/g);
+          if (!matches || matches.length < 3) return null;
+          return matches.map(Number);
+        }
+        const x = rgb(fg);
+        if (!x || (x.length > 3 && x[3] < 0.999)) return null;
+        let y = null;
+        for (let node = element; node; node = node.parentElement) {
+          const style = getComputedStyle(node);
+          if (style.backgroundImage !== "none") return null;
+          const color = rgb(style.backgroundColor);
+          if (color && (color.length === 3 || color[3] >= 0.999)) {
+            y = color;
+            break;
+          }
+        }
+        if (!y) return null;
+        function luminance(values) {
+          const v = values.map(c => {
+            c /= 255;
+            return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+          });
+          return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+        }
+        const a = luminance(x), b = luminance(y);
+        return (Math.max(a,b) + 0.05) / (Math.min(a,b) + 0.05);
+      }, selector);
+      if (contrast === null || contrast < 4.5) {
+        throw new Error("Unresolved axe-incomplete contrast: " + selector +
+          " ratio=" + contrast + " theme=" + theme + " " + url);
+      }
+    }
+  }
+  if (results.incomplete.length) {
+    console.log("PASS: supplementary DOM/palette checks for " +
+      results.incomplete.length + " axe-incomplete sidebar/popup rule(s)");
+  }
   return results.violations.length;
 }
 
@@ -101,6 +183,7 @@ async function main() {
     const context = await browser.newContext({ viewport: { width: 1300, height: 900 } });
     const page = await context.newPage();
     let violations = 0;
+    // All canonical chapters at desktop size, not merely two examples.
     for (const entry of pages) violations += await audit(page, address + entry);
     // Validate *actual* keyboard activation of the semantic sidebar button.
     await page.goto(address + pages[0], { waitUntil: "networkidle" });
@@ -123,9 +206,14 @@ async function main() {
     }
     console.log("PASS: sidebar keyboard Enter/Space and aria-expanded state");
     await page.setViewportSize({ width: 390, height: 844 });
-    violations += await audit(page, address + pages[0]);
+    for (const entry of pages) violations += await audit(page, address + entry);
+    // Include the default dark theme on representative user-facing content.
+    await page.setViewportSize({ width: 1300, height: 900 });
+    for (const entry of samples) violations += await audit(page, address + entry, "navy");
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const entry of samples) violations += await audit(page, address + entry, "navy");
     if (violations) throw new Error(violations + " WCAG rule violation(s) across audited pages");
-    console.log("PASS: generated Miracle Book WCAG semantics and Chrome accessibility tree");
+    console.log("PASS: WCAG/Chrome AX tree across " + pages.length + " canonical chapters desktop/mobile plus navy theme samples");
     console.log("LIMIT: this is NOT a screen-reader speech/interaction test");
   } finally {
     await browser.close();

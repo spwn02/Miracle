@@ -10,7 +10,7 @@
 
 The maintainer reported that the **previous local interactive devcontainer passed**, approved G5 for the **revised Docker-only development workflow**, and explicitly **declined Codespaces because it is paid**. The prior devcontainer test is legitimate historical acceptance evidence. Codespaces startup, storage, billing and browser editor were **not executed**; they are **not passed** and have been removed from the active implementation scope by explicit decision, not waived as test successes.
 
-Miracle now exposes **one [root Dockerfile](../../Dockerfile)**. Neither `.devcontainer/devcontainer.json` nor a Dev Containers CLI is required. There are no Codespaces prebuilds, images pushed to registries, checked-in credentials, or paid cloud instances. This does not change the authoritative C++26 compiler, CMake preset, library API or CI test criteria.
+Miracle now exposes **one [root Dockerfile](https://github.com/spwn02/Miracle/blob/master/Dockerfile)**. Neither `.devcontainer/devcontainer.json` nor a Dev Containers CLI is required. There are no Codespaces prebuilds, images pushed to registries, checked-in credentials, or paid cloud instances. This does not change the authoritative C++26 compiler, CMake preset, library API or CI test criteria.
 
 The original infrastructure contract described devcontainer/Codespaces support as **proposed** and the G5 release gate as demonstrated reproducible compiler-compatible builds; the explicit maintainer scope change is recorded in that contract, this plan and [issue #5](https://github.com/spwn02/Miracle/issues/5).
 
@@ -39,7 +39,7 @@ The same reference snapshot/source/asset identity is used by existing [CI](https
 
 ## CLI workflow
 
-The root [Makefile](../../Makefile) is a convenience interface; **CMakePresets.json remains authoritative**. `make` does not install a compiler on your host, publish an image, build LLVM from source or generate a release.
+The root [Makefile](https://github.com/spwn02/Miracle/blob/master/Makefile) is a convenience interface; **CMakePresets.json remains authoritative**. `make` does not install a compiler on your host, publish an image, build LLVM from source or generate a release.
 
 | Command | Action |
 | --- | --- |
@@ -87,9 +87,9 @@ The pinned toolchain and tool downloads are checksum-verified and version-fixed.
 
 ## Docker-only integration gate
 
-The [G5 container workflow](../../.github/workflows/container.yml) performs the no-cache image build and canonical [reference test/consumer suite](../../scripts/ci/verify-container.sh), including **71 CTest cases** and the three `add_subdirectory`, `FetchContent`, and installed `find_package` modes.
+The [G5 container workflow](https://github.com/spwn02/Miracle/blob/master/.github/workflows/container.yml) performs the no-cache image build and canonical [reference test/consumer suite](https://github.com/spwn02/Miracle/blob/master/scripts/ci/verify-container.sh), including **71 CTest cases** and the three `add_subdirectory`, `FetchContent`, and installed `find_package` modes.
 
-The [Docker workspace acceptance script](../../scripts/ci/verify-docker-workspace.sh) additionally creates a disposable **host-side copy** of the checkout, mounts it read/write with matching UID/GID, runs CMake configuration and confirms `build/tests/compile_commands.json`, and executes the [Neovim/clangd LSP probe](../../scripts/ci/verify-nvim-lsp.lua). The probe opens real Miracle C++ source and requests symbols via `textDocument/documentSymbol`. A fresh second Docker container must observe the generated marker and compilation database from the first; the host also verifies persistence. The script removes its temporary copy, **never the developer's checkout**.
+The [Docker workspace acceptance script](https://github.com/spwn02/Miracle/blob/master/scripts/ci/verify-docker-workspace.sh) additionally creates a disposable **host-side copy** of the checkout, mounts it read/write with matching UID/GID, runs CMake configuration and confirms `build/tests/compile_commands.json`, and executes the [Neovim/clangd LSP probe](https://github.com/spwn02/Miracle/blob/master/scripts/ci/verify-nvim-lsp.lua). The probe opens real Miracle C++ source and requests symbols via `textDocument/documentSymbol`. A fresh second Docker container must observe the generated marker and compilation database from the first; the host also verifies persistence. The script removes its temporary copy, **never the developer's checkout**.
 
 Local reproducibility:
 

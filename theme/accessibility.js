@@ -21,9 +21,25 @@
             field.setAttribute("aria-label", (field.checked ? "Completed: " : "Incomplete: ") + itemText.slice(0, 240));
         });
     }
+    function makeLongCodeBlocksKeyboardAccessible() {
+        // mdBook sometimes applies overflow to the code element itself.
+        // A focused element allows keyboard users (including Safari users)
+        // to scroll code blocks otherwise accessible only by mouse/touch.
+        document.querySelectorAll("main pre code").forEach((code) => {
+            code.setAttribute("tabindex", "0");
+        });
+        document.querySelectorAll("main .table-wrapper").forEach((region) => {
+            if (region.scrollWidth > region.clientWidth + 1) {
+                region.setAttribute("tabindex", "0");
+                region.setAttribute("role", "region");
+                region.setAttribute("aria-label", "Scrollable documentation table");
+            }
+        });
+    }
     function initialize() {
         enableAccessibleSidebarToggle();
         labelReadOnlyTasks();
+        makeLongCodeBlocksKeyboardAccessible();
     }
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initialize);
