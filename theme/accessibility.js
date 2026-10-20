@@ -21,9 +21,18 @@
             field.setAttribute("aria-label", (field.checked ? "Completed: " : "Incomplete: ") + itemText.slice(0, 240));
         });
     }
+    function makeLongCodeBlocksKeyboardAccessible() {
+        // mdBook sometimes applies overflow to the code element itself.
+        // A focused element allows keyboard users (including Safari users)
+        // to scroll code blocks otherwise accessible only by mouse/touch.
+        document.querySelectorAll("main pre code").forEach((code) => {
+            code.setAttribute("tabindex", "0");
+        });
+    }
     function initialize() {
         enableAccessibleSidebarToggle();
         labelReadOnlyTasks();
+        makeLongCodeBlocksKeyboardAccessible();
     }
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initialize);
