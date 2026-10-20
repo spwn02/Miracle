@@ -10,6 +10,8 @@ build-dir = "site"
 create-missing = false
 
 [output.html]
+additional-css = ["theme/accessibility.css"]
+additional-js = ["theme/accessibility.js"]
 default-theme = "rust"
 preferred-dark-theme = "navy"
 site-url = "/Miracle/"
