@@ -3,7 +3,7 @@
 **Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Publishing subtask #8 CLOSED; maintainer reports live keyboard/Tab, sidebar, search/results, and mobile-width navigation PASSED. G3 parent #3 remains OPEN for screen-reader semantics, representative source/link checks and explicit phase sign-off
+**Status:** Publishing subtask #8 CLOSED; real keyboard/search/mobile UX and post-deployment public source-to-HTML plus 3 outbound links VERIFIED. G3 parent #3 remains OPEN for screen-reader semantics and explicit author sign-off
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
@@ -64,6 +64,23 @@ After publication, further real canonical edits (including this G3 ledger, new G
 
 **Publishing subtask [#8](https://github.com/spwn02/Miracle/issues/8) was closed `completed`** on that evidence. This does **not** imply complete G3 program acceptance: we have not independently demonstrated a full keyboard/screen-reader/mobile regression, every outbound link's validity, or a client-observed render of a particular most-recent paragraph. Those stricter experience checks remain with parent [#3](https://github.com/spwn02/Miracle/issues/3), instead of inventing a browser validation result.
 
+## Public Pages source parity and outbound links — GitHub Actions VERIFIED (2026-10-20)
+
+The genuine [G3 post-deployment probe PR #21](https://github.com/spwn02/Miracle/pull/21) was reviewed and merged with a **history-preserving merge commit** [`723172c`](https://github.com/spwn02/Miracle/commit/723172c63229154840219fb21d9ab8d7559c17bc). Its [PR-head mdBook job #39376457444](https://github.com/spwn02/Miracle/actions/runs/39376457444) and [reference C++26 CI #39376457502](https://github.com/spwn02/Miracle/actions/runs/39376457502) passed; the offline source/HTML negative fixtures passed in the mdBook job.
+
+**Crucially, the actual post-merge [GitHub Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839) succeeded**. Its **Publish GitHub Pages** job `118476429713` executed the HTTP checks **after** successful deployment, not merely against a generated build artifact. Job logs explicitly confirm:
+
+- `PASS: live canonical source content /infrastructure/G3-PROGRESS.html` — an actual paragraph about keyboard navigation was derived from canonical `docs/infrastructure/G3-PROGRESS.md` and found in the public HTML response.
+- `PASS: live canonical source content /` — the module/target paragraph derived from `docs/index.md` was present in the public homepage HTML. The rendered page also contained the three expected outgoing links defined in that source.
+- `PASS: live outbound link .../tree/master/docs`
+- `PASS: live outbound link .../blob/master/CONTRIBUTING.md`
+- `PASS: live outbound link .../issues/new/choose`
+- `PASS: public Pages source-to-render comparison and 3 external links`.
+
+The probe uses only Python's standard library, a cache-busting query and bounded retries, and runs under the existing **master Pages workflow**. It independently verifies **real network-visible publication and representative link resolution**; it is **not** an exhaustive link crawler, comprehensive browser accessibility test or screen-reader audit. Its success does not imply every chapter, every external destination or every environment behaves correctly.
+
+**Acceptance:** The specifically requested **canonical-source-to-live-paragraph comparison and representative external link spot-check are verified**. [G3 #3](https://github.com/spwn02/Miracle/issues/3) remains OPEN solely for the remaining accessibility assessment/known limitations and explicit maintainer full-G3 acceptance; child publishing issue #8 stays completed.
+
 ## Live user-experience verification — maintainer report (2026-10-20)
 
 The maintainer independently used the deployed [Miracle Book](https://spwn02.github.io/Miracle/) and explicitly reported: **“Tab, sidebar, search, resize to a mobile width, navigation and search results all work as expected”**. This is **firsthand owner-reported browser verification**, not a synthetic CI assertion. It covers:
@@ -89,8 +106,8 @@ The report makes no claim about a specific screen reader or assistive technology
 - [x] Maintainer confirms live site works and approves the Rust Book visual design; theme/sidebar/search generation is tested in CI.
 - [x] **Maintainer-reported hands-on pass:** Tab/keyboard navigation, sidebar and chapters, actual search results, and mobile-width responsive behavior (2026-10-20).
 - [ ] **Screen-reader semantics and assistive-technology usability** — no dedicated test reported.
-- [ ] Spot-check representative external documentation links and compare a specific current paragraph with its canonical Markdown source in the live deployed site.
-- [x] Genuine canonical docs edits automatically generated and deployed new Pages versions through Actions, with no manual mirrored edits; direct client-observed verification of an individual updated paragraph remains untested.
+- [x] **Real public HTTP spot-check passed after deployment:** two source-derived paragraphs matched live Pages HTML, and **3/3** selected external links resolved in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839) (2026-10-20).
+- [x] Genuine canonical docs edits automatically generated and deployed new Pages versions, without duplicate editing; post-deployment HTTP runner also confirmed specific published text against canonical source (run #39376713839).
 - [ ] Maintainer explicitly accepts **full G3** experience and records remaining browser accessibility/navigation checks on parent #3; publishing implementation #8 is complete.
 
-**Full G3 is not formally accepted.** The owner has now directly verified keyboard/Tab, sidebar, search/results and mobile-width navigation; screen-reader semantics, representative live links and source-to-page paragraph comparison, and explicit phase acceptance remain open on parent #3. Subtask #8 is already closed.
+**Full G3 is not formally accepted.** Live keyboard/Tab, sidebar, search/results and mobile-width navigation were verified by the maintainer; actual Pages source-to-render parity and three external links were verified by post-deployment Actions. **Screen-reader semantics/assistive-technology usability and explicit author acceptance** remain open on parent #3. Subtask #8 is already closed.

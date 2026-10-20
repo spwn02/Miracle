@@ -1,7 +1,7 @@
 # G3 — Documentation Publishing: Operating Plan
 
 **Workstream:** G3 — repository-backed documentation
-**Status:** mdBook deployed; owner-reported keyboard, sidebar, search/results and mobile-width usability checks PASSED (2026-10-20). Screen-reader, live source/link spot-checks and explicit G3 sign-off remain open
+**Status:** mdBook deployed; owner-reported keyboard/search/mobile interactions and post-deployment live source/content plus 3 outbound links VERIFIED (2026-10-20). Screen-reader assessment and explicit G3 sign-off remain open
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
 **Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
@@ -62,12 +62,15 @@ G3 can be accepted only after all of the following:
 - [ ] Every chapter and legacy redirect is present; in-book search index is produced.
 - [ ] GitHub Pages deployment succeeds and the public URL is observed in the actual deployment log.
 - [x] Author reports correct Rust Book-style reading experience and actual responsive navigation/search results, including keyboard Tab and sidebar interaction (2026-10-20).
-- [ ] Separately verify screen-reader semantics, representative external links and a live paragraph against canonical Markdown; theme-switch behavior is not newly confirmed by this report.
+- [x] Verify representative external links and live canonical Markdown paragraphs by **post-deployment public HTTP** in [Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839); 2/2 paragraphs and 3/3 outbound links passed.
+- [ ] Separately verify **screen-reader/assistive-technology semantics**; theme-switch behavior was not newly tested by the owner's browser report.
 - [ ] A real, reviewed canonical documentation edit appears on Pages automatically; no parallel manual Wiki edit was required.
 - [ ] The removal of MkDocs configuration is reflected in README, workstream ledger and local preview guidance.
 - [ ] Author explicitly accepts G3, and issues #3 and #8 are closed only with supporting evidence.
 
 See [G3-PROGRESS.md](G3-PROGRESS.md) for current evidence. Historical MkDocs runs are recorded as migration history, not represented as current technology.
+
+**Public-site verification:** [`scripts/docs/verify-live-site.py`](../../scripts/docs/verify-live-site.py) runs offline comparison/negative fixtures on pull requests. Following a successful `master` Pages deployment, it GETs the **public** G3 chapter and homepage, compares two source-derived paragraphs with rendered HTML, checks that three source-declared external URLs occur in the homepage HTML and verifies they resolve. The check passed in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839). Its scope is representative, not a full crawl or a screen-reader audit.
 
 ## 5. Local workflow
 

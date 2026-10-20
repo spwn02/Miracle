@@ -51,9 +51,15 @@ The maintainer supplied an actual screenshot of Miracle's **Create new issue** p
 
 The same screenshot advances [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) and the G6 public onboarding gate, **but not confidential-report delivery or final G6 acceptance**.
 
+## G3 canonical source → actual public Pages parity — CI verified (2026-10-20)
+
+[PR #21](https://github.com/spwn02/Miracle/pull/21) merged as [`723172c`](https://github.com/spwn02/Miracle/commit/723172c63229154840219fb21d9ab8d7559c17bc) after successful PR-head reference CI and mdBook/fixture verification. The **post-merge [Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839)** succeeded with a **real public HTTP smoke test after deployment**: canonical G3 keyboard statement and index module paragraph both matched the respective live HTML, and **three selected real Github outgoing links** appeared on the homepage and resolved successfully. This resolves the prior source-to-public paragraph and representative-link evidence gap.
+
+**Limit:** full screen-reader/assistive-technology checks and final G3 owner acceptance remain open on [G3 #3](https://github.com/spwn02/Miracle/issues/3). The G6 end-to-end chain has stronger publication evidence, but no author G6 sign-off is inferred.
+
 ## G3 live documentation experience — owner-reported passing checks (2026-10-20)
 
-The maintainer directly tested the public [Miracle Book](https://spwn02.github.io/Miracle/) and reported that **Tab navigation, sidebar and chapter navigation, search/results and responsive mobile-width layout all work as expected**. This adds real browser-experience evidence to the previously successful canonical mdBook/Pages deployment chain. [G3 progress](G3-PROGRESS.md) records the report and deliberately preserves **screen-reader semantics**, representative outbound link checks, a specific public-page-to-source paragraph comparison, and **full G3 author acceptance** as separate remaining requirements. Do not treat this positive usability report as a completed assistive-technology audit or automatically close [G3 issue #3](https://github.com/spwn02/Miracle/issues/3).
+The maintainer directly tested the public [Miracle Book](https://spwn02.github.io/Miracle/) and reported that **Tab navigation, sidebar and chapter navigation, search/results and responsive mobile-width layout all work as expected**. This adds real browser-experience evidence to the previously successful canonical mdBook/Pages deployment chain. Later post-deployment CI independently verified **representative outbound links and canonical source-to-published paragraph equality** (see newer record above). [G3 progress](G3-PROGRESS.md) retains **screen-reader semantics and full G3 author acceptance** as distinct unresolved requirements. Do not treat this positive usability report as a completed assistive-technology audit or automatically close [G3 issue #3](https://github.com/spwn02/Miracle/issues/3).
 
 ## Existing v0.5.27 release: authentic tag → CI → provenance → publication (2026-10-19 audit)
 
