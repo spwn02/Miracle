@@ -6,6 +6,12 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## Security analysis coverage audit scoped — 2026-10-20
+
+A genuine, independently actionable [G4 issue #24 — verify CodeQL coverage for experimental reference-C++26 modules and reflection](https://github.com/spwn02/Miracle/issues/24) was opened under the existing program milestone #1, labeled `type:infrastructure`, and linked to [G4 parent issue #4](https://github.com/spwn02/Miracle/issues/4). This is a **real remaining security-hardening task**, not a completed analysis or disposable Project-integration fixture. Scope: inspect actual CodeQL run outcome, analyzed source/build paths and C++26 parsing limitations, then publish grounded findings without exposing private vulnerabilities. No CodeQL findings, scan coverage or runtime success are claimed yet.
+
+This legitimate new non-bug item additionally supplied fresh GitHub Projects bot event evidence for G2. See the independent [G2 verification ledger](G2-PROGRESS.md) for exact event IDs and limitations. No artificial ticket, Project setting change, access token or paid integration was introduced.
+
 ## Implemented
 
 - Resolved publisher tag refs for checkout v6, setup-python v6, upload-artifact v4, configure-pages v5, upload-pages-artifact v4, deploy-pages v4.
