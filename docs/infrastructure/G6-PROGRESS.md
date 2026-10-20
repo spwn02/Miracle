@@ -1,10 +1,16 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — live chooser and Bug Report inline validation verified alongside community, Project transition and release evidence; form submission gating/privacy, auto-add and final G6 acceptance pending
+**Status:** IN PROGRESS — Community Standards recognition, chooser and Bug Report inline validation verified; submission gating, confidential routes, Project auto-add and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## GitHub Community Standards — live recognition verified (2026-10-20)
+
+The maintainer supplied a real GitHub **Insights → Community standards** screenshot. The eight visible rows each have GitHub check marks: **Description, README, Code of conduct, Contributing, License, Security policy, Issue templates, Pull request template**. These are direct evidence that GitHub recognizes the corresponding community documents/setting. The display does not independently verify browser navigation through each linked policy, private vulnerability or misconduct reporting, or whether PR-template text is automatically prefilled into a new pull request. No synthetic issue, PR, or confidential report was created.
+
+**Acceptance:** The **Community Standards recognition** portion of G1.5 and G6 public onboarding is **verified**. The other end-to-end and confidentiality requirements remain open. [G1 progress ledger](G1-PROGRESS.md) records the same evidence.
 
 ## Live Bug Report form and inline validation — owner visual evidence (2026-10-20)
 
@@ -133,7 +139,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
-| Browser/UI intake and private route | **PARTIAL — CHOOSER + BUG REPORT INLINE VALIDATION VERIFIED** | Owner screenshots: chooser with all five forms; Bug Report empty required `Affected revision` triggers `Field can not be empty`. Actual submission blocking, remaining forms, PR template, confidential reporting and Community Standards **unverified** |
+| Browser/UI intake and private route | **PARTIAL — COMMUNITY STANDARDS + CHOOSER + BUG REPORT VALIDATION VERIFIED** | Owner screenshots: GitHub checks eight visible Community Standards; chooser lists five forms; Bug Report required revision triggers inline error. Actual submission blocking, remaining forms, PR prefill, link destinations and confidential reporting **unverified** |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
