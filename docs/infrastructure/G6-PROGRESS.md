@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — G1 contributor/governance intake accepted by maintainer on 2026-10-20; external reporter UI entry and published conduct contact confirmed at G1 scope, but confidential report delivery, target Project #3 auto-add, genuine Q&A answer flow and final G6 end-to-end acceptance remain unverified
+**Status:** IN PROGRESS — G1 accepted; genuine non-bug Issue #24 observed entering Project #3 and initializing Backlog by GitHub Projects bot, with documented `wasAutomated: false` upstream metadata discrepancy; G2 sign-off, confidential report delivery, real Q&A answer flow and final G6 end-to-end acceptance remain pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## G2 operational Project #3 intake reproduced with new genuine issue — 2026-10-20
+
+For the newly opened genuine [G4 CodeQL coverage Issue #24](https://github.com/spwn02/Miracle/issues/24), fresh Project GraphQL timeline data supplied by the maintainer confirms **GitHub Projects automation actor** added it to **Miracle Development Project #3** and assigned **Status: Backlog**, both at `2026-10-20T12:34:48Z`, four seconds after the issue was created. No manual Project assignment occurred in the issue-creation API call. GitHub's [official Projects documentation](https://docs.github.com/en/issues/planning-and-tracking-with-projects/managing-items-in-your-project/adding-items-to-your-project) identifies `@github-project-automation` as the actor for built-in workflow changes. This complements previous Project #3 `is:issue` UI-configuration evidence and real maintainer `Backlog → Implementing` transition.
+
+**Distinct GitHub GraphQL anomaly:** Both `AddedToProjectV2Event.wasAutomated` and `ProjectV2ItemStatusChangedEvent.wasAutomated` returned `false`, as for older genuine Issue #8, despite the bot attribution. This conflicts with the documented boolean description; no authoritative GitHub explanation/fix is established. Preserve both facts; do not declare the flag fixed. The maintainer explicitly declined waiving that remaining concern as a G2 sign-off shortcut. [Canonical G2 ledger](G2-PROGRESS.md) records the full values and dates; [G2 issue #2](https://github.com/spwn02/Miracle/issues/2) remains open for upstream clarification and explicit owner acceptance.
+
+**G6 remains in progress:** G2's tested functional issue intake does not complete its separate full collaboration, release, Q&A and final sign-off gates.
 
 ## G1.5 contributor/governance acceptance — imported milestone (2026-10-20)
 
