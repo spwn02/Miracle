@@ -51,6 +51,10 @@ The maintainer supplied an actual screenshot of Miracle's **Create new issue** p
 
 The same screenshot advances [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) and the G6 public onboarding gate, **but not confidential-report delivery or final G6 acceptance**.
 
+## G3 live documentation experience — owner-reported passing checks (2026-10-20)
+
+The maintainer directly tested the public [Miracle Book](https://spwn02.github.io/Miracle/) and reported that **Tab navigation, sidebar and chapter navigation, search/results and responsive mobile-width layout all work as expected**. This adds real browser-experience evidence to the previously successful canonical mdBook/Pages deployment chain. [G3 progress](G3-PROGRESS.md) records the report and deliberately preserves **screen-reader semantics**, representative outbound link checks, a specific public-page-to-source paragraph comparison, and **full G3 author acceptance** as separate remaining requirements. Do not treat this positive usability report as a completed assistive-technology audit or automatically close [G3 issue #3](https://github.com/spwn02/Miracle/issues/3).
+
 ## Existing v0.5.27 release: authentic tag → CI → provenance → publication (2026-10-19 audit)
 
 This is **real historical release evidence**, not a fabricated version to satisfy G6. The public [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27), ID `414415213`, was published on **2026-10-16 00:47:37 UTC**. Its tag `refs/tags/v0.5.27` resolves via the GitHub tag API to `e1e5817c651d124d02930b86510e2b05fb7c7d2d`.
