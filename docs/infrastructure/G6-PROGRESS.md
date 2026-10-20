@@ -1,10 +1,19 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — Community Standards recognition, chooser and Bug Report inline validation verified; submission gating, confidential routes, Project auto-add and final G6 acceptance pending
+**Status:** IN PROGRESS — Community Standards, chooser, Bug Report inline validation, Security/Contributing destinations verified; confidential intake, Project auto-add and final acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Security policy and contributor onboarding — live page verification (2026-10-20)
+
+The maintainer supplied GitHub browser screenshots confirming both advertised destinations:
+
+1. [GitHub Security policy](https://github.com/spwn02/Miracle/security/policy) displays repository `SECURITY.md` in **Security and quality → Security policy**, with **Reporting a vulnerability** instructions: do not publish sensitive details in normal issues, use GitHub private vulnerability reporting **when available**, or contact the owner to request a private channel first.
+2. [Contributing guide](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md) loads in GitHub's Markdown Preview, showing contributor prerequisites, links to **Development Protocol**, Issues, Discussions, New Issue chooser, Q&A/Ideas, `SUPPORT.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` and the reference-toolchain section.
+
+**Verified:** both top-level **destinations open and render** in the actual GitHub browser; this advances G1.5 and G6 public onboarding/security-policy navigation. **Not verified:** whether private vulnerability reporting is enabled, the creation/delivery of any confidential vulnerability or conduct report, click-through of each embedded contributor link, or PR-template prepopulation. Do not mark confidential-reporting acceptance as complete. No test report was sent.
 
 ## GitHub Community Standards — live recognition verified (2026-10-20)
 
@@ -139,7 +148,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
-| Browser/UI intake and private route | **PARTIAL — COMMUNITY STANDARDS + CHOOSER + BUG REPORT VALIDATION VERIFIED** | Owner screenshots: GitHub checks eight visible Community Standards; chooser lists five forms; Bug Report required revision triggers inline error. Actual submission blocking, remaining forms, PR prefill, link destinations and confidential reporting **unverified** |
+| Browser/UI intake and private route | **PARTIAL — COMMUNITY STANDARDS, CHOOSER, INLINE VALIDATION AND POLICY/GUIDE DESTINATIONS VERIFIED** | Owner screenshots: eight Community Standards checked; five-form chooser; Bug Report empty revision error; **Security policy** and **Contributing guide** pages open. Submit blocking, PR prefill, private vulnerability/conduct-reporting availability and delivery remain **unverified** |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
