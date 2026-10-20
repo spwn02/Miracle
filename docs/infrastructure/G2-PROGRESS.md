@@ -3,10 +3,37 @@
 **Updated:** 2026-10-19
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Project configuration and real maintainer-authorized status transition verified; causal auto-intake into Project #3 and final G2 acceptance pending
+**Status:** Project configuration and real maintainer-authorized status transition verified; Issue #8's target Project #3 add attributed to GitHub's automation bot, but GraphQL `wasAutomated: false` prevents unqualified workflow-causality proof; formal G2 owner acceptance pending
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Project-specific GraphQL result received — 2026-10-20
+
+The maintainer executed the read-only `gh api graphql` query below (published in the immediately preceding checkpoint) and supplied the actual JSON result, **not an inferred or synthetic value**:
+
+```json
+{
+  "actor": "github-project-automation",
+  "automated": false,
+  "createdAt": "2026-10-17T01:46:17Z",
+  "project": 2,
+  "title": "Roadmap"
+}
+{
+  "actor": "github-project-automation",
+  "automated": false,
+  "createdAt": "2026-10-17T01:46:17Z",
+  "project": 3,
+  "title": "Miracle Development"
+}
+```
+
+**Verified new fact:** For *genuine non-bug Issue #8*, an `AddedToProjectV2Event` targets exactly **Miracle Development Project #3** and names the **GitHub Projects automation actor**. It is a distinct event from the contemporaneous Roadmap Project #2 addition. Existing owner CLI output independently showed Issue #8 in Project #3 with `Backlog`, consistent with the intended intake result. This resolves *target-Project event attribution* that the REST API alone could not expose, and excludes attributing the #3 addition to a visibly owner-authored manual action.
+
+**Important caveat:** Both events report `wasAutomated: false`. GitHub defines that GraphQL field as whether an event resulted from workflow automation; therefore we **cannot assert** that the Project #3 event is positively flagged as a built-in `is:issue` workflow run. The **bot actor** plus two-second-after-creation event and previously screenshot-verified `is:issue` workflow make GitHub-controlled intake strongly supported, but do not explain the apparently contradictory boolean. Do not overwrite `false`, mislabel it `true`, claim a verified workflow execution trace, or claim no workflow ran.
+
+**Disposition:** G2's public Project, views, field schema, governance safeguards, genuine status transition and **issue-in-Project #3 runtime outcome** are established. The strict workflow-causality test added in the previous checkpoint did **not** pass as written (`wasAutomated` is `false`). The owner can either (a) approve G2 on the observed **bot-attributed target-Project intake outcome**, explicitly accepting the unverified internal automation boolean as a recorded limitation, or (b) retain the gate until a future genuine issue demonstrates auto-intake under controlled before/after observations, without creating a dummy. **Formal G2 acceptance has not yet been granted; Issue #2 remains open.**
 
 ## Final read-only auto-add investigation — 2026-10-20
 
