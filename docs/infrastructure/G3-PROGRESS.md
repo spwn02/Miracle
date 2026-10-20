@@ -3,11 +3,21 @@
 **Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Publishing/Chrome accessibility audit verified; maintainer reports Apple VoiceOver + Safari screen-reader usability PASSED. Exact device/OS versions and speech transcript unrecorded; formal G3 sign-off and bounded audit limitations remain OPEN
+**Status:** ACCEPTED — maintainer explicitly approved G3 (2026-10-20), with bounded audit/assistive-technology coverage limitations recorded. Parent issue #3 closed completed; publication subtask #8 already closed
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
 **Tracking:** [#3 — G3 publishing](https://github.com/spwn02/Miracle/issues/3) · [#8 — Pages implementation](https://github.com/spwn02/Miracle/issues/8)
+
+## G3 FINAL ACCEPTANCE — maintainer-approved (2026-10-20)
+
+**Decision:** The maintainer explicitly responded **"Yes, I approve it"** to the request to formally approve **G3 — Documentation Publishing**, accepting the stated and recorded limits. This approval **applies to G3 only**, including closure of [parent issue #3](https://github.com/spwn02/Miracle/issues/3). [Implementation issue #8](https://github.com/spwn02/Miracle/issues/8) was already closed. It does **not** approve G1/G2/G4/G6, the status of any GitHub Project items, or any product release.
+
+**Acceptance evidence:** canonical `docs/` → immutable mdBook v0.5.4 GitHub Pages publication, chapter navigation/search and legacy redirects, real documentation-edit auto-publishing, [source-to-public Pages matching and 3/3 external links](https://github.com/spwn02/Miracle/actions/runs/39376713839), maintainer keyboard/sidebar/search/mobile checks, the [post-merge Chrome AX-tree/axe WCAG sample audit](https://github.com/spwn02/Miracle/actions/runs/39379255036), and maintainer-reported **Apple VoiceOver + Safari** usability for the requested screen-reader tasks. The audit detected and fixed accessibility faults in [PR #22](https://github.com/spwn02/Miracle/pull/22); its final sample had zero *detected* violations. No newly manufactured change to an authoritative frozen product contract was required to test Pages publishing: real non-contract canonical documentation edits served the equivalent deployment check.
+
+**Limits explicitly accepted with the G3 sign-off:** the axe samples returned **2/2/1 inconclusive/manual-review items**; only representative pages/viewports and three external links were tested, not all pages/links/browsers/themes; no independent screen-reader speech capture or exact VoiceOver/Safari/OS version was provided; full WCAG conformance and generated C++ API-reference coverage are **not claimed**. These are documented coverage limitations, not falsely marked test successes.
+
+**Disposition:** **G3 ACCEPTED**; close [issue #3](https://github.com/spwn02/Miracle/issues/3) as completed after recording this approval. Documentation and accessible-theme regression checks remain maintained in the usual CI workflow.
 
 ## Real screen-reader usability — maintainer-reported passing result (2026-10-20)
 
@@ -17,7 +27,7 @@ After the focused accessibility fixes merged in [PR #22](https://github.com/spwn
 
 Separately, [post-merge Pages/axe run #39379255036](https://github.com/spwn02/Miracle/actions/runs/39379255036) reported **zero detected automated WCAG violations** across three representative browser/page/viewport samples, but **2/2/1 incomplete checks** remain outside a positive automated result. These are documented residual review limitations. No G3 final sign-off was requested or supplied in this response.
 
-**Disposition:** **Apple VoiceOver + Safari** real screen-reader interaction is **maintainer-reported working**. Exact device/OS/browser versions, spoken transcript, and exhaustive axe incomplete-check coverage remain unspecified. G3 [parent issue #3](https://github.com/spwn02/Miracle/issues/3) remains OPEN until **explicit full-phase maintainer acceptance**. Publishing subtask #8 remains closed.
+**Disposition at test time:** **Apple VoiceOver + Safari** interaction was reported working, with version/transcript/audit scope limitations. **Superseded by the final G3 approval recorded above**; both G3 parent #3 and publishing subtask #8 are now completed.
 
 ## Maintainer visual acceptance and continued implementation
 
@@ -131,6 +141,6 @@ The report makes no claim about a specific screen reader or assistive technology
 - [x] **Real screen-reader interaction — maintainer-reported pass:** following explicit headings/landmarks, sidebar, search/results, and task-status checklist, owner replied "Yes, it works flawlessly" (2026-10-20). **Apple VoiceOver with Safari** confirmed in maintainer follow-up; exact device/OS and verbatim spoken announcements not recorded; coverage is bounded.
 - [x] **Real public HTTP spot-check passed after deployment:** two source-derived paragraphs matched live Pages HTML, and **3/3** selected external links resolved in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839) (2026-10-20).
 - [x] Genuine canonical docs edits automatically generated and deployed new Pages versions, without duplicate editing; post-deployment HTTP runner also confirmed specific published text against canonical source (run #39376713839).
-- [ ] Maintainer explicitly accepts **full G3** experience and records remaining browser accessibility/navigation checks on parent #3; publishing implementation #8 is complete.
+- [x] Maintainer explicitly **approved G3** and accepted the recorded limited axe coverage, representative-link/site checks and lack of exhaustive WCAG certification (2026-10-20). Parent #3 is closed completed; publishing subtask #8 was already closed.
 
-**Full G3 is not formally accepted.** Maintainer reports successful screen-reader interaction, alongside verified keyboard/search/mobile UX and automated browser checks. **Apple VoiceOver + Safari** is identified; exact device/OS versions, exhaustive coverage and axe incomplete checks remain documented limitations. **Explicit full-G3 author acceptance** is still required before closing parent #3. Child #8 is closed.
+**G3 IS FORMALLY ACCEPTED (2026-10-20).** The maintainer approved the deployed mdBook documentation, practical Apple VoiceOver + Safari interaction and bounded automated/manual evidence, with the listed accessibility/scope limits retained. Both G3 issues #3 and #8 are completed. This does not indicate complete WCAG conformance or acceptance of G6.

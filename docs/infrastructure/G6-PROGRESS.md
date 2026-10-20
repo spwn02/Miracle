@@ -6,11 +6,17 @@
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
 
+## G3 formally accepted — explicit maintainer sign-off (2026-10-20)
+
+The maintainer **explicitly approved G3 — Documentation Publishing** after confirmed Apple VoiceOver + Safari use and the Chrome AX-tree/axe remediation checks. This closes [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) as completed; [implementation issue #8](https://github.com/spwn02/Miracle/issues/8) was already closed. Canonical [G3 evidence ledger](G3-PROGRESS.md) records the acceptance decision and its limits: 2/2/1 incomplete axe checks, representative page/link checks rather than full coverage, no independently captured screen-reader speech, and no deliberately modified frozen contract solely for deployment validation.
+
+**G6 remains IN PROGRESS.** G3's owner acceptance does not waive G1.5 issue/PR intake, G2 automatic intake to target Project #3, G4 security/release checks, private vulnerability or conduct-reporting verification, real Q&A acceptance, or final G6 sign-off. Do not mark G6 complete or automatically assign Project `Accepted`.
+
 ## G3 real screen-reader usability — positive maintainer report (2026-10-20)
 
 After the accessibility corrections in [G3 PR #22](https://github.com/spwn02/Miracle/pull/22) and the passing automated Chromium AX-tree / axe WCAG audit, the maintainer was expressly asked to test the live Miracle Book using a **real screen reader**, checking headings and landmarks, sidebar toggle/state, search/results, and checked/incomplete task-list announcements. The owner replied: **"Yes, it works flawlessly."**
 
-This is **maintainer-reported real assistive-technology success**, not a captured spoken transcript or independent control of their desktop. In subsequent follow-up, the maintainer explicitly identified **Apple VoiceOver with Safari**. Exact device/OS and browser/screen-reader versions or individual spoken announcements were not supplied; do not invent them. Three representative axe samples found zero detected automated violations but reported **2/2/1 incomplete checks**, which remain documented scope limitations. G3 issue #3 remains **OPEN for explicit full-phase approval**, and G6 remains **OPEN** for its separate end-to-end criteria.
+This is **maintainer-reported real assistive-technology success**, not a captured spoken transcript or independent control of their desktop. In subsequent follow-up, the maintainer explicitly identified **Apple VoiceOver with Safari**. Exact device/OS and browser/screen-reader versions or individual spoken announcements were not supplied; do not invent them. Three representative axe samples found zero detected automated violations but reported **2/2/1 incomplete checks**, which remain documented scope limitations. **G3 #3 was subsequently closed as completed after explicit maintainer acceptance** (see the newer acceptance entry above); G6 remains **OPEN** for its separate end-to-end criteria.
 
 ## Private vulnerability reporting — enabled by maintainer confirmation; security review deferred (2026-10-20)
 
@@ -170,7 +176,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 
 **Source-level foundation already exists:** five YAML issue forms, an issue chooser linking security and contributing guidance, a PR traceability/verification template, community support/conduct/security/accessibility policies, GitHub Pages/mdBook, a locked infrastructure contract, and an actual G6 issue #6. Source presence is **not equivalent** to verifying the live GitHub UI or a successful confidential report.
 
-**Other workstreams remain independently open:** [G1.5 #1](https://github.com/spwn02/Miracle/issues/1) (interactive issue/PR template and community recognition), [G2 #2](https://github.com/spwn02/Miracle/issues/2) (Project #3 specific intake and workflow acceptance), [G3 #3](https://github.com/spwn02/Miracle/issues/3) (published docs accessibility/navigation acceptance), and [G4 #4](https://github.com/spwn02/Miracle/issues/4) (GitHub admin/security/ruleset acceptance). [G5 #5](https://github.com/spwn02/Miracle/issues/5) was accepted for revised Docker-only scope, Codespaces explicitly declined.
+**Current cross-workstream state (2026-10-20):** [G3 #3](https://github.com/spwn02/Miracle/issues/3) and publishing subtask #8 **closed — accepted**. [G5 #5](https://github.com/spwn02/Miracle/issues/5) **closed — accepted** in revised Docker-only scope (Codespaces declined). **Remaining open:** [G1.5 #1](https://github.com/spwn02/Miracle/issues/1), [G2 #2](https://github.com/spwn02/Miracle/issues/2), [G4 #4](https://github.com/spwn02/Miracle/issues/4) and this [G6 #6](https://github.com/spwn02/Miracle/issues/6).
 
 **Historical release baseline:** Public releases `v0.1.0-rc.1`, `v0.1.0` and `v0.5.27` were initially observed. The later audit **independently traced v0.5.27 to its exact tagged source, passing Release workflow and public provenance asset**, as recorded above; no G6-specific library release was needed.
 

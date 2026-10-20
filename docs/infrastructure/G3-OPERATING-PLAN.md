@@ -1,7 +1,7 @@
 # G3 — Documentation Publishing: Operating Plan
 
 **Workstream:** G3 — repository-backed documentation
-**Status:** mdBook source/site, automated Chrome AX/axe and maintainer-reported Apple VoiceOver + Safari usability passed; formal G3 approval and bounded accessibility limitations remain open
+**Status:** ACCEPTED — maintainer approved G3 on 2026-10-20 with AX/axe incomplete items and representative test limits explicitly recorded; G3 issues #3 and #8 completed
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), §5 and §10
 **Tracker:** [G3 parent issue #3](https://github.com/spwn02/Miracle/issues/3) · [Pages issue #8](https://github.com/spwn02/Miracle/issues/8)
 
@@ -54,22 +54,24 @@ This is a static documentation site. GitHub Wiki stays **optional** and may only
 
 **Real screen-reader report (2026-10-20):** After being asked to verify landmarks/headings, sidebar and toggle announcements, search/results and checklist state using a real screen reader, the maintainer replied **"Yes, it works flawlessly."** This is **maintainer-reported positive assistive-technology usability evidence** rather than independently recorded speech output. **Apple VoiceOver + Safari** was expressly confirmed in follow-up; exact device/OS versions and spoken announcements were not supplied. Axe's three-page/viewport scan still reported **2/2/1 incomplete checks**. Record these limitations and obtain explicit phase sign-off separately.
 
+**Final acceptance (2026-10-20):** Maintainer expressly approved **G3 — Documentation Publishing**, accepting the documented AX/axe incomplete checks, limited link/page/browser coverage, lack of independently captured VoiceOver speech output and the intentionally omitted synthetic frozen-contract edit. Real canonical **non-contract** Markdown edits demonstrated automatic deployment. G3 #3 and completed publishing #8 are closed; G6 remains open. See [final G3 decision](G3-PROGRESS.md#g3-final-acceptance--maintainer-approved-2026-10-20).
+
 ## 4. Verification and acceptance
 
 The workflow runs mdBook compilation plus [the site verifier](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-site.py). The verifier detects missing chapter source, incomplete sidebar listings, empty generated pages, broken legacy redirects, and absent search assets. It does **not** constitute full hyperlink crawling, screen-reader acceptance, or verification of C++ APIs.
 
 G3 can be accepted only after all of the following:
 
-- [ ] The pinned mdBook binary is checksum-verified and builds from a clean GitHub runner.
-- [ ] Every chapter and legacy redirect is present; in-book search index is produced.
-- [ ] GitHub Pages deployment succeeds and the public URL is observed in the actual deployment log.
+- [x] Pinned mdBook binary checksum verified and clean runner build passed (see G3 ledger and successful Pages runs).
+- [x] All canonical chapters and configured legacy redirects verified in CI, including search index production and rendering.
+- [x] GitHub Pages deployed successfully at https://spwn02.github.io/Miracle/; public HTML and selected outbound links independently checked after deployment.
 - [x] Author reports correct Rust Book-style reading experience and actual responsive navigation/search results, including keyboard Tab and sidebar interaction (2026-10-20).
 - [x] Verify representative external links and live canonical Markdown paragraphs by **post-deployment public HTTP** in [Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839); 2/2 paragraphs and 3/3 outbound links passed.
 - [x] Verify generated mdBook's **browser AX tree and axe-core WCAG A/AA samples** (PR #22, post-merge Pages #39379255036; zero automated violations, incomplete/manual-review items remain).
 - [x] Maintainer reports successful **real screen-reader interaction** in response to targeted headings, sidebar, search, and checklist checks (2026-10-20). **Apple VoiceOver + Safari** confirmed; exact device/OS and spoken transcript not recorded, and no exhaustive coverage claimed; theme switch was not newly tested.
-- [ ] A real, reviewed canonical documentation edit appears on Pages automatically; no parallel manual Wiki edit was required.
-- [ ] The removal of MkDocs configuration is reflected in README, workstream ledger and local preview guidance.
-- [ ] Author explicitly accepts G3, and issues #3 and #8 are closed only with supporting evidence.
+- [x] Real canonical **non-contract** documentation changes propagated to Pages automatically; frozen contract text was not modified solely for a test. Accepted by maintainer as the practical publication check.
+- [x] MkDocs removed from active configuration and replaced with documented mdBook/README/local preview workflow; historical migration retained for provenance.
+- [x] Maintainer expressly approved G3 (2026-10-20) with recorded accessibility/test limits; G3 parent #3 and child #8 closed on supporting evidence.
 
 See [G3-PROGRESS.md](G3-PROGRESS.md) for current evidence. Historical MkDocs runs are recorded as migration history, not represented as current technology.
 
