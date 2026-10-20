@@ -75,7 +75,7 @@ G3 can be accepted only after all of the following:
 
 See [G3-PROGRESS.md](G3-PROGRESS.md) for current evidence. Historical MkDocs runs are recorded as migration history, not represented as current technology.
 
-**Public-site verification:** [`scripts/docs/verify-live-site.py`](../../scripts/docs/verify-live-site.py) runs offline comparison/negative fixtures on pull requests. Following a successful `master` Pages deployment, it GETs the **public** G3 chapter and homepage, compares two source-derived paragraphs with rendered HTML, checks that three source-declared external URLs occur in the homepage HTML and verifies they resolve. The check passed in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839). Its scope is representative, not a full crawl or a screen-reader audit.
+**Public-site verification:** [`scripts/docs/verify-live-site.py`](https://github.com/spwn02/Miracle/blob/master/scripts/docs/verify-live-site.py) runs offline comparison/negative fixtures on pull requests. Following a successful `master` Pages deployment, it GETs the **public** G3 chapter and homepage, compares two source-derived paragraphs with rendered HTML, checks that three source-declared external URLs occur in the homepage HTML and verifies they resolve. The check passed in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839). Its scope is representative, not a full crawl or a screen-reader audit.
 
 ## 5. Local workflow
 
