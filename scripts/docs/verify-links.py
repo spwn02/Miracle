@@ -123,6 +123,13 @@ def http_check(url: str) -> tuple[str, str]:
                 return url, "PASS"
             return url, f"INDETERMINATE HTTP {status}"
     except HTTPError as exc:
+        # GitHub deliberately returns 404 to unauthenticated readers on owner
+        # settings pages; this cannot establish that the maintainer route is broken.
+        parts = urlsplit(url)
+        owner_only = (parts.netloc == "github.com"
+                      and parts.path.startswith("/spwn02/Miracle/settings"))
+        if exc.code == 404 and owner_only:
+            return url, "INDETERMINATE owner-authenticated URL (anonymous HTTP 404)"
         if exc.code in (404, 410):
             return url, f"BROKEN HTTP {exc.code}"
         return url, f"INDETERMINATE HTTP {exc.code}"
