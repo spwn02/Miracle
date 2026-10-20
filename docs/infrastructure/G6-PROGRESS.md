@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-19
-**Status:** IN PROGRESS — Discussions and real owner-controlled Project #3 status transition verified; causal auto-intake and remaining G6 acceptance pending
+**Status:** IN PROGRESS — community links, owner-controlled Project transition and real v0.5.27 release provenance verified; live intake, causal auto-add and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Existing v0.5.27 release: authentic tag → CI → provenance → publication (2026-10-19 audit)
+
+This is **real historical release evidence**, not a fabricated version to satisfy G6. The public [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27), ID `414415213`, was published on **2026-10-16 00:47:37 UTC**. Its tag `refs/tags/v0.5.27` resolves via the GitHub tag API to `e1e5817c651d124d02930b86510e2b05fb7c7d2d`.
+
+The successful [Release Actions run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086) ran on that exact commit. Job `116750205166` passed **71/71 CTest cases** and **3/3 CMake consumers** with the reference C++26 snapshot. Dependent release job `116751054300` passed **Validate release provenance**, **Write release provenance**, and **Create GitHub release**. Its logs report `SOURCE_REVISION=e1e5817c651d124d02930b86510e2b05fb7c7d2d`; the release workflow validates tag/version correspondence and ancestor membership in `master`.
+
+The published `release-metadata.json` asset was uploaded by `github-actions[bot]` (asset ID `645665032`, 608 bytes, API-provided SHA-256 `27a7a78fea1df167a79e6e7386bc62efe4faf257212d5fa09f8453248cba9635`). Release notes contain a real comparison link `v0.5.26...v0.5.27`. **Verification limit:** asset bytes and their internal JSON fields have **not** been independently downloaded or inspected; do not imply they were. This verifies the real tag → successful reference CI → provenance generation → GitHub publication chain. G6 infrastructure documentation is not a user-visible product release and did **not** require a new tag.
 
 ## Genuine Project #3 status transition — owner evidence (2026-10-19)
 
@@ -85,9 +93,9 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 4. **Verification:** [PR-head reference C++26 CI #39206579960](https://github.com/spwn02/Miracle/actions/runs/39206579960) **SUCCESS**: new G6 source-route + **five negative fixtures** passed, **71/71** CTest cases and all three consumer modes passed. [PR-head mdBook #39206579929](https://github.com/spwn02/Miracle/actions/runs/39206579929) **SUCCESS**. On the merge commit, [reference CI #39206970818](https://github.com/spwn02/Miracle/actions/runs/39206970818) **SUCCESS** and [`master`→`gcc` sync #39206970799](https://github.com/spwn02/Miracle/actions/runs/39206970799) **SUCCESS**.
 5. **Release-facing documentation:** [post-merge GitHub Pages #39206970782](https://github.com/spwn02/Miracle/actions/runs/39206970782) **SUCCESS**, including generated G6 operating-plan and progress chapters, navigation/search verification, and successful `Deploy site` job. Direct public CDN/browser appearance was **not** independently checked by the available integration; this is confirmed Actions deployment evidence, not a UI accessibility audit.
 6. **Acceptance:** **NOT YET ACCEPTED.** Discussions activation, category configuration and maintainer-tested links are verified; issue #6's **Project #3 membership is confirmed** but ongoing Project workflows/views are not. Real Q&A accepted-answer behavior remains untested, G1.5/G2/G3/G4 acceptance issues remain independently open, and no final G6 sign-off was supplied.
-7. **Release/versioning:** This PR adds infrastructure process docs/tests, not a library release; no new tag/release was generated. Existing `v0.5.27` public release and its comparison link were observed, but its end-to-end CI/tag/release provenance was **not** audited. Thus the complete release-documentation acceptance gate remains **open** until genuine applicable release evidence or an explicitly approved narrower acceptance interpretation exists.
+7. **Release/versioning:** G6 PRs #16/#17 are infrastructure-only, so no new library release was appropriate. The genuine historical `v0.5.27` tag and public release were audited against exact-commit passing Release run #38831221086, with 71/71 tests, 3/3 consumers, provenance generation and a published metadata asset. Internal JSON asset fields remain uninspected.
 
-**Actual demonstrated path:** issue #6 → reviewed PR #16 → passing reference CI → merge commit → successful mdBook Pages deployment. **Category navigation and current issue #6 Project #3 membership subsequently verified by maintainer. Not yet demonstrated:** real Q&A accepted-answer participation, Project automation/status transitions and safeguards, remaining live reporter/maintainer UI, release provenance, and final author acceptance.
+**Actual demonstrated path:** issue #6 → reviewed PR #16 → passing reference CI → merge commit → successful mdBook Pages deployment. **Subsequently verified:** category navigation, current issue #6 Project #3 membership, genuine maintainer-controlled `Backlog → Implementing`, acceptance-safe workflow configuration, and a historical v0.5.27 release provenance chain. **Not yet demonstrated:** real Q&A accepted-answer participation, causal automatic enrollment specifically into Project #3, live reporter/private conduct routes, and final G6 author acceptance.
 
 ## Baseline read-only repository audit (2026-10-19)
 
@@ -97,7 +105,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 
 **Other workstreams remain independently open:** [G1.5 #1](https://github.com/spwn02/Miracle/issues/1) (interactive issue/PR template and community recognition), [G2 #2](https://github.com/spwn02/Miracle/issues/2) (Project #3 specific intake and workflow acceptance), [G3 #3](https://github.com/spwn02/Miracle/issues/3) (published docs accessibility/navigation acceptance), and [G4 #4](https://github.com/spwn02/Miracle/issues/4) (GitHub admin/security/ruleset acceptance). [G5 #5](https://github.com/spwn02/Miracle/issues/5) was accepted for revised Docker-only scope, Codespaces explicitly declined.
 
-**Release baseline:** Existing public GitHub Releases `v0.1.0-rc.1`, `v0.1.0`, and `v0.5.27` were observed; the latest public release has a GitHub comparison link. This does **not** independently prove a release's complete CI provenance nor authorize a new release. G6 infrastructure documentation changes are unreleased operational records, not a product-version event.
+**Historical release baseline:** Public releases `v0.1.0-rc.1`, `v0.1.0` and `v0.5.27` were initially observed. The later audit **independently traced v0.5.27 to its exact tagged source, passing Release workflow and public provenance asset**, as recorded above; no G6-specific library release was needed.
 
 ## Acceptance evidence matrix
 
@@ -113,7 +121,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
 | Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
-| Release notes/provenance | **PARTIAL / UNVERIFIED** | Infrastructure-only PR: no tag or release required; existing v0.5.27 observed, full release provenance not audited |
+| Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
 ## Notes
 
