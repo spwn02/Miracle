@@ -3,11 +3,21 @@
 **Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** G3 publishing and real user keyboard/search/mobile checks verified; Chrome AX tree and axe WCAG A/AA sample audit passed after fixes. Real screen-reader speech/interaction and explicit author sign-off remain OPEN
+**Status:** G3 publication/browser AX audit and owner-reported screen-reader interaction checks passed; test environment unspecified. Explicit G3 author sign-off and accepted scope limitations remain OPEN
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
 **Tracking:** [#3 — G3 publishing](https://github.com/spwn02/Miracle/issues/3) · [#8 — Pages implementation](https://github.com/spwn02/Miracle/issues/8)
+
+## Real screen-reader usability — maintainer-reported passing result (2026-10-20)
+
+After the focused accessibility fixes merged in [PR #22](https://github.com/spwn02/Miracle/pull/22), the maintainer was asked to test the live [Miracle Book](https://spwn02.github.io/Miracle/) with a **real screen reader** and check headings/landmarks, sidebar toggle/expanded-state announcements, search/results, and completed/incomplete checklist semantics. The maintainer replied: **"Yes, it works flawlessly."**
+
+**Evidence classification:** A positive **maintainer-reported screen-reader usability check** in direct response to those test instructions. The specific screen-reader application, browser, operating system and spoken announcements were **not supplied**; do not infer Orca, VoiceOver or NVDA or claim an independently captured audio transcript. This is not an exhaustive accessibility or WCAG compliance certification.
+
+Separately, [post-merge Pages/axe run #39379255036](https://github.com/spwn02/Miracle/actions/runs/39379255036) reported **zero detected automated WCAG violations** across three representative browser/page/viewport samples, but **2/2/1 incomplete checks** remain outside a positive automated result. These are documented residual review limitations. No G3 final sign-off was requested or supplied in this response.
+
+**Disposition:** Real screen-reader interaction is **owner-reported working**; exact environment and exhaustive axe incomplete-check coverage remain unspecified. G3 [parent issue #3](https://github.com/spwn02/Miracle/issues/3) remains OPEN until **explicit full-phase maintainer acceptance**. Publishing subtask #8 remains closed.
 
 ## Maintainer visual acceptance and continued implementation
 
@@ -118,9 +128,9 @@ The report makes no claim about a specific screen reader or assistive technology
 - [x] Maintainer confirms live site works and approves the Rust Book visual design; theme/sidebar/search generation is tested in CI.
 - [x] **Maintainer-reported hands-on pass:** Tab/keyboard navigation, sidebar and chapters, actual search results, and mobile-width responsive behavior (2026-10-20).
 - [x] Automated **Chromium accessibility tree + axe-core WCAG** audit on 3 desktop/mobile samples, **0 automated violations** and keyboard sidebar state check (post-merge Pages run #39379255036); small number of incomplete manual-review results reported.
-- [ ] **Actual Orca/VoiceOver/NVDA screen-reader speech and interactive navigation**, including search announcements and task status — no real screen-reader session reported.
+- [x] **Real screen-reader interaction — maintainer-reported pass:** following explicit headings/landmarks, sidebar, search/results, and task-status checklist, owner replied "Yes, it works flawlessly" (2026-10-20). Product/browser/OS and verbatim spoken announcements not identified; coverage is bounded.
 - [x] **Real public HTTP spot-check passed after deployment:** two source-derived paragraphs matched live Pages HTML, and **3/3** selected external links resolved in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839) (2026-10-20).
 - [x] Genuine canonical docs edits automatically generated and deployed new Pages versions, without duplicate editing; post-deployment HTTP runner also confirmed specific published text against canonical source (run #39376713839).
 - [ ] Maintainer explicitly accepts **full G3** experience and records remaining browser accessibility/navigation checks on parent #3; publishing implementation #8 is complete.
 
-**Full G3 is not formally accepted.** Live keyboard/search/mobile UX, Pages source parity and representative links are verified; CI also found and fixed mdBook accessibility violations and now passes a three-page/viewport automated browser accessibility audit. **Actual human screen-reader speech/interaction, outstanding incomplete axe checks, and explicit author acceptance** remain open on parent #3. Child #8 is closed.
+**Full G3 is not formally accepted.** Maintainer reports successful screen-reader interaction, alongside verified keyboard/search/mobile UX and automated browser checks. Specific screen reader/browser, exhaustive coverage and axe incomplete checks remain documented limitations. **Explicit full-G3 author acceptance** is still required before closing parent #3. Child #8 is closed.
