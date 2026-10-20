@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — community onboarding verified; Private vulnerability reporting ENABLED per maintainer, but external reporter flow/delivery and conduct contact unverified; Project auto-add and final acceptance pending
+**Status:** IN PROGRESS — G1 contributor/governance intake accepted by maintainer on 2026-10-20; external reporter UI entry and published conduct contact confirmed at G1 scope, but confidential report delivery, target Project #3 auto-add, genuine Q&A answer flow and final G6 end-to-end acceptance remain unverified
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## G1.5 contributor/governance acceptance — imported milestone (2026-10-20)
+
+The Miracle maintainer explicitly checked all five G1.5 acceptance items: issue form validation, PR template auto-prefill, private vulnerability reporting entry point, confidential conduct contact and final G1 approval. [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) was closed as **completed** and [G1 acceptance ledger](G1-PROGRESS.md) records the final sign-off ([acceptance commit `d55e8f4`](https://github.com/spwn02/Miracle/commit/d55e8f42393a0b8afd5b07c79e53986f9b1b5c7e)). The [conduct policy](https://github.com/spwn02/Miracle/blob/master/CODE_OF_CONDUCT.md) now gives `spwn02.dev@gmail.com` for private reports; the maintainer confirmed the inbox receives email.
+
+**Evidence precision:** G1 form submission blocking and live PR composer prefill are *maintainer-reported* user-interface checks; no newly captured browser screenshots or synthetic PR/issue were produced. The private vulnerability entry point was checked by the maintainer without submitting a confidential report; actual delivery/triage was not proved. The conduct address is published and maintainer-reported reachable, without testing an invented abuse allegation.
+
+**G6 remains OPEN.** Its full issue → design/contract → implementation → validation → release/documentation traceability, automated intake into Project #3, real Q&A accepted-answer interaction and G6-specific final maintainer acceptance require separate evidence. Earlier G1/G6 observations below are historical snapshots and their then-pending G1.5 status is superseded by this section; no Project Status is automatically set to `Accepted`.
 
 ## G3 post-acceptance comprehensive hardening — verified (2026-10-20)
 
