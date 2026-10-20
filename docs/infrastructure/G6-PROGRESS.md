@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-20
-**Status:** IN PROGRESS — community onboarding and public policy navigation verified; duplicate security chooser UX observed, private reporting availability remains unverified; Project auto-add and final acceptance pending
+**Status:** IN PROGRESS — community onboarding verified; Private vulnerability reporting ENABLED per maintainer, but external reporter flow/delivery and conduct contact unverified; Project auto-add and final acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Private vulnerability reporting — enabled by maintainer confirmation; security review deferred (2026-10-20)
+
+The maintainer **explicitly confirmed Private vulnerability reporting is enabled** for Miracle and supplied a screenshot showing the actual GitHub **Security and quality → Security Advisories** maintainer interface, including **New draft security advisory**. This resolves the previous uncertainty about whether the setting is enabled **at the level of owner-reported configuration**; the connected GitHub integration did not independently read restricted administrative settings.
+
+The owner said existing vulnerabilities have been documented and requested that their detailed review be **deferred until the finishing stage**. The screenshot shows the **Published** tab's empty state, which neither confirms nor contradicts security findings documented outside published advisories. No report, advisory, vulnerability description or sensitive material was created or disclosed in this G6 verification pass.
+
+The duplicate issue-chooser labels and redirects to `SECURITY.md` remain **separate UX observations**, not evidence that private vulnerability reporting is disabled. A maintainer's **New draft security advisory** action is distinct from an external contributor's private **Report a vulnerability** flow. **Unverified:** external reporter form access, confidential report delivery, actual conduct-reporting contact, triage/disclosure behavior, and any specific existing vulnerability. These stay open as end-to-end acceptance/security finishing-stage tasks; do not close G6 based on the setting alone.
 
 ## Security reporting chooser — user-observed gap (2026-10-20)
 
@@ -156,7 +164,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
-| Browser/UI intake and private route | **PARTIAL — COMMUNITY STANDARDS, CHOOSER, INLINE VALIDATION AND POLICY/GUIDE DESTINATIONS VERIFIED** | Owner screenshots: eight Community Standards checked; five-form chooser; Bug Report empty revision error; **Security policy** and **Contributing guide** pages open. Submit blocking, PR prefill, private vulnerability/conduct-reporting availability and delivery remain **unverified** |
+| Browser/UI intake and private route | **PARTIAL — PUBLIC INTAKE VERIFIED; PRIVATE REPORTING CONFIG OWNER-CONFIRMED** | Eight Community Standards checked, chooser/forms/navigation visible and inline Bug Report error confirmed. Owner says Private vulnerability reporting **enabled**; Security Advisories maintainer UI screenshot observed. **External private form, confidential delivery, conduct path, submit blocking and PR prefill remain unverified**; vulnerability review deferred to finishing stage |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
