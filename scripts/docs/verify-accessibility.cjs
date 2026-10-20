@@ -96,7 +96,8 @@ async function main() {
     args: ["--no-sandbox", "--disable-dev-shm-usage", "--force-renderer-accessibility"],
   });
   try {
-    const page = await browser.newPage({ viewport: { width: 1300, height: 900 } });
+    const context = await browser.newContext({ viewport: { width: 1300, height: 900 } });
+    const page = await context.newPage();
     for (const entry of pages) await audit(page, address + entry);
     await page.setViewportSize({ width: 390, height: 844 });
     await audit(page, address + pages[0]);
