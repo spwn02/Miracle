@@ -60,6 +60,11 @@ jobs:
       - name: Test public Pages probe using offline negative fixtures
         run: python3 scripts/docs/verify-live-site.py --self-test
 
+      - name: Audit generated pages with Chromium accessibility tree and WCAG rules
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts --no-audit --no-fund             playwright-core@1.56.1 @axe-core/playwright@4.11.1
+          node scripts/docs/verify-accessibility.cjs site
+
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
