@@ -15,9 +15,19 @@
             }
         });
     }
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", enableAccessibleSidebarToggle);
-    } else {
+    function labelReadOnlyTasks() {
+        document.querySelectorAll(".content input[type=checkbox][disabled]").forEach((field) => {
+            const itemText = field.closest("li")?.textContent?.trim() || "task";
+            field.setAttribute("aria-label", (field.checked ? "Completed: " : "Incomplete: ") + itemText.slice(0, 240));
+        });
+    }
+    function initialize() {
         enableAccessibleSidebarToggle();
+        labelReadOnlyTasks();
+    }
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+        initialize();
     }
 })();
