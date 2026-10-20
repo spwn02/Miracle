@@ -1,12 +1,20 @@
 # Miracle GitHub Infrastructure — G2 Progress
 
-**Updated:** 2026-10-19
+**Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Runtime auto-enrollment and initial Backlog status directly verified for two genuine non-bug issues; the GraphQL `wasAutomated: false` flag contradicts GitHub's documented Projects-bot attribution and remains an upstream metadata question. Formal G2 author acceptance pending by explicit maintainer instruction.
+**Status:** Runtime auto-enrollment and initial Backlog status verified for two genuine non-bug issues; GitHub GraphQL `wasAutomated: false` anomaly submitted to Support as ticket #4883332 (Open, Normal priority, maintainer screenshot 2026-10-20). Provider clarification/correction and formal G2 author acceptance remain pending.
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## GitHub Support escalation — ticket #4883332 submitted (2026-10-20)
+
+The maintainer submitted the GitHub Support Bug Report describing the mismatch between **bot-attributed** GitHub Projects v2 events and the GraphQL field `wasAutomated: false`, including reproducible evidence from genuine Miracle Issues [#8](https://github.com/spwn02/Miracle/issues/8) and [#24](https://github.com/spwn02/Miracle/issues/24).
+
+**Evidence:** Maintainer-supplied screenshots of the GitHub Support confirmation screen (message successfully submitted), followed by the authenticated **Support tickets for spwn02** page, displaying **ticket `#4883332`**, subject beginning `GitHub Projects GraphQL \`wasAutomated\` returns false for built-in ...`, **Status: Open**, **Priority: Normal**, **Created: now**. This is **owner screenshot evidence**; the GitHub repository connector has no access to private support-ticket messages or provider internal triage. Screenshot evidence is held in the conversation; the private ticket content/screenshots have not been attached to public repo issues. Do not invent a ticket URL.
+
+**Disposition:** Submission is independently distinguishable from resolution. No GitHub engineer response, acknowledged product defect, semantics clarification, corrected flag or workaround has been received or verified. Preserve the observed `false` values. **G2 Issue #2 remains open** because the maintainer explicitly required this remaining limitation to be resolved and has not signed off on G2. When GitHub Support responds, record only a sanitized technical explanation or verified remediation (excluding private support details) and seek explicit G2 author acceptance.
 
 ## New issue #24 — direct Project #3 intake and Backlog status confirmed (2026-10-20)
 
