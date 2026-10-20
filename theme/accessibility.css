@@ -25,3 +25,6 @@ a[title="Git repository"] {
     align-items: center;
     justify-content: center;
 }
+
+/* Underline prose links so that color alone does not convey link identity. */
+.content a { text-decoration: underline; text-underline-offset: 0.12em; }
