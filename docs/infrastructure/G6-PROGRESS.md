@@ -1,10 +1,18 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
-**Updated:** 2026-10-19
-**Status:** IN PROGRESS — community links, owner-controlled Project transition and real v0.5.27 release provenance verified; live intake, causal auto-add and final G6 acceptance pending
+**Updated:** 2026-10-20
+**Status:** IN PROGRESS — live five-form issue chooser, community routes, Project status transition and v0.5.27 provenance verified; form validation/privacy, auto-add and final G6 acceptance pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Live GitHub issue chooser — owner visual evidence (2026-10-20)
+
+The maintainer supplied an actual screenshot of Miracle's **Create new issue** page. It displays the **five** structured GitHub issue forms (Architecture Proposal, Bug Report, Compiler / Toolchain Issue, Feature Proposal and Infrastructure Request), along with Contributing guide, Q&A, Ideas, a link to `SECURITY.md`, and GitHub's native private vulnerability-report entry. `Blank issue` is displayed to the owner as **Maintainers only**, consistent with the source configuration `blank_issues_enabled: false` being a public-chooser setting, not a way to prevent maintainer-authored blank issues.
+
+**Verified:** forms and contact/navigation choices **render together on GitHub**; no fabricated issue submission was needed. **Not yet verified:** open individual forms and exercise required-field blocking, follow confidential security reporting and conduct paths, or establish live PR template prepopulation. GitHub displays two same-named security entries because one is its native security feature and the other is our policy link. The name of the custom link is specified by the [locked G1.1 contract](G1.1-ISSUE-INTAKE-CONTRACT.md); it has **not** been silently modified.
+
+The same screenshot advances [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) and the G6 public onboarding gate, **but not confidential-report delivery or final G6 acceptance**.
 
 ## Existing v0.5.27 release: authentic tag → CI → provenance → publication (2026-10-19 audit)
 
@@ -119,7 +127,7 @@ This is a **real, observed workflow**, not a fabricated demonstration:
 | PR-head reference CI and mdBook | **PASSED** | Reference #39206579960, docs #39206579929 on exact `63e88c1` revision |
 | Merge / post-merge docs | **DEPLOYMENT PASSED** | Post-merge mdBook/Pages #39206970782; direct browser navigation still unverified |
 | Project #3 membership and workflow | **REAL STATUS TRANSITION VERIFIED; AUTO-ADD CAUSALITY PENDING** | Maintainer changed issue #6 `Backlog → Implementing` in Miracle Development; before/after CLI plus owner status-change timeline event. Non-bug issue #8 remains in Project #3 as `Backlog`, separately `Roadmap / Done`. Configured `is:issue` auto-add and PR-linked workflow Off are verified, but causal automatic enrollment specifically into Project #3 is not yet established |
-| Browser/UI intake and private route | **UNVERIFIED** | G1.5 and G4 independent acceptance gates |
+| Browser/UI intake and private route | **PARTIAL — LIVE CHOOSER VERIFIED** | Maintainer screenshot of all five forms plus Q&A/Ideas/contributing/security navigation. Per-form required-field validation, PR template, private reporting route and community standards remain **unverified** |
 | Author acceptance and G6 closure | **PENDING** | Require explicit decision |
 | Release notes/provenance | **REAL HISTORICAL RELEASE CHAIN VERIFIED** | [v0.5.27 Release run #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086): matching tag SHA, 71/71 tests, 3 consumers, provenance generation, published metadata asset. Internal asset fields uninspected; G6 infrastructure commits need no product release |
 
