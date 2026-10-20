@@ -17,6 +17,24 @@
 | G1.4 — Contributor documentation | [Contributing](https://github.com/spwn02/Miracle/blob/master/CONTRIBUTING.md), [reference toolchain](../reference-toolchain.md), [README](https://github.com/spwn02/Miracle/blob/master/README.md) | Documentation implemented; source links and CI identity reviewed | Final review of compiler documentation against CI, Markdown links, and user-facing onboarding |
 | G1.5 — Acceptance | Evidence-based review of the complete contribution workflow | Pending | Perform live GitHub UI verification; track issues discovered and author acceptance |
 
+## G1.5 independent read-only recheck — 2026-10-20
+
+A fresh read of the published `master` Issue Template YAML files rechecked all five contract-defined forms: **37 editable field IDs, 20 required declarations** (Bug Report 8/5, Compiler / Toolchain 9/7, Feature Proposal 7/4, Architecture Proposal 7/5, Infrastructure Request 6/3). All IDs remain unique within their forms; no unapproved top-level labels, assignees, Projects or Issue Types appear. This is a **source-structure check**, not YAML-schema execution, a GitHub browser test, or proof of actual submit blocking.
+
+A fresh read of the repository PR template confirms the expected traceability, test-results and risk sections; actual recent PR bodies, including [PR #17](https://github.com/spwn02/Miracle/pull/17), contain author-written content, so they **cannot establish browser-side automatic template prefill**. GitHub's Community Standards recognition screenshot from earlier on 2026-10-20 remains valid but is likewise not a PR composition test.
+
+GitHub's [current private-reporting documentation](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately) distinguishes **owner-created draft advisories** from a **non-admin security researcher's Report a vulnerability form**. GitHub's [2026-10-01 changelog](https://github.blog/changelog/2026-10-01-structured-forms-for-private-vulnerability-reports/) also describes the new default structured reporter form, so the precise UI should be checked as an external contributor, not inferred from owner screenshots. Owner-confirmed enablement remains recorded; no private report, conduct allegation, or advisory was submitted or inspected.
+
+**Gates not yet evidenced (do not mark complete):**
+
+1. Read-only live validation of **submit blocking** for missing form-required inputs on each of the five form types, without publishing a synthetic issue.
+2. Actual **PR body prepopulation** in the genuine GitHub PR authoring UI, ideally during the next real PR; a committed template and Community Standards checkmark are not enough.
+3. **External/non-admin reporter entry** to the private vulnerability form without submitting a synthetic report; no inference from the owner's `New draft security advisory` action.
+4. A **usable private contact channel for conduct concerns**. The current `CODE_OF_CONDUCT.md` explicitly says that Miracle does not advertise a verified confidential project-specific reporting inbox; the GitHub-profile request path is documented fallback guidance, not proof of private contact/delivery.
+5. **Explicit maintainer G1.5 acceptance** after actual evidence is reviewed. A request to work on closeout is not evidence of passing unrun checks.
+
+**Disposition:** G1.5 **remains open**. The accessible GitHub connection exposes repository files, PRs and Issues, but not the live browser composer or a non-admin reporter session. Do not fabricate UI results, tests, confidential reports, PRs or acceptance to close this gate. This recheck introduces no change to the locked G1.1 design, GitHub settings, issue forms, reporting routes or product source. Detailed review of the maintainer's documented security findings stays deferred to the finishing security-hardening stage.
+
 ## G1.5 private vulnerability reporting — setting confirmed, detailed review deferred (2026-10-20)
 
 The maintainer **explicitly confirmed that Private vulnerability reporting is enabled** and supplied a screenshot of the repository's **Security and quality → Security Advisories** page. The authenticated owner view displays **New draft security advisory** and advisory-state tabs. This is **owner-confirmed setting evidence** plus a live screenshot of the **maintainer-facing advisories interface**; the GitHub App connection did not independently read the private administrative toggle.
