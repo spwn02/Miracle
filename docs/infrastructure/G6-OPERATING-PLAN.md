@@ -15,7 +15,7 @@ The underlying authority remains repository-tracked contracts and the maintainer
 
 At the initial G6 audit on **2026-10-19**, the public repository API reported `has_discussions: false`. **Later that day**, the maintainer supplied a screenshot of the live **Manage discussion categories** screen, showing **Announcements**, **Ideas**, **Q&A** (**Answers enabled**), and **Show and tell**; optional **General** and **Polls** also exist. A fresh public repository API check then returned **`has_discussions: true`**. These are independent pieces of evidence for **activation and category configuration**, not a test of a real accepted answer.
 
-The navigational links in [Support](../../SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve individual category pages; the maintainer subsequently **confirmed that all four advertised links open correctly** in a real browser and supplied a screenshot of the selected empty **Ideas** category. The UI check is maintainer-reported. No fabricated Discussion was created.
+The navigational links in [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve individual category pages; the maintainer subsequently **confirmed that all four advertised links open correctly** in a real browser and supplied a screenshot of the selected empty **Ideas** category. The UI check is maintainer-reported. No fabricated Discussion was created.
 
 Owner-facing follow-up:
 
@@ -45,7 +45,7 @@ gh api graphql -f query='query {
 
 G1 provides five issue forms under `.github/ISSUE_TEMPLATE/` (bug, compiler, feature, architecture, infrastructure), a PR review template, `CONTRIBUTING.md`, `SUPPORT.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, and `ACCESSIBILITY.md`. G6 must preserve confidential security reporting and avoid implying a verified private misconduct inbox when none exists.
 
-The source-level [community route guard](../../scripts/github/check-community-surface.py) checks those entry points and cross-links and runs regression/negative fixtures. This is **static repository verification**; it does not prove GitHub's live issue-form renderer, security reporting settings, keyboard/screen-reader behavior, moderator tooling, or actual confidential-report delivery. Those require a separate maintainer/browser check.
+The source-level [community route guard](https://github.com/spwn02/Miracle/blob/master/scripts/github/check-community-surface.py) checks those entry points and cross-links and runs regression/negative fixtures. This is **static repository verification**; it does not prove GitHub's live issue-form renderer, security reporting settings, keyboard/screen-reader behavior, moderator tooling, or actual confidential-report delivery. Those require a separate maintainer/browser check.
 
 Existing parent acceptance issues remain independent:
 [G1.5 #1](https://github.com/spwn02/Miracle/issues/1),
@@ -86,7 +86,7 @@ Public [release v0.5.27](https://github.com/spwn02/Miracle/releases/tag/v0.5.27)
 
 [Release workflow #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086) **succeeded on this exact commit**. The reusable reference CI job `116750205166` passed **71/71 CTest** and three consumer modes. The dependent release job `116751054300` passed `Validate release provenance`, `Write release provenance` and `Create GitHub release`; its log shows the same `SOURCE_REVISION`. The tagged workflow validates the tag/version pairing and `master` ancestry. The resulting published release contains `release-metadata.json`, uploaded by `github-actions[bot]` (asset ID `645665032`, 608 bytes, API SHA-256 `27a7a78fea1df167a79e6e7386bc62efe4faf257212d5fa09f8453248cba9635`), and a real GitHub version-comparison link.
 
-**Evidence boundary:** The released metadata bytes and individual JSON field values have **not** been independently downloaded/read; the successful creation and public attachment are verified. The infrastructure-only G6 work did not require a new C++ library release, and no tag/release was created for this audit. [CHANGELOG.md](../../CHANGELOG.md) remains the product change log.
+**Evidence boundary:** The released metadata bytes and individual JSON field values have **not** been independently downloaded/read; the successful creation and public attachment are verified. The infrastructure-only G6 work did not require a new C++ library release, and no tag/release was created for this audit. [CHANGELOG.md](https://github.com/spwn02/Miracle/blob/master/CHANGELOG.md) remains the product change log.
 
 ## 4. Definition of done
 
