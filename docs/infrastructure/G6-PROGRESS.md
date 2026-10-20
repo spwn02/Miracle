@@ -10,7 +10,7 @@
 
 After the accessibility corrections in [G3 PR #22](https://github.com/spwn02/Miracle/pull/22) and the passing automated Chromium AX-tree / axe WCAG audit, the maintainer was expressly asked to test the live Miracle Book using a **real screen reader**, checking headings and landmarks, sidebar toggle/state, search/results, and checked/incomplete task-list announcements. The owner replied: **"Yes, it works flawlessly."**
 
-This is **maintainer-reported real assistive-technology success**, not a captured spoken transcript or independent control of their desktop. The screen reader, browser and OS were **not identified**; do not invent them. Three representative axe samples found zero detected automated violations but reported **2/2/1 incomplete checks**, which remain documented scope limitations. G3 issue #3 remains **OPEN for explicit full-phase approval**, and G6 remains **OPEN** for its separate end-to-end criteria.
+This is **maintainer-reported real assistive-technology success**, not a captured spoken transcript or independent control of their desktop. The browser was later identified as **Safari**. The screen-reader application and OS were **not identified**; do not infer VoiceOver or invent them. Three representative axe samples found zero detected automated violations but reported **2/2/1 incomplete checks**, which remain documented scope limitations. G3 issue #3 remains **OPEN for explicit full-phase approval**, and G6 remains **OPEN** for its separate end-to-end criteria.
 
 ## Private vulnerability reporting — enabled by maintainer confirmation; security review deferred (2026-10-20)
 
