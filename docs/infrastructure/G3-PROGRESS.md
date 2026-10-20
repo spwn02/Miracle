@@ -3,7 +3,7 @@
 **Updated:** 2026-10-20
 **Program:** G0–G6
 **Workstream:** G3 — Documentation Publishing
-**Status:** Publishing subtask #8 CLOSED; real keyboard/search/mobile UX and post-deployment public source-to-HTML plus 3 outbound links VERIFIED. G3 parent #3 remains OPEN for screen-reader semantics and explicit author sign-off
+**Status:** G3 publishing and real user keyboard/search/mobile checks verified; Chrome AX tree and axe WCAG A/AA sample audit passed after fixes. Real screen-reader speech/interaction and explicit author sign-off remain OPEN
 **Public documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Current plan:** [G3 Operating Plan](G3-OPERATING-PLAN.md)
@@ -64,6 +64,18 @@ After publication, further real canonical edits (including this G3 ledger, new G
 
 **Publishing subtask [#8](https://github.com/spwn02/Miracle/issues/8) was closed `completed`** on that evidence. This does **not** imply complete G3 program acceptance: we have not independently demonstrated a full keyboard/screen-reader/mobile regression, every outbound link's validity, or a client-observed render of a particular most-recent paragraph. Those stricter experience checks remain with parent [#3](https://github.com/spwn02/Miracle/issues/3), instead of inventing a browser validation result.
 
+## Assistive semantics audit and fixes — real Chrome/axe validation (2026-10-20)
+
+The maintainer requested a **screen-reader accessibility check**. The connected execution environment cannot operate or hear the maintainer's **Orca, VoiceOver, or NVDA** desktop session, so **actual screen-reader speech and interaction have NOT been verified**. Rather than mislabeling a static HTML analysis as an assistive-technology test, [PR #22](https://github.com/spwn02/Miracle/pull/22) added a permanent, independently executed **Chrome accessibility-tree and axe-core WCAG semantics regression audit** for built mdBook pages.
+
+**Initial failing findings, genuinely observed:** invalid `aria-expanded` on mdBook's sidebar `<label>`, insufficient Rust-theme link contrast, undersized navigation/header click targets, links distinguished only by color, and unlabeled read-only task-list checkboxes. Corrective `theme/accessibility.css` and `theme/accessibility.js` overrides (loaded through `book.toml`) now provide contrasting/underlined links, larger targets, an accessible/keyboard-operable sidebar button, and descriptive names for checked/incomplete documentation task states. Canonical Miracle C++ contract content was not rewritten.
+
+**Evidence:** Reviewed [PR #22](https://github.com/spwn02/Miracle/pull/22) merged as [`5d0bfbd`](https://github.com/spwn02/Miracle/commit/5d0bfbd512fdf2643263ee4176fe67c8cc3bf5fe). [PR-head documentation run #39379034043](https://github.com/spwn02/Miracle/actions/runs/39379034043) and [reference CI #39379034086](https://github.com/spwn02/Miracle/actions/runs/39379034086) were **SUCCESS**. The actual post-merge [Pages run #39379255036](https://github.com/spwn02/Miracle/actions/runs/39379255036) was also **SUCCESS**: built pages passed **0 axe-core A/AA violations** across desktop homepage (**29 passing rule checks**), representative G3 chapter (**29**), and mobile homepage (**28**). The Chrome Accessibility Tree contained main/navigation regions, headings, named controls and links. A real Chromium keyboard test confirmed that **Enter and Space** operate the sidebar toggle and update `aria-expanded`; existing public Pages source/link parity checks passed after deployment.
+
+**Scope limit:** Axe reported **2 incomplete/manual-review results** for each desktop page and **1** for mobile; `0 violations` is *not* a comprehensive proof of WCAG compliance. Chrome's accessibility tree tests semantics, but **does not listen to speech output**, establish usability with real assistive technology, or test every chapter/theme/browser. The G3 screen-reader and author sign-off gates stay **UNCHECKED**.
+
+**Required final manual screen-reader observation:** On the live [Miracle Book](https://spwn02.github.io/Miracle/), use a real screen reader to navigate **landmarks/headings, table of contents and sidebar, link/button names, Enter/Space state announcements, search and search result announcements, and checked/incomplete checklist semantics**. Record device, browser, screen reader and actual observed announcements/issues; do not fabricate successful outcomes.
+
 ## Public Pages source parity and outbound links — GitHub Actions VERIFIED (2026-10-20)
 
 The genuine [G3 post-deployment probe PR #21](https://github.com/spwn02/Miracle/pull/21) was reviewed and merged with a **history-preserving merge commit** [`723172c`](https://github.com/spwn02/Miracle/commit/723172c63229154840219fb21d9ab8d7559c17bc). Its [PR-head mdBook job #39376457444](https://github.com/spwn02/Miracle/actions/runs/39376457444) and [reference C++26 CI #39376457502](https://github.com/spwn02/Miracle/actions/runs/39376457502) passed; the offline source/HTML negative fixtures passed in the mdBook job.
@@ -105,9 +117,10 @@ The report makes no claim about a specific screen reader or assistive technology
 - [x] GitHub Wiki remains optional and nonauthoritative.
 - [x] Maintainer confirms live site works and approves the Rust Book visual design; theme/sidebar/search generation is tested in CI.
 - [x] **Maintainer-reported hands-on pass:** Tab/keyboard navigation, sidebar and chapters, actual search results, and mobile-width responsive behavior (2026-10-20).
-- [ ] **Screen-reader semantics and assistive-technology usability** — no dedicated test reported.
+- [x] Automated **Chromium accessibility tree + axe-core WCAG** audit on 3 desktop/mobile samples, **0 automated violations** and keyboard sidebar state check (post-merge Pages run #39379255036); small number of incomplete manual-review results reported.
+- [ ] **Actual Orca/VoiceOver/NVDA screen-reader speech and interactive navigation**, including search announcements and task status — no real screen-reader session reported.
 - [x] **Real public HTTP spot-check passed after deployment:** two source-derived paragraphs matched live Pages HTML, and **3/3** selected external links resolved in [run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839) (2026-10-20).
 - [x] Genuine canonical docs edits automatically generated and deployed new Pages versions, without duplicate editing; post-deployment HTTP runner also confirmed specific published text against canonical source (run #39376713839).
 - [ ] Maintainer explicitly accepts **full G3** experience and records remaining browser accessibility/navigation checks on parent #3; publishing implementation #8 is complete.
 
-**Full G3 is not formally accepted.** Live keyboard/Tab, sidebar, search/results and mobile-width navigation were verified by the maintainer; actual Pages source-to-render parity and three external links were verified by post-deployment Actions. **Screen-reader semantics/assistive-technology usability and explicit author acceptance** remain open on parent #3. Subtask #8 is already closed.
+**Full G3 is not formally accepted.** Live keyboard/search/mobile UX, Pages source parity and representative links are verified; CI also found and fixed mdBook accessibility violations and now passes a three-page/viewport automated browser accessibility audit. **Actual human screen-reader speech/interaction, outstanding incomplete axe checks, and explicit author acceptance** remain open on parent #3. Child #8 is closed.

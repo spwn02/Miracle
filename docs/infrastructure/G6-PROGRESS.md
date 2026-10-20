@@ -51,6 +51,12 @@ The maintainer supplied an actual screenshot of Miracle's **Create new issue** p
 
 The same screenshot advances [G1.5 issue #1](https://github.com/spwn02/Miracle/issues/1) and the G6 public onboarding gate, **but not confidential-report delivery or final G6 acceptance**.
 
+## G3 accessible semantics and keyboard interaction — automated audit (2026-10-20)
+
+The maintainer requested actual screen-reader accessibility verification. [G3 PR #22](https://github.com/spwn02/Miracle/pull/22) identified five classes of genuine mdBook WCAG issues (invalid sidebar-toggle ARIA state, link contrast, small click targets, color-only prose links, unnamed disabled checklist inputs). Focused CSS/JS overrides were reviewed and merged as [`5d0bfbd`](https://github.com/spwn02/Miracle/commit/5d0bfbd512fdf2643263ee4176fe67c8cc3bf5fe). PR-head reference CI and documentation jobs passed. Post-merge [Pages #39379255036](https://github.com/spwn02/Miracle/actions/runs/39379255036) passed an **actual generated-page Chrome accessibility-tree and axe WCAG A/AA regression test**: **zero automated violations** across desktop homepage, G3 chapter, mobile homepage; sidebar button Enter/Space and expanded-state behavior passed. Axe still reported incomplete/manual-review results.
+
+This constitutes **verified automated accessibility semantics**, **NOT a test of Orca/VoiceOver/NVDA speech/interaction**. Real screen-reader observation and author G3 sign-off remain separate open gates in [G3 ledger](G3-PROGRESS.md). Do not close G3 or G6 on this automated evidence alone.
+
 ## G3 canonical source → actual public Pages parity — CI verified (2026-10-20)
 
 [PR #21](https://github.com/spwn02/Miracle/pull/21) merged as [`723172c`](https://github.com/spwn02/Miracle/commit/723172c63229154840219fb21d9ab8d7559c17bc) after successful PR-head reference CI and mdBook/fixture verification. The **post-merge [Pages run #39376713839](https://github.com/spwn02/Miracle/actions/runs/39376713839)** succeeded with a **real public HTTP smoke test after deployment**: canonical G3 keyboard statement and index module paragraph both matched the respective live HTML, and **three selected real Github outgoing links** appeared on the homepage and resolved successfully. This resolves the prior source-to-public paragraph and representative-link evidence gap.
