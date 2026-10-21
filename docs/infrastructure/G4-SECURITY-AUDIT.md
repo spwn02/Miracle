@@ -1,8 +1,18 @@
 # G4 — Security Configuration Audit
 
 **Workstream:** [G4 — Security and CI](https://github.com/spwn02/Miracle/issues/4)
-**Status:** Maintainer-authenticated baseline audited; private reporting and CodeQL analysis state require final interpretation
+**Status:** Maintainer-authenticated security baseline confirmed; active CodeQL default-setup analyses verified 2026-10-20, while experimental C++26 module/reflection extraction and file coverage remain unverified
 **Observed:** 2026-10-17
+
+## Follow-up CodeQL analysis evidence — 2026-10-21
+
+The maintainer executed `gh api repos/spwn02/Miracle/code-scanning/default-setup` and `gh api 'repos/spwn02/Miracle/code-scanning/analyses?per_page=10'` from an authorized account. The default setup is **configured** with the default query suite, including `c-cpp`, `python`, `actions`, and JavaScript/TypeScript aliases.
+
+Two actual C/C++ analyses on `master` were identified: `1990589303` on commit `cf75c9c` (2026-10-20 17:53:46 UTC) and `1990547764` on `9add359` (17:47:40 UTC). Both list CodeQL, `category: /language:c-cpp`, 58 rules, 0 results and an empty `error` property. Ancillary latest analyses: JS/TS (87 rules, zero results), Actions (17 rules, zero), Python (43 rules, two analysis results). This proves real analyzer execution and record persistence **only**, not universal coverage or adjudicated findings.
+
+[GitHub's supported-language list](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) explicitly excludes **C++20 modules**, lists C++23 as beta and does not list the `.ixx` extension among recognized C/C++ source suffixes. The authentic `master` file tree has **33 `.ixx` module interface files**; `Miracle.ixx` and `meta/Reflect.ixx` explicitly use modules and C++26 reflection respectively. GitHub documents that default C/C++ setup normally uses build-free `none` mode, but the effective mode of the observed runs was **not supplied**.
+
+**Security assessment:** Maintain CodeQL as an ancillary analyzer of supported source/workflows, not an assertion that the current tool supports Miracle's C++26 modules or reflection. Need owner-side **Security and quality → Code scanning → Tool status** file coverage, build mode, errors/warnings, and analyzed-files CSV to establish what files are actually processed. Do not expose alert bodies in public documents. See [G4-PROGRESS.md](G4-PROGRESS.md) and tracking [Issue #24](https://github.com/spwn02/Miracle/issues/24).
 
 ## Verified public/repository state
 
