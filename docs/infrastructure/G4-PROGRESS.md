@@ -6,6 +6,21 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## Live GitHub CodeQL Tool Status coverage — maintainer screenshot (2026-10-21)
+
+The maintainer supplied a screenshot of `spwn02/Miracle` **Security and quality → Code scanning → Tools → CodeQL**, showing the **Scanned files** panel:
+
+| GitHub tool language | Files reported scanned | Displayed coverage |
+| --- | ---: | ---: |
+| C++ | **86 / 119** | **72%** |
+| GitHub Actions | 6 / 6 | 100% |
+| JavaScript | 2 / 2 | 100% |
+| Python | 20 / 20 | 100% |
+
+This is **owner-observed live Tool Status evidence**, not a reconstructed count. **33 C++ files are not marked scanned.** The number exactly matches the **33 `.ixx` interfaces** in the [commit-pinned C++ source inventory](G4-CODEQL-COVERAGE-INVENTORY.md); **86 reported scanned** also equals the repository's `*.cxx` count. This is strong *numerical* evidence that `.ixx` module interfaces may be omitted from the CodeQL extraction/discovery path, but **not per-file proof**. The screenshot does not identify file paths, scanning commit/configuration, C/C++ build mode or detailed extractor warnings.
+
+**Required next evidence:** Download the **analyzed-files CSV** using the button at the top right of the screenshot's `Scanned files` panel, and compare each CSV path and extraction status to the 33 `.ixx` and 8 core `.cxx` paths in the pinned inventory. Record the CSV scan revision/configuration and whether every module interface is missing or partly processed; then determine appropriate response within CodeQL's published C++ module/reflection limitations. **No CodeQL settings, CI permissions, rulesets or compiler configuration were changed.** No simulated vulnerability or synthetic test issue was introduced.
+
 ## G4 reproducible module coverage baseline created — 2026-10-21
 
 A new [G4 CodeQL source-coverage inventory](G4-CODEQL-COVERAGE-INVENTORY.md) ([commit `10e416e`](https://github.com/spwn02/Miracle/commit/10e416ef885e267eaa352f51e468821eed1fab1e)) records a **read-only, commit-pinned list** of all **33** tracked `src/public/**/*.ixx` module interfaces and **8** tracked `src/**/*.cxx` implementation units in the genuine `f2dc424` source tree. There are **86 `.cxx` files repository-wide**, most outside the core source tree (tests/examples/benchmarks). The manifest keeps those separate and deliberately **does not** present their union as CodeQL's coverage denominator.
