@@ -1,10 +1,20 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-21
-**Status:** Security/CI configuration accepted at operational-check level; CodeQL extraction scope verified (all 33 C++26 .ixx interfaces fail extraction). Full G4 acceptance still held for legitimate tagged release, compatible protected-gcc branch push, security triage and author sign-off.
+**Status:** Python ReDoS alerts #1/#2 VERIFIED FIXED and live Pages deployed; C++26 CodeQL extraction gap explicitly bounded (0/33 .ixx). G4 remains open for current protected-tag release, safe GCC branch advancement, CodeQL scope disposition and owner acceptance.
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
+
+## G4 verified checkpoint: Python alerts fixed; live Pages deployed — 2026-10-21
+
+**Security subgate formally verified and resolved:** The maintainer's *individual GitHub Code Scanning alert detail* responses for **#1** and **#2** (`py/redos`) both show `state: fixed`, `most_recent_instance.state: fixed` and `fixed_at: 2026-10-21T15:24:55Z`. Their `most_recent_instance.commit_sha: 5b6bb3b` denotes the historical vulnerable source; it does **not** supersede the alert's `fixed` state or the current `master`. Neither finding was dismissed. Authenticated Python CodeQL analysis **1997641994** on the protected `master` merge commit `a1e4fcf`, created at that same timestamp, reports `results_count: 0`, `error: ""`; earlier source `5b6bb3b` analysis **1997301220** returned 2 results, while the initial merged-fix commit `452780b` analysis **1997166979** returned zero. [PR #25](https://github.com/spwn02/Miracle/pull/25) is merged, reference CI and stress/security regression fixtures passed. The two Python ReDoS findings are resolved **at both source and GitHub CodeQL alert levels**.
+
+**Documentation deployment subgate restored:** [GitHub Pages run #39625540156](https://github.com/spwn02/Miracle/actions/runs/39625540156) on `a1e4fcf` is **success**: canonical docs, accessibility, upload/deployment, live site verification, source-to-published chapter comparison and all external URLs. This follows [PR #26](https://github.com/spwn02/Miracle/pull/26), a two-parent merged link-validator correction which treats the owner-only Code Scanning destination's anonymous 404 as **INDETERMINATE** rather than a broken publicly verified link. The prior Pages failures are no longer an acceptance blocker.
+
+[Reference C++26 CI run #39625540134](https://github.com/spwn02/Miracle/actions/runs/39625540134) is **success**, including all CMake consumers. [GCC sync #39625540334](https://github.com/spwn02/Miracle/actions/runs/39625540334) is **success but `Advance gcc` skipped**. Protected `gcc` still has no verified compatible advance. [Actual CodeQL file-coverage inventory](G4-CODEQL-COVERAGE-INVENTORY.md) remains **86/86 conventional `.cxx` extracted versus 0/33 C++26 `.ixx` interfaces extracted**; [CodeQL scope issue #24](https://github.com/spwn02/Miracle/issues/24) remains separately open. The `v0.5.27` release was published **before** the present `v*` tag protection ruleset was activated and does not test a new protected-tag release.
+
+**Remaining G4 acceptance conditions:** a legitimate maintainer-approved post-ruleset protected-tag release; a real safe/compatible protected-`gcc` ref advance when GCC supports this revision; appropriate disposition of CodeQL's documented C++26 module semantic coverage limitation; and explicit owner sign-off. G4 [Issue #4](https://github.com/spwn02/Miracle/issues/4) remains **OPEN**. Historical pending-alert statements in older sections below are retained as dated audit snapshots, superseded by this newest result.
 
 ## PR #25 security fix merged with two-parent history — 2026-10-21
 
