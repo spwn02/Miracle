@@ -109,6 +109,19 @@ def crawl(site: Path) -> tuple[list[str], set[str], int, int]:
     return errors, external, checked, fragments
 
 
+def is_owner_authenticated_url(url: str) -> bool:
+    """Only maintainer-verified GitHub routes may be indeterminate on 404."""
+    parsed = urlsplit(url)
+    if parsed.scheme != "https" or parsed.netloc != "github.com":
+        return False
+    path = parsed.path.rstrip("/")
+    return (
+        path == "/spwn02/Miracle/settings"
+        or path.startswith("/spwn02/Miracle/settings/")
+        or path == "/spwn02/Miracle/security/code-scanning"
+    )
+
+
 def http_check(url: str) -> tuple[str, str]:
     # HEAD is blocked by legitimate hosts; use GET, capped bytes and no credentials.
     try:
@@ -123,12 +136,10 @@ def http_check(url: str) -> tuple[str, str]:
                 return url, "PASS"
             return url, f"INDETERMINATE HTTP {status}"
     except HTTPError as exc:
-        # GitHub deliberately returns 404 to unauthenticated readers on owner
-        # settings pages; this cannot establish that the maintainer route is broken.
-        parts = urlsplit(url)
-        owner_only = (parts.netloc == "github.com"
-                      and parts.path.startswith("/spwn02/Miracle/settings"))
-        if exc.code == 404 and owner_only:
+        # GitHub may respond 404 for authenticated-only maintainer routes.
+        # These exact repository destinations have been owner-verified and an
+        # anonymous 404 cannot establish that their links are broken.
+        if exc.code == 404 and is_owner_authenticated_url(url):
             return url, "INDETERMINATE owner-authenticated URL (anonymous HTTP 404)"
         if exc.code in (404, 410):
             return url, f"BROKEN HTTP {exc.code}"
@@ -150,7 +161,35 @@ def self_test() -> None:
         assert any("missing fragment" in x for x in crawl(site)[0])
         (site / "index.html").write_text('<a href="missing.html">bad file</a>')
         assert any("missing target" in x for x in crawl(site)[0])
-        print("PASS: link crawler fixtures and negative cases")
+        # GitHub Code Scanning is available to the authenticated maintainer,
+        # but the public probe receives an anonymous 404. Keep that state
+        # explicitly INDETERMINATE rather than hiding arbitrary broken links.
+        from unittest.mock import patch
+
+        auth_urls = (
+            "https://github.com/spwn02/Miracle/settings",
+            "https://github.com/spwn02/Miracle/settings/security_analysis",
+            "https://github.com/spwn02/Miracle/security/code-scanning",
+        )
+        non_auth_urls = (
+            "https://github.com/spwn02/Miracle/security/code-scanning-invalid",
+            "https://github.com/spwn02/Miracle/issues/no-such-issue",
+            "https://github.com/spwn02/Other/security/code-scanning",
+            "http://github.com/spwn02/Miracle/security/code-scanning",
+            "https://github.example.com/spwn02/Miracle/security/code-scanning",
+        )
+        assert all(is_owner_authenticated_url(url) for url in auth_urls)
+        assert not any(is_owner_authenticated_url(url) for url in non_auth_urls)
+
+        with patch(__name__ + ".urlopen", side_effect=HTTPError(
+            "https://github.com", 404, "Not Found", None, None
+        )):
+            for url in auth_urls:
+                assert http_check(url)[1].startswith("INDETERMINATE "), url
+            for url in non_auth_urls:
+                assert http_check(url)[1] == "BROKEN HTTP 404", url
+
+        print("PASS: link crawler fixtures, negative cases, and 404 authorization boundary")
 
 
 def main() -> int:
