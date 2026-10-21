@@ -6,6 +6,33 @@
 **Tracking:** [G4 CodeQL issue #24](https://github.com/spwn02/Miracle/issues/24)
 **Authority:** [G4 security audit](G4-SECURITY-AUDIT.md) and [G4 progress ledger](G4-PROGRESS.md)
 
+## CodeQL extracted-files CSV — definitive file-level result (2026-10-21)
+
+The maintainer provided the **real CodeQL Tool Status → Scanned files → Download analyzed-files CSV** (`code-scanning-files-extracted.csv`). The file was analyzed locally without publishing raw security alert records; SHA-256 of the supplied CSV bytes:
+
+```text
+769fca48b7f156f3779df029e9afa55b38529db0dc32dfed521b3c9d05d51c05
+```
+
+The CSV has **159 rows** with headers `Configuration`, `Language`, `File Path`, `Successfully Extracted`, `Failure Reason`. Several workflow YAML files appear in multiple language configurations; **159 is not a unique file count**. Relevant **119** distinct `/language:c-cpp` rows:
+
+| C++ source group | Listed | Successfully extracted | Failed extraction | Empty failure reason |
+| --- | ---: | ---: | ---: | ---: |
+| `src/public/**/*.ixx` (module interfaces) | **33** | **0** | **33** | **33** |
+| `src/private/**/*.cxx` (core implementation) | **8** | **8** | **0** | 0 |
+| `tests/**/*.cxx` | 72 | 72 | 0 | 0 |
+| `examples/**/*.cxx` | 4 | 4 | 0 | 0 |
+| `benchmarks/**/*.cxx` | 2 | 2 | 0 | 0 |
+| **Total `/language:c-cpp`** | **119** | **86** | **33** | **33** |
+
+The **set of all 33 failed CSV `.ixx` paths is exactly identical** to the 33 `.ixx` entries in the immutable source inventory below; no missing or extra paths. The **eight source `.cxx` paths** below all occur as `Successfully Extracted=true`. Every remaining repository `.cxx` file also reports `true`. These are file-level observations and resolve the earlier numerical-only correlation.
+
+Other configurations in the CSV: `/language:actions` has 6/6 success; `/language:python` has 26/26 success (20 Python files plus 6 workflow YAML files); `/language:javascript-typescript` has 8/8 success (2 JavaScript files plus 6 workflow YAML files). The UI's 6/6, 20/20 and 2/2 coverage represents their actual language-specific source groups, not the duplicated workflow YAML rows.
+
+**Result:** The current CodeQL configuration **does not successfully extract any of Miracle's module interfaces**. The CSV lists the interfaces with `false` and empty failure reasons; it does **not** reveal the exact cause, compiler invocation, effective build mode or whether future CodeQL versions might support modules. GitHub's [published support matrix](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) says C++20 modules are unsupported and does not list C++26 syntax or `.ixx` as supported. Thus **no security assurance over the C++26 module/reflection bodies follows from this scan**. Successful `.cxx` extraction also does not guarantee complete semantic analysis of imported module definitions.
+
+**Traceability limit:** The export did not contain an analysis ID, commit SHA or timestamp column. Its file-path set matches this pinned inventory, and the maintainer submitted it immediately after the live 86/119 screenshot; the scan revision cannot be independently reconstructed from the CSV alone. Treat the result as an observed Tool Status snapshot, not a reproducible CodeQL compiler log. No CodeQL configuration changes were made.
+
 ## Purpose and evidentiary boundary
 
 Use this **source-tree inventory** to compare GitHub's CodeQL **analyzed-files CSV** against Miracle's version-controlled C++ implementation. This document records **source presence**, NOT actual CodeQL file extraction or semantic analysis. A successful CodeQL C/C++ analysis with zero alerts is insufficient to prove these sources were processed.
@@ -83,7 +110,7 @@ git ls-tree -r --name-only f2dc424c51eb5df6c9b3c004cd6fe6920bcbaacf \
 
 This is a **read-only** Git command. For later file additions/removals, regenerate the source inventory from the target scan commit. Do not compare a CSV from another revision without recording that mismatch.
 
-## Required CodeQL Tool Status evidence — not yet provided
+## CodeQL Tool Status comparison procedure — completed 2026-10-21
 
 1. Navigate to [Miracle Code Scanning](https://github.com/spwn02/Miracle/security/code-scanning) → **Tool status → CodeQL**. Record the actual **C/C++ coverage percentage**, configuration, warning/error summaries and build mode if shown.
 2. Download the **analyzed-files CSV** (NOT the list-of-rules CSV). GitHub documents four semantic fields: configuration, file path, programming language and extraction success. Preserve original headers because their literal names are not asserted here.
@@ -92,4 +119,4 @@ This is a **read-only** Git command. For later file additions/removals, regenera
 5. Inspect at least `src/public/Miracle.ixx`, `src/public/meta/Reflect.ixx`, and `src/public/meta/Annotations.ixx` for actual extraction and warnings. The reflection expression `^^T` in `Reflect.ixx` is a good canary for language support, but its appearance in a line-based CSV is **not a semantic correctness test**.
 6. Record the output and evidence in [G4-PROGRESS.md](G4-PROGRESS.md), [G4-SECURITY-AUDIT.md](G4-SECURITY-AUDIT.md) and [#24](https://github.com/spwn02/Miracle/issues/24). Keep the unsupported module/reflection claim bounded to the observed CodeQL behavior and provider documentation.
 
-**Pending:** The maintainer's actual CodeQL analyzed-files CSV. No file-level extraction claim should be made until it is inspected.
+**Resolved (2026-10-21):** The actual analyzed-files CSV was provided and checked against all 33 module interfaces and 8 core implementation units. File-level outcome: **33/33 `.ixx` failed extraction; 8/8 core `.cxx` successful**. Effective build mode and detailed extractor diagnostics remain unavailable; do not claim the module/reflection coverage gap has been fixed.
