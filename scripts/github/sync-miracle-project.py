@@ -5,6 +5,7 @@ Default is read-only. Apply creates GitHub Projects draft items, not repository
 issues. Existing tasks and the workflow Status field are never touched.
 """
 import argparse
+import hashlib
 from collections import Counter
 import json
 from pathlib import Path
@@ -20,6 +21,8 @@ VIEWS = {"Contract": "Archive - Contracts",
          "Checkpoint": "Archive - Checkpoints",
          "Ledger": "Archive - Decision Ledger"}
 FIELD = "Artifact Type"
+GROUP_FIELD = "Archive Group"
+GROUPS = ("Foundation", "Phase 5.4", "Phase 5.6", "Development Protocol", "Architecture")
 
 
 def gh(*args):
@@ -87,20 +90,20 @@ def items(owner, number):
     return output
 
 
-def type_field(owner, number):
+def select_field(owner, number, label, options_expected):
     def lookup():
         fs = gh("project", "field-list", number, "--owner", owner,
                 "--limit", "100", "--format", "json")["fields"]
-        return next((f for f in fs if f["name"] == FIELD), None)
+        return next((f for f in fs if f["name"] == label), None)
     field = lookup()
     if field is None:
         gh("project", "field-create", number, "--owner", owner,
-           "--name", FIELD, "--data-type", "SINGLE_SELECT",
-           "--single-select-options", ",".join(TYPES), "--format", "json")
+           "--name", label, "--data-type", "SINGLE_SELECT",
+           "--single-select-options", ",".join(options_expected), "--format", "json")
         field = lookup()
     options = {o["name"]: o["id"] for o in field.get("options", [])}
-    if any(t not in options for t in TYPES):
-        raise ValueError("Existing Artifact Type field is incompatible")
+    if any(t not in options for t in options_expected):
+        raise ValueError("Existing Project field options are incompatible: " + label)
     return field["id"], options
 
 
@@ -169,8 +172,13 @@ def main():
         print("Preview only; after PR #28 merges, run with --apply --all")
         return
     # Refuse to publish broken master-source links from an unmerged PR.
-    gh("api", "repos/spwn02/Miracle/contents/" + str(CATALOG) + "?ref=master")
-    field_id, options = type_field(owner, number)
+    remote = gh("api", "repos/spwn02/Miracle/contents/" + str(CATALOG) + "?ref=master")
+    raw = (root / CATALOG).read_bytes()
+    local_sha = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+    if remote.get("sha") != local_sha:
+        raise ValueError("Local catalog is not byte-identical to current master")
+    field_id, options = select_field(owner, number, FIELD, TYPES)
+    group_id, groups = select_field(owner, number, GROUP_FIELD, GROUPS)
     for x in missing if args.all else missing[:25]:
         item = gh("project", "item-create", number, "--owner", owner,
                   "--title", x["title"], "--body", source_body(x, data["baseRef"]),
@@ -180,6 +188,9 @@ def main():
         gh("project", "item-edit", "--id", item["id"],
            "--project-id", p["id"], "--field-id", field_id,
            "--single-select-option-id", options[x["kind"]], "--format", "json")
+        gh("project", "item-edit", "--id", item["id"],
+           "--project-id", p["id"], "--field-id", group_id,
+           "--single-select-option-id", groups[x["group"]], "--format", "json")
         print("Created:", x["title"])
     views_create(p)
     fresh = items(owner, number)

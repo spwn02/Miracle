@@ -43,7 +43,9 @@ python3 scripts/github/sync-miracle-project.py
 python3 scripts/github/sync-miracle-project.py --apply --all
 ```
 
-The last command creates an **Artifact Type** field, safely reuses namespaced existing draft entries, and creates the dedicated **Archive - Contracts**, **Archive - Phases**, **Archive - Chapters**, **Archive - Checkpoints**, and **Archive - Decision Ledger** table views with type filters. If interrupted, rerun the command to resume missing entries. Omitting `--all` imports at most 25 missing entries per run. No future phase is invented, no item is automatically marked Done, and contract bodies are not copied to draft items.
+The last command creates dedicated **Artifact Type** and **Archive Group** single-select fields, safely reuses namespaced existing draft entries, and creates the dedicated **Archive - Contracts**, **Archive - Phases**, **Archive - Chapters**, **Archive - Checkpoints**, and **Archive - Decision Ledger** table views with type filters. If interrupted, rerun the command to resume missing entries. Omitting `--all` imports at most 25 missing entries per run. No future phase is invented, no item is automatically marked Done, and contract bodies are not copied to draft items.
+
+**Project view configuration:** Each Archive table is type-filtered; the **Archive Group** field allows additional grouping by Foundation, Phase 5.4, Phase 5.6, Development Protocol or Architecture in the GitHub UI. Existing planning views are deliberately not edited, and the importer checks that the catalog on `master` exactly matches the local catalog before it creates links.
 
 **Current acceptance boundary:** The connected repository integration cannot read or mutate user-owned GitHub Projects V2 settings. The importer and catalog have offline source-heading validation in reference CI and docs CI, but the **actual Project #3 fields, items and views remain unverified until the maintainer executes the authenticated import**, inspects the resulting Project and explicitly accepts the migration. The [contract migration issue #7](https://github.com/spwn02/Miracle/issues/7) tracks that live verification.
 
