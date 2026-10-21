@@ -1,10 +1,20 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-21
-**Status:** Python ReDoS alerts #1/#2 VERIFIED FIXED and live Pages deployed; C++26 CodeQL extraction gap explicitly bounded (0/33 .ixx). G4 remains open for current protected-tag release, safe GCC branch advancement, CodeQL scope disposition and owner acceptance.
+**Status:** Python ReDoS alerts #1/#2 VERIFIED FIXED; live Pages deployed; current CodeQL C++26 limitation (0/33 .ixx) explicitly accepted as bounded residual risk and tracked in #24. Custom analyzer deferred. G4 remains open for a genuine protected-tag release, compatible protected-gcc advancement and final owner acceptance.
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
+
+## G4 CodeQL risk decision — accepted bounded coverage; custom analyzer deferred (2026-10-21)
+
+**Maintainer decision:** Continue the existing, working GitHub CodeQL default setup for supported languages and retain the pinned reference-C++26 build/test/consumer pipeline. The known C++26 interface coverage limitation—**86/119 C++ files extracted; 0/33 `.ixx` module interfaces extracted**—is **explicitly acknowledged and accepted for now as residual security-assurance risk**. This is **not** acceptance of full C++26 CodeQL semantic support, a claim that module interfaces are vulnerability-free, or a relaxation of C++26 compiler requirements.
+
+The maintainer also chose to **defer development of a custom C++26-aware static-analysis engine**. It is a potential future workstream, **not a commitment, scheduled project, current G4 deliverable, or reason to postpone normal engineering work**. Preserve CodeQL's demonstrated value in supported code (both historical `py/redos` alerts #1/#2 are fixed) and keep the merged [PR #27](https://github.com/spwn02/Miracle/pull/27) audit tool for repeatable extraction-status measurements.
+
+**Controls and triggers:** keep reference CI, consumer integration tests, module-source reviews and supported-language CodeQL scanning. Recheck file-coverage evidence when CodeQL's upstream C++ module support changes, the project changes module filename conventions or major compiler/toolchain support, or new security findings/release risk warrant it. Do **not** force a `.cppm` rename, weaken the scanner, add dummy sources, or claim all module code scanned.
+
+**Tracking:** [CodeQL issue #24](https://github.com/spwn02/Miracle/issues/24) stays **OPEN as a known limitation**, with the *disposition decision itself* recorded as accepted. The independent G4 requirements for an actual post-protection `v*` release, safe protected-`gcc` advancement and explicit final acceptance remain **OPEN**. [CSV-based findings and deferred-plan details](G4-CODEQL-COVERAGE-INVENTORY.md).
 
 ## G4 verified checkpoint: Python alerts fixed; live Pages deployed — 2026-10-21
 

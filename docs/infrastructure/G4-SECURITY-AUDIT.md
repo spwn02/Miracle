@@ -1,8 +1,20 @@
 # G4 — Security Configuration Audit
 
 **Workstream:** [G4 — Security and CI](https://github.com/spwn02/Miracle/issues/4)
-**Status:** Python CodeQL `py/redos` alerts #1/#2 confirmed fixed by authenticated individual alert states; successful Python scan with zero findings. C++26 module interfaces remain unextracted (0/33), GCC advance and protected-tag release still outstanding.
+**Status:** Python `py/redos` alerts #1/#2 confirmed fixed; unsupported C++26 module coverage (0/33) is a documented, maintainer-accepted residual risk with #24 kept open; custom analyzer deferred. Compatible GCC advancement and protected-tag release still outstanding.
 **Observed:** 2026-10-17
+
+## CodeQL C++26 modules — explicit maintainer risk disposition (2026-10-21)
+
+The maintainer has expressly elected to **retain GitHub CodeQL default setup** and **defer a possible custom C++26-aware static analyzer**. This is an informed, *temporary acceptance of the known security-assurance limitation*, **not** an assertion that CodeQL analyzes Miracle's C++26 module interfaces.
+
+Actual evidence remains: the owner-exported CSV reported **86/86 conventional `.cxx` files successfully extracted** and **0/33 public `.ixx` module interfaces successfully extracted**; the merged-PR [C/C++ CodeQL run](https://github.com/spwn02/Miracle/actions/runs/39659546950) used `build-mode: none` and reported **86/119** C++ files scanned. CodeQL's current language support does not provide verified C++26 module/reflection semantics. The 33 missing files therefore remain a **known scanning blind spot**, not documented vulnerabilities.
+
+Existing reference C++26 CI, security review of module changes and CodeQL scans for other supported sources remain active **complementary safeguards**, never equivalent replacement coverage. [PR #27](https://github.com/spwn02/Miracle/pull/27) added repeatable per-file CSV audits; do not enable a permanently failing mandatory module-extraction gate or manipulate the file denominator.
+
+An AST/frontend-based in-house scanner is **deferred only**: no approval to build, scheduled delivery or reported ability to detect vulnerabilities. Reconsider on proven upstream CodeQL language support, measured changed extraction, major module/toolchain changes, or explicit maintainer request.
+
+Follow-up and known-issue tracking continue in [#24](https://github.com/spwn02/Miracle/issues/24); **accepted risk does not mean the 33 files are fixed/scanned**. Parent [G4 #4](https://github.com/spwn02/Miracle/issues/4) remains open for the independent release, protected-`gcc` and overall acceptance gates.
 
 ## Python CodeQL ReDoS alerts #1 and #2 VERIFIED FIXED — 2026-10-21
 

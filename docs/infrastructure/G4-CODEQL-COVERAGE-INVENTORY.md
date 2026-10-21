@@ -6,7 +6,21 @@
 **Tracking:** [G4 CodeQL issue #24](https://github.com/spwn02/Miracle/issues/24)
 **Authority:** [G4 security audit](G4-SECURITY-AUDIT.md) and [G4 progress ledger](G4-PROGRESS.md)
 
-## Reproducible source/CSV comparison (proposed G4 hardening)
+## Maintainer disposition — known C++26 CodeQL coverage limitation accepted (2026-10-21)
+
+The maintainer expressly decided to **defer any custom Clang/AST-based CodeQL analogue** and **continue using the existing CodeQL setup**, documenting the unsupported C++26 coverage rather than weakening the compiler contract. This is an **informed acceptance of the present, bounded coverage limitation**, **not** evidence that the missing code has been security-scanned or that the library is free from vulnerabilities.
+
+**Verified coverage boundary:** the genuine GitHub CodeQL analyzed-files export shows **86/86 conventional `.cxx` files extracted; 0/33 `src/public/**/*.ixx` module interfaces extracted** (overall 86/119 C++ files). Actual [post-merge CodeQL C/C++ run #39659546950](https://github.com/spwn02/Miracle/actions/runs/39659546950) used CodeQL 2.27.2, `build-mode: none`, and discovered 86 source files. The 33 excluded files include public module APIs and reflection-heavy implementations; **they are not covered by the current CodeQL C/C++ static analysis**. The missing-file count is a coverage problem, **not a claim of 33 vulnerabilities**.
+
+**Current controls:** retain default CodeQL for the supported conventional C++, Python, JS/TS and GitHub Actions sources; retain the pinned C++26 reference-compiler builds, tests and consumers and normal review for module changes. The merged [PR #27](https://github.com/spwn02/Miracle/pull/27) supplies `scripts/ci/audit-codeql-coverage.py` for repeatable comparisons of future owner-exported files. These measures **mitigate assurance risk but do not replace module semantic security analysis**. Do not set `--require-modules` in required CI until a valid supported configuration exists.
+
+**Deferred option:** a bespoke C++26-aware static analyzer (potentially using the existing `clang-cxx26` frontend, AST, analysis hooks and SARIF output) is **only a potential future project**. No implementation, schedule, CI change, resource commitment, or proof of viability is accepted by this decision.
+
+**Reevaluation triggers:** an official CodeQL release adds genuine C++ module/reflection support; a new owner-exported analyzed-files CSV shows meaningful interface extraction; the project elects a separate `.ixx` → `.cppm` migration; a security incident/review warrants reassessment; or the maintainer explicitly reopens analyzer research. An extension rename by itself is not a CodeQL fix, and even 100% file extraction would not prove correct C++26 semantics.
+
+**Tracking:** [CodeQL coverage issue #24](https://github.com/spwn02/Miracle/issues/24) remains open as the known-limitations/watch item; its *risk disposition* is accepted, but the underlying upstream limitation is not resolved. Parent [G4 #4](https://github.com/spwn02/Miracle/issues/4) stays open for independent protected-tag release, compatible `gcc` advancement and final phase acceptance.
+
+## Reproducible source/CSV comparison (implemented in PR #27)
 
 The read-only `scripts/ci/audit-codeql-coverage.py` checks the maintainer-exported **Tools → CodeQL → Scanned files → Download CSV** against **currently tracked Git source paths**. It recognizes `.cxx`, `.ixx` and the future `.cppm` spelling, distinguishes **extracted**, **explicitly unextracted** and **not listed**, and rejects duplicate or malformed C/C++ extraction records. It is self-tested in reference CI; **CI does not require or download a private CodeQL export**.
 
