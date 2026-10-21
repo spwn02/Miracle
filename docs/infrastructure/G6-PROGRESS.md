@@ -1,10 +1,24 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
 **Updated:** 2026-10-21
-**Status:** IN PROGRESS — G1 accepted; genuine non-bug Issue #24 observed entering Project #3 and initializing Backlog by GitHub Projects bot, with documented `wasAutomated: false` upstream metadata discrepancy; G2 sign-off, confidential report delivery, real Q&A answer flow and final G6 end-to-end acceptance remain pending
+**Status:** IN PROGRESS — a genuine security Issue #24 → reviewed PR #27 → passing post-merge CI/Pages → explicit scoped CodeQL risk-disposition trace is verified; G2 Project #3 event-metadata ambiguity, live Q&A accepted-answer behavior, confidential reporting and overall G6 author acceptance remain outstanding.
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Genuine CodeQL engineering trace — supplementary G6 evidence (2026-10-21)
+
+**Real work, not a test artifact:** [Issue #24 — C++26 CodeQL coverage limitation](https://github.com/spwn02/Miracle/issues/24) originated from an actual security-analysis gap, with owner-supplied analyzed-files CSV proving **86/86 conventional `.cxx` files extracted and 0/33 `.ixx` module interfaces extracted**. The [G4 CodeQL coverage inventory](G4-CODEQL-COVERAGE-INVENTORY.md) and locked [infrastructure contract](GITHUB-INFRASTRUCTURE-CONTRACT.md) record the design and authority boundary. A documented [G4 security issue](https://github.com/spwn02/Miracle/issues/4) traces the cross-workstream risk and protects against falsely declaring unsupported C++26 semantics scanned.
+
+**Implementation and review:** [PR #27](https://github.com/spwn02/Miracle/pull/27) introduced a read-only analyzed-files CSV comparator, deterministic negative parser fixtures and the required self-test invocation in CI, with no privileged token, CodeQL settings change or invented vulnerability. The maintainer **explicitly approved merging** this actual PR. GitHub created a verified two-parent [merge commit `0f49efb`](https://github.com/spwn02/Miracle/commit/0f49efb7864bb2f6012b7bc7594a7c6599b6f9b5) on protected `master`.
+
+**Actual verification:** [Reference C++26 CI #39659546951](https://github.com/spwn02/Miracle/actions/runs/39659546951) **passed** (including the new CSV fixtures, all three consumer modes and tests). [CodeQL on master #39659546950](https://github.com/spwn02/Miracle/actions/runs/39659546950) **passed in all four configured languages**. [GitHub Pages #39659546949](https://github.com/spwn02/Miracle/actions/runs/39659546949) **deployed successfully**, including real public-site chapter parity and external-link verification. The subsequent [risk-disposition commit `be2cc72`](https://github.com/spwn02/Miracle/commit/be2cc728df11fb9347aff90b21a31ad48125570b) also passed [reference CI #39665182145](https://github.com/spwn02/Miracle/actions/runs/39665182145), [CodeQL #39665181633](https://github.com/spwn02/Miracle/actions/runs/39665181633) and [actual Pages deployment #39665182228](https://github.com/spwn02/Miracle/actions/runs/39665182228).
+
+**Maintainer's explicit scope decision:** Continue default CodeQL for supported sources, **accept the known 33 unextracted interfaces as a bounded residual security-assurance limitation for now**, and **defer** any in-house C++26-aware static analyzer. This is explicit acceptance of the CodeQL *risk disposition*, not G6 phase acceptance, CodeQL semantic C++26 support or proof that the unscanned interfaces are vulnerability-free. Issue #24 stays OPEN as an ongoing known limitation.
+
+**Release/provenance:** This is security-infrastructure measurement and documentation, **not a newly released Miracle C++ library version**. No new tag was created to manufacture an acceptance event. The separate genuine [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27) has historical workflow/provenance verification as described below, but its publication predates the active new G4 tag-protection ruleset. G4's next genuine protected-tag release remains independent and unverified.
+
+**Still outstanding for full G6:** this supplementary real-work trace does **not** replace the contracted issue #6-specific collaboration audit; nor does it establish a genuine Q&A answer/acceptance event, confidential-report delivery, Project #3 GraphQL `wasAutomated` clarification or **explicit final G6 maintainer approval**. Leave [G6 #6](https://github.com/spwn02/Miracle/issues/6), [G2 #2](https://github.com/spwn02/Miracle/issues/2) and [G4 #4](https://github.com/spwn02/Miracle/issues/4) open until their distinct gates are met.
 
 ## G2 upstream metadata clarification routed from Support to community (2026-10-21)
 
