@@ -1,12 +1,27 @@
 # G4 — Branch and Tag Protection Rules
 
-**Status:** REVIEWED PROPOSAL — not yet applied to GitHub settings
+**Status:** APPLIED AND VERIFIED — both repository rulesets active since 2026-10-17 (read-only API reverified 2026-10-21); protected-`gcc` ref advancement and a new post-ruleset `v*` release remain separately untested.
 **Owner:** repository maintainer `spwn02`
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), section 6
 **Workstream:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Repository:** `spwn02/Miracle`
 
-## Observed baseline
+## Live configuration (verified 2026-10-21)
+
+The owner-authenticated [repository rulesets API](https://api.github.com/repos/spwn02/Miracle/rulesets) confirms that the two reviewed proposals were actually enacted on **2026-10-17**. This supersedes the **historical pre-application baseline and opt-in setup instructions retained below**, which are not a statement about current enforcement.
+
+| Active ruleset | ID | Exact targeted refs | Rules | Bypass actors |
+| --- | --- | --- | --- | --- |
+| [Protect Miracle development branches](https://github.com/spwn02/Miracle/rules/25286606) | `25286606` | `refs/heads/master`, `refs/heads/gcc` | `deletion`, `non_fast_forward` | None |
+| [Protect Miracle release tags](https://github.com/spwn02/Miracle/rules/25286609) | `25286609` | `refs/tags/v*` | `deletion`, `update` | None |
+
+Both have `enforcement: active` and no excluded ref patterns. Their creation timestamps are **2026-10-17 04:33:12+02:00**. The latest [reference C++26 CI](https://github.com/spwn02/Miracle/actions/runs/39654720074) and [GitHub Pages deployment](https://github.com/spwn02/Miracle/actions/runs/39654720083) are green on `e8f4481`.
+
+**Live behavior not yet established:** The [GCC candidate workflow](https://github.com/spwn02/Miracle/actions/runs/39654719983) succeeds but explicitly **skips** the protected `gcc` advancement because GCC 16.2.1 lacks the currently required `contracts`, `debugging` and `stacktrace` facilities. The existing [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27) was published on **2026-10-16**, before the rulesets were enacted; it is not a successful test of creating a genuine **new** protected release tag. Do not make up or force a tag merely for acceptance.
+
+**Authority:** Actual GitHub ruleset objects govern live protection; tracked JSON [recipes](https://github.com/spwn02/Miracle/tree/master/scripts/github/rulesets) remain the reviewed intent and reproducible reconciliation contract. Keep no-delete/no-force and no-bypass invariants; do not change enforcement without owner review.
+
+## Historical observed baseline — before ruleset application
 
 At audit on 2026-10-17, the repository reports:
 
@@ -32,7 +47,7 @@ Both specify `enforcement: active` **in their prospective recipe** and an empty 
 
 This is **basic history and ref protection**, not proof of reviewed or passing code. Dependabot's PRs are never auto-merged by this policy.
 
-## Review and optional application
+## Historical application recipe and ongoing verification
 
 Repository ruleset administration requires the maintainer's authenticated GitHub CLI with admin-level repository permissions, or the GitHub settings UI. The connected assistant integration cannot write GitHub rulesets.
 
@@ -43,7 +58,7 @@ git pull --ff-only origin master
 python3 scripts/github/reconcile-rulesets.py --check
 ```
 
-To enact **the precise two reviewed recipes** after approving this G4 ruleset design:
+The rulesets are **already applied**. The original opt-in application commands below are retained for authorized disaster recovery or setup in a fresh repository. **Do not reapply or recreate rulesets just to verify this repository.** Current read-only verification is `python3 scripts/github/reconcile-rulesets.py --verify`. Historical first-time creation procedure:
 
 ```bash
 python3 scripts/github/reconcile-rulesets.py --apply
