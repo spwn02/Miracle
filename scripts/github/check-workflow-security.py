@@ -17,6 +17,36 @@ FILES = ("ci.yml", "gcc.yml", "docs.yml", "release.yml", "sync-gcc.yml")
 READ_ONLY = ("ci.yml", "gcc.yml", "docs.yml", "release.yml")
 
 
+def has_job_scoped_contents_write(source: str, job: str) -> bool:
+    """Check a YAML job's own permissions block in linear time.
+
+    This deliberately inspects only known GitHub workflow indentation, rather
+    than parsing arbitrary YAML. It must not match permissions on sibling jobs,
+    or lines nested inside steps and multiline shell scripts.
+    """
+    _, separator, jobs = source.partition("\njobs:\n")
+    if not separator:
+        return False
+
+    in_job = False
+    in_permissions = False
+    for line in jobs.splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        indentation = len(line) - len(line.lstrip(" "))
+        if indentation < 2:
+            break
+        if indentation == 2:
+            in_job = line == f"  {job}:"
+            in_permissions = False
+        elif in_job and indentation == 4:
+            in_permissions = line == "    permissions:"
+        elif in_job and in_permissions and indentation == 6:
+            if line.strip() == "contents: write":
+                return True
+    return False
+
+
 def check(workflows: dict[str, str]) -> list[str]:
     errors: list[str] = []
     for name in FILES:
@@ -67,10 +97,7 @@ def check(workflows: dict[str, str]) -> list[str]:
             errors.append(f"docs.yml: missing Pages deployment invariant: {fragment}")
 
     sync = workflows["sync-gcc.yml"]
-    if not re.search(
-        r"(?ms)^  sync:\n(?:.*?\n)*?    permissions:\n      contents: write\s*$",
-        sync,
-    ):
+    if not has_job_scoped_contents_write(sync, "sync"):
         errors.append("sync-gcc.yml: expected job-scoped contents: write")
     if "git push origin HEAD:refs/heads/gcc" not in sync:
         errors.append("sync-gcc.yml: expected non-forced GCC synchronization")
@@ -78,10 +105,7 @@ def check(workflows: dict[str, str]) -> list[str]:
         errors.append("sync-gcc.yml: forced ref updates forbidden")
 
     release = workflows["release.yml"]
-    if not re.search(
-        r"(?ms)^  release:\n(?:.*?\n)*?    permissions:\n      contents: write\s*$",
-        release,
-    ):
+    if not has_job_scoped_contents_write(release, "release"):
         errors.append("release.yml: release publish must have job-scoped write token")
     if "pull_request:" in release:
         errors.append("release.yml: release must not run on pull requests")
@@ -148,7 +172,40 @@ def main() -> int:
     if alternate["gcc.yml"] == workflows["gcc.yml"] or not check(alternate):
         print("ERROR: obsolete helper path fixture escaped check", file=sys.stderr)
         return 1
-    print(f"PASS: {len(FILES)} workflow trust boundaries and 5 negative fixtures.")
+    # Prevent privilege checks from accidentally reading a sibling job's
+    # permissions or text in a multiline shell-script block.
+    sibling = (
+        "name: Fixture\njobs:\n"
+        "  sync:\n    permissions:\n      contents: read\n"
+        "  release:\n    permissions:\n      contents: write\n"
+    )
+    if has_job_scoped_contents_write(sibling, "sync"):
+        print("ERROR: sibling-job permissions escaped scoped guard", file=sys.stderr)
+        return 1
+    if not has_job_scoped_contents_write(sibling, "release"):
+        print("ERROR: real release job permissions were missed", file=sys.stderr)
+        return 1
+    embedded = (
+        "name: Fixture\njobs:\n"
+        "  sync:\n    steps:\n      - run: |\n"
+        "          permissions:\n            contents: write\n"
+    )
+    if has_job_scoped_contents_write(embedded, "sync"):
+        print("ERROR: shell-script text was misread as job permissions", file=sys.stderr)
+        return 1
+
+    # Previously, the two nested DOTALL regexes required exponentially more
+    # backtracking for long near-matches. This line-oriented check is linear.
+    near_match = (
+        "name: Fixture\njobs:\n  sync:\n"
+        + ("    # nonmatching workflow line\n" * 16000)
+        + "    permissions:\n      contents: read\n"
+    )
+    if has_job_scoped_contents_write(near_match, "sync"):
+        print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
+        return 1
+
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 5 mutations, and 4 parser fixtures.")
     return 0
 
 
