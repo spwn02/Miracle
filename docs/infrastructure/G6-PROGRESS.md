@@ -1,10 +1,16 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
-**Updated:** 2026-10-20
+**Updated:** 2026-10-21
 **Status:** IN PROGRESS — G1 accepted; genuine non-bug Issue #24 observed entering Project #3 and initializing Backlog by GitHub Projects bot, with documented `wasAutomated: false` upstream metadata discrepancy; G2 sign-off, confidential report delivery, real Q&A answer flow and final G6 end-to-end acceptance remain pending
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## G2 upstream metadata clarification routed from Support to community (2026-10-21)
+
+The maintainer supplied a screenshot of GitHub Support ticket `#4883332` being closed by the platform's virtual assistant with referrals to Community Discussions, Docs and Skills, **without** answering the `wasAutomated: false` GraphQL event-semantic question. This supersedes its previously Open support-ticket status, not the operational evidence. [G2 progress](G2-PROGRESS.md) and [G2 issue #2](https://github.com/spwn02/Miracle/issues/2) record the exact disposition and GitHub's official API-community escalation route. No community discussion has yet been submitted and no new bug/fix is claimed. **G2 remains open under the maintainer's strict acceptance requirement.**
+
+**G6 remains in progress** independently, with issue→Project functionality already reproduced and provider metadata pending. Do not treat the nontechnical Support closure as an adverse functional G2 result or G6 acceptance.
 
 ## G2 operational Project #3 intake reproduced with new genuine issue — 2026-10-20
 
