@@ -47,6 +47,7 @@ jobs:
           python3 scripts/ci/audit-codeql-coverage.py --self-test
           python3 scripts/docs/verify-frozen-contracts.py --self-test
           python3 scripts/docs/verify-frozen-contracts.py
+          python3 scripts/github/sync-miracle-project.py --self-test
           python3 scripts/ci/check-docker.py
           python3 scripts/ci/check-makefile.py
           python3 scripts/ci/test-build-cache-guard.py

@@ -61,6 +61,7 @@ jobs:
         run: |
           python3 scripts/docs/verify-frozen-contracts.py --self-test
           python3 scripts/docs/verify-frozen-contracts.py
+          python3 scripts/github/sync-miracle-project.py --self-test
 
       - name: Crawl all rendered site links, fragments and error-path fixtures
         run: |

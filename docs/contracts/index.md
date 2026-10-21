@@ -26,6 +26,27 @@ python3 scripts/docs/verify-frozen-contracts.py
 
 It fails if an archived locked source or recorded reading edition changes unexpectedly. Both the default check and `--require-originals` now verify the exact normative DOCX binary, in addition to historical Markdown texts and its derived reading edition. These checks prove source identity only—not historical approval metadata beyond the provided records or conformance of the current implementation.
 
+## Miracle Development Project — chapter and phase catalog
+
+The [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) is the operational board, while the immutable texts remain in Git. [PROJECT-CATALOG.json](PROJECT-CATALOG.json) contains **172 verified source-linked records**: 10 contract entries, 151 chapters, 2 phases, 8 Phase 5.6 checkpoints, and the foundation decision ledger. Records are generated from the exact frozen chapter headings in the Foundation pack, Phase 5.4, Phase 5.6, and the current Development Protocol and Architecture reference chapters. This is **the catalog of presently sourced chapters**, not an assertion that all earlier Miracle phase contracts were independently recovered or approved.
+
+These items are **draft Project references**, not 172 repository issues. Each title is namespaced `[Archive/Type]`; its body links directly to its authoritative source file and line, with a stable catalog ID, group and parent. They are **not development tasks** and do not change the existing Project Status field or imply completion.
+
+The importer uses `gh project` with the maintainer's GitHub Projects token scope. All commands are read-only unless explicitly passed `--apply`:
+
+```sh
+gh auth refresh -s project
+python3 scripts/github/sync-miracle-project.py --self-test
+python3 scripts/github/sync-miracle-project.py
+
+# AFTER PR #28 is merged and sources are on master:
+python3 scripts/github/sync-miracle-project.py --apply --all
+```
+
+The last command creates an **Artifact Type** field, safely reuses namespaced existing draft entries, and creates the dedicated **Archive - Contracts**, **Archive - Phases**, **Archive - Chapters**, **Archive - Checkpoints**, and **Archive - Decision Ledger** table views with type filters. If interrupted, rerun the command to resume missing entries. Omitting `--all` imports at most 25 missing entries per run. No future phase is invented, no item is automatically marked Done, and contract bodies are not copied to draft items.
+
+**Current acceptance boundary:** The connected repository integration cannot read or mutate user-owned GitHub Projects V2 settings. The importer and catalog have offline source-heading validation in reference CI and docs CI, but the **actual Project #3 fields, items and views remain unverified until the maintainer executes the authenticated import**, inspects the resulting Project and explicitly accepts the migration. The [contract migration issue #7](https://github.com/spwn02/Miracle/issues/7) tracks that live verification.
+
 ## Authority and history rules
 
 - **No retroactive approval.** Original approval/freeze statements reflect their historical dates and scope, not a fresh sign-off.
