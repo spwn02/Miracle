@@ -6,6 +6,14 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## PR #25 verified in reference CI, pending maintainer merge and CodeQL alert state — 2026-10-21
+
+[Security hardening PR #25](https://github.com/spwn02/Miracle/pull/25) is **OPEN** at commit [`5c3c1fa`](https://github.com/spwn02/Miracle/commit/5c3c1fad25e0b61849692f8bbcdf9132a64fafc7). The new job-scoped, line-oriented, non-regex helper replaces the two Python CodeQL `py/redos` patterns. The patch changes **only** `scripts/github/check-workflow-security.py`.
+
+The real GitHub [reference CI run #39614467743](https://github.com/spwn02/Miracle/actions/runs/39614467743) completed **successfully** for exactly `5c3c1fa`. Its decoded job log explicitly states `PASS: 5 workflow trust boundaries, 5 mutations, and 4 parser fixtures.` The project self-test step reports **71/71 passed**; all three CMake consumer steps completed successfully. This is concrete runtime verification, not only source-review assumption.
+
+**Still pending:** Maintainer review and merge of PR #25; then a **new CodeQL Python scan** of the merged source and verification that both original high-severity `py/redos` alerts have actually closed or become fixed. No alert dismissal or resolved state is claimed from a passing reference build. Preserve two scan-side security concerns as Open until a new CodeQL analysis confirms remediation. The separate G4 gates for a genuine release under `v*` rules, a compiler-compatible protected-`gcc` push and final maintainer acceptance also remain.
+
 ## G4 py/redos investigation and Clang module suffix decision — 2026-10-21
 
 ### `.ixx` → `.cppm` design finding (no migration performed)
