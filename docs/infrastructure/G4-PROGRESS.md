@@ -1,10 +1,33 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
 **Updated:** 2026-10-21
-**Status:** G4 implementation consolidated and validated; security settings confirmed, full acceptance held for actual release/GCC/CodeQL evidence
+**Status:** Security/CI configuration accepted at operational-check level; CodeQL extraction scope verified (all 33 C++26 .ixx interfaces fail extraction). Full G4 acceptance still held for legitimate tagged release, compatible protected-gcc branch push, security triage and author sign-off.
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
+
+## CodeQL file-level extraction verdict — all 33 C++26 modules unextracted (2026-10-21)
+
+The maintainer uploaded the **actual GitHub CodeQL analyzed-files CSV**, `code-scanning-files-extracted.csv`, captured from **Tools → CodeQL → Scanned files**. It contains 159 configuration/file rows. Its SHA-256 is `769fca48b7f156f3779df029e9afa55b38529db0dc32dfed521b3c9d05d51c05` (reproducibility fingerprint, not a GitHub analysis ID). The file is an observed owner-provided report; it is **not** a private vulnerability alert or SARIF findings dump.
+
+**Definitive `/language:c-cpp` file-level comparison:**
+
+| Source paths | Listed | Extracted `true` | Extracted `false` | Failure reason |
+| --- | ---: | ---: | ---: | --- |
+| All 33 `src/public/**/*.ixx` module interfaces | 33 | **0** | **33** | Empty for all |
+| All 8 `src/private/**/*.cxx` core implementation units | 8 | **8** | 0 | — |
+| Tests `*.cxx` | 72 | 72 | 0 | — |
+| Examples `*.cxx` | 4 | 4 | 0 | — |
+| Benchmarks `*.cxx` | 2 | 2 | 0 | — |
+| **Total C++** | **119** | **86** | **33** | — |
+
+The **set of 33 failed paths matches exactly** every module interface listed in the [commit-pinned G4 source inventory](G4-CODEQL-COVERAGE-INVENTORY.md), **with no additions or omissions**. Every `.cxx` file in the CSV is marked successfully extracted, including all eight implementation units. Thus the prior numerical inference ("the missing files might be the 33 `.ixx` interfaces") is now **directly confirmed**, not merely correlated. For non-C++ reports, the CSV also has successfully extracted records for six GitHub Actions workflows, twenty Python files and two JavaScript files (some workflows appear under multiple configurations and are **not** extra source files).
+
+**Bounded security conclusion:** The active default CodeQL configuration **does not successfully extract any Miracle C++26 module-interface source**. In particular, `src/public/Miracle.ixx`, `src/public/meta/Reflect.ixx` and `src/public/meta/Annotations.ixx` all have `Successfully Extracted=false`. GitHub's [published CodeQL support matrix](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) explicitly says C++20 modules are unsupported, C++23 support is beta and does not list `.ixx` as a supported extension. A clean C++ CodeQL analysis (**0 results**) therefore **does not verify the code within the module interfaces**, nor imply that the library is vulnerability-free. The empty CSV failure-reason fields do **not** establish the extractor's actual failure mechanism. The export also has **no scan commit/build-mode fields**, so no exact scan-run correlation or effective build mode can be asserted from it.
+
+**G4 follow-up:** File extraction scope is now completely measured. No CodeQL config adjustment, temporary rename to `.cxx`, artificial compiler shim or unsafe workflow credential change is justified without a genuine working analysis and a reference-C++26 CI comparison. Review the two separately observed high-severity **Python inefficient-regular-expression alerts** in `scripts/github/check-workflow-security.py` through normal security triage; screenshot evidence identifies lines 71 and 82 but **does not prove exploitability**. Preserve C++26 build validation in reference CI. G4's genuine protected-`gcc` advancement, tagged release and final author acceptance remain outstanding.
+
+**Documentation:** [Exact file inventory and full CSV interpretation](G4-CODEQL-COVERAGE-INVENTORY.md) at [commit `65e5efd`](https://github.com/spwn02/Miracle/commit/65e5efdba41f5916dd26fd5fc738d5b7b1a21403). [G4 security configuration audit](G4-SECURITY-AUDIT.md) and [CodeQL Issue #24](https://github.com/spwn02/Miracle/issues/24) carry the same bounded acceptance scope.
 
 ## Live GitHub CodeQL Tool Status coverage — maintainer screenshot (2026-10-21)
 
