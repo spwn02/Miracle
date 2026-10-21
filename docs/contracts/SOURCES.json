@@ -25,16 +25,16 @@
       "path": "docs/phases/phase-5.4-frozen-contract.md",
       "gitBlobSha1": "4ff23fb9e7bc10401f8b662e81812e61f9b54137",
       "origin": "Rendered from ChatGPT Library normative original DOCX; four single-cell callout tables rendered as Markdown blockquotes. Not byte-identical to original."
-    }
-  ],
-  "pendingOriginals": [
+    },
     {
       "id": "phase-5.4-original-docx",
       "path": "docs/contracts/originals/Miracle-Phase-5.4-Frozen-Contract.docx",
       "sha256": "b2888f39eddb7bd0a6e669527066af6d890e36551b74a0e9b76bd7b0b36fa63f",
       "origin": "ChatGPT Library: Miracle-Phase-5.4-Frozen-Contract.docx",
-      "status": "not-in-repository"
+      "kind": "original-docx",
+      "gitBlobSha1": "f13a1928e27d860957e7a9e3cb8d526969af3d71"
     }
   ],
-  "followUp": "The original DOCX must be imported byte-for-byte with the exact SHA-256 before marking its source-preservation acceptance complete."
+  "pendingOriginals": [],
+  "followUp": "The original Phase 5.4 DOCX is preserved byte-for-byte and verified; any remaining contract discovery or maintainer acceptance is tracked in Issue #7."
 }

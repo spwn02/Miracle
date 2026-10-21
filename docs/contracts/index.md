@@ -10,28 +10,28 @@ Repository-tracked files are the authoritative published *copies* of verified lo
 | Source | Status at issuance | Canonical readable copy | Verification and qualification |
 | --- | --- | --- | --- |
 | Miracle Foundation & Structural Programming Contract Pack v1.0 | Combined locked reference, six contracts and Q1–Q238 decision ledger | [Foundation and structural programming contract pack](miracle-foundation-v1.0.md) | **Byte-identical** to the historical Library Markdown artifact `miracle-foundation-contract-v1.0.md`, Git blob SHA `d6bf031026187a17553c3f5d9d73d00f14c48ed2`; original SHA-256 `dd51415ac699c3c7818ab598fcf2eaad54ad7878e3f378b64cf0237f5db36ec9`. |
-| Phase 5.4 — Meta Completeness & Hardening | Frozen design and implementation contract, 2026-10-02 | [Phase 5.4 Markdown reading edition](../phases/phase-5.4-frozen-contract.md) | A **Pandoc/GFM reading edition with four single-cell accessibility callouts rendered as blockquotes**, **not a byte-identical source**. Original normative `Miracle-Phase-5.4-Frozen-Contract.docx` remains in the user's Library; its SHA-256 is `b2888f39eddb7bd0a6e669527066af6d890e36551b74a0e9b76bd7b0b36fa63f`. Reader Markdown Git blob SHA `4ff23fb9e7bc10401f8b662e81812e61f9b54137` (four single-cell Word callout tables rendered as accessible blockquotes, with unchanged wording). Exact original binary has **not yet been imported** to Git. |
+| Phase 5.4 — Meta Completeness & Hardening | Frozen design and implementation contract, 2026-10-02 | [Phase 5.4 Markdown reading edition](../phases/phase-5.4-frozen-contract.md) | A **Pandoc/GFM reading edition with four single-cell accessibility callouts rendered as blockquotes**, **not a byte-identical source**. The original normative `Miracle-Phase-5.4-Frozen-Contract.docx` is preserved byte-for-byte at `docs/contracts/originals/Miracle-Phase-5.4-Frozen-Contract.docx`; its SHA-256 is `b2888f39eddb7bd0a6e669527066af6d890e36551b74a0e9b76bd7b0b36fa63f`. Reader Markdown Git blob SHA `4ff23fb9e7bc10401f8b662e81812e61f9b54137` (four single-cell Word callout tables rendered as accessible blockquotes, with unchanged wording). Exact original binary **is now preserved in Git** (blob `f13a1928e27d860957e7a9e3cb8d526969af3d71`). |
 | Phase 5.6 — Standards Reconciliation, Comprehensive Audit & Final Hardening | Locked execution contract v1.0, dated 2026-10-13 | [Phase 5.6 execution contract](../phases/phase-5.6-execution-contract-v1.0.md) | **Byte-identical** to Library Markdown `Miracle-Phase-5.6-Execution-Contract-v1.0.md`, Git blob SHA `54ad47e4b7dd877ccec8fa96f42f61a371936273`; original SHA-256 `b8721836b34fd616f8364cbac27219b56e23de24e1335db49eda4a6253ca2743`. |
 
 The combined Foundation pack contains the foundation, core runtime vocabulary, Iter, Meta/Validation/Shapes/Traits, Structural Programming, engineering/delivery contracts and their 238-question decision ledger. Do not split or selectively paraphrase that source during historical import.
 
 ## Machine-checked preservation
 
-The `docs/contracts/SOURCES.json` register records the approved historical Markdown source hashes and the Phase 5.4 **derived reader** identity, plus the original DOCX source checksum and explicitly pending Git import. The offline verifier runs in both reference and documentation CI:
+The `docs/contracts/SOURCES.json` register records the approved historical Markdown source hashes and the Phase 5.4 **derived reader** identity, plus the byte-identical original DOCX and its source checksum. The offline verifier runs in both reference and documentation CI:
 
 ```sh
 python3 scripts/docs/verify-frozen-contracts.py --self-test
 python3 scripts/docs/verify-frozen-contracts.py
 ```
 
-It fails if an archived locked source or recorded reading edition changes unexpectedly. The default check reports the **missing original DOCX as a known limitation**, not as a successfully preserved source; `--require-originals` fails until the exact normative binary is imported and its manifest entry reconciled. These checks prove source identity only—not historical approval metadata beyond the provided records or conformance of the current implementation.
+It fails if an archived locked source or recorded reading edition changes unexpectedly. Both the default check and `--require-originals` now verify the exact normative DOCX binary, in addition to historical Markdown texts and its derived reading edition. These checks prove source identity only—not historical approval metadata beyond the provided records or conformance of the current implementation.
 
 ## Authority and history rules
 
 - **No retroactive approval.** Original approval/freeze statements reflect their historical dates and scope, not a fresh sign-off.
 - **No silent supersession.** Current source, accepted phase amendments and later contracts may differ from historical decisions. Such differences require explicit dated reconciliation, not rewriting older text or declaring it invalid by implication.
 - **No current-implementation inference.** A frozen design contract may describe planned work that was not yet implemented when issued. Consult tests, current [reference compiler policy](../compiler-support.md) and [development protocol](../DEVELOPMENT_PROTOCOL.md) for actual support and current implementation evidence.
-- **Reader edition caveat.** Phase 5.4's original DOCX remains the normative historical artifact until its **exact bytes** are included and verified in Git. The rendered Markdown is a convenience copy, not a substitute for the source in a byte-level audit.
-- **Remaining discovery.** The precise standalone approvals/source revisions for other Phase 5.X contracts (if any), and original Phase 5.4 DOCX import, have not yet been verified. They remain [Issue #7](https://github.com/spwn02/Miracle/issues/7) work, not fabricated completed migration.
+- **Reader edition caveat.** Phase 5.4's original DOCX remains the normative historical artifact; its **exact bytes** have now been included and verified in Git. The rendered Markdown is a convenience copy, not a substitute for the source in a byte-level audit.
+- **Remaining discovery.** The precise standalone approvals/source revisions for other Phase 5.X contracts (if any) have not yet been verified. They remain [Issue #7](https://github.com/spwn02/Miracle/issues/7) work, not fabricated completed migration.
 
 For current progress use the [Miracle Development Project](https://github.com/users/spwn02/projects/3) and the relevant Issues; preserve locked contract bodies in Git.
