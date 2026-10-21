@@ -1,8 +1,18 @@
 # G4 — Security Configuration Audit
 
 **Workstream:** [G4 — Security and CI](https://github.com/spwn02/Miracle/issues/4)
-**Status:** Maintainer-authenticated security baseline and CodeQL source extraction verified: 86/86 .cxx files extracted, 0/33 .ixx module interfaces extracted; CodeQL C++26 modules/reflection unsupported, Python regex findings require triage.
+**Status:** Python CodeQL `py/redos` alerts #1/#2 confirmed fixed by authenticated individual alert states; successful Python scan with zero findings. C++26 module interfaces remain unextracted (0/33), GCC advance and protected-tag release still outstanding.
 **Observed:** 2026-10-17
+
+## Python CodeQL ReDoS alerts #1 and #2 VERIFIED FIXED — 2026-10-21
+
+**Latest authoritative outcome, superseding the earlier pending-rescan section below:** The maintainer performed two **authenticated, read-only GitHub Code Scanning alert-detail** requests for [alert #1](https://github.com/spwn02/Miracle/security/code-scanning/1) and [alert #2](https://github.com/spwn02/Miracle/security/code-scanning/2), both `py/redos` in `scripts/github/check-workflow-security.py`. Each actual result contains `state: fixed`, `most_recent_instance.state: fixed`, `fixed_at: 2026-10-21T15:24:55Z`; neither alert was dismissed. The `most_recent_instance.commit_sha` is still `5b6bb3b91c23013e4705577cc61a0238171a5a9d` for both, identifying the **historical source of the original finding**, not evidence the current `master` is vulnerable.
+
+Corroborating authenticated actual analysis: [GitHub Code Scanning analysis ID `1997641994`](https://github.com/spwn02/Miracle/security/code-scanning) (`/language:python`, `refs/heads/master`, `a1e4fcf88c8ee4acc700abed1df7ef52d9258784`, created `2026-10-21T15:24:55Z`) reports `results_count: 0`, `error: ""`. The previous fixed-source merge `452780b` also reports 0 results (analysis `1997166979`); the older vulnerable source `5b6bb3b` reports 2 results (analysis `1997301220`). This supports a genuine fixed state, not a scanner job that merely completed.
+
+**Resolution:** The two High-severity Python ReDoS findings are **fixed and the scanner agrees**; [merged PR #25](https://github.com/spwn02/Miracle/pull/25) has completed this G4 security subgate. There was no suppression or manual dismissal. This **does not** resolve the independent G4 CodeQL C++26 module coverage gap: all 33 module interfaces were excluded from successful extraction, as documented below, and [Issue #24](https://github.com/spwn02/Miracle/issues/24) remains open.
+
+**Other live G4 evidence:** [post-merge Pages run #39625540156](https://github.com/spwn02/Miracle/actions/runs/39625540156) succeeded, including published-site content and external URL verification. [Reference C++26 CI #39625540134](https://github.com/spwn02/Miracle/actions/runs/39625540134) succeeded. [GCC candidate sync #39625540334](https://github.com/spwn02/Miracle/actions/runs/39625540334) succeeded **but `Advance gcc` was skipped**. A genuine version-tag release under the protection ruleset activated 2026-10-17 and explicit final maintainer acceptance are still outstanding. G4 must remain open.
 
 ## ReDoS remediation merged, master rescan pending — 2026-10-21
 
