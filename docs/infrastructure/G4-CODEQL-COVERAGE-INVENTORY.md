@@ -6,6 +6,26 @@
 **Tracking:** [G4 CodeQL issue #24](https://github.com/spwn02/Miracle/issues/24)
 **Authority:** [G4 security audit](G4-SECURITY-AUDIT.md) and [G4 progress ledger](G4-PROGRESS.md)
 
+## Reproducible source/CSV comparison (proposed G4 hardening)
+
+The read-only `scripts/ci/audit-codeql-coverage.py` checks the maintainer-exported **Tools → CodeQL → Scanned files → Download CSV** against **currently tracked Git source paths**. It recognizes `.cxx`, `.ixx` and the future `.cppm` spelling, distinguishes **extracted**, **explicitly unextracted** and **not listed**, and rejects duplicate or malformed C/C++ extraction records. It is self-tested in reference CI; **CI does not require or download a private CodeQL export**.
+
+```bash
+python3 scripts/ci/audit-codeql-coverage.py --self-test
+
+# Run in a local up-to-date Miracle checkout with your real exported CSV:
+python3 scripts/ci/audit-codeql-coverage.py \
+  --repo . \
+  --csv /path/to/code-scanning-files-extracted.csv \
+  --output /tmp/miracle-codeql-file-coverage.json
+```
+
+The optional `--require-modules` exits nonzero until the export shows complete file extraction, useful **only for a future experimental scanner**. **It is deliberately not enabled in CI today**, because this would turn a known upstream CodeQL limitation into a meaningless permanent failure.
+
+**Crucial boundary:** Even a future `moduleInterfaces.extracted == moduleInterfaces.tracked` is only a **file recognition/extraction metric**. The tool deliberately always emits `semanticCxx26ModulesVerified: false`. It cannot prove correct CodeQL analysis of C++26 reflection, module imports, compiler semantics or security properties. A separate real CodeQL language-support review and representative semantic tests would be necessary before claiming full coverage. The local exported CSV may omit commit/configuration identity; compare it to the intended source revision. Keep sensitive repository paths, tokens and unreviewed findings out of public commits.
+
+**Decision:** Retain the existing supported CodeQL default setup and pinned reference CI until a genuine advanced/manual-build experiment demonstrates an improvement in *relevant* analysis without degrading coverage or fragmenting active alerts. GitHub's [supported language matrix](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) currently excludes C++20 modules. GitHub's [compiled-language setup guide](https://docs.github.com/en/code-security/concepts/code-scanning/codeql/codeql-for-compiled-languages) documents `none` versus `manual` build modes; switching to `manual` alone does not grant experimental C++26 language support.
+
 ## CodeQL extracted-files CSV — definitive file-level result (2026-10-21)
 
 The maintainer provided the **real CodeQL Tool Status → Scanned files → Download analyzed-files CSV** (`code-scanning-files-extracted.csv`). The file was analyzed locally without publishing raw security alert records; SHA-256 of the supplied CSV bytes:
