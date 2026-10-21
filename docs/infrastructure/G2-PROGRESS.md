@@ -1,12 +1,22 @@
 # Miracle GitHub Infrastructure — G2 Progress
 
-**Updated:** 2026-10-20
+**Updated:** 2026-10-21
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
-**Status:** Runtime auto-enrollment and initial Backlog status verified for two genuine non-bug issues; GitHub GraphQL `wasAutomated: false` anomaly submitted to Support as ticket #4883332 (Open, Normal priority, maintainer screenshot 2026-10-20). Provider clarification/correction and formal G2 author acceptance remain pending.
+**Status:** Runtime auto-enrollment and initial Backlog status verified for two genuine non-bug issues; GitHub Support ticket #4883332 was closed by a virtual assistant with a self-service referral, without technical explanation of `wasAutomated: false`. Public developer-community escalation remains available; strict G2 technical clarification and final author acceptance are pending.
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## GitHub Support ticket closed without technical investigation — maintainer screenshot (2026-10-21)
+
+The maintainer supplied a screenshot of **GitHub Support ticket #4883332** showing a reply by **Nadia Frost (GitHub Support; signed "Nadia (Virtual assistant)")**. It says the account's currently available support resources are **GitHub Community Discussions, GitHub Docs and GitHub Skills**, and: *"Because these support options are self-service resources, we'll be closing this ticket at this time."*
+
+**Observed outcome:** The ticket was **closed administratively with a self-service referral**. This is *not* a substantive technical rejection, provider explanation of `wasAutomated`, acknowledgement of a product bug, resolution or correction of the original GraphQL values. The prior screenshot showed the submitted ticket as Open at creation; that historic state is superseded by the newer support reply. No unprovided ticket URL or external GitHub engineer correspondence should be invented.
+
+**Verified next escalation route:** GitHub's [official feedback guidance](https://docs.github.com/en/support/sharing-feedback-with-github) directs ordinary product feedback to [GitHub Community Discussions](https://github.com/orgs/community/discussions), with a specific [Apps, API and Webhooks category](https://github.com/orgs/community/discussions/categories/apps-api-and-webhooks) appropriate for this GitHub GraphQL schema question. Search for a similar existing discussion before posting; if none exists, a narrowly scoped public reproduction can ask why bot-attributed Project #3 add/status events from real Issues #8 and #24 report `wasAutomated: false`. Public GitHub Product Feedback is **not guaranteed an individual response**. No new community post was created or asserted as part of this entry.
+
+**Strict G2 gate unchanged by provider referral:** Actual new-issue Project #3 auto-add and Backlog initialization pass operational verification. The `wasAutomated: false` event flag still lacks an authoritative explanation, and the maintainer expressly declined a waiver. [G2 Issue #2](https://github.com/spwn02/Miracle/issues/2) **remains open** pending resolution and explicit owner acceptance. G4 and G6 can continue independently; do not present the closure of the support ticket as closure of G2.
 
 ## GitHub Support escalation — ticket #4883332 submitted (2026-10-20)
 
