@@ -6,6 +6,14 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## PR #25 security fix merged with two-parent history — 2026-10-21
+
+The maintainer explicitly approved **merging [PR #25](https://github.com/spwn02/Miracle/pull/25)**. A final preflight rechecked its expected head `5c3c1fad25e0b61849692f8bbcdf9132a64fafc7`, exact one-file diff (`scripts/github/check-workflow-security.py`) and **all six successful PR-head checks**, including the pinned C++26 build and CodeQL `Analyze (python)`.
+
+GitHub merged PR #25 as a **two-parent merge commit [`452780b90e7b87470e435dadb5cfc38a712c2813`](https://github.com/spwn02/Miracle/commit/452780b90e7b87470e435dadb5cfc38a712c2813)** at `2026-10-21T14:19:25Z`. Post-merge independent reads confirmed: PR state **closed, merged true**, `master` at `452780b`, merge parents `f9af1f3bb1ac0f6617d4f8282ad4e375d728ab16` and `5c3c1fad25e0b61849692f8bbcdf9132a64fafc7`, and precisely the security-guard Python file changed. Reading that file on `master` confirmed both original nested `(?ms)...(?:.*?\n)*?` regex checks absent, linear-time `has_job_scoped_contents_write` present, and stress regression fixtures preserved.
+
+**What is proven:** The proposed fix is now really integrated on `master` following full reference-C++26 CI (71/71 tests, three consumers), security mutation fixtures, and CodeQL PR analysis with successful status. **Still pending:** a fresh post-merge CodeQL `master` analysis and confirmation that original Python **High/py-redos** alerts #1/#2 are actually closed or marked fixed; do not manually dismiss them or infer closure from successful checks. This security remediation does not address the separately measured unsupported C++26 module-interface extraction, protected `gcc` advancement or tagged-release verification.
+
 ## PR #25 CodeQL PR checks finished — 2026-10-21
 
 Read-only GitHub PR-head checks inspection of commit `5c3c1fa` shows **six completed/successful checks**: CodeQL aggregate, Reference C++26, `Analyze (python)`, `Analyze (javascript-typescript)`, `Analyze (actions)` and `Analyze (c-cpp)`. The `Analyze (python)` job completed successfully at the GitHub-check level; this does **not** establish that the **two existing `py/redos` alerts on `master` are closed**, because the CodeQL check conclusion is not an alerts list. The authoritative master-side remediation test remains: review PR #25, merge if approved, then confirm the specific original alerts' new state after CodeQL rescans master. No public security finding was dismissed by this audit.
