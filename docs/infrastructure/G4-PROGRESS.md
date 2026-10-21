@@ -1,10 +1,37 @@
 # Miracle GitHub Infrastructure — G4 Progress
 
-**Updated:** 2026-10-20
+**Updated:** 2026-10-21
 **Status:** G4 implementation consolidated and validated; security settings confirmed, full acceptance held for actual release/GCC/CodeQL evidence
 **Project:** [Miracle Development](https://github.com/users/spwn02/projects/3)
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
+
+## Authenticated CodeQL analyses verified; module source-coverage risk identified — 2026-10-21
+
+The maintainer executed the previously requested **authenticated, read-only** GitHub CLI configuration and analysis-list commands and supplied their exact metadata. No sensitive alerts or SARIF result bodies were requested.
+
+**Actual CodeQL configuration:** `state: configured`, `query_suite: default`, `updated_at: 2026-10-20T06:16:20Z`, configured language strings `actions`, `c-cpp`, `javascript`, `javascript-typescript`, `python`, `typescript`. Repeated JS/TS aliases in the setup response are not evidence of separate analyses.
+
+**Actual recent CodeQL records, all `refs/heads/master`, analysis key `dynamic/github-code-scanning/codeql:analyze`, `tool: CodeQL`, `error: ""`:**
+
+| Commit / UTC | Analysis ID | Category | Rules | Results |
+| --- | --- | --- | ---: | ---: |
+| `cf75c9c` / Oct 20 17:53:46 | `1990589303` | `/language:c-cpp` | 58 | 0 |
+| `cf75c9c` / Oct 20 17:53:38 | `1990588437` | `/language:javascript-typescript` | 87 | 0 |
+| `cf75c9c` / Oct 20 17:53:32 | `1990587720` | `/language:python` | 43 | 2 |
+| `cf75c9c` / Oct 20 17:53:17 | `1990586020` | `/language:actions` | 17 | 0 |
+| `9add359` / Oct 20 17:47:40 | `1990547764` | `/language:c-cpp` | 58 | 0 |
+| `923ad5a` / Oct 20 12:45:44 | `1988357711` | `/language:c-cpp` | 58 | 0 |
+
+**Established:** GitHub has stored recurrent, completed CodeQL C/C++ and ancillary-language analyses on authentic recent `master` commits, with no API-level `error` populated in these records. The Python results count of 2 is **not an adjudication of a real vulnerability**; its details must remain subject to normal confidential security review. Analysis metadata alone does **not** establish complete successful per-file extraction, absence of warnings, semantics coverage, or a verified vulnerability-free codebase.
+
+**Authoritative compatibility limit:** [CodeQL's supported languages and frameworks](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) state that **C++20 modules are not supported**, C++23 remains beta, and list regular C/C++ source suffixes such as `.cxx` but **not `.ixx`**. Miracle uses C++26 module interfaces and reflection: actual [`src/public/Miracle.ixx`](https://github.com/spwn02/Miracle/blob/master/src/public/Miracle.ixx) begins `export module Miracle;`, while [`src/public/meta/Reflect.ixx`](https://github.com/spwn02/Miracle/blob/master/src/public/meta/Reflect.ixx) uses `^^T` and `import std;`. A fresh read-only GitHub recursive-tree inventory of `master` found **33 `.ixx` module interfaces** and **86 `.cxx` files**. The `.ixx` discovery gap is a **specific risk**, not proof that all 33 were omitted.
+
+**Build-mode boundary:** [GitHub's CodeQL C/C++ build documentation](https://docs.github.com/en/code-security/reference/code-scanning/codeql/build-options-for-compiled-languages) says GitHub's default setup normally selects `build-mode: none` for C/C++, identifying compilation units by filename and inferring flags/includes without running Miracle's custom reference-C++26 CMake build. The supplied analyses metadata **does not itself expose effective build mode**, so do not assert it was actually `none` without checking Tool status.
+
+**Next owner visual/file-coverage verification:** Navigate `spwn02/Miracle → Security and quality → Code scanning → Tool status → CodeQL` (official [GitHub instructions](https://docs.github.com/en/code-security/how-tos/find-and-fix-code-vulnerabilities/manage-your-configuration/use-the-tools-status-page-for-code-scanning)). Report C/C++ scanned-file percentage, errors/warnings and configured build mode when shown; **download the analyzed-files CSV and inspect whether `src/public/Miracle.ixx`, `src/public/meta/Reflect.ixx`, and the 33 `.ixx` interfaces appear with successful extraction**. The tool status page indicates a file is scanned if some lines were processed, not that reflection/module semantics are fully understood. Share a safe excerpt or coverage totals only; avoid private alert contents.
+
+**G4 #24 disposition:** Real analyses are verified; effective source-file coverage and extraction behavior remain open. Do not replace the proven C++26 compatibility limitation with a blanket `CodeQL passes` claim, nor switch scanning to advanced/manual or modify the compiler/CI without concrete evidence and maintainer approval. [CodeQL tracking Issue #24](https://github.com/spwn02/Miracle/issues/24) remains open for these bounded acceptance checks.
 
 ## October 20 current-state security/CI verification — continuing G4 while G2 support pending
 
