@@ -6,6 +6,14 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## G4 reproducible module coverage baseline created — 2026-10-21
+
+A new [G4 CodeQL source-coverage inventory](G4-CODEQL-COVERAGE-INVENTORY.md) ([commit `10e416e`](https://github.com/spwn02/Miracle/commit/10e416ef885e267eaa352f51e468821eed1fab1e)) records a **read-only, commit-pinned list** of all **33** tracked `src/public/**/*.ixx` module interfaces and **8** tracked `src/**/*.cxx` implementation units in the genuine `f2dc424` source tree. There are **86 `.cxx` files repository-wide**, most outside the core source tree (tests/examples/benchmarks). The manifest keeps those separate and deliberately **does not** present their union as CodeQL's coverage denominator.
+
+The full [CI #39594487578](https://github.com/spwn02/Miracle/actions/runs/39594487578), [Pages #39594487415](https://github.com/spwn02/Miracle/actions/runs/39594487415), and [GCC sync #39594487440](https://github.com/spwn02/Miracle/actions/runs/39594487440) passed on `f2dc424` (2026-10-21), including source self-tests/examples and all three CMake consumer modes. Independent job-step inspection again confirms **`Advance gcc` was skipped**, i.e. `gcc` branch advancement is **not** proven.
+
+**Next acceptance input still missing:** A real CodeQL Tool Status **analyzed-files CSV**, associated scan commit/configuration, actual C/C++ extraction status and any build mode/errors. Compare it directly to the pinned [source inventory](G4-CODEQL-COVERAGE-INVENTORY.md); **do not count absent `.ixx` files as analyzed or claim semantic C++26 coverage on the basis of no findings**. This manifest requires no CI or CodeQL configuration change and no synthetic security report.
+
 ## Authenticated CodeQL analyses verified; module source-coverage risk identified — 2026-10-21
 
 The maintainer executed the previously requested **authenticated, read-only** GitHub CLI configuration and analysis-list commands and supplied their exact metadata. No sensitive alerts or SARIF result bodies were requested.
