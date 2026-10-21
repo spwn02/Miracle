@@ -37,6 +37,7 @@
 - [G4 — Branch and Tag Protection](infrastructure/G4-RULESETS.md)
 - [G4 — Pull Request Workflow](infrastructure/G4-PR-WORKFLOW.md)
 - [G4 — Security Audit](infrastructure/G4-SECURITY-AUDIT.md)
+- [G4 — CodeQL Coverage Inventory](infrastructure/G4-CODEQL-COVERAGE-INVENTORY.md)
 - [G5 — Development Environments](infrastructure/G5-OPERATING-PLAN.md)
 - [G5 — Progress](infrastructure/G5-PROGRESS.md)
 - [G6 — Community Operating Plan](infrastructure/G6-OPERATING-PLAN.md)
