@@ -6,6 +6,31 @@
 **Tracker:** [G4 issue #4](https://github.com/spwn02/Miracle/issues/4)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 6–7
 
+## G4 py/redos investigation and Clang module suffix decision — 2026-10-21
+
+### `.ixx` → `.cppm` design finding (no migration performed)
+
+The maintainer is considering `.cppm` module interface names for Clang. This is **a reasonable compiler/tooling convention**: [Clang's standard C++ modules guide](https://clang.llvm.org/docs/StandardCPlusPlusModules.html) recommends `.cppm` (alongside `.ccm`, `.cxxm`, `.c++m`) for module interfaces. [CMake's module documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) requires a C++ source recognized by the compiler but does not mandate a specific module extension; `FILE_SET TYPE CXX_MODULES` supports such a change.
+
+**CodeQL is NOT a justification for claiming this improves extraction.** Its [official C/C++ language support table](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) lists neither `.ixx` nor `.cppm` and says **C++20 modules are not supported**, whereas Miracle uses experimental C++26 reflection. The [real CodeQL CSV result](G4-CODEQL-COVERAGE-INVENTORY.md) remains **0/33 module interfaces successfully extracted** at the current `.ixx` baseline. Renaming a file does not add C++26 module/reflection support to the analyzer; do not report a hypothetical coverage improvement without another real extraction CSV.
+
+If the maintainer approves the separate module suffix migration, treat it as **a full 33-source-file, CMake and toolchain compatibility change**: update the `FILE_SET` paths in `CMakeLists.txt`, the three `src/public/{Build,Capabilities,FeatureConfiguration}.ixx.in` generated-module templates and configured outputs, `*.ixx` references in documentation/scripts/tests/CMake packaging/export paths, install/consumer smoke tests and editor/clangd tooling. Run pinned Clang CI, Docker, all CMake consumers and GCC compatibility, then inspect new CodeQL file extraction **without assuming success**. Nothing in this section authorizes bulk rename.
+
+### High-severity CodeQL Python `py/redos` findings
+
+The maintainer's CodeQL UI screenshot showed two open High-severity `Inefficient regular expression` findings in [`scripts/github/check-workflow-security.py`](https://github.com/spwn02/Miracle/blob/master/scripts/github/check-workflow-security.py), at old lines **71** and **82**. The repository source contains two structurally identical checks using nested ambiguous DOTALL repetition:
+
+```python
+r"(?ms)^  sync:\n(?:.*?\n)*?    permissions:\n      contents: write\s*$"
+r"(?ms)^  release:\n(?:.*?\n)*?    permissions:\n      contents: write\s*$"
+```
+
+This is a concrete [CodeQL `py/redos` / CWE-1333](https://codeql.github.com/codeql-query-help/python/py-redos/) match: ambiguous nested repetitions can cause excessive backtracking on long, carefully formed **nonmatching** workflow text. Local, bounded no-match timings rose from 0.025 ms at 5 comment lines to 6.583 ms at 13 lines; these are demonstrative timing samples, **not a claim of exploitability or an exhaustive complexity proof**. Repository-controlled workflow YAML files in CI are a narrower exposure surface than public untrusted HTTP inputs, but the regex is an unnecessary cost and can mask sibling-job permissions.
+
+**Remediation prepared as reviewable [PR #25](https://github.com/spwn02/Miracle/pull/25):** replace both expressions with a linear-time indentation-aware check of the *named job's own permissions*; preserve five pre-existing negative mutation fixtures and add checks for sibling job permissions, shell block text and 16,000-line nonmatching inputs. [Patch commit `5c3c1fa`](https://github.com/spwn02/Miracle/commit/5c3c1fad25e0b61849692f8bbcdf9132a64fafc7). Locally exercised core helper with representative fixtures; **GitHub PR #25 CI and new CodeQL findings are separate outstanding verification gates**. The PR has not been merged, and the two CodeQL alerts have not been dismissed or asserted resolved.
+
+**Scope:** No policies, GitHub CodeQL setup, version tags, compiler pins, secure branches or module interface filenames changed during this audit. Do not close G4 solely on this fix; other protected-`gcc` advancement, real release and maintainer sign-off requirements continue to apply.
+
 ## CodeQL file-level extraction verdict — all 33 C++26 modules unextracted (2026-10-21)
 
 The maintainer uploaded the **actual GitHub CodeQL analyzed-files CSV**, `code-scanning-files-extracted.csv`, captured from **Tools → CodeQL → Scanned files**. It contains 159 configuration/file rows. Its SHA-256 is `769fca48b7f156f3779df029e9afa55b38529db0dc32dfed521b3c9d05d51c05` (reproducibility fingerprint, not a GitHub analysis ID). The file is an observed owner-provided report; it is **not** a private vulnerability alert or SARIF findings dump.
