@@ -4,6 +4,14 @@
 **Status:** Maintainer-authenticated security baseline and CodeQL source extraction verified: 86/86 .cxx files extracted, 0/33 .ixx module interfaces extracted; CodeQL C++26 modules/reflection unsupported, Python regex findings require triage.
 **Observed:** 2026-10-17
 
+## ReDoS remediation merged, master rescan pending — 2026-10-21
+
+The previously observed two High-severity CodeQL `Inefficient regular expression` (Python `py/redos`, CWE-1333) findings at lines 71/82 of `scripts/github/check-workflow-security.py` concerned the `sync` and `release` job-scope checks. Their nested DOTALL regexes enabled excessive backtracking on crafted near-matching workflow text; CI exposes this guard to repository-controlled workflow-file content, not a public HTTP request.
+
+[PR #25](https://github.com/spwn02/Miracle/pull/25) replaces both regex checks with a **linear-time, indentation-aware line scanner** that only accepts `contents: write` inside the intended job-level permissions block. It also adds regression fixtures for sibling job confusion, shell-block spoofing and a 16,000-line near-match. The complete PR-head [reference CI #39614467743](https://github.com/spwn02/Miracle/actions/runs/39614467743) passed, including **71/71 self-tests**, the three CMake consumer modes and `PASS: 5 workflow trust boundaries, 5 mutations, and 4 parser fixtures.` The PR's CodeQL Python check also completed successfully.
+
+The maintainer explicitly approved merging. The PR is **merged as a two-parent [commit `452780b`](https://github.com/spwn02/Miracle/commit/452780b90e7b87470e435dadb5cfc38a712c2813)**, and GitHub post-merge verification confirmed that exact code on `master`. **CodeQL alert closure is pending a post-merge `master` scan and actual alert-state verification**; a passed CodeQL job on the PR does not prove that pre-existing branch alerts have closed. No alerts were manually dismissed. This Python patch does not change the separately identified CodeQL failure to extract all 33 C++26 `.ixx` module interfaces.
+
 ## CodeQL C++26 extraction scope — CSV-confirmed finding (2026-10-21)
 
 The maintainer uploaded the genuine **CodeQL Tool Status analyzed-files CSV** (`code-scanning-files-extracted.csv`, SHA-256 `769fca48b7f156f3779df029e9afa55b38529db0dc32dfed521b3c9d05d51c05`). The available `/language:c-cpp` configuration lists **119 distinct source files**: **86 `.cxx` files all successfully extracted**, and **33 `.ixx` module interfaces all `Successfully Extracted=false`**. The set of 33 failed paths exactly matches the complete `src/public/**/*.ixx` inventory. All 8 `src/private/**/*.cxx` implementation units report successful extraction. All 33 `.ixx` `Failure Reason` fields are empty.
