@@ -6,4 +6,3 @@ These are **historical records** published to make previously frozen engineering
 - [Phase 5.6 — Execution Contract v1.0](phase-5.6-execution-contract-v1.0.md): byte-identical import of the locked Phase 5.6 execution text.
 
 See [Issue #7](https://github.com/spwn02/Miracle/issues/7) for source identification, missing approvals and final acceptance. The [Foundation Contract Pack](../contracts/miracle-foundation-v1.0.md) records underlying architecture and the Q1–Q238 decision ledger without splitting historical content.
-
