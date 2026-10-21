@@ -1,8 +1,20 @@
 # G4 — Security Configuration Audit
 
 **Workstream:** [G4 — Security and CI](https://github.com/spwn02/Miracle/issues/4)
-**Status:** Maintainer-authenticated security baseline confirmed; active CodeQL default-setup analyses verified 2026-10-20, while experimental C++26 module/reflection extraction and file coverage remain unverified
+**Status:** Maintainer-authenticated security baseline and CodeQL source extraction verified: 86/86 .cxx files extracted, 0/33 .ixx module interfaces extracted; CodeQL C++26 modules/reflection unsupported, Python regex findings require triage.
 **Observed:** 2026-10-17
+
+## CodeQL C++26 extraction scope — CSV-confirmed finding (2026-10-21)
+
+The maintainer uploaded the genuine **CodeQL Tool Status analyzed-files CSV** (`code-scanning-files-extracted.csv`, SHA-256 `769fca48b7f156f3779df029e9afa55b38529db0dc32dfed521b3c9d05d51c05`). The available `/language:c-cpp` configuration lists **119 distinct source files**: **86 `.cxx` files all successfully extracted**, and **33 `.ixx` module interfaces all `Successfully Extracted=false`**. The set of 33 failed paths exactly matches the complete `src/public/**/*.ixx` inventory. All 8 `src/private/**/*.cxx` implementation units report successful extraction. All 33 `.ixx` `Failure Reason` fields are empty.
+
+**Explicit security limit:** Module-interface bodies — including the compiler/reflection-heavy `src/public/meta/Reflect.ixx`, `Annotations.ixx`, and the public `Miracle.ixx` surface — are **not successfully extracted**, and CodeQL results cannot provide source-coverage assurance for those bodies. This is **demonstrated from actual per-file extraction flags**, not an estimate, a claim that everything was skipped, or a claim of a verified code vulnerability. The [CodeQL supported languages reference](https://codeql.github.com/docs/codeql-overview/supported-languages-and-frameworks/) confirms C++ modules are not supported at present and does not list `.ixx` among the supported extensions. The exact reason for each CSV `false` and the effective scanner build mode remain unknown; the CSV contains no analysis ID, commit SHA, build mode or extraction warnings.
+
+**Validated positive scope:** All 86 conventional `.cxx` files successfully extracted; Python, JS and Actions files also extracted under their language configurations. Extraction is not equivalent to guaranteed completeness of semantic analysis, and a `results_count: 0` report is **not** proof of vulnerability absence. Do not "fix" coverage by simply relabeling extensions or weakening the pinned reference-C++26 compiler requirement.
+
+**Residual security triage:** The owner separately shared a CodeQL UI screenshot showing two currently open *High* severity `Inefficient regular expression` alerts in `scripts/github/check-workflow-security.py` (approximately lines 71 and 82). Their exploitability and appropriate remediation must be inspected; this file and its test fixtures are relevant to the G4 workflow trust-boundary guard. Do not treat either finding as proven exploitable based solely on a scanner severity label. The Python analysis metadata `results_count: 2` is consistent with that screenshot, but should not be used as a substitute for examining actual alert contexts.
+
+**Evidence and mitigation boundary:** [Full per-file source inventory and CSV findings](G4-CODEQL-COVERAGE-INVENTORY.md) and [G4 progress](G4-PROGRESS.md). Actual CodeQL scanner support for modules/reflection is outside the current supported matrix and no valid provider fix is available from these artifacts alone. Maintain secure CI and document the limitation rather than falsely advertising complete C++26 CodeQL coverage.
 
 ## Follow-up CodeQL analysis evidence — 2026-10-21
 
