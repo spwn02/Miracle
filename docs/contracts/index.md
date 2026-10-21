@@ -15,6 +15,17 @@ Repository-tracked files are the authoritative published *copies* of verified lo
 
 The combined Foundation pack contains the foundation, core runtime vocabulary, Iter, Meta/Validation/Shapes/Traits, Structural Programming, engineering/delivery contracts and their 238-question decision ledger. Do not split or selectively paraphrase that source during historical import.
 
+## Machine-checked preservation
+
+The `docs/contracts/SOURCES.json` register records the approved historical Markdown source hashes and the Phase 5.4 **derived reader** identity, plus the original DOCX source checksum and explicitly pending Git import. The offline verifier runs in both reference and documentation CI:
+
+```sh
+python3 scripts/docs/verify-frozen-contracts.py --self-test
+python3 scripts/docs/verify-frozen-contracts.py
+```
+
+It fails if an archived locked source or recorded reading edition changes unexpectedly. The default check reports the **missing original DOCX as a known limitation**, not as a successfully preserved source; `--require-originals` fails until the exact normative binary is imported and its manifest entry reconciled. These checks prove source identity only—not historical approval metadata beyond the provided records or conformance of the current implementation.
+
 ## Authority and history rules
 
 - **No retroactive approval.** Original approval/freeze statements reflect their historical dates and scope, not a fresh sign-off.
