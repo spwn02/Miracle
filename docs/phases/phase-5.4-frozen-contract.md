@@ -7,8 +7,7 @@
 | **Reference compiler** | cxx26-2026.09.30.2                              |
 | **Reference revision** | 998b670e39292d6b6c1b8ffa94359e802020206a        |
 
-| **Contract authority.** This document freezes the Phase 5.4 scope, architectural invariants, performance philosophy, completion gate, and compiler-defect handling. Public semantics from the reviewed Phase 5.3 baseline remain authoritative; Phase 5.3 implementation machinery does not. |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+> **Contract authority.** This document freezes the Phase 5.4 scope, architectural invariants, performance philosophy, completion gate, and compiler-defect handling. Public semantics from the reviewed Phase 5.3 baseline remain authoritative; Phase 5.3 implementation machinery does not.
 
 **Design thesis.** Miracle.Meta Query is treated as a compile-time compiler: ergonomic Iter-like syntax lowers into immutable value IR, which is normalized, segmented by genuine type boundaries, fused, and executed consteval with no residual runtime machinery.
 
@@ -233,8 +232,7 @@ ProgramNode{previous, instruction}
 
 Appending same-output-type static instructions should avoid changing the Query C++ type merely because another instruction exists. Type changes are justified only by real semantic information such as logical output type changes, capture-environment representation changes, source representation changes, or materialization barriers.
 
-| **Primary frontend objective.** Stop encoding operation count and pipeline prefixes into ever-growing C++ types. The plan is primarily data; types appear only where static typing genuinely requires them. |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+> **Primary frontend objective.** Stop encoding operation count and pipeline prefixes into ever-growing C++ types. The plan is primarily data; types appear only where static typing genuinely requires them.
 
 # 8. Callable representation
 
@@ -316,8 +314,7 @@ AssetId
 
 This should compile conceptually as Segment\<Info\> -\> typed Map boundary -\> Segment\<string_view\> -\> typed Map boundary -\> Segment\<AssetId\>.
 
-| **Complexity target.** Let N be the number of logical Query operations and B the number of genuine typed/cardinality boundaries. The evaluator should trend toward O(B) template complexity rather than O(N) wherever semantics permit. |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+> **Complexity target.** Let N be the number of logical Query operations and B the number of genuine typed/cardinality boundaries. The evaluator should trend toward O(B) template complexity rather than O(N) wherever semantics permit.
 
 # 12. Expansion statements
 
@@ -578,8 +575,7 @@ The direct-adjacency prototype already demonstrated assembly parity with handwri
 
 - \[ \] No temporary TODO semantics remain.
 
-| **Final architectural gate.** If Validation or Traits would immediately need to work around a known Meta deficiency, Phase 5.4 is not complete. |
-|-------------------------------------------------------------------------------------------------------------------------------------------------|
+> **Final architectural gate.** If Validation or Traits would immediately need to work around a known Meta deficiency, Phase 5.4 is not complete.
 
 # 26. Frozen implementation posture
 
