@@ -73,7 +73,7 @@ These are **target configurations, not verified live views**. GitHub Projects cu
 
 ## Agent access and write rules
 
-The official [GitHub MCP Server](https://github.com/github/github-mcp-server) has a `projects` toolset (disabled by default in some configurations) alongside `issues` and `repos`. Its `projects_read/projects_write` facilities are the preferred account-authorized agent interface; the currently connected ChatGPT GitHub integration does **not** expose Project V2 methods. Local `gh` with the maintainer's `project` scope is the fallback. Do not introduce secrets or PATs into the repository.
+The official [GitHub MCP Server](https://github.com/github/github-mcp-server) has a `projects` toolset (disabled by default in some configurations) alongside `issues` and `repos`. Its `projects_get`, `projects_list`, and `projects_write` tools are the preferred account-authorized agent interface; the currently connected ChatGPT GitHub integration does **not** expose Project V2 methods. Local `gh` with the maintainer's `project` scope is the fallback. Do not introduce secrets or PATs into the repository.
 
 **Read actions:** list Project items/fields/views, inspect Issues and dependencies, read catalog/contracts, export graph, audit drift. **Guarded writes:** create genuine Issue, update Project status/priority, set native dependency, propose contract delta PR, record explicitly authorized review. All write operations require validation of owner/repo/project identity, stable IDs, idempotency key or duplicate check, and provenance (actor/time/source revision). Do not allow an agent to infer `Accepted`, rewrite frozen source, invent deadlines, or bulk-migrate archive entries. No automation may close G2/#2 without its separate acceptance evidence.
 
