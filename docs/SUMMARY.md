@@ -30,6 +30,7 @@
 # Development Workspace
 
 - [Workspace overview and whiteboard](workspace/index.md)
+- [Workspace MCP agent operations](workspace/agent-operations.md)
 - [Living workspace protocol (proposal)](infrastructure/MIRACLE-DEVELOPMENT-WORKSPACE.md)
 
 # Infrastructure and Governance
