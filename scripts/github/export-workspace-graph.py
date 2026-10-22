@@ -242,12 +242,16 @@ def main() -> int:
     parser.add_argument("--live-issues", action="store_true",
                         help="Read GitHub Issues/dependencies using authenticated gh CLI")
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--check", action="store_true",
+                        help="Verify checked-in catalog-only manifest without rewriting it")
     args = parser.parse_args()
     if args.self_test:
         self_test()
         return 0
     if args.live_issues and args.issues_json:
         parser.error("Choose live issues or a saved Issue snapshot")
+    if args.check and (args.live_issues or args.issues_json):
+        parser.error("--check validates the committed catalog-only snapshot")
     catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
     issues = fetch_issues() if args.live_issues else None
     if args.issues_json:
@@ -256,6 +260,13 @@ def main() -> int:
         if not isinstance(issues, list):
             raise ValueError("Issue snapshot must contain an array")
     result = build(catalog, issues)
+    if args.check:
+        stored = json.loads(args.output.read_text(encoding="utf-8"))
+        stored.pop("generatedAt", None)
+        if stored != result:
+            raise ValueError("Checked-in graph snapshot drifts from catalog; rebuild/inspect")
+        print("PASS: checked-in graph snapshot matches the verified catalog")
+        return 0
     result["generatedAt"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n",
