@@ -77,6 +77,12 @@ const details=document.getElementById("details");
 const coverage=document.getElementById("coverage");
 const panel={nodes:[],edges:[],manifest:null,positions:new Map(),scale:.95,x:32,y:32};
 const WIDTH=224,HEIGHT=62;
+function sizeViewport(){
+  const rect=viewport.getBoundingClientRect();
+  if(rect.width>0&&rect.height>0)viewport.setAttribute("viewBox",`0 0 ${rect.width} ${rect.height}`);
+}
+window.addEventListener("resize",sizeViewport);
+sizeViewport();
 function el(name,attrs={},text=null){
   const node=document.createElementNS(NS,name);
   for(const [k,v] of Object.entries(attrs))node.setAttribute(k,String(v));
@@ -191,7 +197,7 @@ function startDrag(event,node){
   if(event.button!==0)return;
   event.stopPropagation();
   const pos=panel.positions.get(node.id),world=worldPoint(event);
-  dragging={kind:"node",id:node.id,offsetX:world.x-pos.x,offsetY:world.y-pos.y};
+  dragging={kind:"node",id:node.id,offsetX:world.x-pos.x,offsetY:world.y-pos.y,screenX:event.clientX,screenY:event.clientY,moved:false};
   viewport.setPointerCapture(event.pointerId);
 }
 viewport.addEventListener("pointerdown",event=>{
@@ -205,19 +211,24 @@ viewport.addEventListener("pointermove",event=>{
     panel.x=dragging.panX+(event.clientX-dragging.x);
     panel.y=dragging.panY+(event.clientY-dragging.y);repaintCamera();
   }else{
+    if(Math.hypot(event.clientX-dragging.screenX,event.clientY-dragging.screenY)>4)dragging.moved=true;
     const at=worldPoint(event);
     panel.positions.set(dragging.id,{x:at.x-dragging.offsetX,y:at.y-dragging.offsetY});
     repaint();
   }
 });
-for(const name of ["pointerup","pointercancel"])viewport.addEventListener(name,()=>{
+for(const name of ["pointerup","pointercancel"])viewport.addEventListener(name,event=>{
+  if(event.type==="pointerup"&&dragging?.kind==="node"&&!dragging.moved){
+    const node=panel.nodes.find(x=>x.id===dragging.id);
+    if(node)selectNode(node);
+  }
   dragging=null;viewport.classList.remove("grabbing");
 });
 viewport.addEventListener("wheel",event=>{
   event.preventDefault();
   const r=viewport.getBoundingClientRect();
   const x=event.clientX-r.left,y=event.clientY-r.top;
-  const next=clampScale(panel.scale*(event.deltaY>0?.9:1.1));
+  const next=clampScale(panel.scale*(event.deltaY>0?0.9:1.1));
   panel.x=x-(x-panel.x)*next/panel.scale;
   panel.y=y-(y-panel.y)*next/panel.scale;
   panel.scale=next;repaintCamera();
