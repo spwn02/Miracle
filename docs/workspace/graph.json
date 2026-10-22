@@ -1,0 +1,2143 @@
+{
+  "schemaVersion": 1,
+  "project": "https://github.com/users/spwn02/projects/3",
+  "repo": "spwn02/Miracle",
+  "catalogSourceRevision": "21ec40e9276c60de369f122a226fceccf7e02550",
+  "coverage": {
+    "catalog": 172,
+    "issues": "not fetched",
+    "dependencySource": "none",
+    "projectFields": "not fetched"
+  },
+  "nodes": [
+    {
+      "id": "catalog:foundation:contract:0001",
+      "title": "Miracle Foundation & Structural Programming Contract Pack — Combined Locked Reference",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1"
+    },
+    {
+      "id": "catalog:foundation:contract:0008",
+      "title": "Miracle Foundation & Structural Programming Design Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L8"
+    },
+    {
+      "id": "catalog:foundation:chapter:0017",
+      "title": "1. Mission",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L17"
+    },
+    {
+      "id": "catalog:foundation:chapter:0031",
+      "title": "2. Design priority order",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L31"
+    },
+    {
+      "id": "catalog:foundation:chapter:0047",
+      "title": "3. Zero/negative-cost rule",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L47"
+    },
+    {
+      "id": "catalog:foundation:chapter:0079",
+      "title": "4. Modules and visibility",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L79"
+    },
+    {
+      "id": "catalog:foundation:chapter:0119",
+      "title": "5. Naming conventions",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L119"
+    },
+    {
+      "id": "catalog:foundation:chapter:0134",
+      "title": "6. Conversion policy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L134"
+    },
+    {
+      "id": "catalog:foundation:chapter:0144",
+      "title": "7. Exception and panic policy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L144"
+    },
+    {
+      "id": "catalog:foundation:chapter:0160",
+      "title": "8. Foundational dependency layers",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L160"
+    },
+    {
+      "id": "catalog:foundation:chapter:0215",
+      "title": "9. Core Revisit Milestone",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L215"
+    },
+    {
+      "id": "catalog:foundation:chapter:0242",
+      "title": "10. Phase completeness rule",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L242"
+    },
+    {
+      "id": "catalog:foundation:chapter:0270",
+      "title": "11. Testing dependency model",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L270"
+    },
+    {
+      "id": "catalog:foundation:chapter:0290",
+      "title": "12. Standard accuracy and compiler policy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L290"
+    },
+    {
+      "id": "catalog:foundation:chapter:0317",
+      "title": "13. Documentation and repository rules",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L317"
+    },
+    {
+      "id": "catalog:foundation:chapter:0346",
+      "title": "14. Deferred first-class facilities",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L346"
+    },
+    {
+      "id": "catalog:foundation:chapter:0366",
+      "title": "15. Locked identity",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L366"
+    },
+    {
+      "id": "catalog:foundation:contract:0375",
+      "title": "Miracle Core Runtime Vocabulary Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L375"
+    },
+    {
+      "id": "catalog:foundation:chapter:0382",
+      "title": "1. StaticString",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L382"
+    },
+    {
+      "id": "catalog:foundation:chapter:0433",
+      "title": "2. Range",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L433"
+    },
+    {
+      "id": "catalog:foundation:chapter:0510",
+      "title": "3. Diagnostic",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L510"
+    },
+    {
+      "id": "catalog:foundation:chapter:0553",
+      "title": "4. Error",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L553"
+    },
+    {
+      "id": "catalog:foundation:chapter:0596",
+      "title": "5. panic",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L596"
+    },
+    {
+      "id": "catalog:foundation:chapter:0619",
+      "title": "6. Result<T, E = Error>",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L619"
+    },
+    {
+      "id": "catalog:foundation:chapter:0716",
+      "title": "7. Option<T>",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L716"
+    },
+    {
+      "id": "catalog:foundation:chapter:0741",
+      "title": "8. Ref<T>",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L741"
+    },
+    {
+      "id": "catalog:foundation:chapter:0764",
+      "title": "9. Allocator model",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L764"
+    },
+    {
+      "id": "catalog:foundation:chapter:0791",
+      "title": "10. Dynamic and inline containers",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L791"
+    },
+    {
+      "id": "catalog:foundation:chapter:0838",
+      "title": "11. String and StringView",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L838"
+    },
+    {
+      "id": "catalog:foundation:chapter:0876",
+      "title": "12. Ownership vocabulary",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L876"
+    },
+    {
+      "id": "catalog:foundation:chapter:0926",
+      "title": "13. Synchronization vocabulary",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L926"
+    },
+    {
+      "id": "catalog:foundation:chapter:0969",
+      "title": "14. Chrono vocabulary",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L969"
+    },
+    {
+      "id": "catalog:foundation:chapter:0999",
+      "title": "15. Path, PathView, File, OpenOptions",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L999"
+    },
+    {
+      "id": "catalog:foundation:chapter:1059",
+      "title": "16. Bitflags<E>",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1059"
+    },
+    {
+      "id": "catalog:foundation:contract:1106",
+      "title": "Miracle Iteration Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1106"
+    },
+    {
+      "id": "catalog:foundation:chapter:1113",
+      "title": "1. Purpose",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1113"
+    },
+    {
+      "id": "catalog:foundation:chapter:1131",
+      "title": "2. Canonical construction",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1131"
+    },
+    {
+      "id": "catalog:foundation:chapter:1153",
+      "title": "3. Laziness",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1153"
+    },
+    {
+      "id": "catalog:foundation:chapter:1179",
+      "title": "4. Method vocabulary",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1179"
+    },
+    {
+      "id": "catalog:foundation:chapter:1244",
+      "title": "5. Adaptive callable invocation",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1244"
+    },
+    {
+      "id": "catalog:foundation:chapter:1279",
+      "title": "6. Capability preservation",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1279"
+    },
+    {
+      "id": "catalog:foundation:chapter:1296",
+      "title": "7. Smart caching / cachelatest",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1296"
+    },
+    {
+      "id": "catalog:foundation:chapter:1306",
+      "title": "8. Range integration",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1306"
+    },
+    {
+      "id": "catalog:foundation:chapter:1332",
+      "title": "9. Result and Option integration",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1332"
+    },
+    {
+      "id": "catalog:foundation:chapter:1348",
+      "title": "10. ParallelIter",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1348"
+    },
+    {
+      "id": "catalog:foundation:chapter:1403",
+      "title": "11. Hidden-work policy for Iter",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1403"
+    },
+    {
+      "id": "catalog:foundation:chapter:1418",
+      "title": "12. Testing requirements",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1418"
+    },
+    {
+      "id": "catalog:foundation:contract:1440",
+      "title": "Miracle Meta, Validation, Shapes & Traits Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1440"
+    },
+    {
+      "id": "catalog:foundation:chapter:1447",
+      "title": "1. Purpose",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1447"
+    },
+    {
+      "id": "catalog:foundation:chapter:1464",
+      "title": "2. Public reflection façade",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1464"
+    },
+    {
+      "id": "catalog:foundation:chapter:1490",
+      "title": "3. Access model",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1490"
+    },
+    {
+      "id": "catalog:foundation:chapter:1516",
+      "title": "4. Reflect<T> façade and caching",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1516"
+    },
+    {
+      "id": "catalog:foundation:chapter:1571",
+      "title": "5. Meta Query",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1571"
+    },
+    {
+      "id": "catalog:foundation:chapter:1614",
+      "title": "6. Validation engine",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1614"
+    },
+    {
+      "id": "catalog:foundation:chapter:1664",
+      "title": "7. Shapes",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1664"
+    },
+    {
+      "id": "catalog:foundation:chapter:1719",
+      "title": "8. Traits",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1719"
+    },
+    {
+      "id": "catalog:foundation:chapter:1783",
+      "title": "9. Trait façades and same-name objects",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1783"
+    },
+    {
+      "id": "catalog:foundation:chapter:1813",
+      "title": "10. Derive engine",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1813"
+    },
+    {
+      "id": "catalog:foundation:chapter:1863",
+      "title": "11. Feature engine",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1863"
+    },
+    {
+      "id": "catalog:foundation:chapter:1968",
+      "title": "12. Compiler-work optimization",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1968"
+    },
+    {
+      "id": "catalog:foundation:chapter:1987",
+      "title": "13. Module-local implementation policy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L1987"
+    },
+    {
+      "id": "catalog:foundation:contract:2000",
+      "title": "Miracle Structural Programming Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2000"
+    },
+    {
+      "id": "catalog:foundation:chapter:2007",
+      "title": "1. Scope",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2007"
+    },
+    {
+      "id": "catalog:foundation:chapter:2028",
+      "title": "2. Enum++",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2028"
+    },
+    {
+      "id": "catalog:foundation:chapter:2093",
+      "title": "3. Match architecture",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2093"
+    },
+    {
+      "id": "catalog:foundation:chapter:2121",
+      "title": "4. Named sum syntax",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2121"
+    },
+    {
+      "id": "catalog:foundation:chapter:2151",
+      "title": "5. General pattern syntax",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2151"
+    },
+    {
+      "id": "catalog:foundation:chapter:2175",
+      "title": "6. Value-category and ownership preservation",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2175"
+    },
+    {
+      "id": "catalog:foundation:chapter:2193",
+      "title": "7. Branch result typing",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2193"
+    },
+    {
+      "id": "catalog:foundation:chapter:2203",
+      "title": "8. Sequence matching",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2203"
+    },
+    {
+      "id": "catalog:foundation:chapter:2234",
+      "title": "9. Tagged/algebraic enums",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2234"
+    },
+    {
+      "id": "catalog:foundation:chapter:2266",
+      "title": "10. Derive semantics",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2266"
+    },
+    {
+      "id": "catalog:foundation:chapter:2316",
+      "title": "11. Structural Transform engine",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2316"
+    },
+    {
+      "id": "catalog:foundation:chapter:2366",
+      "title": "12. Structural Shapes/Traits integration",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2366"
+    },
+    {
+      "id": "catalog:foundation:chapter:2382",
+      "title": "13. Testing requirements",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2382"
+    },
+    {
+      "id": "catalog:foundation:contract:2407",
+      "title": "Miracle Engineering & Delivery Contract",
+      "kind": "Contract",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2407"
+    },
+    {
+      "id": "catalog:foundation:chapter:2414",
+      "title": "1. Implementation method",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2414"
+    },
+    {
+      "id": "catalog:foundation:chapter:2433",
+      "title": "2. Testing philosophy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2433"
+    },
+    {
+      "id": "catalog:foundation:chapter:2462",
+      "title": "3. Diagnostic snapshot testing",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2462"
+    },
+    {
+      "id": "catalog:foundation:chapter:2476",
+      "title": "4. Switch integration",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2476"
+    },
+    {
+      "id": "catalog:foundation:chapter:2486",
+      "title": "5. Compiler support",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2486"
+    },
+    {
+      "id": "catalog:foundation:chapter:2500",
+      "title": "6. Compile-time performance",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2500"
+    },
+    {
+      "id": "catalog:foundation:chapter:2519",
+      "title": "7. Runtime performance",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2519"
+    },
+    {
+      "id": "catalog:foundation:chapter:2537",
+      "title": "8. Documentation quality",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2537"
+    },
+    {
+      "id": "catalog:foundation:chapter:2560",
+      "title": "9. Design documentation",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2560"
+    },
+    {
+      "id": "catalog:foundation:chapter:2592",
+      "title": "10. Changelog",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2592"
+    },
+    {
+      "id": "catalog:foundation:chapter:2612",
+      "title": "11. Commit discipline",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2612"
+    },
+    {
+      "id": "catalog:foundation:chapter:2637",
+      "title": "12. Tag/version strategy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2637"
+    },
+    {
+      "id": "catalog:foundation:chapter:2655",
+      "title": "13. Module source layout policy",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2655"
+    },
+    {
+      "id": "catalog:foundation:chapter:2667",
+      "title": "14. No production workarounds",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2667"
+    },
+    {
+      "id": "catalog:foundation:chapter:2682",
+      "title": "15. Phase ordering",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2682"
+    },
+    {
+      "id": "catalog:foundation:chapter:2706",
+      "title": "16. First deferred follow-on contract",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2706"
+    },
+    {
+      "id": "catalog:foundation:ledger:2713",
+      "title": "Miracle Design Decision Ledger — Q1–Q238",
+      "kind": "Ledger",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2713"
+    },
+    {
+      "id": "catalog:foundation:chapter:2719",
+      "title": "Q1–Q78 — Scope and first architecture round",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2719"
+    },
+    {
+      "id": "catalog:foundation:chapter:2802",
+      "title": "Q79–Q164 — Feature engine and core-vocabulary round",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2802"
+    },
+    {
+      "id": "catalog:foundation:chapter:2893",
+      "title": "Q165–Q238 — Final architecture round",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2893"
+    },
+    {
+      "id": "catalog:foundation:chapter:2972",
+      "title": "Final superseding decisions",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/contracts/miracle-foundation-v1.0.md#L2972"
+    },
+    {
+      "id": "catalog:phase-5-4:phase:0001",
+      "title": "Phase 5.4",
+      "kind": "Phase",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L1"
+    },
+    {
+      "id": "catalog:phase-5-4:contract:0001",
+      "title": "Phase 5.4 frozen contract",
+      "kind": "Contract",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L1"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0016",
+      "title": "0. Governing principles",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L16"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0051",
+      "title": "1. Frozen Phase 5.4 scope",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L51"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0123",
+      "title": "2. Explicitly not in Phase 5.4",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L123"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0149",
+      "title": "3. Public Query API",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L149"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0165",
+      "title": "4. Query architectural model",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L165"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0181",
+      "title": "5. Stage topology becomes value IR",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L181"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0209",
+      "title": "6. Persistent immutable program IR",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L209"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0231",
+      "title": "7. Query type growth",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L231"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0237",
+      "title": "8. Callable representation",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L237"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0271",
+      "title": "9. No static/stateful semantic duplication",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L271"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0275",
+      "title": "10. IR normalization and fusion",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L275"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0294",
+      "title": "11. Typed segment compiler",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L294"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0319",
+      "title": "12. Expansion statements",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L319"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0325",
+      "title": "13. Typed boundaries",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L325"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0333",
+      "title": "14. Evaluation-local state",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L333"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0350",
+      "title": "15. Materialization barriers",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L350"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0361",
+      "title": "16. Public Query API facade",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L361"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0377",
+      "title": "17. Exact logical type and lifetime semantics",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L377"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0387",
+      "title": "18. Reflection-source completeness",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L387"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0393",
+      "title": "19. Cache architecture and IR interning",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L393"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0421",
+      "title": "20. Compile-time exception pipeline",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L421"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0433",
+      "title": "21. Compiler-performance contract",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L433"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0465",
+      "title": "22. Performance gates",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L465"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0487",
+      "title": "23. Current architectural benchmark baseline",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L487"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0498",
+      "title": "24. Forbidden final machinery",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L498"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0526",
+      "title": "25. Completion gate",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L526"
+    },
+    {
+      "id": "catalog:phase-5-4:chapter:0580",
+      "title": "26. Frozen implementation posture",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.4-frozen-contract.md#L580"
+    },
+    {
+      "id": "catalog:phase-5-6:phase:0001",
+      "title": "Phase 5.6",
+      "kind": "Phase",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L1"
+    },
+    {
+      "id": "catalog:phase-5-6:contract:0001",
+      "title": "Phase 5.6 frozen contract",
+      "kind": "Contract",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L1"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0008",
+      "title": "0. Mission and governing principles",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L8"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0023",
+      "title": "1. Authorities and pinned references",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L23"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0035",
+      "title": "2. Scope and exclusions",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L35"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0053",
+      "title": "3. Standards/parity model",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L53"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0071",
+      "title": "4. Checkpoint plan and exit gates",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L71"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0147",
+      "title": "5. Defect classification and handling",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L147"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0158",
+      "title": "6. Toolchain divergence policy",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L158"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0167",
+      "title": "7. Change discipline, benchmarks, and consumers",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L167"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0176",
+      "title": "8. Final acceptance gates",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L176"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0195",
+      "title": "9. Required deliverables",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L195"
+    },
+    {
+      "id": "catalog:phase-5-6:chapter:0208",
+      "title": "10. First execution action",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L208"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0075",
+      "title": "5.6.0 — Baseline preservation and audit infrastructure",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L75"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0083",
+      "title": "5.6.1 — C++26 standards reconciliation",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L83"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0091",
+      "title": "5.6.2 — API reconciliation and legacy cleanup",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L91"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0099",
+      "title": "5.6.3 — Full source and architecture audit",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L99"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0115",
+      "title": "5.6.4 — Defect fixes and adversarial regression coverage",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L115"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0123",
+      "title": "5.6.5 — Measured performance optimization",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L123"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0131",
+      "title": "5.6.6 — Second-pass audit and integration",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L131"
+    },
+    {
+      "id": "catalog:phase-5-6:checkpoint:0139",
+      "title": "5.6.7 — Final verification and closure",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/phases/phase-5.6-execution-contract-v1.0.md#L139"
+    },
+    {
+      "id": "catalog:development-protocol:contract:0001",
+      "title": "Miracle Development Protocol v1.0",
+      "kind": "Contract",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L1"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0012",
+      "title": "1. Purpose and philosophy",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L12"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0034",
+      "title": "2. Responsibilities and authority",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L34"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0085",
+      "title": "3. Repository authority and persistence",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L85"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0123",
+      "title": "4. Development hierarchy",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L123"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0166",
+      "title": "5. Design Contract standard",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L166"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0253",
+      "title": "6. Architectural locking and change control",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L253"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0305",
+      "title": "7. Implementation guidance standard",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L305"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0326",
+      "title": "8. Milestone review and verification",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L326"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0398",
+      "title": "9. Progress states and acceptance",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L398"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0420",
+      "title": "10. Architectural Decision Records",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L420"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0443",
+      "title": "11. Progress ledger and cross-chat continuity",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L443"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0469",
+      "title": "12. Examples as executable specifications",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L469"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0487",
+      "title": "13. Versioning and release discipline",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L487"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0509",
+      "title": "14. Collaboration standards",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L509"
+    },
+    {
+      "id": "catalog:development-protocol:chapter:0537",
+      "title": "15. Protocol adoption and evolution",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md#L537"
+    },
+    {
+      "id": "catalog:architecture:chapter:0003",
+      "title": "Product boundary",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L3"
+    },
+    {
+      "id": "catalog:architecture:chapter:0019",
+      "title": "Philosophy",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L19"
+    },
+    {
+      "id": "catalog:architecture:chapter:0036",
+      "title": "Language and toolchain philosophy",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L36"
+    },
+    {
+      "id": "catalog:architecture:chapter:0046",
+      "title": "Influences and attribution",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L46"
+    },
+    {
+      "id": "catalog:architecture:chapter:0058",
+      "title": "Dependency direction",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L58"
+    },
+    {
+      "id": "catalog:architecture:chapter:0074",
+      "title": "Public modules",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L74"
+    },
+    {
+      "id": "catalog:architecture:chapter:0080",
+      "title": "Build facts",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L80"
+    },
+    {
+      "id": "catalog:architecture:chapter:0086",
+      "title": "Package identity",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L86"
+    },
+    {
+      "id": "catalog:architecture:chapter:0090",
+      "title": "Compatibility",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "state": "Historical reference",
+      "url": "https://github.com/spwn02/Miracle/blob/master/docs/architecture.md#L90"
+    }
+  ],
+  "edges": [
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0017",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0031",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0047",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0079",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0119",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0134",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0144",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0160",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0215",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0242",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0270",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0290",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0317",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0346",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0008",
+      "to": "catalog:foundation:chapter:0366",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0382",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0433",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0510",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0553",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0596",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0619",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0716",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0741",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0764",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0791",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0838",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0876",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0926",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0969",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:0999",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:0375",
+      "to": "catalog:foundation:chapter:1059",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1113",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1131",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1153",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1179",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1244",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1279",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1296",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1306",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1332",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1348",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1403",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1106",
+      "to": "catalog:foundation:chapter:1418",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1447",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1464",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1490",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1516",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1571",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1614",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1664",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1719",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1783",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1813",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1863",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1968",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:1440",
+      "to": "catalog:foundation:chapter:1987",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2007",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2028",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2093",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2121",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2151",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2175",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2193",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2203",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2234",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2266",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2316",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2366",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2000",
+      "to": "catalog:foundation:chapter:2382",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2414",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2433",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2462",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2476",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2486",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2500",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2519",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2537",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2560",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2592",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2612",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2637",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2655",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2667",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2682",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:contract:2407",
+      "to": "catalog:foundation:chapter:2706",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:ledger:2713",
+      "to": "catalog:foundation:chapter:2719",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:ledger:2713",
+      "to": "catalog:foundation:chapter:2802",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:ledger:2713",
+      "to": "catalog:foundation:chapter:2893",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:foundation:ledger:2713",
+      "to": "catalog:foundation:chapter:2972",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0016",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0051",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0123",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0149",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0165",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0181",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0209",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0231",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0237",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0271",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0275",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0294",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0319",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0325",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0333",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0350",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0361",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0377",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0387",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0393",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0421",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0433",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0465",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0487",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0498",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0526",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-4:contract:0001",
+      "to": "catalog:phase-5-4:chapter:0580",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0008",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0023",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0035",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0053",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0071",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0147",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0158",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0167",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0176",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0195",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:chapter:0208",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0075",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0083",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0091",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0099",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0115",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0123",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0131",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:phase-5-6:contract:0001",
+      "to": "catalog:phase-5-6:checkpoint:0139",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0012",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0034",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0085",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0123",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0166",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0253",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0305",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0326",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0398",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0420",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0443",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0469",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0487",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0509",
+      "kind": "contains"
+    },
+    {
+      "from": "catalog:development-protocol:contract:0001",
+      "to": "catalog:development-protocol:chapter:0537",
+      "kind": "contains"
+    }
+  ],
+  "warnings": []
+}
