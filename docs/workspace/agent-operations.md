@@ -1,6 +1,6 @@
 # Miracle Development — MCP agent operations (pilot)
 
-**Status:** proposed operating playbook for [Issue #29](https://github.com/spwn02/Miracle/issues/29), not permission to modify frozen contracts or declare phases complete.  
+**Status:** proposed operating playbook for [Issue #29](https://github.com/spwn02/Miracle/issues/29), not permission to modify frozen contracts or declare phases complete.
 **Identity:** user-owned `spwn02` / [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) / repo `spwn02/Miracle`.
 
 ## Connecting an MCP client
