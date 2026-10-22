@@ -13,7 +13,7 @@ import sys
 
 
 DIRECTORY = Path(".github/workflows")
-FILES = ("ci.yml", "gcc.yml", "docs.yml", "release.yml", "sync-gcc.yml")
+FILES = ("ci.yml", "gcc.yml", "docs.yml", "release.yml", "sync-gcc.yml", "miracle-project-operations.yml")
 READ_ONLY = ("ci.yml", "gcc.yml", "docs.yml", "release.yml")
 
 
@@ -84,6 +84,26 @@ def check(workflows: dict[str, str]) -> list[str]:
                 errors.append(f"{name}: disable persisted checkout credentials")
             if re.search(r"(?m)^  (?:contents|issues|pull-requests|actions|packages|pages|id-token): write\s*$", pre_jobs):
                 errors.append(f"{name}: unauthorized root write permission")
+
+    # Project credentials must never be exposed through untrusted PR triggers.
+    project = workflows["miracle-project-operations.yml"]
+    checks = {
+        "owner-only trigger": "github.actor == 'spwn02'",
+        "fixed tracking issue": "github.event.issue.number == 29",
+        "no PR issue-comment commands": "github.event.issue.pull_request == null",
+        "reviewed checkout": "ref: master",
+        "no checkout credentials": "persist-credentials: false",
+        "scoped Project token": "GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}",
+        "no cancellation of ongoing writes": "cancel-in-progress: false",
+        "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
+    }
+    for label, fragment in checks.items():
+        if fragment not in project:
+            errors.append(f"miracle-project-operations.yml: missing {label}")
+    if "pull_request:" in project or "pull_request_target:" in project:
+        errors.append("miracle-project-operations.yml: no PR trigger may access Project token")
+    if project.count("secrets.MIRACLE_PROJECT_TOKEN") != 1:
+        errors.append("miracle-project-operations.yml: Project token exposure must be limited to one step")
 
     docs = workflows["docs.yml"]
     required_pages_condition = (
@@ -165,6 +185,17 @@ def main() -> int:
             print(f"ERROR: mutation escaped guard: {label}", file=sys.stderr)
             return 1
 
+    # Negative fixture: widening command authorization must fail.
+    widened = dict(workflows)
+    widened["miracle-project-operations.yml"] = widened["miracle-project-operations.yml"].replace(
+        "github.actor == 'spwn02'", "github.actor != ''", 1
+    )
+    if not check(widened):
+        pass
+    else:
+        print("ERROR: widened Project workflow trigger escaped guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -205,7 +236,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 5 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 6 mutations, and 4 parser fixtures.")
     return 0
 
 
