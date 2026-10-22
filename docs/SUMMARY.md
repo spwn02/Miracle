@@ -27,6 +27,11 @@
 - [Phase 5.4 — Frozen Contract (reading edition)](phases/phase-5.4-frozen-contract.md)
 - [Phase 5.6 — Execution Contract v1.0](phases/phase-5.6-execution-contract-v1.0.md)
 
+# Development Workspace
+
+- [Workspace overview and whiteboard](workspace/index.md)
+- [Living workspace protocol (proposal)](infrastructure/MIRACLE-DEVELOPMENT-WORKSPACE.md)
+
 # Infrastructure and Governance
 
 - [GitHub Infrastructure Contract](infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md)
