@@ -1,7 +1,7 @@
 # Miracle Development — living workspace protocol (pilot v0)
 
-**Status:** PROPOSED / NOT ACCEPTED. **Tracking:** [Issue #29](https://github.com/spwn02/Miracle/issues/29).  
-**Existing workspace:** [Miracle Development Project #3](https://github.com/users/spwn02/projects/3).  
+**Status:** PROPOSED / NOT ACCEPTED. **Tracking:** [Issue #29](https://github.com/spwn02/Miracle/issues/29).
+**Existing workspace:** [Miracle Development Project #3](https://github.com/users/spwn02/projects/3).
 **Related authoritative work:** [G2 operating plan](G2-OPERATING-PLAN.md), [G2 progress](G2-PROGRESS.md), [contract archive](../contracts/index.md), [historical catalog](../contracts/PROJECT-CATALOG.json).
 
 ## Goal
