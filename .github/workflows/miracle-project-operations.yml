@@ -1,0 +1,120 @@
+name: Miracle Project Operations
+
+# Commands can be issued by the owner in Issue #29 (including via the
+# existing authenticated GitHub connector), or dispatched from the Actions UI.
+# No untrusted issue text is passed to a shell command or evaluated as code.
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Native Project operation
+        required: true
+        type: choice
+        default: audit
+        options:
+          - audit
+          - reconcile-plan
+          - reconcile-verify
+          - reconcile-apply
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: miracle-native-project-operations
+  cancel-in-progress: false
+
+jobs:
+  project:
+    if: >-
+      github.repository == 'spwn02/Miracle' &&
+      github.actor == 'spwn02' &&
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issue_comment' &&
+          github.event.issue.number == 29 &&
+          github.event.issue.pull_request == null &&
+          (github.event.comment.body == '/miracle-project audit' ||
+           github.event.comment.body == '/miracle-project reconcile-plan' ||
+           github.event.comment.body == '/miracle-project reconcile-verify' ||
+           github.event.comment.body == '/miracle-project reconcile-apply')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write # Only to acknowledge owner commands in Issue #29.
+    steps:
+      - name: Checkout reviewed default branch, without stored credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Verify shell scripts and command
+        shell: bash
+        env:
+          REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
+        run: |
+          set -euo pipefail
+          bash -n scripts/github/audit-native-project.sh
+          bash -n scripts/github/miracle-project-reconcile-safe.sh
+          case "$REQUEST" in
+            audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
+            *) echo 'Unexpected operation'; exit 1 ;;
+          esac
+
+      - name: Execute only the selected native Project operation
+        id: execute
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}
+          REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo 'MIRACLE_PROJECT_TOKEN secret missing: configure a Projects-scoped credential (not the repository GITHUB_TOKEN).' >&2
+            exit 1
+          fi
+          # Use fixed allowlisted commands only, never arbitrary issue content.
+          case "$REQUEST" in
+            audit|'/miracle-project audit')
+              action='audit'
+              bash scripts/github/audit-native-project.sh
+              ;;
+            reconcile-plan|'/miracle-project reconcile-plan')
+              action='reconcile-plan'
+              bash scripts/github/miracle-project-reconcile-safe.sh --plan
+              ;;
+            reconcile-verify|'/miracle-project reconcile-verify')
+              action='reconcile-verify'
+              bash scripts/github/miracle-project-reconcile-safe.sh --verify
+              ;;
+            reconcile-apply|'/miracle-project reconcile-apply')
+              action='reconcile-apply'
+              bash scripts/github/miracle-project-reconcile-safe.sh --apply
+              ;;
+            *) echo 'Invalid operation' >&2; exit 1 ;;
+          esac
+          echo "## Miracle native Project operation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Operation: \`$action\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Project: https://github.com/users/spwn02/projects/3" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exact runner output is in this workflow's job log." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Acknowledge Issue #29 command with a run link
+        if: ${{ always() && github.event_name == 'issue_comment' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ steps.execute.outcome }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          {
+            echo "Native Project operation \`$REQUEST\`: **$RESULT**."
+            echo
+            echo "Workflow run: https://github.com/spwn02/Miracle/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "No accepted-contract or release state was changed by the workflow."
+          } > "$RUNNER_TEMP/project-result.md"
+          gh issue comment 29 --repo spwn02/Miracle --body-file "$RUNNER_TEMP/project-result.md"
