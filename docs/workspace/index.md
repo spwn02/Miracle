@@ -1,6 +1,6 @@
 # Miracle Development workspace
 
-[Open Miracle Development Project #3](https://github.com/users/spwn02/projects/3) · [Open the interactive dependency whiteboard](graph.html) · [Workspace design and authority protocol](../infrastructure/MIRACLE-DEVELOPMENT-WORKSPACE.md) · [Tracking Issue #29](https://github.com/spwn02/Miracle/issues/29)
+[Open Miracle Development Project #3](https://github.com/users/spwn02/projects/3) · [Open the interactive dependency whiteboard](graph.html) · [Workspace design and authority protocol](../infrastructure/MIRACLE-DEVELOPMENT-WORKSPACE.md) · [MCP agent operations](agent-operations.md) · [Tracking Issue #29](https://github.com/spwn02/Miracle/issues/29)
 
 This is an **incremental, read-only pilot**, not yet a completed or accepted development workspace. GitHub Project #3 is the operational place for issue scheduling, backlog and execution. Approved/frozen contracts remain controlled in Git; Issue relationships define actual blocking dependencies.
 
