@@ -191,8 +191,6 @@ def main() -> int:
         "github.actor == 'spwn02'", "github.actor != ''", 1
     )
     if not check(widened):
-        pass
-    else:
         print("ERROR: widened Project workflow trigger escaped guard", file=sys.stderr)
         return 1
 
