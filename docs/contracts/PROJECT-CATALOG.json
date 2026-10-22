@@ -1,0 +1,1709 @@
+{
+  "schemaVersion": 1,
+  "projectOwner": "spwn02",
+  "projectNumber": 3,
+  "projectTitle": "Miracle Development",
+  "baseRef": "master",
+  "sourceRevision": "21ec40e9276c60de369f122a226fceccf7e02550",
+  "authority": "Project draft entries link to authoritative tracked Git sources; they do not imply feature completion or retroactive contract acceptance.",
+  "items": [
+    {
+      "id": "foundation:contract:0001",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Foundation & Structural Programming Contract Pack — Combined Locked Reference",
+      "heading": "Miracle Foundation & Structural Programming Contract Pack — Combined Locked Reference",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1
+    },
+    {
+      "id": "foundation:contract:0008",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Foundation & Structural Programming Design Contract",
+      "heading": "Miracle Foundation & Structural Programming Design Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 8
+    },
+    {
+      "id": "foundation:chapter:0017",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 1. Mission",
+      "heading": "1. Mission",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 17,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0031",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 2. Design priority order",
+      "heading": "2. Design priority order",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 31,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0047",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 3. Zero/negative-cost rule",
+      "heading": "3. Zero/negative-cost rule",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 47,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0079",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 4. Modules and visibility",
+      "heading": "4. Modules and visibility",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 79,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0119",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 5. Naming conventions",
+      "heading": "5. Naming conventions",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 119,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0134",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 6. Conversion policy",
+      "heading": "6. Conversion policy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 134,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0144",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 7. Exception and panic policy",
+      "heading": "7. Exception and panic policy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 144,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0160",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 8. Foundational dependency layers",
+      "heading": "8. Foundational dependency layers",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 160,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0215",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 9. Core Revisit Milestone",
+      "heading": "9. Core Revisit Milestone",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 215,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0242",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 10. Phase completeness rule",
+      "heading": "10. Phase completeness rule",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 242,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0270",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 11. Testing dependency model",
+      "heading": "11. Testing dependency model",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 270,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0290",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 12. Standard accuracy and compiler policy",
+      "heading": "12. Standard accuracy and compiler policy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 290,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0317",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 13. Documentation and repository rules",
+      "heading": "13. Documentation and repository rules",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 317,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0346",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 14. Deferred first-class facilities",
+      "heading": "14. Deferred first-class facilities",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 346,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:chapter:0366",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Foundation & Structural Programming Design / 15. Locked identity",
+      "heading": "15. Locked identity",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 366,
+      "parent": "foundation:contract:0008"
+    },
+    {
+      "id": "foundation:contract:0375",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Core Runtime Vocabulary Contract",
+      "heading": "Miracle Core Runtime Vocabulary Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 375
+    },
+    {
+      "id": "foundation:chapter:0382",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 1. StaticString",
+      "heading": "1. StaticString",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 382,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0433",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 2. Range",
+      "heading": "2. Range",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 433,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0510",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 3. Diagnostic",
+      "heading": "3. Diagnostic",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 510,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0553",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 4. Error",
+      "heading": "4. Error",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 553,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0596",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 5. panic",
+      "heading": "5. panic",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 596,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0619",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 6. Result<T, E = Error>",
+      "heading": "6. Result<T, E = Error>",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 619,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0716",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 7. Option<T>",
+      "heading": "7. Option<T>",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 716,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0741",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 8. Ref<T>",
+      "heading": "8. Ref<T>",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 741,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0764",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 9. Allocator model",
+      "heading": "9. Allocator model",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 764,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0791",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 10. Dynamic and inline containers",
+      "heading": "10. Dynamic and inline containers",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 791,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0838",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 11. String and StringView",
+      "heading": "11. String and StringView",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 838,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0876",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 12. Ownership vocabulary",
+      "heading": "12. Ownership vocabulary",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 876,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0926",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 13. Synchronization vocabulary",
+      "heading": "13. Synchronization vocabulary",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 926,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0969",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 14. Chrono vocabulary",
+      "heading": "14. Chrono vocabulary",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 969,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:0999",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 15. Path, PathView, File, OpenOptions",
+      "heading": "15. Path, PathView, File, OpenOptions",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 999,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:chapter:1059",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Core Runtime Vocabulary / 16. Bitflags<E>",
+      "heading": "16. Bitflags<E>",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1059,
+      "parent": "foundation:contract:0375"
+    },
+    {
+      "id": "foundation:contract:1106",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Iteration Contract",
+      "heading": "Miracle Iteration Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1106
+    },
+    {
+      "id": "foundation:chapter:1113",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 1. Purpose",
+      "heading": "1. Purpose",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1113,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1131",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 2. Canonical construction",
+      "heading": "2. Canonical construction",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1131,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1153",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 3. Laziness",
+      "heading": "3. Laziness",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1153,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1179",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 4. Method vocabulary",
+      "heading": "4. Method vocabulary",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1179,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1244",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 5. Adaptive callable invocation",
+      "heading": "5. Adaptive callable invocation",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1244,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1279",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 6. Capability preservation",
+      "heading": "6. Capability preservation",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1279,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1296",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 7. Smart caching / cachelatest",
+      "heading": "7. Smart caching / cachelatest",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1296,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1306",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 8. Range integration",
+      "heading": "8. Range integration",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1306,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1332",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 9. Result and Option integration",
+      "heading": "9. Result and Option integration",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1332,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1348",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 10. ParallelIter",
+      "heading": "10. ParallelIter",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1348,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1403",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 11. Hidden-work policy for Iter",
+      "heading": "11. Hidden-work policy for Iter",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1403,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:chapter:1418",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Iteration / 12. Testing requirements",
+      "heading": "12. Testing requirements",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1418,
+      "parent": "foundation:contract:1106"
+    },
+    {
+      "id": "foundation:contract:1440",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Meta, Validation, Shapes & Traits Contract",
+      "heading": "Miracle Meta, Validation, Shapes & Traits Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1440
+    },
+    {
+      "id": "foundation:chapter:1447",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 1. Purpose",
+      "heading": "1. Purpose",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1447,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1464",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 2. Public reflection façade",
+      "heading": "2. Public reflection façade",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1464,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1490",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 3. Access model",
+      "heading": "3. Access model",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1490,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1516",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 4. Reflect<T> façade and caching",
+      "heading": "4. Reflect<T> façade and caching",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1516,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1571",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 5. Meta Query",
+      "heading": "5. Meta Query",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1571,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1614",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 6. Validation engine",
+      "heading": "6. Validation engine",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1614,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1664",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 7. Shapes",
+      "heading": "7. Shapes",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1664,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1719",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 8. Traits",
+      "heading": "8. Traits",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1719,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1783",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 9. Trait façades and same-name objects",
+      "heading": "9. Trait façades and same-name objects",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1783,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1813",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 10. Derive engine",
+      "heading": "10. Derive engine",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1813,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1863",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 11. Feature engine",
+      "heading": "11. Feature engine",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1863,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1968",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 12. Compiler-work optimization",
+      "heading": "12. Compiler-work optimization",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1968,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:chapter:1987",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Meta, Validation, Shapes & Traits / 13. Module-local implementation policy",
+      "heading": "13. Module-local implementation policy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 1987,
+      "parent": "foundation:contract:1440"
+    },
+    {
+      "id": "foundation:contract:2000",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Structural Programming Contract",
+      "heading": "Miracle Structural Programming Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2000
+    },
+    {
+      "id": "foundation:chapter:2007",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 1. Scope",
+      "heading": "1. Scope",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2007,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2028",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 2. Enum++",
+      "heading": "2. Enum++",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2028,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2093",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 3. Match architecture",
+      "heading": "3. Match architecture",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2093,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2121",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 4. Named sum syntax",
+      "heading": "4. Named sum syntax",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2121,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2151",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 5. General pattern syntax",
+      "heading": "5. General pattern syntax",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2151,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2175",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 6. Value-category and ownership preservation",
+      "heading": "6. Value-category and ownership preservation",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2175,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2193",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 7. Branch result typing",
+      "heading": "7. Branch result typing",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2193,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2203",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 8. Sequence matching",
+      "heading": "8. Sequence matching",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2203,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2234",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 9. Tagged/algebraic enums",
+      "heading": "9. Tagged/algebraic enums",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2234,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2266",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 10. Derive semantics",
+      "heading": "10. Derive semantics",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2266,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2316",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 11. Structural Transform engine",
+      "heading": "11. Structural Transform engine",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2316,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2366",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 12. Structural Shapes/Traits integration",
+      "heading": "12. Structural Shapes/Traits integration",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2366,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:chapter:2382",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Structural Programming / 13. Testing requirements",
+      "heading": "13. Testing requirements",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2382,
+      "parent": "foundation:contract:2000"
+    },
+    {
+      "id": "foundation:contract:2407",
+      "kind": "Contract",
+      "group": "Foundation",
+      "title": "[Archive/Contract] Foundation · Miracle Engineering & Delivery Contract",
+      "heading": "Miracle Engineering & Delivery Contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2407
+    },
+    {
+      "id": "foundation:chapter:2414",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 1. Implementation method",
+      "heading": "1. Implementation method",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2414,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2433",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 2. Testing philosophy",
+      "heading": "2. Testing philosophy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2433,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2462",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 3. Diagnostic snapshot testing",
+      "heading": "3. Diagnostic snapshot testing",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2462,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2476",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 4. Switch integration",
+      "heading": "4. Switch integration",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2476,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2486",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 5. Compiler support",
+      "heading": "5. Compiler support",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2486,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2500",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 6. Compile-time performance",
+      "heading": "6. Compile-time performance",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2500,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2519",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 7. Runtime performance",
+      "heading": "7. Runtime performance",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2519,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2537",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 8. Documentation quality",
+      "heading": "8. Documentation quality",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2537,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2560",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 9. Design documentation",
+      "heading": "9. Design documentation",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2560,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2592",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 10. Changelog",
+      "heading": "10. Changelog",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2592,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2612",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 11. Commit discipline",
+      "heading": "11. Commit discipline",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2612,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2637",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 12. Tag/version strategy",
+      "heading": "12. Tag/version strategy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2637,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2655",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 13. Module source layout policy",
+      "heading": "13. Module source layout policy",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2655,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2667",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 14. No production workarounds",
+      "heading": "14. No production workarounds",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2667,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2682",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 15. Phase ordering",
+      "heading": "15. Phase ordering",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2682,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:chapter:2706",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Engineering & Delivery / 16. First deferred follow-on contract",
+      "heading": "16. First deferred follow-on contract",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2706,
+      "parent": "foundation:contract:2407"
+    },
+    {
+      "id": "foundation:ledger:2713",
+      "kind": "Ledger",
+      "group": "Foundation",
+      "title": "[Archive/Ledger] Foundation · Miracle Design Decision Ledger — Q1–Q238",
+      "heading": "Miracle Design Decision Ledger — Q1–Q238",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2713
+    },
+    {
+      "id": "foundation:chapter:2719",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Design Decision Ledger — Q1–Q238 / Q1–Q78 — Scope and first architecture round",
+      "heading": "Q1–Q78 — Scope and first architecture round",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2719,
+      "parent": "foundation:ledger:2713"
+    },
+    {
+      "id": "foundation:chapter:2802",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Design Decision Ledger — Q1–Q238 / Q79–Q164 — Feature engine and core-vocabulary round",
+      "heading": "Q79–Q164 — Feature engine and core-vocabulary round",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2802,
+      "parent": "foundation:ledger:2713"
+    },
+    {
+      "id": "foundation:chapter:2893",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Design Decision Ledger — Q1–Q238 / Q165–Q238 — Final architecture round",
+      "heading": "Q165–Q238 — Final architecture round",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2893,
+      "parent": "foundation:ledger:2713"
+    },
+    {
+      "id": "foundation:chapter:2972",
+      "kind": "Chapter",
+      "group": "Foundation",
+      "title": "[Archive/Chapter] Foundation · Design Decision Ledger — Q1–Q238 / Final superseding decisions",
+      "heading": "Final superseding decisions",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "line": 2972,
+      "parent": "foundation:ledger:2713"
+    },
+    {
+      "id": "phase-5-4:phase:0001",
+      "kind": "Phase",
+      "group": "Phase 5.4",
+      "title": "[Archive/Phase] Phase 5.4 · Phase 5.4",
+      "heading": "Phase 5.4",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 1
+    },
+    {
+      "id": "phase-5-4:contract:0001",
+      "kind": "Contract",
+      "group": "Phase 5.4",
+      "title": "[Archive/Contract] Phase 5.4 · Phase 5.4 frozen contract",
+      "heading": "Phase 5.4 frozen contract",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 1
+    },
+    {
+      "id": "phase-5-4:chapter:0016",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 0. Governing principles",
+      "heading": "0. Governing principles",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 16,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0051",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 1. Frozen Phase 5.4 scope",
+      "heading": "1. Frozen Phase 5.4 scope",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 51,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0123",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 2. Explicitly not in Phase 5.4",
+      "heading": "2. Explicitly not in Phase 5.4",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 123,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0149",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 3. Public Query API",
+      "heading": "3. Public Query API",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 149,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0165",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 4. Query architectural model",
+      "heading": "4. Query architectural model",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 165,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0181",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 5. Stage topology becomes value IR",
+      "heading": "5. Stage topology becomes value IR",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 181,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0209",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 6. Persistent immutable program IR",
+      "heading": "6. Persistent immutable program IR",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 209,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0231",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 7. Query type growth",
+      "heading": "7. Query type growth",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 231,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0237",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 8. Callable representation",
+      "heading": "8. Callable representation",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 237,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0271",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 9. No static/stateful semantic duplication",
+      "heading": "9. No static/stateful semantic duplication",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 271,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0275",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 10. IR normalization and fusion",
+      "heading": "10. IR normalization and fusion",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 275,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0294",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 11. Typed segment compiler",
+      "heading": "11. Typed segment compiler",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 294,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0319",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 12. Expansion statements",
+      "heading": "12. Expansion statements",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 319,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0325",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 13. Typed boundaries",
+      "heading": "13. Typed boundaries",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 325,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0333",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 14. Evaluation-local state",
+      "heading": "14. Evaluation-local state",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 333,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0350",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 15. Materialization barriers",
+      "heading": "15. Materialization barriers",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 350,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0361",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 16. Public Query API facade",
+      "heading": "16. Public Query API facade",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 361,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0377",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 17. Exact logical type and lifetime semantics",
+      "heading": "17. Exact logical type and lifetime semantics",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 377,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0387",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 18. Reflection-source completeness",
+      "heading": "18. Reflection-source completeness",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 387,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0393",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 19. Cache architecture and IR interning",
+      "heading": "19. Cache architecture and IR interning",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 393,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0421",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 20. Compile-time exception pipeline",
+      "heading": "20. Compile-time exception pipeline",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 421,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0433",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 21. Compiler-performance contract",
+      "heading": "21. Compiler-performance contract",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 433,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0465",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 22. Performance gates",
+      "heading": "22. Performance gates",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 465,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0487",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 23. Current architectural benchmark baseline",
+      "heading": "23. Current architectural benchmark baseline",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 487,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0498",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 24. Forbidden final machinery",
+      "heading": "24. Forbidden final machinery",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 498,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0526",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 25. Completion gate",
+      "heading": "25. Completion gate",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 526,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-4:chapter:0580",
+      "kind": "Chapter",
+      "group": "Phase 5.4",
+      "title": "[Archive/Chapter] Phase 5.4 · Phase 5.4 frozen contract / 26. Frozen implementation posture",
+      "heading": "26. Frozen implementation posture",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "line": 580,
+      "parent": "phase-5-4:contract:0001"
+    },
+    {
+      "id": "phase-5-6:phase:0001",
+      "kind": "Phase",
+      "group": "Phase 5.6",
+      "title": "[Archive/Phase] Phase 5.6 · Phase 5.6",
+      "heading": "Phase 5.6",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 1
+    },
+    {
+      "id": "phase-5-6:contract:0001",
+      "kind": "Contract",
+      "group": "Phase 5.6",
+      "title": "[Archive/Contract] Phase 5.6 · Phase 5.6 frozen contract",
+      "heading": "Phase 5.6 frozen contract",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 1
+    },
+    {
+      "id": "phase-5-6:chapter:0008",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 0. Mission and governing principles",
+      "heading": "0. Mission and governing principles",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 8,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0023",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 1. Authorities and pinned references",
+      "heading": "1. Authorities and pinned references",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 23,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0035",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 2. Scope and exclusions",
+      "heading": "2. Scope and exclusions",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 35,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0053",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 3. Standards/parity model",
+      "heading": "3. Standards/parity model",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 53,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0071",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 4. Checkpoint plan and exit gates",
+      "heading": "4. Checkpoint plan and exit gates",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 71,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0147",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 5. Defect classification and handling",
+      "heading": "5. Defect classification and handling",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 147,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0158",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 6. Toolchain divergence policy",
+      "heading": "6. Toolchain divergence policy",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 158,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0167",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 7. Change discipline, benchmarks, and consumers",
+      "heading": "7. Change discipline, benchmarks, and consumers",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 167,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0176",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 8. Final acceptance gates",
+      "heading": "8. Final acceptance gates",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 176,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0195",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 9. Required deliverables",
+      "heading": "9. Required deliverables",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 195,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:chapter:0208",
+      "kind": "Chapter",
+      "group": "Phase 5.6",
+      "title": "[Archive/Chapter] Phase 5.6 · Phase 5.6 frozen contract / 10. First execution action",
+      "heading": "10. First execution action",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 208,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0075",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.0 — Baseline preservation and audit infrastructure",
+      "heading": "5.6.0 — Baseline preservation and audit infrastructure",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 75,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0083",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.1 — C++26 standards reconciliation",
+      "heading": "5.6.1 — C++26 standards reconciliation",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 83,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0091",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.2 — API reconciliation and legacy cleanup",
+      "heading": "5.6.2 — API reconciliation and legacy cleanup",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 91,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0099",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.3 — Full source and architecture audit",
+      "heading": "5.6.3 — Full source and architecture audit",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 99,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0115",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.4 — Defect fixes and adversarial regression coverage",
+      "heading": "5.6.4 — Defect fixes and adversarial regression coverage",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 115,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0123",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.5 — Measured performance optimization",
+      "heading": "5.6.5 — Measured performance optimization",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 123,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0131",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.6 — Second-pass audit and integration",
+      "heading": "5.6.6 — Second-pass audit and integration",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 131,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "phase-5-6:checkpoint:0139",
+      "kind": "Checkpoint",
+      "group": "Phase 5.6",
+      "title": "[Archive/Checkpoint] Phase 5.6 · 5.6.7 — Final verification and closure",
+      "heading": "5.6.7 — Final verification and closure",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "line": 139,
+      "parent": "phase-5-6:contract:0001"
+    },
+    {
+      "id": "development-protocol:contract:0001",
+      "kind": "Contract",
+      "group": "Development Protocol",
+      "title": "[Archive/Contract] Development Protocol · Miracle Development Protocol v1.0",
+      "heading": "Miracle Development Protocol v1.0",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 1
+    },
+    {
+      "id": "development-protocol:chapter:0012",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 1. Purpose and philosophy",
+      "heading": "1. Purpose and philosophy",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 12,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0034",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 2. Responsibilities and authority",
+      "heading": "2. Responsibilities and authority",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 34,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0085",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 3. Repository authority and persistence",
+      "heading": "3. Repository authority and persistence",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 85,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0123",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 4. Development hierarchy",
+      "heading": "4. Development hierarchy",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 123,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0166",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 5. Design Contract standard",
+      "heading": "5. Design Contract standard",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 166,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0253",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 6. Architectural locking and change control",
+      "heading": "6. Architectural locking and change control",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 253,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0305",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 7. Implementation guidance standard",
+      "heading": "7. Implementation guidance standard",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 305,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0326",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 8. Milestone review and verification",
+      "heading": "8. Milestone review and verification",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 326,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0398",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 9. Progress states and acceptance",
+      "heading": "9. Progress states and acceptance",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 398,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0420",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 10. Architectural Decision Records",
+      "heading": "10. Architectural Decision Records",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 420,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0443",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 11. Progress ledger and cross-chat continuity",
+      "heading": "11. Progress ledger and cross-chat continuity",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 443,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0469",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 12. Examples as executable specifications",
+      "heading": "12. Examples as executable specifications",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 469,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0487",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 13. Versioning and release discipline",
+      "heading": "13. Versioning and release discipline",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 487,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0509",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 14. Collaboration standards",
+      "heading": "14. Collaboration standards",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 509,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "development-protocol:chapter:0537",
+      "kind": "Chapter",
+      "group": "Development Protocol",
+      "title": "[Archive/Chapter] Development Protocol · Development Protocol v1.0 / 15. Protocol adoption and evolution",
+      "heading": "15. Protocol adoption and evolution",
+      "path": "docs/DEVELOPMENT_PROTOCOL.md",
+      "line": 537,
+      "parent": "development-protocol:contract:0001"
+    },
+    {
+      "id": "architecture:chapter:0003",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Product boundary",
+      "heading": "Product boundary",
+      "path": "docs/architecture.md",
+      "line": 3
+    },
+    {
+      "id": "architecture:chapter:0019",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Philosophy",
+      "heading": "Philosophy",
+      "path": "docs/architecture.md",
+      "line": 19
+    },
+    {
+      "id": "architecture:chapter:0036",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Language and toolchain philosophy",
+      "heading": "Language and toolchain philosophy",
+      "path": "docs/architecture.md",
+      "line": 36
+    },
+    {
+      "id": "architecture:chapter:0046",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Influences and attribution",
+      "heading": "Influences and attribution",
+      "path": "docs/architecture.md",
+      "line": 46
+    },
+    {
+      "id": "architecture:chapter:0058",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Dependency direction",
+      "heading": "Dependency direction",
+      "path": "docs/architecture.md",
+      "line": 58
+    },
+    {
+      "id": "architecture:chapter:0074",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Public modules",
+      "heading": "Public modules",
+      "path": "docs/architecture.md",
+      "line": 74
+    },
+    {
+      "id": "architecture:chapter:0080",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Build facts",
+      "heading": "Build facts",
+      "path": "docs/architecture.md",
+      "line": 80
+    },
+    {
+      "id": "architecture:chapter:0086",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Package identity",
+      "heading": "Package identity",
+      "path": "docs/architecture.md",
+      "line": 86
+    },
+    {
+      "id": "architecture:chapter:0090",
+      "kind": "Chapter",
+      "group": "Architecture",
+      "title": "[Archive/Chapter] Architecture · Compatibility",
+      "heading": "Compatibility",
+      "path": "docs/architecture.md",
+      "line": 90
+    }
+  ]
+}

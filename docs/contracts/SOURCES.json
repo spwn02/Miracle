@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "title": "Miracle historical frozen-contract preservation register",
+  "authority": "Historical sources only; this manifest does not imply a new approval or current implementation completeness.",
+  "lockedSources": [
+    {
+      "id": "foundation-v1.0",
+      "kind": "original-markdown",
+      "path": "docs/contracts/miracle-foundation-v1.0.md",
+      "sha256": "dd51415ac699c3c7818ab598fcf2eaad54ad7878e3f378b64cf0237f5db36ec9",
+      "gitBlobSha1": "d6bf031026187a17553c3f5d9d73d00f14c48ed2",
+      "origin": "ChatGPT Library: miracle-foundation-contract-v1.0.md; three copies verified identical"
+    },
+    {
+      "id": "phase-5.6-execution-v1.0",
+      "kind": "original-markdown",
+      "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+      "sha256": "b8721836b34fd616f8364cbac27219b56e23de24e1335db49eda4a6253ca2743",
+      "gitBlobSha1": "54ad47e4b7dd877ccec8fa96f42f61a371936273",
+      "origin": "ChatGPT Library: Miracle-Phase-5.6-Execution-Contract-v1.0.md; two copies verified identical"
+    },
+    {
+      "id": "phase-5.4-reader",
+      "kind": "derived-reading-edition",
+      "path": "docs/phases/phase-5.4-frozen-contract.md",
+      "gitBlobSha1": "4ff23fb9e7bc10401f8b662e81812e61f9b54137",
+      "origin": "Rendered from ChatGPT Library normative original DOCX; four single-cell callout tables rendered as Markdown blockquotes. Not byte-identical to original."
+    },
+    {
+      "id": "phase-5.4-original-docx",
+      "path": "docs/contracts/originals/Miracle-Phase-5.4-Frozen-Contract.docx",
+      "sha256": "b2888f39eddb7bd0a6e669527066af6d890e36551b74a0e9b76bd7b0b36fa63f",
+      "origin": "ChatGPT Library: Miracle-Phase-5.4-Frozen-Contract.docx",
+      "kind": "original-docx",
+      "gitBlobSha1": "f13a1928e27d860957e7a9e3cb8d526969af3d71"
+    }
+  ],
+  "pendingOriginals": [],
+  "followUp": "The original Phase 5.4 DOCX is preserved byte-for-byte and verified; any remaining contract discovery or maintainer acceptance is tracked in Issue #7."
+}

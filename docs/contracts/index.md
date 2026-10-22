@@ -1,0 +1,60 @@
+# Frozen contract archive
+
+**Status:** historical approved/frozen design record, imported for discoverability; not a new approval or implementation-status claim.
+**Tracking:** [contract migration Issue #7](https://github.com/spwn02/Miracle/issues/7) and [Miracle Development Project #3](https://github.com/users/spwn02/projects/3).
+
+Repository-tracked files are the authoritative published *copies* of verified locked texts. The Project remains authoritative for **current planning and status**, not editable duplicates of these contracts. The underlying source artifacts and any exceptional provenance limitations are identified below.
+
+## Verified source inventory
+
+| Source | Status at issuance | Canonical readable copy | Verification and qualification |
+| --- | --- | --- | --- |
+| Miracle Foundation & Structural Programming Contract Pack v1.0 | Combined locked reference, six contracts and Q1–Q238 decision ledger | [Foundation and structural programming contract pack](miracle-foundation-v1.0.md) | **Byte-identical** to the historical Library Markdown artifact `miracle-foundation-contract-v1.0.md`, Git blob SHA `d6bf031026187a17553c3f5d9d73d00f14c48ed2`; original SHA-256 `dd51415ac699c3c7818ab598fcf2eaad54ad7878e3f378b64cf0237f5db36ec9`. |
+| Phase 5.4 — Meta Completeness & Hardening | Frozen design and implementation contract, 2026-10-02 | [Phase 5.4 Markdown reading edition](../phases/phase-5.4-frozen-contract.md) | A **Pandoc/GFM reading edition with four single-cell accessibility callouts rendered as blockquotes**, **not a byte-identical source**. The original normative `Miracle-Phase-5.4-Frozen-Contract.docx` is preserved byte-for-byte at `docs/contracts/originals/Miracle-Phase-5.4-Frozen-Contract.docx`; its SHA-256 is `b2888f39eddb7bd0a6e669527066af6d890e36551b74a0e9b76bd7b0b36fa63f`. Reader Markdown Git blob SHA `4ff23fb9e7bc10401f8b662e81812e61f9b54137` (four single-cell Word callout tables rendered as accessible blockquotes, with unchanged wording). Exact original binary **is now preserved in Git** (blob `f13a1928e27d860957e7a9e3cb8d526969af3d71`). |
+| Phase 5.6 — Standards Reconciliation, Comprehensive Audit & Final Hardening | Locked execution contract v1.0, dated 2026-10-13 | [Phase 5.6 execution contract](../phases/phase-5.6-execution-contract-v1.0.md) | **Byte-identical** to Library Markdown `Miracle-Phase-5.6-Execution-Contract-v1.0.md`, Git blob SHA `54ad47e4b7dd877ccec8fa96f42f61a371936273`; original SHA-256 `b8721836b34fd616f8364cbac27219b56e23de24e1335db49eda4a6253ca2743`. |
+
+The combined Foundation pack contains the foundation, core runtime vocabulary, Iter, Meta/Validation/Shapes/Traits, Structural Programming, engineering/delivery contracts and their 238-question decision ledger. Do not split or selectively paraphrase that source during historical import.
+
+## Machine-checked preservation
+
+The `docs/contracts/SOURCES.json` register records the approved historical Markdown source hashes and the Phase 5.4 **derived reader** identity, plus the byte-identical original DOCX and its source checksum. The offline verifier runs in both reference and documentation CI:
+
+```sh
+python3 scripts/docs/verify-frozen-contracts.py --self-test
+python3 scripts/docs/verify-frozen-contracts.py
+```
+
+It fails if an archived locked source or recorded reading edition changes unexpectedly. Both the default check and `--require-originals` now verify the exact normative DOCX binary, in addition to historical Markdown texts and its derived reading edition. These checks prove source identity only—not historical approval metadata beyond the provided records or conformance of the current implementation.
+
+## Miracle Development Project — chapter and phase catalog
+
+The [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) is the operational board, while the immutable texts remain in Git. [PROJECT-CATALOG.json](PROJECT-CATALOG.json) contains **172 verified source-linked records**: 10 contract entries, 151 chapters, 2 phases, 8 Phase 5.6 checkpoints, and the foundation decision ledger. Records are generated from the exact frozen chapter headings in the Foundation pack, Phase 5.4, Phase 5.6, and the current Development Protocol and Architecture reference chapters. This is **the catalog of presently sourced chapters**, not an assertion that all earlier Miracle phase contracts were independently recovered or approved.
+
+These items are **draft Project references**, not 172 repository issues. Each title is namespaced `[Archive/Type]`; its body links directly to its authoritative source file and line, with a stable catalog ID, group and parent. They are **not development tasks** and do not change the existing Project Status field or imply completion.
+
+The importer uses `gh project` with the maintainer's GitHub Projects token scope. All commands are read-only unless explicitly passed `--apply`:
+
+```sh
+gh auth refresh -s project
+python3 scripts/github/sync-miracle-project.py --self-test
+python3 scripts/github/sync-miracle-project.py
+
+# AFTER PR #28 is merged and sources are on master:
+python3 scripts/github/sync-miracle-project.py --apply --all
+```
+
+The last command creates dedicated **Artifact Type** and **Archive Group** single-select fields, safely reuses namespaced existing draft entries, and creates the dedicated **Archive - Contracts**, **Archive - Phases**, **Archive - Chapters**, **Archive - Checkpoints**, and **Archive - Decision Ledger** table views with type filters. If interrupted, rerun the command to resume missing entries. Omitting `--all` imports at most 25 missing entries per run. No future phase is invented, no item is automatically marked Done, and contract bodies are not copied to draft items.
+
+**Project view configuration:** Each Archive table is type-filtered; the **Archive Group** field allows additional grouping by Foundation, Phase 5.4, Phase 5.6, Development Protocol or Architecture in the GitHub UI. Existing planning views are deliberately not edited, and the importer checks that the catalog on `master` exactly matches the local catalog before it creates links.
+
+**Current acceptance boundary:** The connected repository integration cannot read or mutate user-owned GitHub Projects V2 settings. The importer and catalog have offline source-heading validation in reference CI and docs CI, but the **actual Project #3 fields, items and views remain unverified until the maintainer executes the authenticated import**, inspects the resulting Project and explicitly accepts the migration. The [contract migration issue #7](https://github.com/spwn02/Miracle/issues/7) tracks that live verification.
+
+## Authority and history rules
+
+- **No retroactive approval.** Original approval/freeze statements reflect their historical dates and scope, not a fresh sign-off.
+- **No silent supersession.** Current source, accepted phase amendments and later contracts may differ from historical decisions. Such differences require explicit dated reconciliation, not rewriting older text or declaring it invalid by implication.
+- **No current-implementation inference.** A frozen design contract may describe planned work that was not yet implemented when issued. Consult tests, current [reference compiler policy](../compiler-support.md) and [development protocol](../DEVELOPMENT_PROTOCOL.md) for actual support and current implementation evidence.
+- **Reader edition caveat.** Phase 5.4's original DOCX remains the normative historical artifact; its **exact bytes** have now been included and verified in Git. The rendered Markdown is a convenience copy, not a substitute for the source in a byte-level audit.
+- **Remaining discovery.** The precise standalone approvals/source revisions for other Phase 5.X contracts (if any) have not yet been verified. They remain [Issue #7](https://github.com/spwn02/Miracle/issues/7) work, not fabricated completed migration.
+
+For current progress use the [Miracle Development Project](https://github.com/users/spwn02/projects/3) and the relevant Issues; preserve locked contract bodies in Git.

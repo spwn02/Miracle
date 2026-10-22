@@ -57,6 +57,12 @@ jobs:
       - name: Check generated navigation and pages
         run: python scripts/docs/verify-site.py site
 
+      - name: Verify locked contract source-byte preservation
+        run: |
+          python3 scripts/docs/verify-frozen-contracts.py --self-test
+          python3 scripts/docs/verify-frozen-contracts.py
+          python3 scripts/github/sync-miracle-project.py --self-test
+
       - name: Crawl all rendered site links, fragments and error-path fixtures
         run: |
           python3 scripts/docs/verify-links.py --self-test
