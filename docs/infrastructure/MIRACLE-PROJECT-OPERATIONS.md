@@ -81,3 +81,17 @@ The script refuses unexpected Issue states or Project field values and performs 
 - Record explicit maintainer acceptance under [#29](https://github.com/spwn02/Miracle/issues/29).
 
 This document is an operational guide, **not** a new frozen product contract, automatic G2 closeout, or permission to rewrite historical artifacts.
+## Automated Actions bridge (post-bootstrap, permission-gated)
+
+The owner authorized investigating automated native Project administration **after** the original G2 bootstrap; this does not retroactively waive the G2 provider-metadata discrepancy. [Workflow](../../.github/workflows/miracle-project-operations.yml) runs **only** a fixed allowlist of repository-reviewed Project scripts. No independent planning UI/database is created.
+
+1. GitHub's standard repository `GITHUB_TOKEN` **cannot** read or write user-owned Projects V2. Use a separately scoped Projects credential; for this user-owned Project, GitHub documents a **classic PAT with `project` scope**, or an appropriately permissioned GitHub App token. The account settings UI also supports fine-grained PATs, but GitHub documents limitations for *user-owned Projects*, so do not assume they will work without verifying the specific token.
+2. Store the credential once as the **repository Actions secret** `MIRACLE_PROJECT_TOKEN` under `spwn02/Miracle → Settings → Secrets and variables → Actions`. Give it an expiration appropriate to its purpose. Never put it in Issues, chat, scripts, the source tree, Actions logs or the repository's ordinary variables.
+3. The workflow may be started via **Actions → Miracle Project Operations → Run workflow**, choosing `audit`, `reconcile-plan`, `reconcile-verify` or `reconcile-apply`. Alternatively, comment one exact command on **Issue #29**, under the maintainer account: `/miracle-project audit`, `/miracle-project reconcile-plan`, `/miracle-project reconcile-verify` or `/miracle-project reconcile-apply`. Other users and other Issues cannot invoke this workflow's privileged job.
+4. The workflow always checks out `master`, with persisted checkout credentials disabled. Project credentials are passed **only** to the reviewed operation step. The ordinary repository token posts a result link on Issue #29 for comment-triggered runs. Project writes are limited to the existing, guarded seven-item reconciliation allowlist.
+5. The read-only audit verifies Project identity, required fields, and #31's actual deferred classification, and enumerates saved native views and workflow names. It is **not** an automatic acceptance of those view configurations, workflow semantics, G2 `wasAutomated` provenance, or frozen contracts.
+6. A nonzero exit, partial write or absent secret is a failure requiring examination. The workflow's run URL and job logs preserve the evidence. Re-running `reconcile-plan` before any apply is recommended. Future broad Project mutations require **their own reviewed code and narrow authorization contract**, not arbitrary text interpreted from an Issue.
+
+### Credential lifecycle
+
+Use the shortest workable expiration; revoke/rotate `MIRACLE_PROJECT_TOKEN` after suspected compromise or loss of owner access. This credential is stored and controlled by GitHub; **the assistant cannot view or install it** through the current connector. Until the secret is configured and the workflow merged, the bridge remains staged and cannot execute Projects operations on behalf of the assistant.
