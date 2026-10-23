@@ -98,6 +98,7 @@ def check(workflows: dict[str, str]) -> list[str]:
         "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
         "item inspect gate": "startsWith(github.event.comment.body, '/miracle-project inspect ')",
         "item update gate": "startsWith(github.event.comment.body, '/miracle-project update ')",
+        "progress status gate": "startsWith(github.event.comment.body, '/miracle-project progress ')",
         "Python command validation": "python3 scripts/github/project-item-control.py --self-test",
         "Python command executor": "python3 scripts/github/project-item-control.py",
         "relation inspect gate": "startsWith(github.event.comment.body, '/miracle-project relations ')",
@@ -221,6 +222,14 @@ def main() -> int:
         print("ERROR: widened native hierarchy trigger escaped guard", file=sys.stderr)
         return 1
 
+    widened_progress = dict(workflows)
+    widened_progress["miracle-project-operations.yml"] = widened_progress["miracle-project-operations.yml"].replace(
+        "startsWith(github.event.comment.body, '/miracle-project progress ')", "true"
+    )
+    if not check(widened_progress):
+        print("ERROR: widened Project progress trigger escaped guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -261,7 +270,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 8 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 9 mutations, and 4 parser fixtures.")
     return 0
 
 
