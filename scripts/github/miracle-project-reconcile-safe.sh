@@ -13,13 +13,36 @@ REPO=spwn02/Miracle
 PROJECT_NUMBER=3
 PROJECT_ID='PVT_kwHOCp2Gs84Bna-3'
 
-ACTUAL_ID="$(gh project view "$PROJECT_NUMBER" --owner "$OWNER" --format json --jq .id)"
-[[ "$ACTUAL_ID" == "$PROJECT_ID" ]] || { echo "Unexpected project identity: $ACTUAL_ID" >&2; exit 1; }
-FIELDS="$(gh project field-list "$PROJECT_NUMBER" --owner "$OWNER" --limit 100 --format json)"
-STATUS_ID="$(jq -r '[.fields[] | select(.name=="Status" and .type=="ProjectV2SingleSelectField") | .id] | if length==1 then .[0] else empty end' <<<"$FIELDS")"
-[[ -n "$STATUS_ID" ]] || { echo 'Missing/ambiguous Status field.' >&2; exit 1; }
+# gh project owner detection is unreliable for some otherwise valid Projects PATs.
+# Verify identity and use direct GraphQL, as audit-native-project.sh already does.
+if ! login="$(gh api user --jq .login)"; then
+  echo 'Token rejected. Check GitHub Actions secret and expiration.' >&2
+  exit 1
+fi
+[[ "$login" == "$OWNER" ]] || { echo "Credential belongs to unexpected user: $login" >&2; exit 1; }
+read -r -d '' SCHEMA_QUERY <<'GQL' || true
+query {
+  user(login:"spwn02") {
+    projectV2(number:3) {
+      id
+      field(name:"Status") {
+        ... on ProjectV2SingleSelectField { id name options { id name } }
+      }
+    }
+  }
+}
+GQL
+SCHEMA="$(gh api graphql -f query="$SCHEMA_QUERY")" || exit 1
+jq -e --arg id "$PROJECT_ID" '
+  ((.errors // []) | length)==0
+  and .data.user.projectV2.id==$id
+  and .data.user.projectV2.field.name=="Status"
+  and (.data.user.projectV2.field.options | type)=="array"
+' <<<"$SCHEMA" >/dev/null || { echo 'Status schema inaccessible or wrong Project.' >&2; exit 1; }
+STATUS_ID="$(jq -r .data.user.projectV2.field.id <<<"$SCHEMA")"
+[[ -n "$STATUS_ID" && "$STATUS_ID" != null ]] || { echo 'Missing status field ID.' >&2; exit 1; }
 option_id() {
-  jq -r --arg name "$1" '[.fields[] | select(.name=="Status" and .type=="ProjectV2SingleSelectField") | .options[] | select(.name==$name) | .id] | if length==1 then .[0] else empty end' <<<"$FIELDS"
+  jq -r --arg name "$1" '[.data.user.projectV2.field.options[] | select(.name==$name) | .id] | if length==1 then .[0] else empty end' <<<"$SCHEMA"
 }
 for status in Backlog Accepted Verification Implementing; do
   [[ -n "$(option_id "$status")" ]] || { echo "Missing/ambiguous Status option $status" >&2; exit 1; }
@@ -117,6 +140,19 @@ if [[ "$MODE" == --verify ]]; then
   exit 0
 fi
 
+read -r -d '' MUTATION <<'GQL' || true
+mutation($projectId:ID!, $itemId:ID!, $fieldId:ID!, $optionId:String!) {
+  updateProjectV2ItemFieldValue(
+    input: {
+      projectId:$projectId
+      itemId:$itemId
+      fieldId:$fieldId
+      value:{singleSelectOptionId:$optionId}
+    }
+  ) { projectV2Item { id } }
+}
+GQL
+
 # Apply one field mutation at a time, re-check each live item immediately before
 # writing (optimistic guard), and verify after write. No automatic rollback.
 for change in "${CHANGES[@]}"; do
@@ -126,8 +162,11 @@ for change in "${CHANGES[@]}"; do
   current="$(status_of "$item")"
   if [[ "$current" == "$desired" ]]; then echo "SKIP #$n: updated meanwhile"; continue; fi
   [[ "$current" == Backlog ]] || { echo "Issue #$n status changed to $current; stopping without overwrite." >&2; exit 1; }
-  gh project item-edit --id "$item_id" --project-id "$PROJECT_ID" --field-id "$STATUS_ID" \
-    --single-select-option-id "$(option_id "$desired")" >/dev/null
+  gh api graphql -f query="$MUTATION" \
+    -f projectId="$PROJECT_ID" -f itemId="$item_id" -f fieldId="$STATUS_ID" \
+    -f optionId="$(option_id "$desired")" \
+    | jq -e --arg id "$item_id" \
+      '((.errors // []) | length)==0 and .data.updateProjectV2ItemFieldValue.projectV2Item.id==$id' >/dev/null
   success=0
   for attempt in 1 2 3 4 5; do
     if new_item="$(fetch_item "$n" "$state")" && [[ "$(status_of "$new_item")" == "$desired" ]]; then
