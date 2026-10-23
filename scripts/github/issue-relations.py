@@ -183,8 +183,10 @@ def add_child(parent_number: int, child_number: int) -> None:
     # No replace_parent flag: GitHub itself checks cycles and hierarchy limits.
     result = call("-X", "POST", f"{BASE}/issues/{parent_number}/sub_issues",
                   "-F", f"sub_issue_id={junior['id']}")
-    if not isinstance(result, dict) or result.get("id") != junior["id"]:
-        raise Refusal("add-child response did not confirm the intended Issue")
+    # GitHub's sub-issue POST may return the parent rather than the child.
+    # Mutation HTTP success is not acceptance; verify both GET endpoints below.
+    if not isinstance(result, dict):
+        raise Refusal("add-child returned an unexpected response shape")
     verify(lambda: (p := parent(child_number)) is not None
            and p["number"] == parent_number
            and child_number in numbers(child_list(parent_number)),
@@ -206,8 +208,10 @@ def add_blocker(number: int, prerequisite: int) -> None:
         raise Refusal("reverse blocked-by relationship would create a cycle")
     result = call("-X", "POST", f"{BASE}/issues/{number}/dependencies/blocked_by",
                   "-F", f"issue_id={blocking_issue['id']}")
-    if not isinstance(result, dict) or result.get("id") != blocking_issue["id"]:
-        raise Refusal("add-blocker response did not confirm the intended Issue")
+    # Response payload identity is not the acceptance criterion; both native
+    # dependency directions are checked independently after the POST.
+    if not isinstance(result, dict):
+        raise Refusal("add-blocker returned an unexpected response shape")
     verify(lambda: prerequisite in numbers(blocked_by(number))
            and number in numbers(blocking(prerequisite)),
            f"native #{number} blocked by #{prerequisite}")
