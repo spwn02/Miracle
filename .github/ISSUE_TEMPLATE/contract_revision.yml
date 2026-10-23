@@ -1,0 +1,89 @@
+name: "Contract Revision Proposal"
+description: "Request an explicitly reviewed amendment/new version of a Miracle design contract. Filing is not approval."
+title: "[Contract Revision] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form creates a **proposal**, never an approved amendment.
+        [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) is the planning workspace; only reviewed Git sources constitute authoritative contracts.
+        Read the [Development Protocol](https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md) and [Contract Revision Protocol](https://github.com/spwn02/Miracle/blob/master/docs/contracts/REVISION-PROTOCOL.md).
+        Do not paste private material, credentials or vulnerabilities; follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md).
+  - type: input
+    id: canonical-source
+    attributes:
+      label: "Normative contract source"
+      description: "Repository path or stable Git link to the existing contract. Use 'New contract' only if no baseline exists."
+      placeholder: "docs/contracts/... @ master or exact commit"
+    validations:
+      required: true
+  - type: input
+    id: baseline-version
+    attributes:
+      label: "Baseline version and Git revision"
+      description: "Version/commit/blob SHA, or explain what is not yet known. Preserve the normative original."
+      placeholder: "v1.0 at commit ..., blob ...; or New contract"
+    validations:
+      required: true
+  - type: textarea
+    id: clauses
+    attributes:
+      label: "Affected clauses, invariants or decisions"
+      description: "Cite headings/sections/decision IDs; distinguish the current rule from the proposed rule."
+      placeholder: "Current: §...; proposed: ..."
+    validations:
+      required: true
+  - type: dropdown
+    id: proposal-kind
+    attributes:
+      label: "Revision category"
+      options:
+        - "New version of an existing contract"
+        - "Explicit amendment/addendum"
+        - "New contract, no historical baseline"
+        - "Correction to non-normative reader/index (not frozen source)"
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Reason for revisiting the contract"
+      description: "Concrete problem, standards change, new requirement, or proven contradiction."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: "Proposed design and acceptance criteria"
+      description: "Describe precise API/semantic change and observable outcomes; proposal text here is not authoritative."
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: "Compatibility, invariants and migration impact"
+      description: "Explain consumers, existing commitments, risk, and transitions."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives and trade-offs"
+      description: "Include deferral and no-change alternatives."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: "Proposed verification and evidence"
+      description: "Tests, compiler constraints, references and checks; explicitly identify unrun evidence."
+    validations:
+      required: true
+  - type: textarea
+    id: owner-decision
+    attributes:
+      label: "Decision requested from the contract owner"
+      description: "Clearly state the question requiring human approval. Do not record approval on the owner's behalf."
+      placeholder: "Approve drafting a new v..., or reject/defer this proposal."
+    validations:
+      required: true
