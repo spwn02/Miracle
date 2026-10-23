@@ -156,3 +156,19 @@ The standard `/miracle-project audit` command reads the **real Project #3 view c
 The Development board must group by `Status` to function as a true execution board. `Backlog`, `Deferred`, `Bugs`, `Blocked`, `Contract Reviews`, `Decisions`, `Overview`, and `Archive` must remain native saved views with intentional filters. The Roadmap must use GitHub's actual **ROADMAP_LAYOUT**. A present Roadmap tab is **not sufficient to claim an effective schedule**: Project timeline bars additionally require genuinely assigned date/iteration fields and meaningful date values. No arbitrary dates are to be fabricated to populate the chart.
 
 A base Project-identity audit may succeed while warning about incomplete view grouping or scheduling. Such warnings are *actionable findings*, not implicit approval of Project presentation. A separately reviewed, non-destructive native Project view operation or explicit user-side settings adjustment is required before claiming full visual acceptance. GraphQL's exposed visible fields and grouping options do not establish every browser-only display setting (such as some roadmap axis/zoom preferences).
+
+## Scoped native Roadmap filter
+
+The verified 2026-10-23 Project audit found the native **Development** board already uses **vertical Status columns**; the earlier horizontal-grouping warning was a false positive. The same audit confirmed the existing **Roadmap** was a genuine `ROADMAP_LAYOUT` but had an **empty filter**, inadvertently mixing historical Project draft records and deferred proposals into the timeline's item source.
+
+The owner-only Actions bridge therefore offers three fixed operations against **the existing Roadmap view only**:
+
+```text
+/miracle-project roadmap-plan
+/miracle-project roadmap-apply
+/miracle-project roadmap-verify
+```
+
+The only authorized change is **empty filter → `is:issue is:open disposition:Planned`**. The guarded controller authenticates as `spwn02`, verifies Project #3's immutable ID, requires exactly one `Roadmap` in `ROADMAP_LAYOUT`, refuses any nonempty/conflicting owner filter, makes the dedicated `updateProjectV2View` GraphQL mutation, and independently reads the view back. Repeated application is idempotent. No new view, changed layout, Group By, draft issues, execution status, dates/iterations, milestones or contracts are touched.
+
+A valid Roadmap filter does **not** imply scheduled bars exist. Deliberately unplanned/datetimeless work remains in Backlog/Development; genuine dates must be set through a separate reviewed planning decision, not generated merely to populate a visual timeline.
