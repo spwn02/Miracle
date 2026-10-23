@@ -207,7 +207,7 @@ def require_progress_evidence(issue: dict[str, Any], values: dict[str, str],
     if "## Acceptance criteria" not in body and "## Delivery gates" not in body:
         raise GuardError("Issue must document acceptance criteria or delivery gates")
     if desired in {"Review", "Verification"}:
-        if not re.search(r"https://github\\.com/spwn02/Miracle/(?:pull/\\d+|actions/runs/\\d+)", body):
+        if not re.search(r"https://github\.com/spwn02/Miracle/(?:pull/\d+|actions/runs/\d+)", body):
             raise GuardError("Review/Verification transition requires linked repository PR or CI evidence")
 
 
@@ -269,6 +269,24 @@ def self_test() -> None:
     good_issue = {"body": "## Acceptance criteria\\n- [ ] verify", "state": "OPEN"}
     work = {"Kind": "Task", "Area": "Infrastructure", "Disposition": "Planned"}
     require_progress_evidence(good_issue, work, "Backlog", "Implementing")
+    positive_review = {"body": "## Acceptance criteria\n- [x] tests\n"
+                       "Evidence: https://github.com/spwn02/Miracle/pull/46"}
+    require_progress_evidence(positive_review, work, "Implementing", "Review")
+    require_progress_evidence(positive_review, work, "Implementing", "Verification")
+    positive_ci = {"body": "## Acceptance criteria\n- [x] tests\n"
+                   "Evidence: https://github.com/spwn02/Miracle/actions/runs/39890239486"}
+    require_progress_evidence(positive_ci, work, "Review", "Verification")
+    for invalid_link in ("https://github.com/other/Miracle/pull/46",
+                         "https://github.com/spwn02/Miracle/issues/45",
+                         "https://github.com/spwn02/Miracle/pull/not-a-number"):
+        wrong_issue = {"body": "## Acceptance criteria\n" + invalid_link}
+        try:
+            require_progress_evidence(wrong_issue, work, "Implementing", "Verification")
+        except GuardError:
+            pass
+        else:
+            raise AssertionError("invalid evidence URL accepted")
+
     for old, new in (("Backlog", "Accepted"), ("Review", "Implementing"), ("Verification", "Accepted")):
         try:
             require_progress_evidence(good_issue, work, old, new)
