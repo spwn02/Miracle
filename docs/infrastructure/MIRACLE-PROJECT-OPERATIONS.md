@@ -222,3 +222,15 @@ The owner-only Issue #29 command:
 performs read-only, target-Project-specific GraphQL timeline queries on **existing real Issues #8, #24 and #49**. It prints event type, Project number, timestamp, actor, the literal Boolean and status changes; excludes events from the separate Roadmap Project #2; rejects incomplete timeline pagination; and makes no Project/Issue write. The result is diagnostic evidence only, not an alternative Project auto-add workflow or a claim that GitHub changed its GraphQL semantics. If results remain inconsistent, preserve them and seek provider clarification via the public developer community. Never fabricate an Issue to trigger a favorable event or quietly waive the G2 maintainer gate.
 
 The script intentionally reports `false` without converting it to `true` based on the `github-project-automation` actor. Neither successful Project field changes nor this audit can supply a missing GitHub provider statement.
+
+## Live G6 GitHub community configuration audit
+
+The G6 [community acceptance workstream](https://github.com/spwn02/Miracle/issues/6) requires **runtime** proof that support/category links and Q&A behavior correspond to GitHub's saved settings, not just strings in source files. Through the existing owner-only Issue #29 bridge:
+
+```text
+/miracle-project g6-community
+```
+
+A read-only, fixed-script Actions job checks the actual public repository identity, default branch, `has_discussions` setting, live GraphQL Discussion category slugs and whether the Q&A category has `isAnswerable=true`. It compares real category slugs against the checked-out `SUPPORT.md`, `CONTRIBUTING.md` and native Issue chooser links. It also requires published SECURITY/Code of Conduct instructions to exist. The command neither posts a Discussion nor accesses private reports or sends confidential emails.
+
+**Evidence boundary:** A passing configuration check demonstrates that the **Q&A answer-selection feature is enabled**, not that a real participant asked a question or that an answer was actually accepted. Likewise, a published security/conduct route does not confirm **confidential delivery or triage**. Those remaining G6 gates require a real interaction or later owner-verified experience. Do not create fake questions, vulnerabilities, or conduct allegations solely to pass G6.

@@ -49,6 +49,8 @@ jobs:
           python3 scripts/github/audit-project-archive.py --self-test
           python3 -m py_compile scripts/github/audit-g2-provenance.py
           python3 scripts/github/audit-g2-provenance.py --self-test
+          python3 -m py_compile scripts/github/audit-g6-community.py
+          python3 scripts/github/audit-g6-community.py --self-test
           python3 -m py_compile scripts/github/project-issue-intake.py
           python3 scripts/github/project-issue-intake.py --self-test
           python3 -m py_compile scripts/github/issue-relations.py
