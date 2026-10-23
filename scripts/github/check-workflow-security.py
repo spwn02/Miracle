@@ -96,6 +96,8 @@ def check(workflows: dict[str, str]) -> list[str]:
         "scoped Project token": "GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}",
         "reviewed Roadmap update gate": "github.event.comment.body == '/miracle-project roadmap-apply'",
         "reviewed Roadmap controller": "python3 scripts/github/project-roadmap-filter.py --apply",
+        "catalog read-only command": "github.event.comment.body == '/miracle-project archive-audit'",
+        "catalog read-only runner": "python3 scripts/github/audit-project-archive.py",
         "no cancellation of ongoing writes": "cancel-in-progress: false",
         "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
         "item inspect gate": "startsWith(github.event.comment.body, '/miracle-project inspect ')",
