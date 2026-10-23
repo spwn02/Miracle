@@ -94,6 +94,8 @@ def check(workflows: dict[str, str]) -> list[str]:
         "reviewed checkout": "ref: master",
         "no checkout credentials": "persist-credentials: false",
         "scoped Project token": "GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}",
+        "reviewed Roadmap update gate": "github.event.comment.body == '/miracle-project roadmap-apply'",
+        "reviewed Roadmap controller": "python3 scripts/github/project-roadmap-filter.py --apply",
         "no cancellation of ongoing writes": "cancel-in-progress: false",
         "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
         "item inspect gate": "startsWith(github.event.comment.body, '/miracle-project inspect ')",
@@ -230,6 +232,14 @@ def main() -> int:
         print("ERROR: widened Project progress trigger escaped guard", file=sys.stderr)
         return 1
 
+    widened_roadmap = dict(workflows)
+    widened_roadmap["miracle-project-operations.yml"] = widened_roadmap["miracle-project-operations.yml"].replace(
+        "github.event.comment.body == '/miracle-project roadmap-apply'", "true"
+    )
+    if not check(widened_roadmap):
+        print("ERROR: widened Roadmap write trigger escaped security guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -270,7 +280,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 9 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 10 mutations, and 4 parser fixtures.")
     return 0
 
 
