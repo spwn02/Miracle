@@ -43,6 +43,8 @@ jobs:
            github.event.comment.body == '/miracle-project roadmap-verify' ||
            github.event.comment.body == '/miracle-project roadmap-apply' ||
            github.event.comment.body == '/miracle-project archive-audit' ||
+           startsWith(github.event.comment.body, '/miracle-project intake-inspect ') ||
+           startsWith(github.event.comment.body, '/miracle-project intake-add ') ||
            startsWith(github.event.comment.body, '/miracle-project inspect ') ||
            startsWith(github.event.comment.body, '/miracle-project update ') ||
            startsWith(github.event.comment.body, '/miracle-project progress ') ||
@@ -73,10 +75,12 @@ jobs:
           python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/issue-relations.py --self-test
           python3 scripts/github/audit-project-archive.py --self-test
+          python3 scripts/github/project-issue-intake.py --self-test
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
             '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
             '/miracle-project archive-audit') ;;
+            '/miracle-project intake-inspect '*|'/miracle-project intake-add '*) ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*) ;;
             '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
@@ -146,6 +150,10 @@ jobs:
             '/miracle-project archive-audit')
               action='archive-audit'
               python3 scripts/github/audit-project-archive.py
+              ;;
+            '/miracle-project intake-inspect '*|'/miracle-project intake-add '*)
+              action='issue-intake'
+              python3 scripts/github/project-issue-intake.py
               ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*)
               action='project-item-control'
