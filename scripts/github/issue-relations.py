@@ -299,9 +299,9 @@ def self_test() -> None:
         "Parent: https://github.com/other/Miracle/issues/29",
         "Parent: [Workspace #29](https://github.com/spwn02/Miracle/issues/29) and #45",
         "See https://github.com/spwn02/Miracle/issues/29",
-        "```markdown\\nParent: #29\\n```",
+        "```markdown\nParent: #29\n```",
         "> Parent: #29",
-        "~~~\\nParent: #29\\n~~~",
+        "~~~\nParent: #29\n~~~",
     ):
         assert not declares_parent(invalid, 29), invalid
     assert not declares_parent("Parent: #29", 45)
