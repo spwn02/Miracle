@@ -31,6 +31,7 @@
 # Infrastructure and Governance
 
 - [GitHub Infrastructure Contract](infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md)
+- [Proposed G2 archive amendment (NOT APPROVED)](infrastructure/amendments/G2-NATIVE-ARCHIVE-PROVENANCE-CANDIDATE.md)
 - [G0 — Audit](infrastructure/G0-AUDIT.md)
 - [G0 — Progress](infrastructure/G0-PROGRESS.md)
 - [G1 — Progress](infrastructure/G1-PROGRESS.md)
