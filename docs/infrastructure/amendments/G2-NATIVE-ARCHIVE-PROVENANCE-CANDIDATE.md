@@ -1,9 +1,9 @@
 # Candidate amendment — G2 historical Project archive fidelity and provenance
 
-**Status:** PROPOSED / UNDER REVIEW — **NOT APPROVED, NOT NORMATIVE**  
-**Proposed under:** [Contract Revision #62](https://github.com/spwn02/Miracle/issues/62), genuine child of [revision protocol #45](https://github.com/spwn02/Miracle/issues/45)  
-**Baseline:** [GitHub Infrastructure Contract v1.0](../GITHUB-INFRASTRUCTURE-CONTRACT.md), §1, §2, §3.2 at commit `0bf1bfe3c7fe7cf295a6edb2a0962bfff273be4f`, blob `0eeaa0de5d49ceff903b9eb35d6c40bc53cfc74b`  
-**Authority:** the author's approved local canonical Git state and later explicit decision; this file is a review candidate, *not* a replacement for v1.0.  
+**Status:** PROPOSED / UNDER REVIEW — **NOT APPROVED, NOT NORMATIVE**
+**Proposed under:** [Contract Revision #62](https://github.com/spwn02/Miracle/issues/62), genuine child of [revision protocol #45](https://github.com/spwn02/Miracle/issues/45)
+**Baseline:** [GitHub Infrastructure Contract v1.0](../GITHUB-INFRASTRUCTURE-CONTRACT.md), §1, §2, §3.2 at commit `0bf1bfe3c7fe7cf295a6edb2a0962bfff273be4f`, blob `0eeaa0de5d49ceff903b9eb35d6c40bc53cfc74b`
+**Authority:** the author's approved local canonical Git state and later explicit decision; this file is a review candidate, *not* a replacement for v1.0.
 **No implementation authorization:** native Project history/draft mutation and branch/Issue cleanup remain Stage B, gated behind final accepted [Workspace #29](https://github.com/spwn02/Miracle/issues/29).
 
 ## 1. Purpose and compatibility
