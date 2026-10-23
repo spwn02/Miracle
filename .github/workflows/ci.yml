@@ -42,6 +42,8 @@ jobs:
           bash -n scripts/github/miracle-project-reconcile-safe.sh
           bash -n scripts/github/audit-native-project.sh
           python3 -m py_compile scripts/github/project-item-control.py
+          python3 -m py_compile scripts/github/project-roadmap-filter.py
+          python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/project-item-control.py --self-test
           python3 -m py_compile scripts/github/issue-relations.py
           python3 scripts/github/issue-relations.py --self-test
