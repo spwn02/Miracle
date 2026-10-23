@@ -112,3 +112,23 @@ Only the single-select fields **`Kind`, `Disposition`, and `Area`** are editable
 **Important concurrency limit:** GitHub Projects' field mutation lacks an atomic compare-and-swap input. The script rechecks immediately before the write, but another editor could race between read and mutation; record and investigate any detected conflict. Do not treat the bridge as a transactional database. No generic status acceptance, timeline modification, dependency-graph editing, archive reclassification, contract freeze, release or Issue closure is authorized by this command.
 
 `python3 scripts/github/project-item-control.py --self-test` validates parsing and negative fixtures without GitHub credentials. Agent-mediated read/write acceptance still requires a live inspect followed by a small, justified Project field update and read-back.
+
+## Native Issue relationships (owner-only, GitHub-hosted)
+
+[Real implementation task #36](https://github.com/spwn02/Miracle/issues/36) tracks the relationship controller and its acceptance. GitHub's official **sub-issues** and **issue dependencies** REST APIs are the native source; no custom graph storage or website.
+
+The same owner-only Issue #29 command bridge accepts:
+
+```text
+/miracle-project relations 29
+/miracle-project add-child {"parent":29,"child":36}
+/miracle-project add-blocker {"issue":<blocked-issue-number>,"blocked_by":<prerequisite-number>}
+```
+
+Unlike user-owned Project field operations, native Issue relationships use the workflow's separate, **job-scoped `issues:write` repository `GITHUB_TOKEN`**, not `MIRACLE_PROJECT_TOKEN`. Untrusted comment content is accepted only via an exact command grammar and Python's JSON parser (never executed as shell). The controller verifies both real repository Issue identities and that write targets are open, rejects self-links, current incompatible parents and incomplete lists, refuses `replace_parent`, and checks the canonical parent and child endpoints after a mutation.
+
+For **add-child**, the child Issue body must already reference its proposed parent. For **add-blocker**, the blocked Issue must explicitly document `Blocked by #N` before the agent may add that dependency, and a reverse dependency is prohibited. This guard prevents equating unrelated-but-linked Issues with actual prerequisites. No fabricated dependency should ever be created solely to demonstrate the API.
+
+Native Issue relationships are distinct from Project `Status` and `Disposition`: neither hierarchy nor a dependency creates an acceptance decision, schedule, or release commitment. This operation cannot edit contracts, close Issues, change fields, or modify Project draft archives.
+
+The REST API is not a transaction: GitHub performs validation of deeper hierarchy or dependency constraints. Post-write read-back is mandatory. If a network/API error occurs after a mutation, inspect the live relation before retrying; do not assume rollback.

@@ -100,6 +100,13 @@ def check(workflows: dict[str, str]) -> list[str]:
         "item update gate": "startsWith(github.event.comment.body, '/miracle-project update ')",
         "Python command validation": "python3 scripts/github/project-item-control.py --self-test",
         "Python command executor": "python3 scripts/github/project-item-control.py",
+        "relation inspect gate": "startsWith(github.event.comment.body, '/miracle-project relations ')",
+        "relation child gate": "startsWith(github.event.comment.body, '/miracle-project add-child ')",
+        "relation blocker gate": "startsWith(github.event.comment.body, '/miracle-project add-blocker ')",
+        "scoped repo token": "GH_TOKEN: ${{ github.token }}",
+        "issue permission": "issues: write",
+        "relation validator": "python3 scripts/github/issue-relations.py --self-test",
+        "relation executor": "python3 scripts/github/issue-relations.py",
     }
     for label, fragment in checks.items():
         if fragment not in project:
@@ -206,6 +213,14 @@ def main() -> int:
         print("ERROR: widened Project field-command trigger escaped guard", file=sys.stderr)
         return 1
 
+    widened_relations = dict(workflows)
+    widened_relations["miracle-project-operations.yml"] = widened_relations["miracle-project-operations.yml"].replace(
+        "startsWith(github.event.comment.body, '/miracle-project add-child ')", "true"
+    )
+    if not check(widened_relations):
+        print("ERROR: widened native hierarchy trigger escaped guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -246,7 +261,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 7 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 8 mutations, and 4 parser fixtures.")
     return 0
 
 

@@ -40,7 +40,10 @@ jobs:
            github.event.comment.body == '/miracle-project reconcile-verify' ||
            github.event.comment.body == '/miracle-project reconcile-apply' ||
            startsWith(github.event.comment.body, '/miracle-project inspect ') ||
-           startsWith(github.event.comment.body, '/miracle-project update '))))
+           startsWith(github.event.comment.body, '/miracle-project update ') ||
+           startsWith(github.event.comment.body, '/miracle-project relations ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-child ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-blocker '))))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -62,11 +65,28 @@ jobs:
           bash -n scripts/github/audit-native-project.sh
           bash -n scripts/github/miracle-project-reconcile-safe.sh
           python3 scripts/github/project-item-control.py --self-test
+          python3 scripts/github/issue-relations.py --self-test
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
             '/miracle-project inspect '*|'/miracle-project update '*) ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
           esac
+
+      - name: Execute native Issue relationships with repository-scoped token
+        id: relation
+        if: >-
+          github.event_name == 'issue_comment' &&
+          (startsWith(github.event.comment.body, '/miracle-project relations ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-child ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-blocker '))
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          python3 scripts/github/issue-relations.py
 
       - name: Execute only the selected native Project operation
         id: execute
@@ -76,6 +96,10 @@ jobs:
           REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
         run: |
           set -euo pipefail
+          if [[ "$REQUEST" == '/miracle-project relations '* || "$REQUEST" == '/miracle-project add-child '* || "$REQUEST" == '/miracle-project add-blocker '* ]]; then
+            echo 'Native Issue relationship handled by the repository-token step.'
+            exit 0
+          fi
           if [[ -z "$GH_TOKEN" ]]; then
             echo 'MIRACLE_PROJECT_TOKEN secret missing: configure a Projects-scoped credential (not the repository GITHUB_TOKEN).' >&2
             exit 1
@@ -102,6 +126,10 @@ jobs:
               action='project-item-control'
               python3 scripts/github/project-item-control.py
               ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*)
+              action='native-issue-relationship'
+              echo 'Issue relation command executed in separate repository-scoped step.'
+              ;;
             *) echo 'Invalid operation' >&2; exit 1 ;;
           esac
           echo "## Miracle native Project operation" >> "$GITHUB_STEP_SUMMARY"
@@ -114,7 +142,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RESULT: ${{ steps.execute.outcome }}
+          RESULT: ${{ steps.relation.outcome == 'skipped' && steps.execute.outcome || steps.relation.outcome }}
           REQUEST: ${{ github.event.comment.body }}
         run: |
           set -euo pipefail
