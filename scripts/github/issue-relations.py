@@ -183,7 +183,21 @@ def declares_parent(body: str, expected_number: int) -> bool:
         r"\(https://github\.com/spwn02/Miracle/issues/([1-9][0-9]{0,6})\)"
     )
     values: list[int | None] = []
+    fence: tuple[str, int] | None = None
     for line in body.splitlines():
+        stripped = line.lstrip()
+        delimiter = re.match(r"^(`{3,}|~{3,})", stripped)
+        if delimiter:
+            marker = delimiter.group(1)
+            if fence is None:
+                fence = (marker[0], len(marker))
+            elif (marker[0] == fence[0] and len(marker) >= fence[1]
+                  and not stripped[len(marker):].strip()):
+                fence = None
+            continue
+        # Markdown examples and quoted text are not authorization declarations.
+        if fence is not None or stripped.startswith(">"):
+            continue
         match = declaration.fullmatch(line)
         if match is None:
             continue
@@ -285,6 +299,9 @@ def self_test() -> None:
         "Parent: https://github.com/other/Miracle/issues/29",
         "Parent: [Workspace #29](https://github.com/spwn02/Miracle/issues/29) and #45",
         "See https://github.com/spwn02/Miracle/issues/29",
+        "```markdown\\nParent: #29\\n```",
+        "> Parent: #29",
+        "~~~\\nParent: #29\\n~~~",
     ):
         assert not declares_parent(invalid, 29), invalid
     assert not declares_parent("Parent: #29", 45)
