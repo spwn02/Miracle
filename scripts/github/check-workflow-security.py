@@ -215,7 +215,7 @@ def main() -> int:
 
     widened_relations = dict(workflows)
     widened_relations["miracle-project-operations.yml"] = widened_relations["miracle-project-operations.yml"].replace(
-        "startsWith(github.event.comment.body, '/miracle-project add-child ')", "true", 1
+        "startsWith(github.event.comment.body, '/miracle-project add-child ')", "true"
     )
     if not check(widened_relations):
         print("ERROR: widened native hierarchy trigger escaped guard", file=sys.stderr)
