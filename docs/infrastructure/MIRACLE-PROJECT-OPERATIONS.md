@@ -98,7 +98,7 @@ Use the shortest workable expiration; revoke/rotate `MIRACLE_PROJECT_TOKEN` afte
 
 ## Agent-managed item inspection and bounded triage
 
-The same owner-only Issue #29 Actions bridge now supports two additional commands. An agent using the connected GitHub Issue API can post the commands under **Issue #29**; the workflow executes the versioned, reviewed [Project field controller](https://github.com/spwn02/Miracle/blob/master/scripts/github/project-item-control.py) with `MIRACLE_PROJECT_TOKEN` and returns a run-link receipt. The Project itself remains the only planning UI and system of record.
+The same owner-only Issue #29 Actions bridge now supports two additional commands. An agent using the connected GitHub Issue API can post the commands under **Issue #29**; the workflow executes the versioned, reviewed [Project field controller](https://github.com/spwn02/Miracle/blob/57fc85cdf7f59b158f1071bc10435c1e3326f0b8/scripts/github/project-item-control.py) with `MIRACLE_PROJECT_TOKEN` and returns a run-link receipt. The Project itself remains the only planning UI and system of record.
 
 ```text
 /miracle-project inspect 31
