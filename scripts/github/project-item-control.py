@@ -114,7 +114,7 @@ def parse(raw: str) -> tuple[str, int, str | None, str | None, str | None]:
     value = data["value"]
     if type(number) is not int or not 1 <= number <= 9_999_999:
         raise GuardError("invalid issue number")
-    if field not in ALLOWED_FIELDS:
+    if not isinstance(field, str) or field not in ALLOWED_FIELDS:
         raise GuardError("field not in the owner-reviewed allowlist")
     if expected is not None and (not isinstance(expected, str) or not 1 <= len(expected) <= 100):
         raise GuardError("expected must be null or a field-option name")
@@ -233,6 +233,7 @@ def self_test() -> None:
         '/miracle-project update {"issue":31,"field":"Kind","expected":null,"value":"Task","extra":1}',
         '/miracle-project update {"issue":true,"field":"Kind","expected":null,"value":"Task"}',
         '/miracle-project update {"issue":31,"field":"Kind","expected":null,"value":""}',
+        '/miracle-project update {"issue":31,"field":[],"expected":null,"value":"Task"}',
         '/miracle-project update {"issue":31,"field":"Kind","expected":null,"value":"Task"} extra',
     )
     for command in bad:
@@ -242,7 +243,7 @@ def self_test() -> None:
             pass
         else:
             raise AssertionError("invalid command accepted")
-    print("PASS: owner command parsing, field allowlist, and eight negative fixtures.")
+    print("PASS: owner command parsing, field allowlist, and nine negative fixtures.")
 
 
 if __name__ == "__main__":
