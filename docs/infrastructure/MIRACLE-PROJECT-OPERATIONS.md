@@ -132,3 +132,19 @@ For **add-child**, the child Issue body must already reference its proposed pare
 Native Issue relationships are distinct from Project `Status` and `Disposition`: neither hierarchy nor a dependency creates an acceptance decision, schedule, or release commitment. This operation cannot edit contracts, close Issues, change fields, or modify Project draft archives.
 
 The REST API is not a transaction: GitHub performs validation of deeper hierarchy or dependency constraints. Post-write read-back is mandatory. If a network/API error occurs after a mutation, inspect the live relation before retrying; do not assume rollback.
+
+## Forward-only execution progress (agent-owned, guarded)
+
+The native Project command bridge also supports a distinct **execution** command:
+
+```text
+/miracle-project progress {"issue":36,"expected":"Backlog","value":"Implementing"}
+```
+
+This is **not** the general `update` command. `Status` cannot be set by generic field editing. The progress command is limited to forward planning/execution transitions (`Backlog → Design/Ready/Implementing`, `Design → Ready/Implementing`, `Ready → Implementing`, `Implementing → Review/Verification`, `Review → Verification`), always with a read-before-write expected value and post-write read-back. The existing G2 precedent for a deliberate `Backlog → Implementing` move is retained.
+
+Only **open Issue-backed, uniquely enrolled, nonarchived** Project #3 work may progress. The Issue must already have `Kind` and `Area`, **`Disposition=Planned`**, documented acceptance criteria or delivery gates, and (for Review/Verification) a linked Miracle PR or CI execution record in its body. Missing classifications, deferred/candidate/declined items, regressive transitions or unapproved stages are rejected.
+
+**No agent-controlled transition to `Accepted` or `Blocked` is exposed.** `Accepted` remains a human authorization/evidence gate; `Blocked` requires a genuine documented GitHub dependency and a separately approved operation. Moving a Project field neither closes the Issue nor alters any contract, PR, tag, CI or release. The GitHub Project GraphQL API does not provide atomic compare-and-swap, so concurrent edits between read and write remain a limitation. The bridge serializes **executions**, not all possible human UI edits.
+
+The first live pilot uses the real [Issue #36](https://github.com/spwn02/Miracle/issues/36), whose native parent #29, acceptance checklist, and triage fields have been verified. A legitimate `Backlog → Implementing` change indicates remaining implementation/verification work, **not** acceptance or completion.
