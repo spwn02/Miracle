@@ -1,10 +1,27 @@
 # G6 — Community and End-to-End Acceptance: Progress
 
-**Updated:** 2026-10-21
+**Updated:** 2026-10-23
 **Status:** IN PROGRESS — a genuine security Issue #24 → reviewed PR #27 → passing post-merge CI/Pages → explicit scoped CodeQL risk-disposition trace is verified; G2 Project #3 event-metadata ambiguity, live Q&A accepted-answer behavior, confidential reporting and overall G6 author acceptance remain outstanding.
 **Authority:** [Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G6-OPERATING-PLAN.md](G6-OPERATING-PLAN.md)
 **Tracking issue:** [#6 — community and acceptance](https://github.com/spwn02/Miracle/issues/6)
+
+## Live GitHub Discussions and public intake configuration — 2026-10-23
+
+[PR #53](https://github.com/spwn02/Miracle/pull/53) merged at `d23b28b2b739054ec1562c74f747fe7fa76b93b6` after green Reference C++26 CI and documentation checks. The reviewed, **read-only** `/miracle-project g6-community` operation ran successfully in the owner-authenticated [GitHub Actions #39898369419](https://github.com/spwn02/Miracle/actions/runs/39898369419). The GitHub GraphQL/REST evidence confirms **real repository Discussions enabled**, repository default branch `master`, and these actual native category properties:
+
+| Live category | Slug | `isAnswerable` |
+| --- | --- | --- |
+| Q&A | `q-a` | `true` |
+| Ideas | `ideas` | `false` |
+| Announcements | `announcements` | `false` |
+| Show and tell | `show-and-tell` | `false` |
+
+The same run checked source-controlled `SUPPORT.md`, `CONTRIBUTING.md`, the GitHub Issue chooser, `SECURITY.md`, and `CODE_OF_CONDUCT.md`. Every required live category slug had the corresponding advertised navigation link. Private-report and confidential-conduct **instructions are present**, without pretending that real private messages were delivered or handled.
+
+**Scope:** This is an authenticated, live configuration proof beyond source-only strings. It does **not** exercise a real Discussion participant's question, posted answer, GitHub `mark answer` operation, confidential vulnerability report, confidential misconduct report, or final maintainer review. Do not create false content for those tests. [G6 Issue #6](https://github.com/spwn02/Miracle/issues/6) stays open, and the broad confidential-route acceptance checkbox stays open pending genuine delivery/access validation. The [G2 Project #3 telemetry discrepancy](G2-PROGRESS.md) also remains separate and unresolved.
+
+The complementary [source parity audit #39892796281](https://github.com/spwn02/Miracle/actions/runs/39892796281) established the 172 historical Project↔Git records, while [published docs audit #39403645833](https://github.com/spwn02/Miracle/actions/runs/39403645833) previously confirmed 29 canonical chapters. These support checking the G6 Project/documentation source-parity criterion, not a full engineering release/contract lifecycle acceptance.
 
 ## Genuine CodeQL engineering trace — supplementary G6 evidence (2026-10-21)
 
