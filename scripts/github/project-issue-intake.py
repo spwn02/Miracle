@@ -111,7 +111,7 @@ def inspect(number: int) -> tuple[dict, str | None]:
 
 
 def run(mode: str, number: int) -> None:
-    who = subprocess.run(["gh", "user", "--jq", ".login"], capture_output=True, text=True)
+    who = subprocess.run(["gh", "api", "user", "--jq", ".login"], capture_output=True, text=True)
     if who.returncode or who.stdout.strip() != "spwn02":
         raise Refusal("credential is not authenticated as the expected Project owner")
     issue, item = inspect(number)
