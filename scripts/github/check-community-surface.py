@@ -15,6 +15,7 @@ FORMS = (
     "compiler_issue.yml",
     "feature_proposal.yml",
     "architecture_proposal.yml",
+    "contract_revision.yml",
     "infrastructure_issue.yml",
 )
 POLICIES = ("SECURITY.md", "CODE_OF_CONDUCT.md", "SUPPORT.md",
@@ -66,6 +67,12 @@ def scan_text(source: dict[str, str]) -> list[str]:
             errors.append(path + ": empty or missing")
         require("docs/SUMMARY.md", "infrastructure/" + page)
 
+    require(".github/ISSUE_TEMPLATE/contract_revision.yml", "Normative contract source")
+    require(".github/ISSUE_TEMPLATE/contract_revision.yml", "Baseline version and Git revision")
+    require("docs/contracts/REVISION-PROTOCOL.md", "SOURCES.json")
+    require("docs/contracts/REVISION-PROTOCOL.md", "owner")
+    require("docs/SUMMARY.md", "contracts/REVISION-PROTOCOL.md")
+    require("SUPPORT.md", "docs/contracts/REVISION-PROTOCOL.md")
     require("docs/infrastructure/G6-PROGRESS.md", "has_discussions: true")
     require("docs/infrastructure/G6-OPERATING-PLAN.md", "Project #3")
     return errors
@@ -74,6 +81,7 @@ def scan_text(source: dict[str, str]) -> list[str]:
 def sources_from_disk(root: Path) -> dict[str, str]:
     paths = [
         "README.md", "SUPPORT.md", "CONTRIBUTING.md", "SECURITY.md",
+        "docs/contracts/REVISION-PROTOCOL.md",
         "CODE_OF_CONDUCT.md", "ACCESSIBILITY.md", "docs/SUMMARY.md",
         ".github/PULL_REQUEST_TEMPLATE.md",
         ".github/ISSUE_TEMPLATE/config.yml",
@@ -108,6 +116,8 @@ def negative_fixtures(base: dict[str, str]) -> list[str]:
          REPO + "/discussions/categories/show-and-tell"),
         ("removed contributing Q&A route", "CONTRIBUTING.md",
          REPO + "/discussions/categories/q-a"),
+        ("missing contract revision navigation", "docs/SUMMARY.md",
+         "contracts/REVISION-PROTOCOL.md"),
         ("missing G6 documentation navigation", "docs/SUMMARY.md",
          "infrastructure/G6-PROGRESS.md"),
     )
@@ -133,7 +143,7 @@ def main() -> int:
         for error in errors:
             print("ERROR:", error, file=sys.stderr)
         return 1
-    print("PASS: G6 source routes, policies, issue/PR intake, mdBook navigation and 9 negative fixtures")
+    print("PASS: G6 source routes, policies, issue/PR intake, mdBook navigation and 10 negative fixtures")
     print("NOTE: GitHub category click-through, real Q&A answers, live forms, private contact and Project #3 require independent checks.")
     return 0
 

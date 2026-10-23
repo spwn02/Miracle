@@ -22,6 +22,7 @@
 - [Architecture](architecture.md)
 - [Development Protocol v1.0](DEVELOPMENT_PROTOCOL.md)
 - [Frozen contract archive and provenance](contracts/index.md)
+- [Contract revision protocol](contracts/REVISION-PROTOCOL.md)
 - [Foundation and Structural Programming Contracts v1.0](contracts/miracle-foundation-v1.0.md)
 - [Historical Phase Contracts](phases/index.md)
 - [Phase 5.4 — Frozen Contract (reading edition)](phases/phase-5.4-frozen-contract.md)
