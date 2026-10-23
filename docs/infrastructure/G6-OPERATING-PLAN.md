@@ -1,6 +1,6 @@
 # G6 — Community and End-to-End Acceptance
 
-**Status:** IN PROGRESS; Discussions enabled and required categories configured (screenshot + repo API), Q&A live answer flow and other acceptance pending
+**Status:** IN PROGRESS; live Discussions categories/navigation, real Project #3 auto-intake, and canonical Project/docs parity verified within scope. Genuine Q&A accepted-answer behavior, confidential-report delivery, full lifecycle, G2 event-metadata resolution, and final owner approval remain outstanding.
 **Authority:** [GitHub Infrastructure Contract v1.0](GITHUB-INFRASTRUCTURE-CONTRACT.md), sections 1, 4, 9–12
 **Tracker:** [G6 issue #6](https://github.com/spwn02/Miracle/issues/6)
 **Evidence:** [G6 progress ledger](G6-PROGRESS.md)
@@ -15,7 +15,7 @@ The underlying authority remains repository-tracked contracts and the maintainer
 
 At the initial G6 audit on **2026-10-19**, the public repository API reported `has_discussions: false`. **Later that day**, the maintainer supplied a screenshot of the live **Manage discussion categories** screen, showing **Announcements**, **Ideas**, **Q&A** (**Answers enabled**), and **Show and tell**; optional **General** and **Polls** also exist. A fresh public repository API check then returned **`has_discussions: true`**. These are independent pieces of evidence for **activation and category configuration**, not a test of a real accepted answer.
 
-The navigational links in [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). The available read-only integration could not independently retrieve individual category pages; the maintainer subsequently **confirmed that all four advertised links open correctly** in a real browser and supplied a screenshot of the selected empty **Ideas** category. The UI check is maintainer-reported. No fabricated Discussion was created.
+The navigational links in [Support](https://github.com/spwn02/Miracle/blob/master/SUPPORT.md) and the GitHub issue chooser use GitHub's conventional category slugs (`q-a`, `ideas`, `announcements`, `show-and-tell`). An **authenticated live GitHub REST/GraphQL audit** introduced by [PR #53](https://github.com/spwn02/Miracle/pull/53) passed in [Actions #39898369419](https://github.com/spwn02/Miracle/actions/runs/39898369419), confirming actual category slugs, Q&A `isAnswerable=true`, and source-controlled SUPPORT/CONTRIBUTING/Issue-chooser route parity. These findings were reconciled in the [G6 ledger](G6-PROGRESS.md) via merged [PR #54](https://github.com/spwn02/Miracle/pull/54). The maintainer also confirmed navigation in a browser. No fabricated Discussion or accepted-answer event was created.
 
 Owner-facing follow-up:
 
@@ -76,7 +76,7 @@ gh issue view 6 --repo spwn02/Miracle --json projectItems
 bash scripts/github/audit-g2.sh
 ```
 
-**Project membership and transition verified (2026-10-19):** The maintainer's original `gh issue view 6 --repo spwn02/Miracle --json projectItems` response showed `Miracle Development / Backlog` and separate `Roadmap / Todo`. A later owner-authorized action moved issue #6 to `Implementing` in Project #3, with Roadmap unchanged; before/after CLI and GitHub's owner-authored status-change event confirm this real transition. The `is:issue` auto-add configuration and disabled acceptance-bypassing workflows were also reviewed, but a future genuine non-bug issue's **causal automatic enrollment specifically into Project #3** remains unverified. `Implementing` is not `Accepted`.
+**Project membership and transition verified (2026-10-19):** The maintainer's original `gh issue view 6 --repo spwn02/Miracle --json projectItems` response showed `Miracle Development / Backlog` and separate `Roadmap / Todo`. A later owner-authorized action moved issue #6 to `Implementing` in Project #3, with Roadmap unchanged; before/after CLI and GitHub's owner-authored status-change event confirm this real transition. The `is:issue` auto-add configuration and disabled acceptance-bypassing workflows were also reviewed, and later genuine [Issues #24](https://github.com/spwn02/Miracle/issues/24) and [#49](https://github.com/spwn02/Miracle/issues/49) were automatically enrolled in Project #3. Independent [inspection #39894700622](https://github.com/spwn02/Miracle/actions/runs/39894700622) confirms #49's unique native item in Verification, with the repository Issue open. **G2 remains open:** bot-attributed GitHub Project events still report `wasAutomated=false` without an authoritative explanation. Neither `Implementing` nor `Verification` is `Accepted`.
 
 The results must show the actual `Miracle Development` project, valid workflow settings, and the acceptance status only when the maintainer authorizes it. **Do not equate an auto-add event with Project #3 membership**.
 
@@ -94,7 +94,7 @@ Public [release v0.5.27](https://github.com/spwn02/Miracle/releases/tag/v0.5.27)
 - [x] Routing to live Discussions categories updated by PR #17, with nine negative route fixtures and owner-confirmed click-through. Actual confidential-reporting UI behavior remains a separate open gate.
 - [ ] Actual issue → reviewed PR → verified commit/CI → docs publication → explicit acceptance trail recorded in [G6 ledger](G6-PROGRESS.md).
 - [ ] Contributor forms, PR prepopulation, community standards and confidentiality routes inspected in GitHub UI, distinguishing absent private moderation inbox from private vulnerability reporting.
-- [ ] Project #3 membership/views/automation and published mdBook chapter verified without manufactured status changes.
+- [x] Project #3's historical 172/172 record parity ([audit #39892796281](https://github.com/spwn02/Miracle/actions/runs/39892796281)), native views ([audit #39888748546](https://github.com/spwn02/Miracle/actions/runs/39888748546)), genuine Issue #49 intake ([audit #39894700622](https://github.com/spwn02/Miracle/actions/runs/39894700622)), and published 29-chapter mdBook parity ([audit #39403645833](https://github.com/spwn02/Miracle/actions/runs/39403645833)) verified within documented scope. G2 event-metadata ambiguity and final G6 owner sign-off remain independent open gates.
 - [x] Existing real [v0.5.27 release](https://github.com/spwn02/Miracle/releases/tag/v0.5.27) traced to [Release workflow #38831221086](https://github.com/spwn02/Miracle/actions/runs/38831221086) with tagged source commit, 71/71 tests, three consumer modes, provenance generation and public metadata attachment. G6 infrastructure docs have no new product release, as intended. Downloaded metadata JSON fields not independently inspected.
 - [ ] Author explicitly accepts G6. Only then close [issue #6](https://github.com/spwn02/Miracle/issues/6).
 
