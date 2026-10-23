@@ -193,3 +193,18 @@ The audit validates the repository catalog against its checked-in headings, conf
 The job prints individual mismatches and fails without making any Project or Git changes. It never interprets archive `Status` as implementation completion. It is intentionally **not an importer or a bidirectional sync**: corrections require a reviewed provenance decision, especially for frozen-source identity. GitHub's Project item pagination is explicitly bounded; a concurrent Project update during enumeration causes a fail-closed retry rather than a false pass.
 
 A complete technical match is **necessary but not sufficient** for the maintainer to accept the historical migration. Unknown approvals and missing independent source versions remain separate questions.
+
+## Native Issue intake (open work only)
+
+The [Project #3 intake checkpoint](https://github.com/spwn02/Miracle/issues/49) establishes an owner-only, **idempotent existing-Issue enrollment** path. The GitHub Issues connector remains responsible for creating a *genuine* feature, bug or task after duplicate search; GitHub's own auto-add rule is preferred, and **no shadow tracker** is created.
+
+On [Workspace Issue #29](https://github.com/spwn02/Miracle/issues/29), an authorized agent can issue:
+
+```text
+/miracle-project intake-inspect 49
+/miracle-project intake-add 49
+```
+
+`intake-inspect` reads the exact native Issue ID/state and unique Project #3 membership. `intake-add` first checks the same live identities, and **only if absent** enrolls the **existing**, described, OPEN, nonarchive repository Issue through `addProjectV2ItemById`, followed by a separately executed GraphQL read-back. A previously enrolled Issue returns `SKIP` without writing. Archived/mismatched/duplicate Project items, nonexistent/empty Issues, and unexpected Project credentials fail closed.
+
+Enrollment alone **does not grant `Planned` disposition, dates, `Accepted` status, PR review, or contract approval**; classifications remain deliberate guarded field edits. This operation cannot create new repository Issues, touch historical draft catalog entries, close Issues, or mutate unrelated Project fields. A concurrent GitHub auto-add can race the read and write; inspect fresh membership after any ambiguous failure rather than assuming rollback or creating another issue.
