@@ -38,7 +38,9 @@ jobs:
           (github.event.comment.body == '/miracle-project audit' ||
            github.event.comment.body == '/miracle-project reconcile-plan' ||
            github.event.comment.body == '/miracle-project reconcile-verify' ||
-           github.event.comment.body == '/miracle-project reconcile-apply')))
+           github.event.comment.body == '/miracle-project reconcile-apply' ||
+           startsWith(github.event.comment.body, '/miracle-project inspect ') ||
+           startsWith(github.event.comment.body, '/miracle-project update '))))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -59,8 +61,10 @@ jobs:
           set -euo pipefail
           bash -n scripts/github/audit-native-project.sh
           bash -n scripts/github/miracle-project-reconcile-safe.sh
+          python3 scripts/github/project-item-control.py --self-test
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
+            '/miracle-project inspect '*|'/miracle-project update '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
           esac
 
@@ -93,6 +97,10 @@ jobs:
             reconcile-apply|'/miracle-project reconcile-apply')
               action='reconcile-apply'
               bash scripts/github/miracle-project-reconcile-safe.sh --apply
+              ;;
+            '/miracle-project inspect '*|'/miracle-project update '*)
+              action='project-item-control'
+              python3 scripts/github/project-item-control.py
               ;;
             *) echo 'Invalid operation' >&2; exit 1 ;;
           esac

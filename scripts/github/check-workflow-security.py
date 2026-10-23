@@ -96,6 +96,10 @@ def check(workflows: dict[str, str]) -> list[str]:
         "scoped Project token": "GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}",
         "no cancellation of ongoing writes": "cancel-in-progress: false",
         "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
+        "item inspect gate": "startsWith(github.event.comment.body, '/miracle-project inspect ')",
+        "item update gate": "startsWith(github.event.comment.body, '/miracle-project update ')",
+        "Python command validation": "python3 scripts/github/project-item-control.py --self-test",
+        "Python command executor": "python3 scripts/github/project-item-control.py",
     }
     for label, fragment in checks.items():
         if fragment not in project:
@@ -194,6 +198,14 @@ def main() -> int:
         print("ERROR: widened Project workflow trigger escaped guard", file=sys.stderr)
         return 1
 
+    widened_fields = dict(workflows)
+    widened_fields["miracle-project-operations.yml"] = widened_fields["miracle-project-operations.yml"].replace(
+        "startsWith(github.event.comment.body, '/miracle-project update ')", "true", 1
+    )
+    if not check(widened_fields):
+        print("ERROR: widened Project field-command trigger escaped guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -234,7 +246,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 6 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 7 mutations, and 4 parser fixtures.")
     return 0
 
 

@@ -41,6 +41,8 @@ jobs:
           bash -n scripts/github/audit-g2.sh
           bash -n scripts/github/miracle-project-reconcile-safe.sh
           bash -n scripts/github/audit-native-project.sh
+          python3 -m py_compile scripts/github/project-item-control.py
+          python3 scripts/github/project-item-control.py --self-test
           bash -n scripts/github/reconcile-infrastructure-milestone.sh
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py

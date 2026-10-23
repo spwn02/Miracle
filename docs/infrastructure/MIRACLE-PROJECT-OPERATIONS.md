@@ -95,3 +95,20 @@ The owner authorized investigating automated native Project administration **aft
 ### Credential lifecycle
 
 Use the shortest workable expiration; revoke/rotate `MIRACLE_PROJECT_TOKEN` after suspected compromise or loss of owner access. This credential is stored and controlled by GitHub; **the assistant cannot view or install it** through the current connector. Until the secret is configured and the workflow merged, the bridge remains staged and cannot execute Projects operations on behalf of the assistant.
+
+## Agent-managed item inspection and bounded triage
+
+The same owner-only Issue #29 Actions bridge now supports two additional commands. An agent using the connected GitHub Issue API can post the commands under **Issue #29**; the workflow executes the versioned, reviewed [Project field controller](https://github.com/spwn02/Miracle/blob/57fc85cdf7f59b158f1071bc10435c1e3326f0b8/scripts/github/project-item-control.py) with `MIRACLE_PROJECT_TOKEN` and returns a run-link receipt. The Project itself remains the only planning UI and system of record.
+
+```text
+/miracle-project inspect 31
+/miracle-project update {"issue":29,"field":"Kind","expected":null,"value":"Task"}
+```
+
+**Read before writing.** The `inspect` command returns the authentic Issue state, native item ID, and its selected field values. For `update`, `expected` is the last observed option name or `null` for an unset field; `value` is a real, unique option in the live Project schema. Whitespace and multiword labels are supported inside JSON values. The command rejects changed values rather than overwriting concurrent owner work; if the desired value is already present, it makes no new mutation.
+
+Only the single-select fields **`Kind`, `Disposition`, and `Area`** are editable through this new general command. It refuses archived/duplicate/missing Project items, nonexistent/closed repository Issues, unknown field options, unexpected credential owners, extra JSON keys, oversized commands, and non-owner invocations. The script checks the Project's immutable ID and reads back the result after a direct `updateProjectV2ItemFieldValue` mutation.
+
+**Important concurrency limit:** GitHub Projects' field mutation lacks an atomic compare-and-swap input. The script rechecks immediately before the write, but another editor could race between read and mutation; record and investigate any detected conflict. Do not treat the bridge as a transactional database. No generic status acceptance, timeline modification, dependency-graph editing, archive reclassification, contract freeze, release or Issue closure is authorized by this command.
+
+`python3 scripts/github/project-item-control.py --self-test` validates parsing and negative fixtures without GitHub credentials. Agent-mediated read/write acceptance still requires a live inspect followed by a small, justified Project field update and read-back.
