@@ -128,7 +128,7 @@ for spec in \
   'Blocked|TABLE_LAYOUT|is:issue is:open status:Blocked' \
   'Contract Reviews|TABLE_LAYOUT|is:issue kind:"Contract Revision"' \
   'Decisions|TABLE_LAYOUT|is:issue kind:Decision' \
-  'Roadmap|ROADMAP_LAYOUT|' \
+  'Roadmap|ROADMAP_LAYOUT|is:issue is:open disposition:Planned' \
   'Archive|TABLE_LAYOUT|is:draft'; do
   IFS='|' read -r name layout filter <<<"$spec"
   if jq -e --arg name "$name" --arg layout "$layout" --arg filter "$filter" '
@@ -176,10 +176,10 @@ if group_result="$(gh api graphql -f query="$group_query" 2>/dev/null)" &&
     ", vertical=" + ([.verticalGroupByFields.nodes[].name] | join(",")) +
     ", visible=" + ([.configuration.visibleFields.nodes[].name] | join(","))' <<<"$group_result"
   if jq -e '[.data.user.projectV2.views.nodes[] | select(.name=="Development") |
-      .groupByFields.nodes[].name] | index("Status") != null' <<<"$group_result" >/dev/null; then
-    echo '  PASS: Development board groups by Status'
+       .verticalGroupByFields.nodes[].name] | index("Status") != null' <<<"$group_result" >/dev/null; then
+    echo '  PASS: Development board uses vertical Status columns'
   else
-    echo '  WARN: Development board Status grouping missing or not exposed'
+    echo '  WARN: Development board lacks vertical Status columns or they were not exposed'
     view_warnings=$((view_warnings+1))
   fi
 else

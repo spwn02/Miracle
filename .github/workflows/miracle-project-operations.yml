@@ -39,6 +39,9 @@ jobs:
            github.event.comment.body == '/miracle-project reconcile-plan' ||
            github.event.comment.body == '/miracle-project reconcile-verify' ||
            github.event.comment.body == '/miracle-project reconcile-apply' ||
+           github.event.comment.body == '/miracle-project roadmap-plan' ||
+           github.event.comment.body == '/miracle-project roadmap-verify' ||
+           github.event.comment.body == '/miracle-project roadmap-apply' ||
            startsWith(github.event.comment.body, '/miracle-project inspect ') ||
            startsWith(github.event.comment.body, '/miracle-project update ') ||
            startsWith(github.event.comment.body, '/miracle-project progress ') ||
@@ -66,9 +69,23 @@ jobs:
           bash -n scripts/github/audit-native-project.sh
           bash -n scripts/github/miracle-project-reconcile-safe.sh
           python3 scripts/github/project-item-control.py --self-test
+          python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/issue-relations.py --self-test
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
+            '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
+            '/miracle-project roadmap-plan')
+              action='roadmap-plan'
+              python3 scripts/github/project-roadmap-filter.py --plan
+              ;;
+            '/miracle-project roadmap-verify')
+              action='roadmap-verify'
+              python3 scripts/github/project-roadmap-filter.py --verify
+              ;;
+            '/miracle-project roadmap-apply')
+              action='roadmap-apply'
+              python3 scripts/github/project-roadmap-filter.py --apply
+              ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*) ;;
             '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
