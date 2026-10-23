@@ -208,3 +208,17 @@ On [Workspace Issue #29](https://github.com/spwn02/Miracle/issues/29), an author
 `intake-inspect` reads the exact native Issue ID/state and unique Project #3 membership. `intake-add` first checks the same live identities, and **only if absent** enrolls the **existing**, described, OPEN, nonarchive repository Issue through `addProjectV2ItemById`, followed by a separately executed GraphQL read-back. A previously enrolled Issue returns `SKIP` without writing. Archived/mismatched/duplicate Project items, nonexistent/empty Issues, and unexpected Project credentials fail closed.
 
 Enrollment alone **does not grant `Planned` disposition, dates, `Accepted` status, PR review, or contract approval**; classifications remain deliberate guarded field edits. This operation cannot create new repository Issues, touch historical draft catalog entries, close Issues, or mutate unrelated Project fields. A concurrent GitHub auto-add can race the read and write; inspect fresh membership after any ambiguous failure rather than assuming rollback or creating another issue.
+
+## Target-Project G2 event provenance (read-only)
+
+The final G2 [provider metadata discrepancy](https://github.com/spwn02/Miracle/issues/2) is *not* the same as operational auto-add correctness. GitHub's public GraphQL documentation defines `wasAutomated` as whether the event resulted from workflow automation; Project #3 has bot-attributed, functioning auto-add/Backlog transitions for genuine Issues #8 and #24, yet their events return `wasAutomated=false`.
+
+The owner-only Issue #29 command:
+
+```text
+/miracle-project g2-provenance
+```
+
+performs read-only, target-Project-specific GraphQL timeline queries on **existing real Issues #8, #24 and #49**. It prints event type, Project number, timestamp, actor, the literal Boolean and status changes; excludes events from the separate Roadmap Project #2; rejects incomplete timeline pagination; and makes no Project/Issue write. The result is diagnostic evidence only, not an alternative Project auto-add workflow or a claim that GitHub changed its GraphQL semantics. If results remain inconsistent, preserve them and seek provider clarification via the public developer community. Never fabricate an Issue to trigger a favorable event or quietly waive the G2 maintainer gate.
+
+The script intentionally reports `false` without converting it to `true` based on the `github-project-automation` actor. Neither successful Project field changes nor this audit can supply a missing GitHub provider statement.
