@@ -172,3 +172,24 @@ The owner-only Actions bridge therefore offers three fixed operations against **
 The only authorized change is **empty filter → `is:issue is:open disposition:Planned`**. The guarded controller authenticates as `spwn02`, verifies Project #3's immutable ID, requires exactly one `Roadmap` in `ROADMAP_LAYOUT`, refuses any nonempty/conflicting owner filter, makes the dedicated `updateProjectV2View` GraphQL mutation, and independently reads the view back. Repeated application is idempotent. No new view, changed layout, Group By, draft issues, execution status, dates/iterations, milestones or contracts are touched.
 
 A valid Roadmap filter does **not** imply scheduled bars exist. Deliberately unplanned/datetimeless work remains in Backlog/Development; genuine dates must be set through a separate reviewed planning decision, not generated merely to populate a visual timeline.
+
+## Historical archive integrity audit (read-only)
+
+The 172 historical navigation drafts must preserve both their **identity** in Project #3 and their exact canonical **Git-source provenance**; having Archive view tabs is not by itself sufficient.
+
+An owner-only command on Issue #29 triggers a read-only, paginated live GraphQL comparison:
+
+```text
+/miracle-project archive-audit
+```
+
+The audit validates the repository catalog against its checked-in headings, confirms exactly 172 catalog entries, enumerates **all active Project #3 items** with bounded cursor pagination and stable immutable Project identity, and checks each `[Archive/...]` draft for:
+
+- A unique matching title and catalog ID embedded in a `miracle-project-catalog` marker
+- Correct Git source path and line link, group, type, optional parent ID, and source-reference body
+- Matching native `Artifact Type` and `Archive Group` single-select field values
+- Unexpected extra Archive drafts, duplicate titles or absent items, archived records or incomplete Project field values
+
+The job prints individual mismatches and fails without making any Project or Git changes. It never interprets archive `Status` as implementation completion. It is intentionally **not an importer or a bidirectional sync**: corrections require a reviewed provenance decision, especially for frozen-source identity. GitHub's Project item pagination is explicitly bounded; a concurrent Project update during enumeration causes a fail-closed retry rather than a false pass.
+
+A complete technical match is **necessary but not sufficient** for the maintainer to accept the historical migration. Unknown approvals and missing independent source versions remain separate questions.
