@@ -1,12 +1,28 @@
 # Miracle GitHub Infrastructure — G2 Progress
 
-**Updated:** 2026-10-21
+**Updated:** 2026-10-23
 **Program:** G0–G6
 **Workstream:** G2 — Project, Roadmap, Issue Tracking
 **Status:** Runtime auto-enrollment and initial Backlog status verified for two genuine non-bug issues; GitHub Support ticket #4883332 was closed by a virtual assistant with a self-service referral, without technical explanation of `wasAutomated: false`. Public developer-community escalation remains available; strict G2 technical clarification and final author acceptance are pending.
 **Project:** [Miracle Development — user-owned Project #3](https://github.com/users/spwn02/projects/3)
 **Authority:** [Infrastructure Contract](GITHUB-INFRASTRUCTURE-CONTRACT.md)
 **Operating plan:** [G2-OPERATING-PLAN.md](G2-OPERATING-PLAN.md)
+
+## Three authenticated Project #3 provenance reproductions — 2026-10-23
+
+[PR #51](https://github.com/spwn02/Miracle/pull/51) added a **read-only owner-authorized GraphQL verifier** in `scripts/github/audit-g2-provenance.py`. Its [live Actions run #39896390581](https://github.com/spwn02/Miracle/actions/runs/39896390581) queried actual ProjectV2 timeline events from genuine repository Issues #8, #24 and #49, filtering **specifically to Miracle Development Project #3** and excluding the separate Roadmap Project #2.
+
+| Issue | Project #3 `AddedToProjectV2Event` actor | UTC | `wasAutomated` | Subsequent bot Status→Backlog flag |
+| --- | --- | --- | --- | --- |
+| #8 (documentation) | `github-project-automation` | 2026-10-17 01:46:17 | `false` | `false` at 01:46:19 |
+| #24 (security/CodeQL) | `github-project-automation` | 2026-10-20 12:34:48 | `false` | `false` at 12:34:48 |
+| #49 (real workspace intake) | `github-project-automation` | 2026-10-23 03:13:37 | `false` | `false` at 03:13:39 |
+
+The same query also returned later owner-authored (`spwn02`) status changes for #8 and #49, which likewise have `wasAutomated=false`. This verifies that the API distinguishes actor identity and event timestamps while the disputed Boolean **remains false on the bot-attributed, built-in Project workflow activity**.
+
+**Conclusion:** The Project #3 auto-add and initial Backlog configuration is **functionally demonstrated**, including on the newly created genuine #49; the provider's GraphQL event metadata **still does not meet the explicit strict criterion**. These observations do not prove the implementation of GitHub's Boolean is defective or establish whether multiple automation attribution mechanisms are involved. The [public GitHub GraphQL schema](https://docs.github.com/en/graphql/reference/projects) still says the field answers whether the event resulted from workflow automation, so a source-authoritative clarification is required. The previous GitHub Support ticket #4883332 was administratively closed without a technical answer.
+
+**Gate:** Retain [G2 Issue #2](https://github.com/spwn02/Miracle/issues/2) **open in Verification**, and seek either an authoritative provider explanation/remediation or a separate *explicit maintainer-authorized change to the acceptance contract*. No default waiver, fictional provider reply or synthetic Issue creation is authorized. The [read-only audit source](https://github.com/spwn02/Miracle/blob/master/scripts/github/audit-g2-provenance.py) and [live runner logs](https://github.com/spwn02/Miracle/actions/runs/39896390581) are sufficient technical reproduction inputs for a public GitHub Apps/API community question; that question has **not** been posted from this integration.
 
 ## GitHub Support ticket closed without technical investigation — maintainer screenshot (2026-10-21)
 
