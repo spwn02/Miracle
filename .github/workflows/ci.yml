@@ -47,6 +47,8 @@ jobs:
           python3 scripts/github/project-item-control.py --self-test
           python3 -m py_compile scripts/github/audit-project-archive.py
           python3 scripts/github/audit-project-archive.py --self-test
+          python3 -m py_compile scripts/github/project-issue-intake.py
+          python3 scripts/github/project-issue-intake.py --self-test
           python3 -m py_compile scripts/github/issue-relations.py
           python3 scripts/github/issue-relations.py --self-test
           bash -n scripts/github/reconcile-infrastructure-milestone.sh
