@@ -74,18 +74,6 @@ jobs:
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
             '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
-            '/miracle-project roadmap-plan')
-              action='roadmap-plan'
-              python3 scripts/github/project-roadmap-filter.py --plan
-              ;;
-            '/miracle-project roadmap-verify')
-              action='roadmap-verify'
-              python3 scripts/github/project-roadmap-filter.py --verify
-              ;;
-            '/miracle-project roadmap-apply')
-              action='roadmap-apply'
-              python3 scripts/github/project-roadmap-filter.py --apply
-              ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*) ;;
             '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
@@ -139,6 +127,18 @@ jobs:
             reconcile-apply|'/miracle-project reconcile-apply')
               action='reconcile-apply'
               bash scripts/github/miracle-project-reconcile-safe.sh --apply
+              ;;
+            '/miracle-project roadmap-plan')
+              action='roadmap-plan'
+              python3 scripts/github/project-roadmap-filter.py --plan
+              ;;
+            '/miracle-project roadmap-verify')
+              action='roadmap-verify'
+              python3 scripts/github/project-roadmap-filter.py --verify
+              ;;
+            '/miracle-project roadmap-apply')
+              action='roadmap-apply'
+              python3 scripts/github/project-roadmap-filter.py --apply
               ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*)
               action='project-item-control'
