@@ -50,7 +50,7 @@ MCP operations and authenticated `gh` are **two clients of the same native GitHu
 
 ## Audited status-reconciliation pilot
 
-The [reconciliation script](../../scripts/github/miracle-project-reconcile-safe.sh) changes **only** the `Status` field on seven existing Issue-backed Project items after checking their Issue state, Project identity, item membership and prior field values:
+The [reconciliation script](https://github.com/spwn02/Miracle/blob/infra/native-project-operations/scripts/github/miracle-project-reconcile-safe.sh) changes **only** the `Status` field on seven existing Issue-backed Project items after checking their Issue state, Project identity, item membership and prior field values:
 
 | Issue | Planned status | Evidence boundary |
 | --- | --- | --- |
@@ -83,7 +83,7 @@ The script refuses unexpected Issue states or Project field values and performs 
 This document is an operational guide, **not** a new frozen product contract, automatic G2 closeout, or permission to rewrite historical artifacts.
 ## Automated Actions bridge (post-bootstrap, permission-gated)
 
-The owner authorized investigating automated native Project administration **after** the original G2 bootstrap; this does not retroactively waive the G2 provider-metadata discrepancy. [Workflow](../../.github/workflows/miracle-project-operations.yml) runs **only** a fixed allowlist of repository-reviewed Project scripts. No independent planning UI/database is created.
+The owner authorized investigating automated native Project administration **after** the original G2 bootstrap; this does not retroactively waive the G2 provider-metadata discrepancy. [Workflow](https://github.com/spwn02/Miracle/blob/infra/native-project-operations/.github/workflows/miracle-project-operations.yml) runs **only** a fixed allowlist of repository-reviewed Project scripts. No independent planning UI/database is created.
 
 1. GitHub's standard repository `GITHUB_TOKEN` **cannot** read or write user-owned Projects V2. Use a separately scoped Projects credential; for this user-owned Project, GitHub documents a **classic PAT with `project` scope**, or an appropriately permissioned GitHub App token. The account settings UI also supports fine-grained PATs, but GitHub documents limitations for *user-owned Projects*, so do not assume they will work without verifying the specific token.
 2. Store the credential once as the **repository Actions secret** `MIRACLE_PROJECT_TOKEN` under `spwn02/Miracle → Settings → Secrets and variables → Actions`. Give it an expiration appropriate to its purpose. Never put it in Issues, chat, scripts, the source tree, Actions logs or the repository's ordinary variables.
