@@ -43,6 +43,12 @@ def positive_number(value: Any) -> bool:
     return type(value) is int and 1 <= value <= 9_999_999
 
 
+def positive_id(value: Any) -> bool:
+    # GitHub's REST issue `id` is a global numeric database identifier,
+    # not a small repository issue number. Real Miracle IDs exceed 2**32.
+    return type(value) is int and value >= 1
+
+
 def parse(request: str) -> tuple[str, int, int | None]:
     if request.startswith(INSPECT):
         number = request[len(INSPECT):]
@@ -91,7 +97,7 @@ def issue(number: int, *, mutation: bool = False) -> dict[str, Any]:
     if (not isinstance(result, dict) or result.get("number") != number
             or result.get("repository_url") != REPOSITORY_URL
             or result.get("html_url") != f"https://github.com/spwn02/Miracle/issues/{number}"
-            or not positive_number(result.get("id")) or "pull_request" in result):
+            or not positive_id(result.get("id")) or "pull_request" in result):
         raise Refusal(f"Issue #{number} is missing, ambiguous or not a repository Issue")
     if mutation and result.get("state") != "open":
         raise Refusal(f"Issue #{number} is not open")
@@ -102,7 +108,7 @@ def collection(endpoint: str) -> list[dict[str, Any]]:
     value = call(f"{BASE}/{endpoint}?per_page=100&page=1")
     if not isinstance(value, list) or len(value) >= 100:
         raise Refusal("Issue relation list incomplete or unexpectedly formatted")
-    if not all(isinstance(entry, dict) and positive_number(entry.get("id"))
+    if not all(isinstance(entry, dict) and positive_id(entry.get("id"))
                and positive_number(entry.get("number")) for entry in value):
         raise Refusal("Unexpected relationship list item")
     return value
@@ -209,6 +215,9 @@ def add_blocker(number: int, prerequisite: int) -> None:
 
 def self_test() -> None:
     assert parse("/miracle-project relations 29") == ("inspect", 29, None)
+    assert positive_id(5_970_924_253)
+    assert not positive_number(5_970_924_253)
+    assert not positive_id(True)
     assert parse('/miracle-project add-child {"parent":29,"child":36}') == ("child", 29, 36)
     assert parse('/miracle-project add-blocker {"issue":44,"blocked_by":36}') == (
         "blocker", 44, 36)
