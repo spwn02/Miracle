@@ -163,6 +163,45 @@ def verify(check, description: str) -> None:
     raise Refusal("post-write verification failed: " + description)
 
 
+def declares_parent(body: str, expected_number: int) -> bool:
+    """Require one explicit parent declaration, not any unrelated Issue mention.
+
+    Supported: Parent: #29, Parent work: #29, Parent issue: URL,
+    or a same-repository Markdown Issue link with matching label/URL numbers.
+    Multiple declarations, even identical ones, are ambiguous and refused.
+    """
+    declaration = re.compile(
+        r"^\s*(?:[-*]\s*)?Parent(?:\s+(?:work|issue))?:\s*(.+?)\s*$",
+        flags=re.IGNORECASE,
+    )
+    direct = re.compile(r"#([1-9][0-9]{0,6})")
+    absolute = re.compile(
+        r"https://github\.com/spwn02/Miracle/issues/([1-9][0-9]{0,6})"
+    )
+    linked = re.compile(
+        r"\[[^\]\n]*#([1-9][0-9]{0,6})\]"
+        r"\(https://github\.com/spwn02/Miracle/issues/([1-9][0-9]{0,6})\)"
+    )
+    values: list[int | None] = []
+    for line in body.splitlines():
+        match = declaration.fullmatch(line)
+        if match is None:
+            continue
+        value = match.group(1)
+        simple = direct.fullmatch(value)
+        url = absolute.fullmatch(value)
+        markdown = linked.fullmatch(value)
+        if simple:
+            values.append(int(simple.group(1)))
+        elif url:
+            values.append(int(url.group(1)))
+        elif markdown and markdown.group(1) == markdown.group(2):
+            values.append(int(markdown.group(1)))
+        else:
+            values.append(None)
+    return len(values) == 1 and values[0] == expected_number
+
+
 def add_child(parent_number: int, child_number: int) -> None:
     leader = issue(parent_number, mutation=True)
     junior = issue(child_number, mutation=True)
@@ -177,9 +216,8 @@ def add_child(parent_number: int, child_number: int) -> None:
         raise Refusal("parent/child responses disagree; refusing mutation")
     # A child Issue must explicitly identify this parent in its proposal, not
     # get arbitrarily moved by an agent with only a number.
-    if (f"#{parent_number}" not in (junior.get("body") or "")
-            and f"/issues/{parent_number}" not in (junior.get("body") or "")):
-        raise Refusal("child Issue does not document its intended parent")
+    if not declares_parent(junior.get("body") or "", parent_number):
+        raise Refusal("child Issue lacks one explicit, unambiguous parent declaration")
     # No replace_parent flag: GitHub itself checks cycles and hierarchy limits.
     result = call("-X", "POST", f"{BASE}/issues/{parent_number}/sub_issues",
                   "-F", f"sub_issue_id={junior['id']}")
@@ -225,6 +263,31 @@ def self_test() -> None:
     assert parse('/miracle-project add-child {"parent":29,"child":36}') == ("child", 29, 36)
     assert parse('/miracle-project add-blocker {"issue":44,"blocked_by":36}') == (
         "blocker", 44, 36)
+    for valid in (
+        "Parent: #29",
+        "Parent work: #29",
+        "Parent issue: https://github.com/spwn02/Miracle/issues/29",
+        "Parent: [Workspace #29](https://github.com/spwn02/Miracle/issues/29)",
+        "Parent work: [Workspace #29](https://github.com/spwn02/Miracle/issues/29)",
+        "- Parent: #29",
+    ):
+        assert declares_parent(valid, 29), valid
+    for invalid in (
+        "See #29 for background only; this is not a child.",
+        "Link: https://github.com/spwn02/Miracle/issues/29",
+        "Not parent: #29",
+        "Parent: #29, but not actually",
+        "Parent: #290",
+        "Parent: #29\nParent: #45",
+        "Parent: #29\nParent: invalid",
+        "Parent: [Workspace #29](https://github.com/spwn02/Miracle/issues/45)",
+        "Parent: [Workspace #29](https://github.com/other/Miracle/issues/29)",
+        "Parent: https://github.com/other/Miracle/issues/29",
+        "Parent: [Workspace #29](https://github.com/spwn02/Miracle/issues/29) and #45",
+        "See https://github.com/spwn02/Miracle/issues/29",
+    ):
+        assert not declares_parent(invalid, 29), invalid
+    assert not declares_parent("Parent: #29", 45)
     for bad in (
         "/miracle-project relations 29; sleep 1",
         "/miracle-project relations 0",
