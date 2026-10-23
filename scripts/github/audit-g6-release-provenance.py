@@ -74,7 +74,7 @@ def verify(release: dict[str, Any], ref: dict[str, Any], raw: bytes,
     digest = hashlib.sha256(raw).hexdigest()
     if digest != expected_digest:
         raise AuditError("Downloaded release metadata SHA-256 differs")
-    if attachment.get("digest") not in (None, "sha256:" + digest):
+    if attachment.get("digest") != "sha256:" + digest:
         raise AuditError("GitHub asset digest differs from downloaded content")
     try:
         metadata = json.loads(raw)
@@ -85,6 +85,9 @@ def verify(release: dict[str, Any], ref: dict[str, Any], raw: bytes,
 
 
 def self_test() -> None:
+    authentic_shape = (json.dumps(EXPECTED, indent=2, sort_keys=True) + "\n").encode()
+    assert len(authentic_shape) == 608
+    assert hashlib.sha256(authentic_shape).hexdigest() == ASSET_SHA256
     raw = json.dumps(EXPECTED, sort_keys=True).encode()
     fixture_digest = hashlib.sha256(raw).hexdigest()
     release = {"tag_name": TAG, "draft": False, "published_at": "2026-10-16T00:47:37Z",
@@ -104,6 +107,16 @@ def self_test() -> None:
         except AuditError:
             continue
         raise AssertionError("Invalid release provenance fixture accepted")
+    wrong_raw = json.dumps({**EXPECTED, "schemaVersion": 2}, sort_keys=True).encode()
+    wrong_digest = hashlib.sha256(wrong_raw).hexdigest()
+    wrong_release = {**release, "assets": [{**release["assets"][0],
+        "size": len(wrong_raw), "digest": "sha256:" + wrong_digest}]}
+    try:
+        verify(wrong_release, ref, wrong_raw, wrong_digest)
+    except AuditError as exc:
+        assert "JSON fields" in str(exc)
+    else:
+        raise AssertionError("Invalid JSON accepted after matching transport digest")
     print("PASS: G6 release hash, JSON, tag, and negative fixtures")
 
 
