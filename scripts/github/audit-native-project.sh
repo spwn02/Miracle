@@ -35,28 +35,7 @@ query {
           ... on ProjectV2SingleSelectField { options { id name } }
         }
       }
-      views(first:100) {
-        totalCount
-        nodes {
-          name
-          layout
-          filter
-          groupByFields(first:20) {
-            totalCount
-            nodes { ... on ProjectV2FieldCommon { name } }
-          }
-          verticalGroupByFields(first:20) {
-            totalCount
-            nodes { ... on ProjectV2FieldCommon { name } }
-          }
-          configuration {
-            visibleFields(first:50) {
-              totalCount
-              nodes { ... on ProjectV2FieldCommon { name } }
-            }
-          }
-        }
-      }
+      views(first:100) { totalCount nodes { name layout filter } }
       workflows(first:100) { nodes { name enabled } }
     }
   }
@@ -103,10 +82,6 @@ jq -e --arg id "$PROJECT_ID" --arg url "$PROJECT_URL" '
   and .data.user.projectV2.fields.totalCount<=100
   and (.data.user.projectV2.views.nodes | type)=="array"
   and .data.user.projectV2.views.totalCount<=100
-  and ([.data.user.projectV2.views.nodes[] |
-    (.groupByFields.totalCount<=20 and
-     .verticalGroupByFields.totalCount<=20 and
-     .configuration.visibleFields.totalCount<=50)] | all)
   and (.data.user.projectV2.workflows.nodes | type)=="array"
   and .data.repository.issue.number==31
   and .data.repository.issue.url=="https://github.com/spwn02/Miracle/issues/31"
@@ -138,15 +113,12 @@ done
 
 echo 'PASS: Project #3 identity, required fields and option definitions.'
 echo 'PASS: Issue #31 active membership and Kind=Feature, Disposition=Deferred, Area=Toolchain.'
-echo 'Native Project views (layout, exact filter, grouping and visible fields):'
+echo 'Native Project views (layout and exact saved filter):'
 jq -r '.data.user.projectV2.views.nodes[] |
-  "  \(.name) [\(.layout)]" +
-  "\\n    filter=" + (.filter // "") +
-  "\\n    group_by=" + ([.groupByFields.nodes[].name] | join(", ")) +
-  "\\n    vertical_group_by=" + ([.verticalGroupByFields.nodes[].name] | join(", ")) +
-  "\\n    visible=" + ([.configuration.visibleFields.nodes[].name] | join(", "))' <<<"$result"
-echo 'Native view contract assessment (read-only; warnings do not mutate UI):'
-view_count=0
+  "  \(.name) [\(.layout)]: \(.filter // "(no filter)")"' <<<"$result"
+
+echo 'Native view structural checks (read-only, warning-only):'
+view_warnings=0
 for spec in \
   'Overview|TABLE_LAYOUT|is:issue' \
   'Development|BOARD_LAYOUT|is:issue is:open -disposition:Deferred' \
@@ -163,23 +135,67 @@ for spec in \
     [.data.user.projectV2.views.nodes[] | select(.name==$name and .layout==$layout and
      ($filter=="" or .filter==$filter))] | length == 1
   ' <<<"$result" >/dev/null; then
-    echo "  PASS: $name exists with required layout/filter contract"
+    echo "  PASS: $name native layout and filter contract"
   else
-    echo "  WARN: $name is missing, duplicated or differs from expected filter/layout"
-    view_count=$((view_count+1))
+    echo "  WARN: $name missing/duplicated or differs from expected filter/layout"
+    view_warnings=$((view_warnings+1))
   fi
 done
-if jq -e '[.data.user.projectV2.views.nodes[] | select(.name=="Development") |
-  .groupByFields.nodes[].name] | index("Status") != null' <<<"$result" >/dev/null; then
-  echo '  PASS: Development board groups by Status'
+
+# Optional query: GitHub's GraphQL backend can fail on Project view grouping
+# resolution for a populated Project. Keep the primary identity/audit usable
+# and explicitly label unavailable grouping as UNVERIFIED.
+read -r -d '' group_query <<'GQL' || true
+query {
+  user(login:"spwn02") {
+    projectV2(number:3) {
+      id
+      views(first:100) {
+        nodes {
+          name
+          groupByFields(first:20) { nodes { ... on ProjectV2FieldCommon { name } } }
+          verticalGroupByFields(first:20) { nodes { ... on ProjectV2FieldCommon { name } } }
+          configuration {
+            visibleFields(first:50) { nodes { ... on ProjectV2FieldCommon { name } } }
+          }
+        }
+      }
+    }
+  }
+}
+GQL
+group_result=''
+if group_result="$(gh api graphql -f query="$group_query" 2>/dev/null)" &&
+   jq -e --arg id "$PROJECT_ID" '
+     ((.errors // [])|length)==0 and .data.user.projectV2.id==$id and
+     (.data.user.projectV2.views.nodes|type)=="array"
+   ' <<<"$group_result" >/dev/null; then
+  echo 'Optional native view grouping/visible-field details:'
+  jq -r '.data.user.projectV2.views.nodes[] |
+    "  \(.name): group=" + ([.groupByFields.nodes[].name] | join(",")) +
+    ", vertical=" + ([.verticalGroupByFields.nodes[].name] | join(",")) +
+    ", visible=" + ([.configuration.visibleFields.nodes[].name] | join(","))' <<<"$group_result"
+  if jq -e '[.data.user.projectV2.views.nodes[] | select(.name=="Development") |
+      .groupByFields.nodes[].name] | index("Status") != null' <<<"$group_result" >/dev/null; then
+    echo '  PASS: Development board groups by Status'
+  else
+    echo '  WARN: Development board Status grouping missing or not exposed'
+    view_warnings=$((view_warnings+1))
+  fi
 else
-  echo '  WARN: Development board is not grouped by Status; UI grouping remains unverified'
-  view_count=$((view_count+1))
+  echo '  WARN: GitHub did not return optional native grouping details. Development board grouping is UNVERIFIED, not failed.'
+  view_warnings=$((view_warnings+1))
 fi
-if [[ "$view_count" -gt 0 ]]; then
-  echo "WARN: $view_count native view configuration check(s) need follow-up; base Project identity and audit remain valid."
+
+if jq -e '[.data.user.projectV2.views.nodes[] | select(.name=="Roadmap" and
+    ((.filter // "") == ""))] | length==1' <<<"$result" >/dev/null; then
+  echo '  WARN: Roadmap currently has no saved filter; archival and deferred records may appear.'
+  view_warnings=$((view_warnings+1))
+fi
+if [[ "$view_warnings" -gt 0 ]]; then
+  echo "WARN: $view_warnings native view presentation findings require follow-up; primary Project audit remains successful."
 else
-  echo 'PASS: audited view structure and Development board grouping match expected contract.'
+  echo 'PASS: structural native view contract and grouping checks.'
 fi
 echo 'Native workflow names and enabled status:'
 jq -r '.data.user.projectV2.workflows.nodes[] |
