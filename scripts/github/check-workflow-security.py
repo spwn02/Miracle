@@ -114,6 +114,19 @@ def check(workflows: dict[str, str]) -> list[str]:
     for label, fragment in checks.items():
         if fragment not in project:
             errors.append(f"miracle-project-operations.yml: missing {label}")
+    validation, sep, execution = project.partition("      - name: Execute only the selected native Project operation")
+    if not sep:
+        errors.append("miracle-project-operations.yml: missing privileged dispatch step")
+    else:
+        for operation, mode in (("roadmap-plan", "--plan"), ("roadmap-verify", "--verify"), ("roadmap-apply", "--apply")):
+            command = f"python3 scripts/github/project-roadmap-filter.py {mode}"
+            # Fixed allowlist logic must be in the GH_TOKEN-bearing execution step,
+            # never merely in the preceding no-token parser/validation step.
+            if f"'/miracle-project {operation}')" not in execution or command not in execution:
+                errors.append(f"miracle-project-operations.yml: missing executable Roadmap {operation} branch")
+            if command in validation:
+                errors.append(f"miracle-project-operations.yml: Roadmap {operation} executed in validation step")
+
     if "pull_request:" in project or "pull_request_target:" in project:
         errors.append("miracle-project-operations.yml: no PR trigger may access Project token")
     if project.count("secrets.MIRACLE_PROJECT_TOKEN") != 1:
@@ -240,6 +253,14 @@ def main() -> int:
         print("ERROR: widened Roadmap write trigger escaped security guard", file=sys.stderr)
         return 1
 
+    misplaced_roadmap = dict(workflows)
+    misplaced_roadmap["miracle-project-operations.yml"] = misplaced_roadmap["miracle-project-operations.yml"].replace(
+        "python3 scripts/github/project-roadmap-filter.py --apply", "echo 'roadmap apply skipped'", 1
+    )
+    if not check(misplaced_roadmap):
+        print("ERROR: inert Roadmap execute branch escaped security guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -280,7 +301,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 10 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 11 mutations, and 4 parser fixtures.")
     return 0
 
 
