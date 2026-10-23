@@ -98,6 +98,10 @@ def check(workflows: dict[str, str]) -> list[str]:
         "reviewed Roadmap controller": "python3 scripts/github/project-roadmap-filter.py --apply",
         "catalog read-only command": "github.event.comment.body == '/miracle-project archive-audit'",
         "catalog read-only runner": "python3 scripts/github/audit-project-archive.py",
+        "intake inspect gate": "startsWith(github.event.comment.body, '/miracle-project intake-inspect ')",
+        "intake add gate": "startsWith(github.event.comment.body, '/miracle-project intake-add ')",
+        "intake validator": "python3 scripts/github/project-issue-intake.py --self-test",
+        "intake executor": "python3 scripts/github/project-issue-intake.py",
         "no cancellation of ongoing writes": "cancel-in-progress: false",
         "command allowlist": "github.event.comment.body == '/miracle-project reconcile-apply'",
         "item inspect gate": "startsWith(github.event.comment.body, '/miracle-project inspect ')",
@@ -263,6 +267,14 @@ def main() -> int:
         print("ERROR: inert Roadmap execute branch escaped security guard", file=sys.stderr)
         return 1
 
+    widened_intake = dict(workflows)
+    widened_intake["miracle-project-operations.yml"] = widened_intake["miracle-project-operations.yml"].replace(
+        "startsWith(github.event.comment.body, '/miracle-project intake-add ')", "true"
+    )
+    if not check(widened_intake):
+        print("ERROR: widened Project intake command escaped guard", file=sys.stderr)
+        return 1
+
     alternate = dict(workflows)
     alternate["gcc.yml"] = alternate["gcc.yml"].replace(
         "scripts/ci/validate-gcc.sh", ".github/scripts/validate-gcc.sh", 1
@@ -303,7 +315,7 @@ def main() -> int:
         print("ERROR: non-writing stress fixture passed guard", file=sys.stderr)
         return 1
 
-    print(f"PASS: {len(FILES)} workflow trust boundaries, 11 mutations, and 4 parser fixtures.")
+    print(f"PASS: {len(FILES)} workflow trust boundaries, 12 mutations, and 4 parser fixtures.")
     return 0
 
 
