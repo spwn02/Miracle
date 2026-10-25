@@ -5,8 +5,8 @@
 ## Verified source-bearing archive
 
 - Full guarded migration: **172/172 historical DraftIssue bodies are canonical**, 171 new writes and one prior pilot; zero pending.
-- Independent read-only Project audit: [run #40225857969](https://github.com/spwn02/Miracle/actions/runs/40225857969), [artifact #12611356997](https://github.com/spwn02/Miracle/actions/runs/40225857969/artifacts/12611356997); all 172 native SHA-256 values cross-verified against backed-up expected replacements.
-- Original native Markdown bodies preserved in [backup artifact #12608038204](https://github.com/spwn02/Miracle/actions/runs/40217537233/artifacts/12608038204), sourced from [run #40217537233](https://github.com/spwn02/Miracle/actions/runs/40217537233), pinned at `cd2c02b2691f32f6a624c32bfdef2f162bdf1aad`. An independent copy is retained outside ephemeral Actions artifacts.
+- Independent read-only Project audit: [run #40225857969](https://github.com/spwn02/Miracle/actions/runs/40225857969), artifact `#12611356997` (requires authenticated Actions access); all 172 native SHA-256 values cross-verified against backed-up expected replacements.
+- Original native Markdown bodies preserved in backup artifact `#12608038204` (requires authenticated Actions access), sourced from [run #40217537233](https://github.com/spwn02/Miracle/actions/runs/40217537233), pinned at `cd2c02b2691f32f6a624c32bfdef2f162bdf1aad`. An independent copy is retained outside ephemeral Actions artifacts.
 - **Exact 172-record disposition: KEEP every identity** listed in authoritative `docs/contracts/PROJECT-CATALOG.json`. **MERGE: none. ARCHIVE/DELETE: none.** No cleanup is justified merely by identical source Markdown in different archive roles.
 
 Two potentially confusing exact source-range overlaps (all four native item identities preserved):
@@ -20,7 +20,7 @@ Even exact byte identity of source ranges is **not** proof that different Phase/
 
 ## Git branch audit — observed 41 branch tips
 
-Live read-only [run #40226278006](https://github.com/spwn02/Miracle/actions/runs/40226278006) generated [artifact #12610439712](https://github.com/spwn02/Miracle/actions/runs/40226278006/artifacts/12610439712) with names, exact SHA, matching merged PR head, Git compare ancestry and status. **37** are merged / zero-ahead candidates for *future review*, **none authorized for deletion**.
+Live read-only [run #40226278006](https://github.com/spwn02/Miracle/actions/runs/40226278006) generated artifact `#12610439712` (requires authenticated Actions access) with names, exact SHA, matching merged PR head, Git compare ancestry and status. **37** are merged / zero-ahead candidates for *future review*, **none authorized for deletion**.
 
 ### Retain without further action
 
