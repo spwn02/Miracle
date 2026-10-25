@@ -5,6 +5,7 @@ Owner-only commands, routed through the reviewed Issue #29 Actions bridge:
   /miracle-project relations 29
   /miracle-project add-child {"parent":29,"child":36}
   /miracle-project add-blocker {"issue":X,"blocked_by":Y}
+  /miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":45|60}
 
 Uses the job-scoped repository GITHUB_TOKEN (issues:write), never the
 user-owned Projects token. Does not change fields, contracts or issue states.
@@ -24,6 +25,7 @@ REPOSITORY_URL = "https://api.github.com/" + BASE
 INSPECT = "/miracle-project relations "
 CHILD = "/miracle-project add-child "
 BLOCKER = "/miracle-project add-blocker "
+RESOLVE = "/miracle-project resolve-workspace-blocker "
 
 
 class Refusal(RuntimeError):
@@ -59,6 +61,8 @@ def parse(request: str) -> tuple[str, int, int | None]:
         prefix, keys, operation = CHILD, {"parent", "child"}, "child"
     elif request.startswith(BLOCKER):
         prefix, keys, operation = BLOCKER, {"issue", "blocked_by"}, "blocker"
+    elif request.startswith(RESOLVE):
+        prefix, keys, operation = RESOLVE, {"issue", "blocked_by"}, "resolve"
     else:
         raise Refusal("unsupported relationship command")
     argument = request[len(prefix):]
@@ -74,6 +78,8 @@ def parse(request: str) -> tuple[str, int, int | None]:
         obj["issue"], obj["blocked_by"])
     if not positive_number(first) or not positive_number(second) or first == second:
         raise Refusal("two distinct positive issue numbers are required")
+    if operation == "resolve" and (first != 29 or second not in (45, 60)):
+        raise Refusal("only reviewed #29 workspace blocker edges #45 and #60 may be resolved")
     return operation, first, second
 
 
@@ -269,6 +275,46 @@ def add_blocker(number: int, prerequisite: int) -> None:
            f"native #{number} blocked by #{prerequisite}")
 
 
+def resolve_workspace_blocker(number: int, prerequisite: int) -> None:
+    """Remove only owner-approved obsolete #29->#45/#60 dependency edges."""
+    if number != 29 or prerequisite not in (45, 60):
+        raise Refusal("only approved workspace dependency edges may be removed")
+    affected = issue(number, mutation=True)
+    prior = issue(prerequisite)
+    # Exact reviewed Stage A scope revision must have merged into canonical Git.
+    addendum = call(f"{BASE}/contents/docs/infrastructure/amendments/"
+                   "G2-WORKSPACE-STAGE-A-SCOPE-ADDENDUM-V1.0.md")
+    if not isinstance(addendum, dict) or addendum.get("type") != "file":
+        raise Refusal("reviewed Stage A scope addendum absent on master")
+    rationale = affected.get("body") or ""
+    if ("## 2026-10-25 Stage A scope revision and deferred direct MCP" not in rationale
+            or "Owner authorizes resolving these two obsolete dependency edges only" not in rationale):
+        raise Refusal("explicit maintainer-approved scope and edge rationale absent")
+    if prerequisite == 45 and prior.get("state") != "closed":
+        raise Refusal("#45 contract round trip must be closed before dependency resolution")
+    if prerequisite == 60 and (prior.get("state") != "open" or
+            "## Maintainer-approved deferral — 2026-10-25" not in (prior.get("body") or "")):
+        raise Refusal("#60 must remain open with documented maintainer-approved deferral")
+    current = numbers(blocked_by(number))
+    if prerequisite not in current:
+        if number not in numbers(blocking(prerequisite)):
+            print(f"SKIP: #{number} is not blocked by #{prerequisite}")
+            return
+        raise Refusal("inconsistent dependency directions before removal")
+    if number not in numbers(blocking(prerequisite)):
+        raise Refusal("inconsistent reciprocal dependency before removal")
+    prior_db_id = prior["id"]
+    response = subprocess.run([
+        "gh", "api", "-X", "DELETE",
+        f"{BASE}/issues/{number}/dependencies/blocked_by/{prior_db_id}",
+    ], text=True, capture_output=True, check=False)
+    if response.returncode != 0:
+        raise Refusal("GitHub dependency DELETE failed (exit " + str(response.returncode) + ")")
+    verify(lambda: (prerequisite not in numbers(blocked_by(number)) and
+                    number not in numbers(blocking(prerequisite))),
+           f"native obsolete #{number} blocked by #{prerequisite} removed")
+
+
 def self_test() -> None:
     assert parse("/miracle-project relations 29") == ("inspect", 29, None)
     assert positive_id(5_970_924_253)
@@ -277,6 +323,8 @@ def self_test() -> None:
     assert parse('/miracle-project add-child {"parent":29,"child":36}') == ("child", 29, 36)
     assert parse('/miracle-project add-blocker {"issue":44,"blocked_by":36}') == (
         "blocker", 44, 36)
+    assert parse(\x27/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":45}\x27) == ("resolve", 29, 45)
+    assert parse(\x27/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":60}\x27) == ("resolve", 29, 60)
     for valid in (
         "Parent: #29",
         "Parent work: #29",
@@ -314,6 +362,8 @@ def self_test() -> None:
         '/miracle-project add-child {"parent":true,"child":36}',
         '/miracle-project add-child {"parent":29,"child":"36"}',
         '/miracle-project add-blocker {"issue":36,"blocked_by":36}',
+        '/miracle-project resolve-workspace-blocker {"issue":28,"blocked_by":45}',
+        '/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":62}',
         '/miracle-project add-child {"parent":29,"child":36} trailing',
         '/miracle-project add-child {"parent":[],"child":36}',
     ):
@@ -322,7 +372,7 @@ def self_test() -> None:
         except Refusal:
             continue
         raise AssertionError("unsafe relationship command accepted: " + bad)
-    print("PASS: relationship command parser, field validation and 10 negative fixtures")
+    print("PASS: relationship command parser, scoped dependency resolution and negative fixtures")
 
 
 def main() -> None:
@@ -337,6 +387,9 @@ def main() -> None:
     elif operation == "child":
         assert second is not None
         add_child(first, second)
+    elif operation == "resolve":
+        assert second is not None
+        resolve_workspace_blocker(first, second)
     else:
         assert second is not None
         add_blocker(first, second)
