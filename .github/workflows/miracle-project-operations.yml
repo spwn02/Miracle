@@ -45,6 +45,7 @@ jobs:
            github.event.comment.body == '/miracle-project archive-audit' ||
            github.event.comment.body == '/miracle-project stage-b-source-plan' ||
            github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
+           github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -84,6 +85,7 @@ jobs:
           python3 scripts/github/audit-project-archive.py --self-test
           python3 scripts/github/stage-b-source-manifest.py --self-test
           python3 scripts/github/stage-b-branch-plan.py --self-test
+          python3 scripts/github/stage-b-draft-sync.py --self-test
           python3 scripts/github/audit-g2-provenance.py --self-test
           python3 scripts/github/audit-g6-community.py --self-test
           python3 scripts/github/audit-g6-release-provenance.py --self-test
@@ -94,6 +96,7 @@ jobs:
             '/miracle-project archive-audit') ;;
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
+            '/miracle-project stage-b-draft-plan') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -177,6 +180,10 @@ jobs:
               action='stage-b-branch-plan'
               python3 scripts/github/stage-b-branch-plan.py
               ;;
+            '/miracle-project stage-b-draft-plan')
+              action='stage-b-draft-backup'
+              python3 scripts/github/stage-b-draft-sync.py --prepare
+              ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'
               python3 scripts/github/audit-g2-provenance.py
@@ -223,6 +230,16 @@ jobs:
         with:
           name: miracle-stage-b-branch-manifest-${{ github.run_id }}
           path: stage-b-branch-evidence/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Preserve complete Project draft originals BEFORE any mutation
+        id: backup_drafts
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-plan' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-full-draft-backup-${{ github.run_id }}
+          path: stage-b-draft-backup/
           retention-days: 30
           if-no-files-found: error
 
