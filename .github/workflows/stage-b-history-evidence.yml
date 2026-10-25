@@ -1,0 +1,44 @@
+name: Stage B Historical Roadmap Evidence
+
+# Owner-initiated and read-only. No Project token, no arbitrary issue inputs.
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  evidence:
+    if: >-
+      github.repository == 'spwn02/Miracle' &&
+      github.actor == 'spwn02' &&
+      github.event_name == 'issue_comment' &&
+      github.event.issue.number == 69 &&
+      github.event.issue.pull_request == null &&
+      github.event.comment.body == '/miracle-stage-b historical-roadmap-plan'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout all master reachable history without credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: master
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Validate and reconstruct actual source change events
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/github/stage-b-reconstruct-history.py
+          python3 scripts/github/stage-b-reconstruct-history.py --self-test
+          python3 scripts/github/stage-b-reconstruct-history.py --out stage-b-roadmap-evidence/reconstructed-activity.json
+
+      - name: Preserve read-only activity provenance
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-roadmap-evidence-${{ github.run_id }}
+          path: stage-b-roadmap-evidence/
+          retention-days: 90
+          if-no-files-found: error

@@ -1,0 +1,2604 @@
+{
+  "schema": 1,
+  "kind": "review-only-exact-native-identity-consolidation-proposal",
+  "repository": "spwn02/Miracle",
+  "project": "spwn02/Miracle Development #3",
+  "created_from": "live authenticated Project read + canonical docs/contracts/PROJECT-CATALOG.json",
+  "source_range_containment_proof": "independent 172-body original backup and live source ranges; 152/152 proposed targets contained in retained source spans with architecture full-overview prerequisite",
+  "original_record_count": 172,
+  "proposed_retain": 20,
+  "proposed_consolidate": 152,
+  "exact_destructive_authorization": false,
+  "original_body_backup_artifact_id": 12608038204,
+  "original_source_revision": "cd2c02b2691f32f6a624c32bfdef2f162bdf1aad",
+  "requirements": [
+    "Document all alias identifiers and preserved source coverage on each retained item",
+    "Expand architecture retained overview to complete source before sibling consolidation",
+    "Keep eight Phase 5.6 checkpoints distinct and without inferred accepted status",
+    "Before any mutation freshly read native source/full Markdown/SHA and compare to pinned expected state",
+    "Separately require owner approval of exact item target list, verified backups, reverse capability, and per-item readback",
+    "Do not delete/merge/archive anything based on this proposed manifest alone"
+  ],
+  "records": [
+    {
+      "stable_id": "foundation:contract:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkgM",
+      "project_item_id": 279155203,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkgM",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:0008",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "project_item_id": 279155252,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 8,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0017",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkmY",
+      "project_item_id": 279155302,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 17,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0031",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkp0",
+      "project_item_id": 279155357,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 31,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0047",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjktA",
+      "project_item_id": 279155408,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 47,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0079",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkvM",
+      "project_item_id": 279155443,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 79,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0119",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjky8",
+      "project_item_id": 279155503,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 119,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0134",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjk2A",
+      "project_item_id": 279155552,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 134,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0144",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjk50",
+      "project_item_id": 279155613,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 144,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0160",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjk9I",
+      "project_item_id": 279155666,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 160,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0215",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlAw",
+      "project_item_id": 279155724,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 215,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0242",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlC4",
+      "project_item_id": 279155758,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 242,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0270",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlFk",
+      "project_item_id": 279155801,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 270,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0290",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlIY",
+      "project_item_id": 279155846,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 290,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0317",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlLw",
+      "project_item_id": 279155900,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 317,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0346",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlOU",
+      "project_item_id": 279155941,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 346,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0366",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlQk",
+      "project_item_id": 279155977,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 366,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0008",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjkjQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:0375",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "project_item_id": 279156018,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 375,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0382",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlV8",
+      "project_item_id": 279156063,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 382,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0433",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlXs",
+      "project_item_id": 279156091,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 433,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0510",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlaU",
+      "project_item_id": 279156133,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 510,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0553",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlc0",
+      "project_item_id": 279156173,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 553,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0596",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlfQ",
+      "project_item_id": 279156212,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 596,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0619",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlic",
+      "project_item_id": 279156263,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 619,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0716",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjllU",
+      "project_item_id": 279156309,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 716,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0741",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlpU",
+      "project_item_id": 279156373,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 741,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0764",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlsI",
+      "project_item_id": 279156418,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 764,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0791",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlvc",
+      "project_item_id": 279156471,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 791,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0838",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlyU",
+      "project_item_id": 279156517,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 838,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0876",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjl08",
+      "project_item_id": 279156559,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 876,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0926",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjl5A",
+      "project_item_id": 279156624,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 926,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0969",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjl84",
+      "project_item_id": 279156686,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 969,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:0999",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmAc",
+      "project_item_id": 279156743,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 999,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1059",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmDw",
+      "project_item_id": 279156796,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1059,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:0375",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjlTI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:1106",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "project_item_id": 279156838,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1106,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1113",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmKo",
+      "project_item_id": 279156906,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1113,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1131",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmOQ",
+      "project_item_id": 279156964,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1131,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1153",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmSM",
+      "project_item_id": 279157027,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1153,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1179",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmWY",
+      "project_item_id": 279157094,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1179,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1244",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmY8",
+      "project_item_id": 279157135,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1244,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1279",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmcw",
+      "project_item_id": 279157196,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1279,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1296",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmgU",
+      "project_item_id": 279157253,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1296,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1306",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmjk",
+      "project_item_id": 279157305,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1306,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1332",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmmw",
+      "project_item_id": 279157356,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1332,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1348",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmpY",
+      "project_item_id": 279157398,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1348,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1403",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmsc",
+      "project_item_id": 279157447,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1403,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1418",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmvs",
+      "project_item_id": 279157499,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1418,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1106",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmGY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:1440",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "project_item_id": 279157548,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1440,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1447",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjm1k",
+      "project_item_id": 279157593,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1447,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1464",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjm34",
+      "project_item_id": 279157630,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1464,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1490",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjm6I",
+      "project_item_id": 279157666,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1490,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1516",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjm9g",
+      "project_item_id": 279157720,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1516,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1571",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnAo",
+      "project_item_id": 279157770,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1571,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1614",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnEI",
+      "project_item_id": 279157826,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1614,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1664",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnH8",
+      "project_item_id": 279157887,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1664,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1719",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnMs",
+      "project_item_id": 279157963,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1719,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1783",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnP4",
+      "project_item_id": 279158014,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1783,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1813",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnTE",
+      "project_item_id": 279158065,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1813,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1863",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnVk",
+      "project_item_id": 279158105,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1863,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1968",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnX4",
+      "project_item_id": 279158142,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1968,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:1987",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnaU",
+      "project_item_id": 279158181,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 1987,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:1440",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjmyw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:2000",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "project_item_id": 279158234,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2000,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2007",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjngE",
+      "project_item_id": 279158273,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2007,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2028",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjni0",
+      "project_item_id": 279158317,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2028,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2093",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnk8",
+      "project_item_id": 279158351,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2093,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2121",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnoY",
+      "project_item_id": 279158406,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2121,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2151",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnrE",
+      "project_item_id": 279158449,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2151,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2175",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnuU",
+      "project_item_id": 279158501,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2175,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2193",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjnxQ",
+      "project_item_id": 279158548,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2193,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2203",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjn0E",
+      "project_item_id": 279158593,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2203,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2234",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjn2c",
+      "project_item_id": 279158631,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2234,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2266",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjn5o",
+      "project_item_id": 279158682,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2266,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2316",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjn8c",
+      "project_item_id": 279158727,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2316,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2366",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjn_Q",
+      "project_item_id": 279158772,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2366,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2382",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoC0",
+      "project_item_id": 279158829,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2382,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2000",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjndo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:contract:2407",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "project_item_id": 279158875,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2407,
+        "kind": "Contract",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2414",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoIU",
+      "project_item_id": 279158917,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2414,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2433",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoLY",
+      "project_item_id": 279158966,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2433,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2462",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoNs",
+      "project_item_id": 279159003,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2462,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2476",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoQA",
+      "project_item_id": 279159040,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2476,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2486",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoSY",
+      "project_item_id": 279159078,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2486,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2500",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoVI",
+      "project_item_id": 279159122,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2500,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2519",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoX0",
+      "project_item_id": 279159165,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2519,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2537",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoZ4",
+      "project_item_id": 279159198,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2537,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2560",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjocs",
+      "project_item_id": 279159243,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2560,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2592",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjogM",
+      "project_item_id": 279159299,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2592,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2612",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjois",
+      "project_item_id": 279159339,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2612,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2637",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjom4",
+      "project_item_id": 279159406,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2637,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2655",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoqI",
+      "project_item_id": 279159458,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2655,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2667",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjouo",
+      "project_item_id": 279159530,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2667,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2682",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoyA",
+      "project_item_id": 279159584,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2682,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2706",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo2o",
+      "project_item_id": 279159658,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2706,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:contract:2407",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjoFs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:ledger:2713",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "project_item_id": 279159716,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2713,
+        "kind": "Ledger",
+        "group": "Foundation"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "foundation:ledger:2713",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2719",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo-0",
+      "project_item_id": 279159789,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2719,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:ledger:2713",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2802",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpDM",
+      "project_item_id": 279159859,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2802,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:ledger:2713",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2893",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpGM",
+      "project_item_id": 279159907,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2893,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:ledger:2713",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "foundation:chapter:2972",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpI8",
+      "project_item_id": 279159951,
+      "source": {
+        "path": "docs/contracts/miracle-foundation-v1.0.md",
+        "heading_start_line": 2972,
+        "kind": "Chapter",
+        "group": "Foundation"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "foundation:ledger:2713",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjo6Q",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:phase:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "project_item_id": 279160005,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 1,
+        "kind": "Phase",
+        "group": "Phase 5.4"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:contract:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpQI",
+      "project_item_id": 279160066,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 1,
+        "kind": "Contract",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0016",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpT4",
+      "project_item_id": 279160126,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 16,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0051",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpWc",
+      "project_item_id": 279160167,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 51,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0123",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpY4",
+      "project_item_id": 279160206,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 123,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0149",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpbY",
+      "project_item_id": 279160246,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 149,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0165",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpdM",
+      "project_item_id": 279160275,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 165,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0181",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpgw",
+      "project_item_id": 279160332,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 181,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0209",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpjw",
+      "project_item_id": 279160380,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 209,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0231",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpmw",
+      "project_item_id": 279160428,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 231,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0237",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjppY",
+      "project_item_id": 279160470,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 237,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0271",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpsw",
+      "project_item_id": 279160524,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 271,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0275",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpwg",
+      "project_item_id": 279160584,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 275,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0294",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjp0c",
+      "project_item_id": 279160647,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 294,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0319",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjp4A",
+      "project_item_id": 279160704,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 319,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0325",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjp60",
+      "project_item_id": 279160749,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 325,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0333",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjp-U",
+      "project_item_id": 279160805,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 333,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0350",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqAo",
+      "project_item_id": 279160842,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 350,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0361",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqEE",
+      "project_item_id": 279160897,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 361,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0377",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqHM",
+      "project_item_id": 279160947,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 377,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0387",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqJE",
+      "project_item_id": 279160977,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 387,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0393",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqLY",
+      "project_item_id": 279161014,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 393,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0421",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqN8",
+      "project_item_id": 279161055,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 421,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0433",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqQ4",
+      "project_item_id": 279161102,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 433,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0465",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqTc",
+      "project_item_id": 279161143,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 465,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0487",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqVw",
+      "project_item_id": 279161180,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 487,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0498",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqYk",
+      "project_item_id": 279161225,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 498,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0526",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqa4",
+      "project_item_id": 279161262,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 526,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-4:chapter:0580",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqds",
+      "project_item_id": 279161307,
+      "source": {
+        "path": "docs/phases/phase-5.4-frozen-contract.md",
+        "heading_start_line": 580,
+        "kind": "Chapter",
+        "group": "Phase 5.4"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-4:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjpMU",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:phase:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "project_item_id": 279161371,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 1,
+        "kind": "Phase",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:contract:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjql8",
+      "project_item_id": 279161439,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 1,
+        "kind": "Contract",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0008",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqpU",
+      "project_item_id": 279161493,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 8,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0023",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqsU",
+      "project_item_id": 279161541,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 23,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0035",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqvQ",
+      "project_item_id": 279161588,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 35,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0053",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqyk",
+      "project_item_id": 279161641,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 53,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0071",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjq2Q",
+      "project_item_id": 279161700,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 71,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0147",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjq6Q",
+      "project_item_id": 279161764,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 147,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0158",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjq-M",
+      "project_item_id": 279161827,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 158,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0167",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrA4",
+      "project_item_id": 279161870,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 167,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0176",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrDg",
+      "project_item_id": 279161912,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 176,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0195",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrFU",
+      "project_item_id": 279161941,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 195,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:chapter:0208",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrIA",
+      "project_item_id": 279161984,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 208,
+        "kind": "Chapter",
+        "group": "Phase 5.6"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "phase-5-6:phase:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjqhs",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0075",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrKg",
+      "project_item_id": 279162024,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 75,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0075",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrKg",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0083",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrNw",
+      "project_item_id": 279162076,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 83,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0083",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrNw",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0091",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrQQ",
+      "project_item_id": 279162116,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 91,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0091",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrQQ",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0099",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrS8",
+      "project_item_id": 279162159,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 99,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0099",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrS8",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0115",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrUo",
+      "project_item_id": 279162186,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 115,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0115",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrUo",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0123",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrXY",
+      "project_item_id": 279162230,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 123,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0123",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrXY",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0131",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjraI",
+      "project_item_id": 279162274,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 131,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0131",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjraI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "phase-5-6:checkpoint:0139",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrdE",
+      "project_item_id": 279162321,
+      "source": {
+        "path": "docs/phases/phase-5.6-execution-contract-v1.0.md",
+        "heading_start_line": 139,
+        "kind": "Checkpoint",
+        "group": "Phase 5.6"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "phase-5-6:checkpoint:0139",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrdE",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:contract:0001",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "project_item_id": 279162386,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 1,
+        "kind": "Contract",
+        "group": "Development Protocol"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0012",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrlc",
+      "project_item_id": 279162455,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 12,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0034",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjro8",
+      "project_item_id": 279162511,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 34,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0085",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrsc",
+      "project_item_id": 279162567,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 85,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0123",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrw4",
+      "project_item_id": 279162638,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 123,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0166",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjr0Q",
+      "project_item_id": 279162692,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 166,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0253",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjr3Y",
+      "project_item_id": 279162742,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 253,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0305",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjr70",
+      "project_item_id": 279162813,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 305,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0326",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjr_Y",
+      "project_item_id": 279162870,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 326,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0398",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsDc",
+      "project_item_id": 279162935,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 398,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0420",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsHA",
+      "project_item_id": 279162992,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 420,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0443",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsLQ",
+      "project_item_id": 279163060,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 443,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0469",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsOs",
+      "project_item_id": 279163115,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 469,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0487",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsSM",
+      "project_item_id": 279163171,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 487,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0509",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsUs",
+      "project_item_id": 279163211,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 509,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "development-protocol:chapter:0537",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsWs",
+      "project_item_id": 279163243,
+      "source": {
+        "path": "docs/DEVELOPMENT_PROTOCOL.md",
+        "heading_start_line": 537,
+        "kind": "Chapter",
+        "group": "Development Protocol"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "development-protocol:contract:0001",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjrhI",
+      "architecture_overview_expansion_required": false
+    },
+    {
+      "stable_id": "architecture:chapter:0003",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "project_item_id": 279163285,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 3,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "retain",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0019",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsb4",
+      "project_item_id": 279163326,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 19,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0036",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsd8",
+      "project_item_id": 279163359,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 36,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0046",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsis",
+      "project_item_id": 279163435,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 46,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0058",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsnE",
+      "project_item_id": 279163505,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 58,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0074",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsq8",
+      "project_item_id": 279163567,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 74,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0080",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsuE",
+      "project_item_id": 279163617,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 80,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0086",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsw4",
+      "project_item_id": 279163662,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 86,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    },
+    {
+      "stable_id": "architecture:chapter:0090",
+      "project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjs0s",
+      "project_item_id": 279163723,
+      "source": {
+        "path": "docs/architecture.md",
+        "heading_start_line": 90,
+        "kind": "Chapter",
+        "group": "Architecture"
+      },
+      "disposition": "propose_consolidate_after_owner_approval",
+      "retained_stable_id": "architecture:chapter:0003",
+      "retained_project_item_node_id": "PVTI_lAHOCp2Gs84Bna-3zhCjsZU",
+      "architecture_overview_expansion_required": true
+    }
+  ]
+}
