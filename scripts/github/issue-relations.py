@@ -323,8 +323,8 @@ def self_test() -> None:
     assert parse('/miracle-project add-child {"parent":29,"child":36}') == ("child", 29, 36)
     assert parse('/miracle-project add-blocker {"issue":44,"blocked_by":36}') == (
         "blocker", 44, 36)
-    assert parse(\x27/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":45}\x27) == ("resolve", 29, 45)
-    assert parse(\x27/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":60}\x27) == ("resolve", 29, 60)
+    assert parse('/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":45}') == ("resolve", 29, 45)
+    assert parse('/miracle-project resolve-workspace-blocker {"issue":29,"blocked_by":60}') == ("resolve", 29, 60)
     for valid in (
         "Parent: #29",
         "Parent work: #29",
