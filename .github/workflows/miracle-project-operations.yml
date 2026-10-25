@@ -46,6 +46,7 @@ jobs:
            github.event.comment.body == '/miracle-project stage-b-source-plan' ||
            github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
+           github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -63,6 +64,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      actions: read # Read only the pinned, previously uploaded all-draft backup.
       issues: write # Only to acknowledge owner commands in Issue #29.
     steps:
       - name: Checkout reviewed default branch, without stored credentials
@@ -96,7 +98,7 @@ jobs:
             '/miracle-project archive-audit') ;;
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
-            '/miracle-project stage-b-draft-plan') ;;
+            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -121,6 +123,171 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/github/issue-relations.py
+
+      - name: Verify and restore reviewed full-draft backup before fixed pilot
+        if: ${{ github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-pilot' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Pin to owner-authenticated all-172 backup prepared and uploaded
+          # BEFORE this reviewed write capability was enabled.
+          gh api repos/spwn02/Miracle/actions/artifacts/12608038204 \
+            --jq '[.id, .name, .expired, .workflow_run.head_sha] | @tsv' \
+            > "$RUNNER_TEMP/pinned-backup.txt"
+          expected=
+        id: execute
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}
+          REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
+        run: |
+          set -euo pipefail
+          if [[ "$REQUEST" == '/miracle-project relations '* || "$REQUEST" == '/miracle-project add-child '* || "$REQUEST" == '/miracle-project add-blocker '* || "$REQUEST" == '/miracle-project resolve-workspace-blocker '* ]]; then
+            echo 'Native Issue relationship handled by the repository-token step.'
+            exit 0
+          fi
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo 'MIRACLE_PROJECT_TOKEN secret missing: configure a Projects-scoped credential (not the repository GITHUB_TOKEN).' >&2
+            exit 1
+          fi
+          # Use fixed allowlisted commands only, never arbitrary issue content.
+          case "$REQUEST" in
+            audit|'/miracle-project audit')
+              action='audit'
+              bash scripts/github/audit-native-project.sh
+              ;;
+            reconcile-plan|'/miracle-project reconcile-plan')
+              action='reconcile-plan'
+              bash scripts/github/miracle-project-reconcile-safe.sh --plan
+              ;;
+            reconcile-verify|'/miracle-project reconcile-verify')
+              action='reconcile-verify'
+              bash scripts/github/miracle-project-reconcile-safe.sh --verify
+              ;;
+            reconcile-apply|'/miracle-project reconcile-apply')
+              action='reconcile-apply'
+              bash scripts/github/miracle-project-reconcile-safe.sh --apply
+              ;;
+            '/miracle-project roadmap-plan')
+              action='roadmap-plan'
+              python3 scripts/github/project-roadmap-filter.py --plan
+              ;;
+            '/miracle-project roadmap-verify')
+              action='roadmap-verify'
+              python3 scripts/github/project-roadmap-filter.py --verify
+              ;;
+            '/miracle-project roadmap-apply')
+              action='roadmap-apply'
+              python3 scripts/github/project-roadmap-filter.py --apply
+              ;;
+            '/miracle-project archive-audit')
+              action='archive-audit'
+              python3 scripts/github/audit-project-archive.py
+              ;;
+            '/miracle-project stage-b-source-plan')
+              action='stage-b-source-plan'
+              python3 scripts/github/stage-b-source-manifest.py
+              ;;
+            '/miracle-project stage-b-branch-plan')
+              action='stage-b-branch-plan'
+              python3 scripts/github/stage-b-branch-plan.py
+              ;;
+            '/miracle-project stage-b-draft-plan')
+              action='stage-b-draft-backup'
+              python3 scripts/github/stage-b-draft-sync.py --prepare
+              ;;
+            '/miracle-project stage-b-draft-pilot')
+              action='stage-b-fixed-one-draft-pilot'
+              python3 scripts/github/stage-b-draft-sync.py --pilot
+              ;;
+            '/miracle-project g2-provenance')
+              action='g2-provenance'
+              python3 scripts/github/audit-g2-provenance.py
+              ;;
+            '/miracle-project g6-community')
+              action='g6-community'
+              python3 scripts/github/audit-g6-community.py
+              ;;
+            '/miracle-project g6-release-provenance')
+              action='g6-release-provenance'
+              python3 scripts/github/audit-g6-release-provenance.py
+              ;;
+            '/miracle-project intake-inspect '*|'/miracle-project intake-add '*)
+              action='issue-intake'
+              python3 scripts/github/project-issue-intake.py
+              ;;
+            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*|'/miracle-project accept-workspace-29')
+              action='project-item-control'
+              python3 scripts/github/project-item-control.py
+              ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*)
+              action='native-issue-relationship'
+              echo 'Issue relation command executed in separate repository-scoped step.'
+              ;;
+            *) echo 'Invalid operation' >&2; exit 1 ;;
+          esac
+          echo "## Miracle native Project operation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Operation: \`$action\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Project: https://github.com/users/spwn02/projects/3" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exact runner output is in this workflow's job log." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve read-only Stage B source manifest
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-source-plan' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-source-manifest-${{ github.run_id }}
+          path: stage-b-evidence/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Preserve read-only Stage B branch disposition manifest
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-branch-plan' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-branch-manifest-${{ github.run_id }}
+          path: stage-b-branch-evidence/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Preserve complete Project draft originals BEFORE any mutation
+        id: backup_drafts
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-plan' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-full-draft-backup-${{ github.run_id }}
+          path: stage-b-draft-backup/
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Acknowledge Issue #29 command with a run link
+        if: ${{ always() && github.event_name == 'issue_comment' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ steps.relation.outcome == 'skipped' && steps.execute.outcome || steps.relation.outcome }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          {
+            echo "Native Project operation \`$REQUEST\`: **$RESULT**."
+            echo
+            echo "Workflow run: https://github.com/spwn02/Miracle/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "No accepted-contract or release state was changed by the workflow."
+          } > "$RUNNER_TEMP/project-result.md"
+          gh issue comment 29 --repo spwn02/Miracle --body-file "$RUNNER_TEMP/project-result.md"
+12608038204\tmiracle-stage-b-full-draft-backup-40217537233\tfalse\tcd2c02b2691f32f6a624c32bfdef2f162bdf1aad'
+          if [[ "$(cat "$RUNNER_TEMP/pinned-backup.txt")" != "$expected" ]]; then
+            echo 'Pinned original-body artifact is missing/expired/wrong provenance' >&2
+            exit 1
+          fi
+          gh run download 40217537233 --repo spwn02/Miracle \
+            --name miracle-stage-b-full-draft-backup-40217537233 \
+            --dir stage-b-draft-backup
+          test -s stage-b-draft-backup/draft-body-backup-and-plan.json
+          echo 'PASS: approved pre-write 172-body backup restored from pinned artifact'
 
       - name: Execute only the selected native Project operation
         id: execute
@@ -183,6 +350,10 @@ jobs:
             '/miracle-project stage-b-draft-plan')
               action='stage-b-draft-backup'
               python3 scripts/github/stage-b-draft-sync.py --prepare
+              ;;
+            '/miracle-project stage-b-draft-pilot')
+              action='stage-b-fixed-one-draft-pilot'
+              python3 scripts/github/stage-b-draft-sync.py --pilot
               ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'
