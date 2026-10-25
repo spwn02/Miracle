@@ -87,7 +87,22 @@ def preflight(pinned_revision: str | None = None) -> tuple[list[dict], dict]:
         parent = subprocess.run(["git", "merge-base", "--is-ancestor", pinned_revision, "HEAD"],
                                 capture_output=True, check=False)
         if parent.returncode:
-            raise SyncError("backed-up revision is not an ancestor of current Git HEAD")
+            # Actions intentionally checks out a SHALLOW master. Failure to
+            # find an ancestor locally is inconclusive, not a rejection.
+            # Confirm the exact range with GitHub's authenticated compare API.
+            compare = subprocess.run(
+                ["gh", "api", "repos/spwn02/Miracle/compare/" + pinned_revision + "..." + revision],
+                capture_output=True, text=True, check=False
+            )
+            if compare.returncode:
+                raise SyncError("cannot authenticate source ancestry; refusing write")
+            try:
+                evidence = json.loads(compare.stdout)
+            except json.JSONDecodeError as exc:
+                raise SyncError("GitHub source ancestry response invalid") from exc
+            merge = (evidence.get("merge_base_commit") or {}).get("sha")
+            if evidence.get("status") not in ("ahead", "identical") or merge != pinned_revision:
+                raise SyncError("backed-up source is not a verified master ancestor")
         revision = pinned_revision
     baseline = json.loads(CATALOG.read_text(encoding="utf-8"))
     if (baseline.get("projectOwner"), baseline.get("projectNumber")) != ("spwn02", 3):
