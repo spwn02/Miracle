@@ -32,7 +32,7 @@ query($cursor:String) {
           type
           isArchived
           content {
-            ... on DraftIssue { title body }
+            ... on DraftIssue { id title body }
           }
           fieldValues(first:30) {
             totalCount
