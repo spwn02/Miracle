@@ -53,7 +53,8 @@ jobs:
            startsWith(github.event.comment.body, '/miracle-project progress ') ||
            startsWith(github.event.comment.body, '/miracle-project relations ') ||
            startsWith(github.event.comment.body, '/miracle-project add-child ') ||
-           startsWith(github.event.comment.body, '/miracle-project add-blocker '))))
+           startsWith(github.event.comment.body, '/miracle-project add-blocker ') ||
+           startsWith(github.event.comment.body, '/miracle-project resolve-workspace-blocker '))))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -91,7 +92,7 @@ jobs:
             '/miracle-project g6-release-provenance') ;;
             '/miracle-project intake-inspect '*|'/miracle-project intake-add '*) ;;
             '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*) ;;
-            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*) ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
           esac
 
@@ -101,7 +102,8 @@ jobs:
           github.event_name == 'issue_comment' &&
           (startsWith(github.event.comment.body, '/miracle-project relations ') ||
            startsWith(github.event.comment.body, '/miracle-project add-child ') ||
-           startsWith(github.event.comment.body, '/miracle-project add-blocker '))
+           startsWith(github.event.comment.body, '/miracle-project add-blocker ') ||
+           startsWith(github.event.comment.body, '/miracle-project resolve-workspace-blocker '))
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -118,7 +120,7 @@ jobs:
           REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
         run: |
           set -euo pipefail
-          if [[ "$REQUEST" == '/miracle-project relations '* || "$REQUEST" == '/miracle-project add-child '* || "$REQUEST" == '/miracle-project add-blocker '* ]]; then
+          if [[ "$REQUEST" == '/miracle-project relations '* || "$REQUEST" == '/miracle-project add-child '* || "$REQUEST" == '/miracle-project add-blocker '* || "$REQUEST" == '/miracle-project resolve-workspace-blocker '* ]]; then
             echo 'Native Issue relationship handled by the repository-token step.'
             exit 0
           fi
@@ -180,7 +182,7 @@ jobs:
               action='project-item-control'
               python3 scripts/github/project-item-control.py
               ;;
-            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*)
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*)
               action='native-issue-relationship'
               echo 'Issue relation command executed in separate repository-scoped step.'
               ;;
