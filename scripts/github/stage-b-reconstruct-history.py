@@ -84,6 +84,30 @@ def events() -> list[dict]:
     return result
 
 
+def observed_tags() -> list[dict]:
+    # Tag creation date may be a tagger date (annotated) or commit date
+    # (lightweight). The tag is evidence, never automatic phase acceptance.
+    lines = git("for-each-ref",
+                "--format=%(refname:short)%09%(objectname)%09%(objecttype)%09%(creatordate:iso-strict)",
+                "refs/tags").splitlines()
+    tags = []
+    for line in lines:
+        parts = line.split("\t", 3)
+        if len(parts) != 4 or not SAFE_SHA.fullmatch(parts[1]):
+            raise EvidenceError("malformed tag ref metadata")
+        name, object_sha, kind, date = parts
+        pointed_commit = git("rev-list", "-n", "1", "refs/tags/" + name)
+        if not SAFE_SHA.fullmatch(pointed_commit):
+            raise EvidenceError("tag lacks a resolved commit: " + name)
+        tags.append({
+            "name": name, "ref_object_sha": object_sha, "ref_kind": kind,
+            "pointed_commit_sha": pointed_commit,
+            "creator_date": date or None,
+            "creator_date_semantics": "tagger date for annotated tags; otherwise referenced commit date; not automatically release date",
+        })
+    return tags
+
+
 def build() -> dict:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     entries = catalog.get("items")
@@ -93,6 +117,7 @@ def build() -> dict:
     if len(set(ids)) != len(ids):
         raise EvidenceError("duplicate catalog identity")
     all_events = events()
+    tags = observed_tags()
     by_area = defaultdict(list)
     for e in all_events:
         for area in e["areas"]:
@@ -125,6 +150,7 @@ def build() -> dict:
         "master_sha": git("rev-parse", "HEAD"),
         "git_commit_count": len(all_events),
         "canonical_archive_count": len(entries),
+        "observed_git_tags": tags,
         "area_activity_spans": spans,
         "phase_links": phase_links,
         "events": all_events,
@@ -148,6 +174,8 @@ def self_test() -> None:
     assert area_for(".github/workflows/ci.yml") is None
     assert area_for("scripts/github/stage-b-branch-plan.py") is None
     assert area_for("tests/meta/hardening/pointer-sort.cxx") == "Meta"
+    assert SAFE_SHA.fullmatch("a" * 40)
+    assert not SAFE_SHA.fullmatch("refs/heads/master")
     print("PASS: implementation-path classification; contracts cannot fabricate phase activity")
 
 
