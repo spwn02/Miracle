@@ -32,6 +32,7 @@
 
 - [GitHub Infrastructure Contract](infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md)
 - [G2 — Archive fidelity and historical provenance Addendum v1.0](infrastructure/amendments/G2-NATIVE-ARCHIVE-PROVENANCE-ADDENDUM-V1.0.md)
+- [G2 — Workspace Stage A scope amendment v1.0](infrastructure/amendments/G2-WORKSPACE-STAGE-A-SCOPE-ADDENDUM-V1.0.md)
 - [G0 — Audit](infrastructure/G0-AUDIT.md)
 - [G0 — Progress](infrastructure/G0-PROGRESS.md)
 - [G1 — Progress](infrastructure/G1-PROGRESS.md)
