@@ -29,9 +29,9 @@ Live read-only [run #40226278006](https://github.com/spwn02/Miracle/actions/runs
 | `master` | `6dc74b9b3c9c1df11dea47f6db3d99cfe93ea59c` | protected |
 | `gcc` | `2822de260944093672d3eec2462be0a4e7c2401f` | protected; intentional compiler divergence |
 | `infra/living-development-workspace` | `2b2eac4f4517bcf238d0bb6f7b2c7024ebe8ae60` | PR #30 unmerged, 15 ahead |
-| `infra/stage-b-reviewed-batch-write-route` | `5720572ad22e59a0939c6be0a06e88cbccf0d687` | PR #75 squash-merged but 3 ahead by ancestry; content-equivalence needs separate verification |
+| `infra/stage-b-reviewed-batch-write-route` | `5720572ad22e59a0939c6be0a06e88cbccf0d687` | PR #75 squash-merged; 3 ahead by ancestry; content-equivalent to master on both changed paths, still retain pending exact owner approval |
 
-### Exact 37 deletion *candidates*, not permission to delete
+**Additional proof for the retained PR #75 branch:** although commit ancestry diverges after squash, the complete changed-path comparison contains only `.github/workflows/miracle-project-operations.yml` (Git blob `e355292b20756617329741f254441f48bd684ded`) and `docs/infrastructure/MIRACLE-PROJECT-OPERATIONS.md` (Git blob `31dc2fb03caacd3d6578cc9a1a2467d0f12714fc`). Both blob SHAs are exactly equal at current `master` and the branch head. This proves content parity on the PR's two files, not Git ancestry, and does not itself authorize deleting the branch.\n\n### Exact 37 deletion *candidates*, not permission to delete
 
 | Branch name | Audited exact SHA | Merged PR |
 |---|---|---|
