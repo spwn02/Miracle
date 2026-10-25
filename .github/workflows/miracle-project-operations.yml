@@ -46,7 +46,6 @@ jobs:
            github.event.comment.body == '/miracle-project stage-b-source-plan' ||
            github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
-           github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -97,7 +96,7 @@ jobs:
             '/miracle-project archive-audit') ;;
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
-            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot') ;;
+            '/miracle-project stage-b-draft-plan') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -181,7 +180,7 @@ jobs:
               action='stage-b-branch-plan'
               python3 scripts/github/stage-b-branch-plan.py
               ;;
-            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot')
+            '/miracle-project stage-b-draft-plan')
               action='stage-b-draft-backup'
               python3 scripts/github/stage-b-draft-sync.py --prepare
               ;;
@@ -236,7 +235,7 @@ jobs:
 
       - name: Preserve complete Project draft originals BEFORE any mutation
         id: backup_drafts
-        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && (github.event.comment.body == '/miracle-project stage-b-draft-plan' || github.event.comment.body == '/miracle-project stage-b-draft-pilot') }}
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-plan' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: miracle-stage-b-full-draft-backup-${{ github.run_id }}
@@ -244,26 +243,12 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-      - name: Execute fixed one-draft source-body pilot ONLY after backup upload
-        id: pilot_draft
-        if: ${{ steps.backup_drafts.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-pilot' }}
-        env:
-          GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -z "$GH_TOKEN" ]]; then
-            echo 'Missing owner-scoped Projects credential' >&2
-            exit 1
-          fi
-          python3 scripts/github/stage-b-draft-sync.py --pilot
-
       - name: Acknowledge Issue #29 command with a run link
         if: ${{ always() && github.event_name == 'issue_comment' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          RESULT: ${{ steps.pilot_draft.outcome == 'skipped' && (steps.relation.outcome == 'skipped' && steps.execute.outcome || steps.relation.outcome) || steps.pilot_draft.outcome }}
+          RESULT: ${{ steps.relation.outcome == 'skipped' && steps.execute.outcome || steps.relation.outcome }}
           REQUEST: ${{ github.event.comment.body }}
         run: |
           set -euo pipefail
