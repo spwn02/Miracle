@@ -48,6 +48,8 @@ jobs:
            github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
            github.event.comment.body == '/miracle-project stage-b-batch-plan' ||
+           startsWith(github.event.comment.body, '/miracle-project stage-b-batch-apply ') ||
+           startsWith(github.event.comment.body, '/miracle-project stage-b-batch-restore ') ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -101,6 +103,12 @@ jobs:
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
             '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot'|'/miracle-project stage-b-batch-plan') ;;
+            '/miracle-project stage-b-batch-apply '*|'/miracle-project stage-b-batch-restore '*)
+              if [[ ! "$REQUEST" =~ ^/miracle-project\ stage-b-batch-(apply|restore)\ (0|[1-9]|1[0-7])$ ]]; then
+                echo 'Invalid bounded Stage B batch command: expected exact index 0..17' >&2
+                exit 1
+              fi
+              ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -127,7 +135,7 @@ jobs:
           python3 scripts/github/issue-relations.py
 
       - name: Verify and download pinned pre-mutation draft backup
-        if: ${{ github.event_name == 'issue_comment' && (github.event.comment.body == '/miracle-project stage-b-draft-pilot' || github.event.comment.body == '/miracle-project stage-b-batch-plan') }}
+        if: ${{ github.event_name == 'issue_comment' && (github.event.comment.body == '/miracle-project stage-b-draft-pilot' || github.event.comment.body == '/miracle-project stage-b-batch-plan' || startsWith(github.event.comment.body, '/miracle-project stage-b-batch-apply ') || startsWith(github.event.comment.body, '/miracle-project stage-b-batch-restore ')) }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -210,6 +218,19 @@ jobs:
               ;;
             '/miracle-project stage-b-batch-plan')
               action='stage-b-complete-batch-plan-read-only'
+              python3 scripts/github/stage-b-draft-rollout.py --plan-all
+              ;;
+            '/miracle-project stage-b-batch-apply '*|'/miracle-project stage-b-batch-restore '*)
+              if [[ ! "$REQUEST" =~ ^/miracle-project\ stage-b-batch-(apply|restore)\ (0|[1-9]|1[0-7])$ ]]; then
+                echo 'Refusing invalid bounded Stage B batch request' >&2
+                exit 1
+              fi
+              batch_action="${BASH_REMATCH[1]}"
+              batch_index="${BASH_REMATCH[2]}"
+              action="stage-b-batch-${batch_action}-${batch_index}"
+              python3 scripts/github/stage-b-draft-rollout.py "--${batch_action}-batch" "$batch_index"
+              # Fresh read-only full-inventory round trip after the batch.
+              # On a partial failure, rerun an explicit plan before retry.
               python3 scripts/github/stage-b-draft-rollout.py --plan-all
               ;;
             '/miracle-project g2-provenance')
