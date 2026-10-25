@@ -5,10 +5,13 @@ Read-only: /miracle-project inspect ISSUE
 Optimistic guarded writes:
   /miracle-project update {"issue":31,"field":"Disposition","expected":"Deferred","value":"Planned"}
   /miracle-project progress {"issue":36,"expected":"Backlog","value":"Implementing"}
+  /miracle-project accept-workspace-29  # owner-approved one-workspace closeout
 
 Triage edits allow Kind/Disposition/Area only. Progress is a separate,
-restricted forward-only Status operation. No Accepted, Blocked, contract,
-archive, release, deadline, dependency or Issue-state mutation.
+restricted forward-only Status operation. A distinct exact-match, owner-only
+Workspace #29 acceptance command validates completed evidence and native
+project dependencies before its sole terminal Status update. No general
+Accepted, Blocked, contract, archive, release, deadline or Issue-state mutation.
 """
 from __future__ import annotations
 
@@ -25,6 +28,7 @@ ALLOWED_FIELDS = frozenset({"Kind", "Disposition", "Area"})
 INSPECT_PREFIX = "/miracle-project inspect "
 UPDATE_PREFIX = "/miracle-project update "
 PROGRESS_PREFIX = "/miracle-project progress "
+ACCEPT_WORKSPACE = "/miracle-project accept-workspace-29"
 PROGRESS_TRANSITIONS = {
     "Backlog": frozenset({"Design", "Ready", "Implementing"}),
     "Design": frozenset({"Ready", "Implementing"}),
@@ -102,6 +106,8 @@ def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 
 def parse(raw: str) -> tuple[str, int, str | None, str | None, str | None]:
+    if raw == ACCEPT_WORKSPACE:
+        return "accept-workspace", 29, "Status", "Verification", "Accepted"
     if raw.startswith(INSPECT_PREFIX):
         number = raw[len(INSPECT_PREFIX):]
         if not re.fullmatch(r"[1-9][0-9]{0,6}", number):
@@ -211,6 +217,35 @@ def require_progress_evidence(issue: dict[str, Any], values: dict[str, str],
             raise GuardError("Review/Verification transition requires linked repository PR or CI evidence")
 
 
+def require_workspace_acceptance(issue: dict[str, Any], values: dict[str, str],
+                                 blockers: list[Any],
+                                 contract_state: str, contract_status: str,
+                                 mcp_state: str, mcp_disposition: str) -> None:
+    """Fixed, owner-approved #29 acceptance with no general terminal write."""
+    if issue.get("number") != 29 or issue.get("state") != "OPEN":
+        raise GuardError("only the genuine open Workspace #29 may be accepted")
+    if (values.get("Status") != "Verification"
+            or values.get("Kind") != "Task"
+            or values.get("Area") != "Infrastructure"
+            or values.get("Disposition") != "Planned"):
+        raise GuardError("Workspace fields do not match reviewed final checkpoint")
+    if blockers != []:
+        raise GuardError("native Workspace #29 dependency edges remain unresolved")
+    if contract_state != "CLOSED" or contract_status != "Accepted":
+        raise GuardError("native contract workflow #45 not accepted/closed")
+    if mcp_state != "OPEN" or mcp_disposition != "Deferred":
+        raise GuardError("#60 was not preserved as an open deferred enhancement")
+    body = issue.get("body") or ""
+    if ("## 2026-10-25 Stage A scope revision and deferred direct MCP" not in body
+            or "Owner authorizes resolving these two obsolete dependency edges only" not in body
+            or "## Delivery gates" not in body
+            or "#issuecomment-6400002403" not in body):
+        raise GuardError("owner-approved scope-revision evidence absent")
+    if (body.count("- [x]") < 6
+            or "- [ ] Receive owner acceptance" not in body):
+        raise GuardError("Workspace delivery gates lack independently recorded evidence")
+
+
 def run(raw: str) -> None:
     mode, number, field, expected, desired = parse(raw)
     user = subprocess.run(["gh", "api", "user", "--jq", ".login"],
@@ -244,6 +279,23 @@ def run(raw: str) -> None:
         raise GuardError(f"concurrent/stale value: {field} currently {current!r}; expected {expected!r}")
     if mode == "progress":
         require_progress_evidence(issue, values, current, desired)
+    elif mode == "accept-workspace":
+        if number != 29 or field != "Status" or expected != "Verification" or desired != "Accepted":
+            raise GuardError("terminal acceptance allowed only for Workspace #29")
+        # Native dependencies and the two genuine child work states are
+        # independently re-read immediately before this irreversible write.
+        native_blockers = gh("api", "repos/spwn02/Miracle/issues/29/dependencies/blocked_by")
+        if not isinstance(native_blockers, list):
+            raise GuardError("native dependency readback is not a complete list")
+        _, contract, _, contract_values = project_item(45, "Status")
+        _, mcp_issue, _, mcp_values = project_item(60, "Disposition")
+        approved = gh("api", "repos/spwn02/Miracle/contents/docs/infrastructure/amendments/"
+                      "G2-WORKSPACE-STAGE-A-SCOPE-ADDENDUM-V1.0.md")
+        if not isinstance(approved, dict) or approved.get("type") != "file":
+            raise GuardError("approved Stage A scope addendum not in canonical Git")
+        require_workspace_acceptance(issue, values, native_blockers,
+                                     contract["state"], contract_values.get("Status", ""),
+                                     mcp_issue["state"], mcp_values.get("Disposition", ""))
 
     response = gh("api", "graphql", "-f", "query=" + MUTATION,
                   "-f", "projectId=" + PROJECT_ID,
@@ -262,6 +314,30 @@ def run(raw: str) -> None:
 
 def self_test() -> None:
     assert parse("/miracle-project inspect 31") == ("inspect", 31, None, None, None)
+    assert parse("/miracle-project accept-workspace-29") == (
+        "accept-workspace", 29, "Status", "Verification", "Accepted")
+    example = {"number": 29, "state": "OPEN", "body":
+        "## Delivery gates\n" + "- [x] verified\n" * 6 +
+        "- [ ] Receive owner acceptance\n"
+        "## 2026-10-25 Stage A scope revision and deferred direct MCP\n"
+        "Owner authorizes resolving these two obsolete dependency edges only\n"
+        "https://github.com/spwn02/Miracle/issues/29#issuecomment-6400002403"}
+    right = {"Status": "Verification", "Kind": "Task",
+             "Area": "Infrastructure", "Disposition": "Planned"}
+    require_workspace_acceptance(example, right, [], "CLOSED", "Accepted", "OPEN", "Deferred")
+    for bad in (
+        (example, right, [45], "CLOSED", "Accepted", "OPEN", "Deferred"),
+        (example, right, [], "OPEN", "Accepted", "OPEN", "Deferred"),
+        (example, right, [], "CLOSED", "Accepted", "OPEN", "Planned"),
+        (example, {**right, "Status": "Implementing"}, [], "CLOSED", "Accepted", "OPEN", "Deferred"),
+        ({**example, "body": "## Delivery gates"}, right, [], "CLOSED", "Accepted", "OPEN", "Deferred"),
+    ):
+        try:
+            require_workspace_acceptance(*bad)
+        except GuardError:
+            continue
+        raise AssertionError("unsafe Workspace #29 acceptance state accepted")
+
     assert parse('/miracle-project update {"issue":29,"field":"Kind","expected":null,"value":"Task"}') == (
         "update", 29, "Kind", None, "Task")
     assert parse('/miracle-project progress {"issue":36,"expected":"Backlog","value":"Implementing"}') == (
@@ -317,6 +393,7 @@ def self_test() -> None:
         '/miracle-project progress {"issue":36,"field":"Status","expected":"Backlog","value":"Implementing"}',
         '/miracle-project progress {"issue":36,"expected":null,"value":"Implementing"}',
         '/miracle-project progress {"issue":36,"expected":"Backlog","value":"Blocked"}',
+        '/miracle-project accept-workspace-29 extra',
         '/miracle-project progress {"issue":36,"expected":"Backlog","value":"Implementing","value":"Ready"}',
     )
     for command in bad:

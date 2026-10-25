@@ -51,6 +51,7 @@ jobs:
            startsWith(github.event.comment.body, '/miracle-project inspect ') ||
            startsWith(github.event.comment.body, '/miracle-project update ') ||
            startsWith(github.event.comment.body, '/miracle-project progress ') ||
+           github.event.comment.body == '/miracle-project accept-workspace-29' ||
            startsWith(github.event.comment.body, '/miracle-project relations ') ||
            startsWith(github.event.comment.body, '/miracle-project add-child ') ||
            startsWith(github.event.comment.body, '/miracle-project add-blocker ') ||
@@ -91,7 +92,7 @@ jobs:
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
             '/miracle-project intake-inspect '*|'/miracle-project intake-add '*) ;;
-            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*) ;;
+            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*|'/miracle-project accept-workspace-29') ;;
             '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*) ;;
             *) echo 'Unexpected operation'; exit 1 ;;
           esac
@@ -178,7 +179,7 @@ jobs:
               action='issue-intake'
               python3 scripts/github/project-issue-intake.py
               ;;
-            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*)
+            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*|'/miracle-project accept-workspace-29')
               action='project-item-control'
               python3 scripts/github/project-item-control.py
               ;;
