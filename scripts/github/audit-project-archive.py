@@ -158,8 +158,23 @@ def compare(catalog: list[dict], project_items: list[dict], source_body) -> list
         if not isinstance(body, str):
             messages.append(entry["id"] + ": body absent")
             continue
-        desired = source_body(entry, "master")
-        required = [
+        if "**Derived Git source snapshot; not authoritative.**" in body:
+            # Transitional mixed-mode audit: generated Git-source copies coexist
+            # with legacy link-only drafts during a guarded one-item rollout.
+            rev = re.search(r"(?m)^\\*\\*Source revision:\\*\\* ([0-9a-f]{40})$", body)
+            if rev is None:
+                messages.append(entry["id"] + ": missing pinned revision on full-text snapshot")
+                continue
+            source_lib = runpy.run_path("scripts/github/stage-b-source-manifest.py")
+            sync_lib = runpy.run_path("scripts/github/stage-b-draft-sync.py")
+            source = source_lib["source_span"](Path(".").resolve(), entry, {})
+            desired = sync_lib["desired_body"](entry, source, rev.group(1))
+            if body != desired:
+                messages.append(entry["id"] + ": derived full source snapshot differs from canonical Git content/digest")
+            required = []  # desired equality already checks all provenance text.
+        else:
+            desired = source_body(entry, "master")
+            required = [
             "<!-- miracle-project-catalog:" + entry["id"] + " -->",
             "**Canonical Git source:** https://github.com/spwn02/Miracle/blob/master/"
                 + entry["path"] + "#L" + str(entry["line"]),
@@ -172,8 +187,7 @@ def compare(catalog: list[dict], project_items: list[dict], source_body) -> list
         for value in required:
             if value not in body:
                 messages.append(entry["id"] + ": missing source/provenance marker: " + value[:75])
-        if body.strip() != desired.strip():
-            # Annotations may be legitimate, but are not identical to the canonical importer body.
+        if body.strip() != desired.strip() and required:
             messages.append(entry["id"] + ": draft body differs from canonical import template")
         try:
             fields = field_values(item)
