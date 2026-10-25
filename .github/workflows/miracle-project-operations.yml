@@ -46,6 +46,7 @@ jobs:
            github.event.comment.body == '/miracle-project stage-b-source-plan' ||
            github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
+           github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -63,6 +64,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      actions: read # Read one pinned previous all-draft backup via repository token.
       issues: write # Only to acknowledge owner commands in Issue #29.
     steps:
       - name: Checkout reviewed default branch, without stored credentials
@@ -96,7 +98,7 @@ jobs:
             '/miracle-project archive-audit') ;;
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
-            '/miracle-project stage-b-draft-plan') ;;
+            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -122,6 +124,22 @@ jobs:
           set -euo pipefail
           python3 scripts/github/issue-relations.py
 
+      - name: Verify and download pinned pre-mutation draft backup
+        if: ${{ github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-pilot' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          identity=$(gh api repos/spwn02/Miracle/actions/artifacts/12608038204 --jq '[.id,.name,.expired,.workflow_run.head_sha] | map(tostring) | join("|")')
+          expected='12608038204|miracle-stage-b-full-draft-backup-40217537233|false|cd2c02b2691f32f6a624c32bfdef2f162bdf1aad'
+          if [[ "$identity" != "$expected" ]]; then
+            echo 'Refusing pilot: pinned 172-draft backup identity/provenance not verified' >&2
+            exit 1
+          fi
+          gh run download 40217537233 --repo spwn02/Miracle --name miracle-stage-b-full-draft-backup-40217537233 --dir stage-b-draft-backup
+          test -s stage-b-draft-backup/draft-body-backup-and-plan.json
+          echo 'PASS: original 172 draft bodies restored from prior read-only archive'
       - name: Execute only the selected native Project operation
         id: execute
         shell: bash
@@ -183,6 +201,10 @@ jobs:
             '/miracle-project stage-b-draft-plan')
               action='stage-b-draft-backup'
               python3 scripts/github/stage-b-draft-sync.py --prepare
+              ;;
+            '/miracle-project stage-b-draft-pilot')
+              action='stage-b-fixed-one-draft-pilot'
+              python3 scripts/github/stage-b-draft-sync.py --pilot
               ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'

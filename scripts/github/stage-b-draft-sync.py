@@ -68,7 +68,7 @@ def desired_body(record: dict, source: dict, revision: str) -> str:
     return "\n\n".join(head) + "\n\n---\n\n" + source["body"]
 
 
-def preflight() -> tuple[list[dict], dict]:
+def preflight(pinned_revision: str | None = None) -> tuple[list[dict], dict]:
     if OUTPUT.is_absolute() and not OUTPUT.is_relative_to(ROOT):
         raise SyncError("backup destination must remain under workspace")
     account = subprocess.run(["gh", "api", "user", "--jq", ".login"],
@@ -79,6 +79,16 @@ def preflight() -> tuple[list[dict], dict]:
                               capture_output=True, text=True, check=True).stdout.strip()
     if not re.fullmatch(r"[a-f0-9]{40}", revision):
         raise SyncError("Git HEAD not a full SHA")
+    if pinned_revision is not None:
+        if not re.fullmatch(r"[a-f0-9]{40}", pinned_revision):
+            raise SyncError("malformed backed-up source commit")
+        # Allow an approved backup from a previous master merge only when that
+        # source commit is a genuine ancestor; source blobs are checked below.
+        parent = subprocess.run(["git", "merge-base", "--is-ancestor", pinned_revision, "HEAD"],
+                                capture_output=True, check=False)
+        if parent.returncode:
+            raise SyncError("backed-up revision is not an ancestor of current Git HEAD")
+        revision = pinned_revision
     baseline = json.loads(CATALOG.read_text(encoding="utf-8"))
     if (baseline.get("projectOwner"), baseline.get("projectNumber")) != ("spwn02", 3):
         raise SyncError("target Project identity mismatch")
@@ -161,9 +171,18 @@ def pilot() -> None:
         raise SyncError("ambiguous pilot selection")
     target = matches[0]
     # Require a fresh full read: no other item can acquire this stable ID.
-    live, metadata = preflight()
+    live, metadata = preflight(pinned_revision=plan["revision"])
     if metadata["revision"] != plan["revision"] or len(live) != 172:
         raise SyncError("Git revision or Project item count drift")
+    original_by_id = {x["stable_id"]: x for x in plan["records"]}
+    if len(original_by_id) != 172:
+        raise SyncError("duplicate or missing backed-up stable IDs")
+    for current in live:
+        saved = original_by_id.get(current["stable_id"])
+        if not saved or any(current[key] != saved[key] for key in
+                            ("item_id", "draft_issue_id", "title", "before_sha256",
+                             "source_blob", "source_sha256", "after_sha256")):
+            raise SyncError("backed-up original or canonical source changed: " + current["stable_id"])
     observed = next(x for x in live if x["stable_id"] == PILOT_ID)
     if (observed["draft_issue_id"] != target["draft_issue_id"]
             or observed["item_id"] != target["item_id"]
