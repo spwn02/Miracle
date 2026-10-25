@@ -82,6 +82,21 @@ def plan():
             not isinstance(t.get("pr"), int) or t["pr"] <= 0 or
             t["name"] in retained):
             raise Refusal("invalid exact approved target index " + str(i))
+    # The separate reviewed, Git-blob-pinned disposition is the semantic
+    # approval source. A modified JSON allowlist must never widen deletion.
+    markdown = Path("docs/infrastructure/STAGE-B-DISPOSITION-AND-EVENT-REVIEW-20261025.md").read_text(encoding="utf-8")
+    pieces = markdown.split("### Exact 37 deletion *candidates*, not permission to delete")
+    if len(pieces) != 2 or "**Pre-deletion gate:**" not in pieces[1]:
+        raise Refusal("approved disposition table not uniquely found")
+    candidate_table = pieces[1].split("**Pre-deletion gate:**", 1)[0]
+    rows = re.findall(r"^\\| \\x60([^\\x60]+)\\x60 \\| \\x60([0-9a-f]{40})\\x60 \\| #(\\d+) \\|$",
+                      candidate_table, flags=re.MULTILINE)
+    approved_from_source = [
+        {"index": i, "name": name, "sha": sha, "pr": int(pr)}
+        for i, (name, sha, pr) in enumerate(rows, 1)
+    ]
+    if len(approved_from_source) != EXPECTED_COUNT or approved_from_source != targets:
+        raise Refusal("JSON target set differs from canonical exact approved 37")
     return obj, targets
 
 
