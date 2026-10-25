@@ -135,6 +135,26 @@ def operate(index: int, action: str) -> None:
     # GitHub DraftIssue updates expose no server-side atomic compare-and-swap.
 
 
+
+def plan_all() -> None:
+    """One authenticated complete-archive snapshot for all 18 bounded batches."""
+    saved, live, plan = snapshot()
+    to_apply = 0
+    for index in range(18):
+        batch = choose(list(saved.values()), index)
+        pending = [r["stable_id"] for r in batch
+                   if live[r["stable_id"]]["before_sha256"] != r["after_sha256"]]
+        to_apply += len(pending)
+        print("Batch %02d: %d pending / %d total" %
+              (index, len(pending), len(batch)))
+        for identity in pending:
+            print("  pending: " + identity)
+    print("Read-only complete backup/source/native inventory: " +
+          str(EXPECTED_COUNT - to_apply) + " already canonical, " +
+          str(to_apply) + " remaining; source revision " + plan["revision"])
+    print("NO PROJECT WRITE PERFORMED")
+
+
 def self_test() -> None:
     synthetic = [{"stable_id": "entry-%03d" % i} for i in range(EXPECTED_COUNT)]
     parts = [choose(synthetic, i) for i in range(18)]
@@ -164,6 +184,8 @@ def main() -> None:
     args = sys.argv[1:]
     if args == ["--self-test"]:
         self_test()
+    elif args == ["--plan-all"]:
+        plan_all()
     elif len(args) == 2 and args[0] in ("--plan-batch", "--apply-batch", "--restore-batch"):
         if not args[1].isdigit() or str(int(args[1])) != args[1]:
             raise SyncError("batch index must be an unpadded decimal")
@@ -171,7 +193,7 @@ def main() -> None:
                   "--restore-batch": "restore"}[args[0]]
         operate(int(args[1]), action)
     else:
-        raise SyncError("Usage: --self-test | (--plan-batch|--apply-batch|--restore-batch) 0..17")
+        raise SyncError("Usage: --self-test | --plan-all | (--plan-batch|--apply-batch|--restore-batch) 0..17")
 
 
 if __name__ == "__main__":
