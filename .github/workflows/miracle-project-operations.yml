@@ -47,6 +47,7 @@ jobs:
            github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
            github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
+           github.event.comment.body == '/miracle-project stage-b-batch-plan' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -88,6 +89,7 @@ jobs:
           python3 scripts/github/stage-b-source-manifest.py --self-test
           python3 scripts/github/stage-b-branch-plan.py --self-test
           python3 scripts/github/stage-b-draft-sync.py --self-test
+          python3 scripts/github/stage-b-draft-rollout.py --self-test
           python3 scripts/github/audit-g2-provenance.py --self-test
           python3 scripts/github/audit-g6-community.py --self-test
           python3 scripts/github/audit-g6-release-provenance.py --self-test
@@ -98,7 +100,7 @@ jobs:
             '/miracle-project archive-audit') ;;
             '/miracle-project stage-b-source-plan') ;;
             '/miracle-project stage-b-branch-plan') ;;
-            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot') ;;
+            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot'|'/miracle-project stage-b-batch-plan') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -125,7 +127,7 @@ jobs:
           python3 scripts/github/issue-relations.py
 
       - name: Verify and download pinned pre-mutation draft backup
-        if: ${{ github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-pilot' }}
+        if: ${{ github.event_name == 'issue_comment' && (github.event.comment.body == '/miracle-project stage-b-draft-pilot' || github.event.comment.body == '/miracle-project stage-b-batch-plan') }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -205,6 +207,10 @@ jobs:
             '/miracle-project stage-b-draft-pilot')
               action='stage-b-fixed-one-draft-pilot'
               python3 scripts/github/stage-b-draft-sync.py --pilot
+              ;;
+            '/miracle-project stage-b-batch-plan')
+              action='stage-b-complete-batch-plan-read-only'
+              python3 scripts/github/stage-b-draft-rollout.py --plan-all
               ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'
