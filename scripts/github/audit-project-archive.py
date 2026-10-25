@@ -161,7 +161,7 @@ def compare(catalog: list[dict], project_items: list[dict], source_body) -> list
         if "**Derived Git source snapshot; not authoritative.**" in body:
             # Transitional mixed-mode audit: generated Git-source copies coexist
             # with legacy link-only drafts during a guarded one-item rollout.
-            rev = re.search(r"(?m)^\\*\\*Source revision:\\*\\* ([0-9a-f]{40})$", body)
+            rev = re.search(r"(?m)^\*\*Source revision:\*\* ([0-9a-f]{40})$", body)
             if rev is None:
                 messages.append(entry["id"] + ": missing pinned revision on full-text snapshot")
                 continue
@@ -175,7 +175,7 @@ def compare(catalog: list[dict], project_items: list[dict], source_body) -> list
         else:
             desired = source_body(entry, "master")
             required = [
-            "<!-- miracle-project-catalog:" + entry["id"] + " -->",
+                "<!-- miracle-project-catalog:" + entry["id"] + " -->",
             "**Canonical Git source:** https://github.com/spwn02/Miracle/blob/master/"
                 + entry["path"] + "#L" + str(entry["line"]),
             "**Group:** " + entry["group"],
