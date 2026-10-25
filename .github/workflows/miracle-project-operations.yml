@@ -43,6 +43,7 @@ jobs:
            github.event.comment.body == '/miracle-project roadmap-verify' ||
            github.event.comment.body == '/miracle-project roadmap-apply' ||
            github.event.comment.body == '/miracle-project archive-audit' ||
+           github.event.comment.body == '/miracle-project stage-b-source-plan' ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -80,6 +81,7 @@ jobs:
           python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/issue-relations.py --self-test
           python3 scripts/github/audit-project-archive.py --self-test
+          python3 scripts/github/stage-b-source-manifest.py --self-test
           python3 scripts/github/audit-g2-provenance.py --self-test
           python3 scripts/github/audit-g6-community.py --self-test
           python3 scripts/github/audit-g6-release-provenance.py --self-test
@@ -88,6 +90,7 @@ jobs:
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
             '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
             '/miracle-project archive-audit') ;;
+            '/miracle-project stage-b-source-plan') ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -163,6 +166,10 @@ jobs:
               action='archive-audit'
               python3 scripts/github/audit-project-archive.py
               ;;
+            '/miracle-project stage-b-source-plan')
+              action='stage-b-source-plan'
+              python3 scripts/github/stage-b-source-manifest.py
+              ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'
               python3 scripts/github/audit-g2-provenance.py
@@ -193,6 +200,15 @@ jobs:
           echo "- Operation: \`$action\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Project: https://github.com/users/spwn02/projects/3" >> "$GITHUB_STEP_SUMMARY"
           echo "- Exact runner output is in this workflow's job log." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve read-only Stage B source manifest
+        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-source-plan' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-source-manifest-${{ github.run_id }}
+          path: stage-b-evidence/
+          retention-days: 30
+          if-no-files-found: error
 
       - name: Acknowledge Issue #29 command with a run link
         if: ${{ always() && github.event_name == 'issue_comment' }}
