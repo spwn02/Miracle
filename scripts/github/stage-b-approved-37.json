@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "repository": "spwn02/Miracle",
+  "approval": "Explicit owner approval in Stage B ChatGPT continuation on 2026-10-25: delete exactly these 37 named refs only, after fresh validation and recovery references",
+  "source_issue": 69,
+  "source_audit_run": 40232523562,
+  "source_artifact": 12613503581,
+  "source_markdown_git_blob": "1930abd1b385fec082eeaf686c8a95d5e244c089",
+  "master_at_approval": "8dc193d1c6c3defa1f0d43294410ff51bcd58c18",
+  "protected_retain": [
+    "master",
+    "gcc"
+  ],
+  "other_retain": [
+    "infra/living-development-workspace",
+    "infra/stage-b-issue-event-evidence",
+    "infra/stage-b-reviewed-batch-write-route"
+  ],
+  "recovery_tag_prefix": "stage-b-recovery-20261025",
+  "targets": [
+    {
+      "index": 1,
+      "name": "contracts/g2-native-archive-provenance-amendment-proposal",
+      "sha": "fa17774a81011c4621ef796b8b36271b7299393b",
+      "pr": 63
+    },
+    {
+      "index": 2,
+      "name": "docs/frozen-contract-migration",
+      "sha": "88f95a0dafbdd350f1a97a1d84d9bc9974239560",
+      "pr": 28
+    },
+    {
+      "index": 3,
+      "name": "docs/g2-20261023-provenance-repro",
+      "sha": "5b311582de1cc501f085668299bb5503d7d21890",
+      "pr": 52
+    },
+    {
+      "index": 4,
+      "name": "docs/g2-workspace-stage-a-scope-20261025",
+      "sha": "d8e4fa8392d574310f6a8984d3bf54767033fc69",
+      "pr": 66
+    },
+    {
+      "index": 5,
+      "name": "docs/g6-live-community-audit",
+      "sha": "886392a58413a1673464bb7f45b5509804e30b49",
+      "pr": 54
+    },
+    {
+      "index": 6,
+      "name": "docs/native-contract-revision-flow",
+      "sha": "f39ef437262152338ac6f293d14bfc1fe8b2731d",
+      "pr": 46
+    },
+    {
+      "index": 7,
+      "name": "docs/oauth-project-write-stage-a-20261025",
+      "sha": "ddbf716f4db9b4088b4dd0a12c3a11c9d6c66b15",
+      "pr": 65
+    },
+    {
+      "index": 8,
+      "name": "fix/issue-relation-post-readback",
+      "sha": "87b20ba313f0b8b3c7a9c245a9e246d39b8f4cdd",
+      "pr": 39
+    },
+    {
+      "index": 9,
+      "name": "fix/native-issue-id-range",
+      "sha": "f7481d72da2792c3274c88f18151d0f66ee5805e",
+      "pr": 38
+    },
+    {
+      "index": 10,
+      "name": "fix/native-roadmap-command-routing",
+      "sha": "2619936d36fd3bbdce86ddc1c0ba87d5d6ac0988",
+      "pr": 44
+    },
+    {
+      "index": 11,
+      "name": "fix/native-workspace-resolve-obsolete-blockers",
+      "sha": "5c43ffcf751c78d0b3cfb7cd3581c8baa68c22cf",
+      "pr": 67
+    },
+    {
+      "index": 12,
+      "name": "fix/project-progress-evidence-regex",
+      "sha": "cf05d2849ad396183d6953fdc63728c513d3e8fd",
+      "pr": 47
+    },
+    {
+      "index": 13,
+      "name": "fix/project-view-audit-fallback",
+      "sha": "e97494a78bd43d75de73a94336c29b5400e7b852",
+      "pr": 42
+    },
+    {
+      "index": 14,
+      "name": "fix/stage-b-shallow-ancestry-validation",
+      "sha": "d7184ac826e9c73a87e4332c975de80d14a919bb",
+      "pr": 73
+    },
+    {
+      "index": 15,
+      "name": "fix/workspace-subissue-explicit-parent-guard",
+      "sha": "740f0bca8ab625ddf8c64a52affbbfea56b15d51",
+      "pr": 59
+    },
+    {
+      "index": 16,
+      "name": "infra/g2-project-event-provenance",
+      "sha": "b6f8fba56d3b01d635b163920ca02708183181d8",
+      "pr": 51
+    },
+    {
+      "index": 17,
+      "name": "infra/g6-operating-plan-evidence-reconciliation",
+      "sha": "02a2a7e947e0268fbc28c898816fb6369b1f3894",
+      "pr": 55
+    },
+    {
+      "index": 18,
+      "name": "infra/g6-release-provenance-evidence-ledger",
+      "sha": "082bc13ee4399b333cad3eeb69a2c8bf0dde37f3",
+      "pr": 57
+    },
+    {
+      "index": 19,
+      "name": "infra/g6-release-provenance-readonly-audit",
+      "sha": "3b309e9fdfe8f4c59a522d2f245f0a16b11c5fe7",
+      "pr": 56
+    },
+    {
+      "index": 20,
+      "name": "infra/guarded-project-progress",
+      "sha": "28a038fc07e6233d49865e90e4bce6369970c3e1",
+      "pr": 40
+    },
+    {
+      "index": 21,
+      "name": "infra/live-g6-community-surface",
+      "sha": "5a897849490a7450c8980be50674f5cc1793124f",
+      "pr": 53
+    },
+    {
+      "index": 22,
+      "name": "infra/native-issue-relations",
+      "sha": "9afaeb65977b9d3a03ac2f31dd947c8e2b24ced1",
+      "pr": 37
+    },
+    {
+      "index": 23,
+      "name": "infra/native-project-issue-intake",
+      "sha": "94d71e44fd5b317dbe16d4aca431909e34c9df1d",
+      "pr": 50
+    },
+    {
+      "index": 24,
+      "name": "infra/native-project-operations",
+      "sha": "34dc577998bd7678f372026392cd6ac440538d8a",
+      "pr": 32
+    },
+    {
+      "index": 25,
+      "name": "infra/native-roadmap-scope",
+      "sha": "6abdc91920752574061658c7686c3825f929ed8f",
+      "pr": 43
+    },
+    {
+      "index": 26,
+      "name": "infra/owner-workspace29-final-acceptance",
+      "sha": "170e8daa4777aa554a1022e659e2e804d31cf380",
+      "pr": 68
+    },
+    {
+      "index": 27,
+      "name": "infra/project-archive-integrity-audit",
+      "sha": "2cea35cf99d107c4892fba0a64ab8469c6a06b67",
+      "pr": 48
+    },
+    {
+      "index": 28,
+      "name": "infra/project-graphql-audit",
+      "sha": "64f2bd8b85d33b7445ffd999869a35f476eca2fc",
+      "pr": 33
+    },
+    {
+      "index": 29,
+      "name": "infra/project-graphql-reconcile",
+      "sha": "0a89e40d8ea31012e66228c65171034e5c627f2b",
+      "pr": 34
+    },
+    {
+      "index": 30,
+      "name": "infra/project-item-control",
+      "sha": "2c8316d9387f3c026d7af06b3b585003e93841cd",
+      "pr": 35
+    },
+    {
+      "index": 31,
+      "name": "infra/project-view-config-audit",
+      "sha": "cbf02ed92b45b7018f06e8c8949a969298f6236c",
+      "pr": 41
+    },
+    {
+      "index": 32,
+      "name": "infra/stage-b-bounded-draft-rollout",
+      "sha": "2073ba3cbe39cd6e7d3903ca2cadbeb190ab9789",
+      "pr": 74
+    },
+    {
+      "index": 33,
+      "name": "infra/stage-b-fixed-draft-pilot-12608038204",
+      "sha": "c7ea86a2f6521c1158b4bd50ef9b05e9e79864a1",
+      "pr": 72
+    },
+    {
+      "index": 34,
+      "name": "infra/stage-b-guarded-draft-body-sync",
+      "sha": "0c9b1bc3e9c2ed77bdf53886047b5a6b3512899a",
+      "pr": 71
+    },
+    {
+      "index": 35,
+      "name": "infra/stage-b-source-manifest-audit",
+      "sha": "92358c242d8f8a1b334153e9b2b1d91c8f7cce03",
+      "pr": 70
+    },
+    {
+      "index": 36,
+      "name": "infra/workspace-direct-projects-mcp-handoff",
+      "sha": "d2b34361d299c2836b6cf0b3b4e03cec44f44ecb",
+      "pr": 61
+    },
+    {
+      "index": 37,
+      "name": "infra/workspace-user-projects-403-auth-reconciliation",
+      "sha": "24f77f6728d32b5249285bb80ee21fb71637d05b",
+      "pr": 64
+    }
+  ]
+}
