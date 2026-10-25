@@ -89,7 +89,7 @@ def plan():
     if len(pieces) != 2 or "**Pre-deletion gate:**" not in pieces[1]:
         raise Refusal("approved disposition table not uniquely found")
     candidate_table = pieces[1].split("**Pre-deletion gate:**", 1)[0]
-    rows = re.findall(r"^\\| \\x60([^\\x60]+)\\x60 \\| \\x60([0-9a-f]{40})\\x60 \\| #(\\d+) \\|$",
+    rows = re.findall(r"^\| \x60([^\x60]+)\x60 \| \x60([0-9a-f]{40})\x60 \| #(\d+) \|$",
                       candidate_table, flags=re.MULTILINE)
     approved_from_source = [
         {"index": i, "name": name, "sha": sha, "pr": int(pr)}
