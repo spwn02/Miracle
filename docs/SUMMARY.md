@@ -46,6 +46,7 @@
 - [Stage B — Authorized native archive consolidation and recovery](infrastructure/STAGE-B-ARCHIVE-CONSOLIDATION-EXECUTION-20261026.md)
 - [Stage B — Roadmap reconstruction and archive consolidation](infrastructure/STAGE-B-ROADMAP-AND-ARCHIVE-RECONCILIATION.md)
 - [Stage B — Git-commit-backed native historical development](infrastructure/STAGE-B-NATIVE-HISTORICAL-ROADMAP-20261026.md)
+- [Stage B — Actual native Project and G0–G6 closeout gates](infrastructure/STAGE-B-G0-G6-CLOSEOUT-VERIFICATION-20261026.md)
 - [Stage B — Exact archive consolidation proposal](infrastructure/STAGE-B-EXACT-ARCHIVE-MERGE-PROPOSAL-20261026.md)
 - [G3 — Operating Plan](infrastructure/G3-OPERATING-PLAN.md)
 - [G3 — Progress](infrastructure/G3-PROGRESS.md)
