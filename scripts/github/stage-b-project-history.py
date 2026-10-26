@@ -83,7 +83,7 @@ def inspect():
     pages=[];cursor=""
     project=None;fields=None
     while True:
-        data=gh(Q,cursor=cursor).get("user") or {}
+        data=gh(Q,**({"cursor":cursor} if cursor else {})).get("user") or {}
         p=data.get("projectV2") or {}
         need(p.get("id")==PROJECT,"unexpected owner / Project ID")
         current=[f for f in (p.get("fields") or {}).get("nodes",[]) if f]
