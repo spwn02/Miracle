@@ -15,6 +15,7 @@ import re
 import runpy
 import subprocess
 import sys
+import time
 
 PROJECT="PVT_kwHOCp2Gs84Bna-3"
 HISTORY="miracle-git-history:v1:"
@@ -183,6 +184,24 @@ def index(items,rows):
          "original 20+18 Project active identities unexpectedly changed")
     return history
 
+def await_readback(rows, key, expected_id=None, field=None, value=None):
+    """GitHub Projects GraphQL listing may lag successful mutations briefly.
+
+    Retry only authenticated reads. Never repeat a mutation while its
+    previously successful result is pending propagation.
+    """
+    for attempt in range(24):
+        items, fields = inspect()
+        history = index(items, rows)
+        present = history.get(key)
+        if present is not None and (expected_id is None or present["id"] == expected_id):
+            if field is None or values(present).get(field) == value:
+                return history, fields
+        if attempt != 23:
+            time.sleep(0.5)
+    raise Stop("Project readback did not converge for " + key +
+               ((" field " + field) if field else ""))
+
 def journal(stage,rows,items,fields):
     from hashlib import sha256
     out={"stage":stage,"project":PROJECT,"expected_count":9,
@@ -234,10 +253,8 @@ def main():
                       .get("addProjectV2DraftIssue") or {}).get("projectItem") or {}
                 need(item.get("id") and (item.get("content") or {}).get("body")==r["body"],
                      "native history draft creation mismatch: "+key)
-                items,fields=inspect()
-                history=index(items,rows)
-                need(key in history and item["id"]==history[key]["id"],
-                     "native history item readback mismatch: "+key)
+                history,fields=await_readback(rows,key,expected_id=item["id"])
+                need(key in history, "native history item readback mismatch: "+key)
                 journal("history-card-created",rows,history,fields)
             item=history[key]
             for name,want in ((DATE1,r["first"]),(DATE2,r["last"])):
@@ -247,14 +264,18 @@ def main():
                     result=(gh(SET_DATE,p=PROJECT,i=item["id"],f=fields[name]["id"],d=want)
                             .get("updateProjectV2ItemFieldValue") or {}).get("projectV2Item") or {}
                     need(result.get("id")==item["id"],"date write result mismatch")
-                    items,fields=inspect();history=index(items,rows);item=history[key]
+                    history,fields=await_readback(rows,key,expected_id=item["id"],
+                                                   field=name,value=want)
+                    item=history[key]
                     need(values(item).get(name)==want,"historical date readback mismatch")
             if values(item).get("Phase")!=PHASE:
                 need(values(item).get("Phase") is None,"unexpected preexisting Phase value")
                 result=(gh(SET_PHASE,p=PROJECT,i=item["id"],f=fields["Phase"]["id"],s=PHASE)
                         .get("updateProjectV2ItemFieldValue") or {}).get("projectV2Item") or {}
                 need(result.get("id")==item["id"],"Phase write mismatch")
-                items,fields=inspect();history=index(items,rows);item=history[key]
+                history,fields=await_readback(rows,key,expected_id=item["id"],
+                                               field="Phase",value=PHASE)
+                item=history[key]
                 need(values(item).get("Phase")==PHASE,"Phase readback mismatch")
             journal("history-projection-writing",rows,history,fields)
     items,fields=inspect();history=index(items,rows)
