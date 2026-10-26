@@ -1,6 +1,8 @@
 # Stage B — Corrective roadmap and historical archive reconciliation
 
-**Status: IMPLEMENTATION INCOMPLETE · Proposal and verified structural inventory · 2026-10-26**
+**Status: HISTORICAL EARLIER PROPOSAL — superseded by [current Stage B and G0–G6 audit](STAGE-B-G0-G6-CLOSEOUT-VERIFICATION-20261026.md) · 2026-10-26**
+
+**Superseding fact:** The exact 152-to-20 native Project archive consolidation was completed and independently verified ([run #40250572882](https://github.com/spwn02/Miracle/actions/runs/40250572882)). Nine real Git-history Project cards, 18 distinct historical Date field values and two native views were then created and independently read back ([run #40253663462](https://github.com/spwn02/Miracle/actions/runs/40253663462)). Thus this document's earlier “no consolidation” and “history is read-only only” claims are retained **solely as historical pre-implementation observations**. The remaining presentation gate is the native Historical Development Roadmap's custom date-axis selection; G2/G4/G6 formal acceptance remains outstanding. Do not use the earlier proposed 190-active-item numbers as current live cardinality (now 47).
 
 **Tracking:** [Stage B Issue #69](https://github.com/spwn02/Miracle/issues/69) and the wider [G2](https://github.com/spwn02/Miracle/issues/2), [G4](https://github.com/spwn02/Miracle/issues/4) and [G6](https://github.com/spwn02/Miracle/issues/6) acceptance gates. Normative authority is the approved [G2 Archive Fidelity & Provenance Addendum](amendments/G2-NATIVE-ARCHIVE-PROVENANCE-ADDENDUM-V1.0.md).
 
