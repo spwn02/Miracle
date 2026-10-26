@@ -53,6 +53,8 @@ jobs:
           python3 scripts/github/stage-b-draft-rollout.py --self-test
           python3 -m py_compile scripts/github/stage-b-archive-consolidate.py
           python3 scripts/github/stage-b-archive-consolidate.py --self-test
+          python3 -m py_compile scripts/github/stage-b-project-history.py
+          python3 scripts/github/stage-b-project-history.py --self-test
           python3 -m py_compile scripts/github/stage-b-approved-branch-prune.py
           python3 scripts/github/stage-b-approved-branch-prune.py --self-test
           python3 -m py_compile scripts/github/stage-b-reconstruct-history.py

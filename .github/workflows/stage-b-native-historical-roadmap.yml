@@ -1,0 +1,59 @@
+name: Stage B Native Historical Roadmap
+
+# Native Git timeline: two separately labeled historical Date fields and nine
+# exact commit/tag-evidenced DraftIssue markers; no current planning edits.
+on:
+  issue_comment:
+    types: [created]
+permissions: {}
+concurrency:
+  group: miracle-stage-b-native-roadmap
+  cancel-in-progress: false
+jobs:
+  history:
+    if: >-
+      github.repository == 'spwn02/Miracle' &&
+      github.actor == 'spwn02' &&
+      github.event_name == 'issue_comment' &&
+      github.event.issue.number == 69 &&
+      github.event.issue.pull_request == null &&
+      (github.event.comment.body == '/miracle-stage-b history-plan-20261026' ||
+       github.event.comment.body == '/miracle-stage-b history-apply-20261026' ||
+       github.event.comment.body == '/miracle-stage-b history-verify-20261026')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout protected master full Git history
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: master
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run exact source-backed historical operation
+        env:
+          GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}
+          STAGE_B_COMMAND: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          test -n "$GH_TOKEN"
+          python3 -m py_compile scripts/github/stage-b-project-history.py
+          python3 scripts/github/stage-b-project-history.py --self-test
+          case "$STAGE_B_COMMAND" in
+            '/miracle-stage-b history-plan-20261026')
+              python3 scripts/github/stage-b-project-history.py --plan ;;
+            '/miracle-stage-b history-apply-20261026')
+              python3 scripts/github/stage-b-project-history.py --apply ;;
+            '/miracle-stage-b history-verify-20261026')
+              python3 scripts/github/stage-b-project-history.py --verify ;;
+            *) exit 1 ;;
+          esac
+      - name: Retain exact history marker/date/commit evidence even on failure
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: miracle-stage-b-native-history-${{ github.run_id }}
+          path: stage-b-native-history-evidence/
+          retention-days: 90
+          if-no-files-found: warn
