@@ -189,8 +189,8 @@ def execute(mode):
             archived.append(k)
             record("restoring-archive",rows,plan,wanted,updated,archived)
     for k in sorted(keep):
-        if sha(wanted[k])!=rows[k]["after_sha256"] and
-            sha(native(rows[k])["content"]["body"])==sha(wanted[k]):
+        if (sha(wanted[k]) != rows[k]["after_sha256"] and
+                sha(native(rows[k])["content"]["body"]) == sha(wanted[k])):
             write_body(rows[k],wanted[k],rows[k]["after"])
             updated.append(k)
             record("restoring-bodies",rows,plan,wanted,updated,archived)
