@@ -85,7 +85,6 @@ constexpr StringView helpAnsi = "\033[1;32m";
 [[nodiscard]] auto detectionName(std::contracts::detection_mode mode) -> StringView {
   using Mode = std::contracts::detection_mode;
   switch (mode) {
-    case Mode::unspecified: return "unspecified";
     case Mode::predicate_false: return "predicate_false";
     case Mode::evaluation_exception: return "evaluation_exception";
   }
@@ -350,9 +349,7 @@ private:
   switch (kind) {
     case Kind::pre: return ContractCode::Precondition;
     case Kind::post: return ContractCode::Postcondition;
-    case Kind::assert:
-    case Kind::manual:
-    case Kind::cassert:
+    case Kind::assert: return ContractCode::Assertion;
   }
   return ContractCode::Assertion;
 }

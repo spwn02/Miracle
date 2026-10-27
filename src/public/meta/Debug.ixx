@@ -179,7 +179,7 @@ constexpr auto enumName(T value) -> StringView {
 
 } // namespace Miracle::debug
 
-export template <Miracle::debug::DebuggableAggr T>
+template <Miracle::debug::DebuggableAggr T>
 struct std::formatter<T> : std::formatter<Miracle::String> {
   bool pretty{};
 
@@ -206,7 +206,7 @@ struct std::formatter<T> : std::formatter<Miracle::String> {
   }
 };
 
-export template <Miracle::debug::DebuggableEnum T>
+template <Miracle::debug::DebuggableEnum T>
 struct std::formatter<T> : std::formatter<Miracle::StringView> {
   constexpr auto format(const T &obj, format_context &ctx) const -> std::format_context::iterator {
     return std::formatter<Miracle::StringView>::format(Miracle::debug::enumName(obj), ctx);

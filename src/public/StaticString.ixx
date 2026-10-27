@@ -929,7 +929,7 @@ template <BasicStaticString Format, class... Args>
 } // namespace Miracle
 
 /// Formats a Miracle static string using the ordinary string-view formatter.
-export template <class Char, Miracle::usize Capacity>
+template <class Char, Miracle::usize Capacity>
 struct std::formatter<Miracle::BasicStaticString<Char, Capacity>, Char>
     : std::formatter<std::basic_string_view<Char>, Char> {
   /// Writes the active static-string contents through the standard string-view formatter, preserving the

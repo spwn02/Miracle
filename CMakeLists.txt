@@ -257,14 +257,6 @@ if(MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES)
                         PRIVATE ${MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES})
 endif()
 
-# The reference Clang/libc++ toolchain gates its still-experimental PSTL and
-# related library surface behind -fexperimental-library. Keeping this PUBLIC
-# also gives CMake's synthetic import-std target the same BMI configuration as
-# Miracle and its consumers, while the generator expression keeps other
-# compilers free of the libc++-specific driver option.
-target_compile_options(
-  Miracle PUBLIC $<$<CXX_COMPILER_ID:Clang>:-fexperimental-library>)
-
 target_compile_options(Miracle PRIVATE ${miracle_private_compile_options})
 
 set(miracle_cmake_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/Miracle")

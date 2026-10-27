@@ -3690,10 +3690,10 @@ template <std::ranges::viewable_range First, std::ranges::viewable_range Second>
 
 // Standard customization-point spelling is fixed by the C++ ranges API.
 // NOLINTBEGIN(readability-identifier-naming)
-export template <class Maybe>
+template <class Maybe>
 inline constexpr bool std::ranges::enable_borrowed_range<Miracle::MaybeRefView<Maybe>> = true;
 
-export template <std::ranges::view View, class Projection>
+template <std::ranges::view View, class Projection>
 inline constexpr bool std::ranges::enable_borrowed_range<Miracle::Iter<View, Projection>> =
     std::same_as<Projection, std::identity> and std::ranges::borrowed_range<View>;
 // NOLINTEND(readability-identifier-naming)

@@ -9,9 +9,7 @@ using namespace Miracle;
   switch (kind) {
     case Kind::pre: return code.enumerator == "Precondition" and code.numeric == 1;
     case Kind::post: return code.enumerator == "Postcondition" and code.numeric == 2;
-    case Kind::assert:
-    case Kind::manual:
-    case Kind::cassert: return code.enumerator == "Assertion" and code.numeric == 3;
+    case Kind::assert: return code.enumerator == "Assertion" and code.numeric == 3;
   }
   return false;
 }

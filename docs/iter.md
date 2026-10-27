@@ -277,7 +277,7 @@ The current parallel façade is available only when the retained base range is r
 
 Exception behavior is the selected standard execution policy's behavior; Miracle does not add an exception-transport layer around policy-backed algorithms.
 
-The reference clang-cxx26/libc++ toolchain ships this still-experimental PSTL surface behind libc++'s experimental-library gate. Miracle's build therefore enables `-fexperimental-library` consistently for both standard-module BMI construction and Miracle/consumer compilation.
+The reference clang-cxx26/libc++ toolchain provides the standard execution policies in C++26 mode without a separate library opt-in, so Miracle's build adds no extra driver option for them.
 
 ## Performance contract
 

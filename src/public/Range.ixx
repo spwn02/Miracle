@@ -89,10 +89,10 @@ Range(Left, Right) -> Range<std::common_type_t<Left, Right>>;
 
 } // namespace Miracle
 
-export template <Miracle::RangeElement T>
+template <Miracle::RangeElement T>
 // NOLINTNEXTLINE(readability-identifier-naming)
 inline constexpr bool std::ranges::enable_view<Miracle::Range<T>> = true;
 
-export template <Miracle::RangeElement T>
+template <Miracle::RangeElement T>
 // NOLINTNEXTLINE(readability-identifier-naming)
 inline constexpr bool std::ranges::enable_borrowed_range<Miracle::Range<T>> = true;
