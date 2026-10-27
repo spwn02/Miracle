@@ -146,8 +146,8 @@ Two identities must remain distinct:
 cxx26
   mutable development branch (not an immutable build input)
 
-cxx26-2026.10.09.2
-  immutable reference snapshot pinned by Miracle CI as of 2026-10-17
+cxx26-2026.10.27
+  immutable reference snapshot pinned by Miracle CI as of 2026-10-27
 ```
 
 The pinned reference version is defined by `.github/workflows/ci.yml`; documentation describing it must be reconciled whenever that workflow changes. A newer snapshot published by the compiler project is not automatically Miracle's validated baseline.
@@ -166,12 +166,12 @@ The snapshot rules are:
 6. CI and released library versions pin snapshots, never the moving `cxx26` branch.
 7. The development branch remains free to advance independently after a snapshot is published.
 
-The reference snapshot pinned by Miracle CI as of 2026-10-17 is:
+The reference snapshot pinned by Miracle CI as of 2026-10-27 is:
 
 ```text
-snapshot: cxx26-2026.10.09.2
-source revision: 040df2b05ea338d107fac7387a2e4db835d746e0
-asset: clang-cxx26-2026.10.09.2-linux-x86_64
+snapshot: cxx26-2026.10.27
+source revision: b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
+asset: clang-cxx26-2026.10.27-linux-x86_64
 ```
 
 Miracle's reference CI verifies the corresponding published asset's checksums and manifest, including its source revision, before compiling. This statement concerns the snapshot actually selected by Miracle, rather than all snapshots available from the compiler's release channel.
@@ -227,15 +227,15 @@ Official Miracle and Switch releases are built from `master`.
 
 Release workflows verify that the tag resolves to `master` history and attach deterministic `release-metadata.json`. The metadata records the exact project source commit together with the immutable validated reference snapshot, its source revision, and artifact identity.
 
-For the reference snapshot pinned by Miracle's CI configuration on 2026-10-17:
+For the reference snapshot pinned by Miracle's CI configuration on 2026-10-27:
 
 ```text
 Miracle reference/release provenance
   source branch:        master
   reference repository: spwn02/clang-cxx26
   development branch:   cxx26
-  reference snapshot:   cxx26-2026.10.09.2
-  toolchain revision:   040df2b05ea338d107fac7387a2e4db835d746e0
+  reference snapshot:   cxx26-2026.10.27
+  toolchain revision:   b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
 ```
 
 Individual GitHub Releases retain their own validated provenance in `release-metadata.json`; historical releases must not be retroactively described as built using the newest CI snapshot. Switch releases similarly retain their own release-specific reference metadata.

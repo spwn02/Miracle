@@ -27,7 +27,7 @@ body:
     attributes:
       label: "Compiler and toolchain identity"
       description: "Include the exact `clang-cxx26` snapshot/source revision or GCC/libstdc++ version. Enter `Unknown` only if unobtainable."
-      placeholder: "cxx26-2026.10.09.2 / revision, GCC version, or Unknown"
+      placeholder: "cxx26-2026.10.27 / revision, GCC version, or Unknown"
     validations:
       required: true
   - type: input

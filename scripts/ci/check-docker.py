@@ -16,9 +16,9 @@ def check(root: Path) -> list[str]:
     workspace = (root / "scripts/ci/verify-docker-workspace.sh").read_text(encoding="utf-8")
 
     for key, value in {
-        "CXX26_SNAPSHOT": "cxx26-2026.10.09.2",
-        "CXX26_REVISION": "040df2b05ea338d107fac7387a2e4db835d746e0",
-        "CXX26_ASSET": "clang-cxx26-2026.10.09.2-linux-x86_64",
+        "CXX26_SNAPSHOT": "cxx26-2026.10.27",
+        "CXX26_REVISION": "b56ae4e61cf1f46495f0fb08f2b9fc270aad162c",
+        "CXX26_ASSET": "clang-cxx26-2026.10.27-linux-x86_64",
     }.items():
         if f"{key}: {value}" not in ci or f"ARG {key}={value}" not in docker:
             faults.append(f"{key} must match pinned reference CI")

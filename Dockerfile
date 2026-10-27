@@ -3,12 +3,12 @@
 FROM --platform=linux/amd64 ubuntu:22.04@sha256:08ea48a03a3e78ebc7cd526e6a275053223aadd88bfc09cc49b06d5281525fde
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG CXX26_SNAPSHOT=cxx26-2026.10.09.2
-ARG CXX26_REVISION=040df2b05ea338d107fac7387a2e4db835d746e0
-ARG CXX26_ASSET=clang-cxx26-2026.10.09.2-linux-x86_64
-ARG CXX26_ARCHIVE_SHA256=7965d447d32022557fc767bb5b8524e9ca6d9318b5d0c0ba3457b32e6632a1e8
-ARG CXX26_MANIFEST_SHA256=178c91d2f7d2bf59532223581563eee5c3babbd136b4c4496f92c69971b6ffb1
-ARG CXX26_SUMS_SHA256=8ed3810fa391f056ad840c9331a3598bb24257a16fb1f05e9752bbd7301c1b5a
+ARG CXX26_SNAPSHOT=cxx26-2026.10.27
+ARG CXX26_REVISION=b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
+ARG CXX26_ASSET=clang-cxx26-2026.10.27-linux-x86_64
+ARG CXX26_ARCHIVE_SHA256=2cf86035535289b3a9362ec54ae2272023b9b37700eea8be1286bb9f5ca303ea
+ARG CXX26_MANIFEST_SHA256=c0e1ee1840ec2c97c9a198592efb35964d8c48c2695722c401336a5c63ca9854
+ARG CXX26_SUMS_SHA256=9145edf99be7ac910e1cc3210be0ee356685fedb56fc43509cc10a35029cdac6
 ARG NVIM_VERSION=0.12.5
 ARG NVIM_SHA256=bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875
 ARG NINJA_VERSION=1.13.2
@@ -89,12 +89,12 @@ RUN set -eux; \
     rm /tmp/nvim.tar.gz; \
     /opt/nvim-linux-x86_64/bin/nvim --version
 
-ENV CXX26_TOOLCHAIN_ROOT=/opt/cxx26/clang-cxx26-2026.10.09.2
-ENV CXX26_CMAKE_TOOLCHAIN_FILE=/opt/cxx26/clang-cxx26-2026.10.09.2/share/clang-cxx26/toolchain.cmake
-ENV CC=/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clang
-ENV CXX=/opt/cxx26/clang-cxx26-2026.10.09.2/bin/clang++
-ENV PATH="/opt/nvim-linux-x86_64/bin:/opt/ninja:/opt/cmake/bin:/opt/cxx26/clang-cxx26-2026.10.09.2/bin:${PATH}"
-ENV LD_LIBRARY_PATH=/opt/cxx26/clang-cxx26-2026.10.09.2/lib
+ENV CXX26_TOOLCHAIN_ROOT=/opt/cxx26/clang-cxx26-2026.10.27
+ENV CXX26_CMAKE_TOOLCHAIN_FILE=/opt/cxx26/clang-cxx26-2026.10.27/share/clang-cxx26/toolchain.cmake
+ENV CC=/opt/cxx26/clang-cxx26-2026.10.27/bin/clang
+ENV CXX=/opt/cxx26/clang-cxx26-2026.10.27/bin/clang++
+ENV PATH="/opt/nvim-linux-x86_64/bin:/opt/ninja:/opt/cmake/bin:/opt/cxx26/clang-cxx26-2026.10.27/bin:${PATH}"
+ENV LD_LIBRARY_PATH=/opt/cxx26/clang-cxx26-2026.10.27/lib
 ENV LANG=C.UTF-8
 
 # Default non-root Docker user; bind mounts may override to matching host UID/GID.

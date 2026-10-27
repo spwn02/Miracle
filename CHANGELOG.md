@@ -27,6 +27,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Changed
 
+- Promoted the immutable reference-toolchain baseline to `cxx26-2026.10.27` (`b56ae4e61cf1f46495f0fb08f2b9fc270aad162c`).
 - Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.10.08` toolchain snapshot (`19a66e9bb4ac00a7a5f0510970e5694379a39757`).
 - Reworked Miracle-owned Iter range types around composition and structural `std::ranges::view` conformance rather than `view_interface`/CRTP inheritance, and modernized borrowed optional terminal results to C++26 `Option<T&>` semantics.
 

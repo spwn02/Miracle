@@ -17,8 +17,8 @@ source "$CXX26_TOOLCHAIN_ROOT/share/clang-cxx26/activate.sh"
 test "$CXX" = "$CXX26_TOOLCHAIN_ROOT/bin/clang++"
 python3 scripts/ci/verify-reference-toolchain.py \
   --manifest "$CXX26_TOOLCHAIN_ROOT/share/clang-cxx26/manifest.json" \
-  --snapshot cxx26-2026.10.09.2 \
-  --revision 040df2b05ea338d107fac7387a2e4db835d746e0 \
+  --snapshot cxx26-2026.10.27 \
+  --revision b56ae4e61cf1f46495f0fb08f2b9fc270aad162c \
   --root "$CXX26_TOOLCHAIN_ROOT"
 cmake --version
 "$CXX" --version

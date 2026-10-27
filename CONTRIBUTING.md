@@ -23,9 +23,9 @@ The current Miracle reference CI configuration pins:
 
 | Component | Verified CI identity |
 | --- | --- |
-| Immutable toolchain snapshot | `cxx26-2026.10.09.2` |
-| Source revision | `040df2b05ea338d107fac7387a2e4db835d746e0` |
-| Linux x86_64 asset | `clang-cxx26-2026.10.09.2-linux-x86_64` |
+| Immutable toolchain snapshot | `cxx26-2026.10.27` |
+| Source revision | `b56ae4e61cf1f46495f0fb08f2b9fc270aad162c` |
+| Linux x86_64 asset | `clang-cxx26-2026.10.27-linux-x86_64` |
 | CI CMake version | `4.4.3` |
 
 These values describe the repository's **currently pinned CI snapshot**, not a promise that the mutable toolchain branch or latest published compiler release will always have the same revision. The source of truth for future CI changes is [`.github/workflows/ci.yml`](.github/workflows/ci.yml).

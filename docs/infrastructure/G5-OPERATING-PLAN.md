@@ -23,11 +23,11 @@ Miracle's single compiler/runtime identity is Clang + matching libc++/libc++abi 
 | Component | Pinned identity |
 | --- | --- |
 | Operating system base | Ubuntu 22.04, official Linux/amd64 manifest `sha256:08ea48a03a3e78ebc7cd526e6a275053223aadd88bfc09cc49b06d5281525fde` |
-| Reference toolchain | `spwn02/clang-cxx26`, snapshot `cxx26-2026.10.09.2` |
-| Compiler source | `040df2b05ea338d107fac7387a2e4db835d746e0` |
-| Toolchain archive | `sha256:7965d447d32022557fc767bb5b8524e9ca6d9318b5d0c0ba3457b32e6632a1e8` |
-| Toolchain manifest | `sha256:178c91d2f7d2bf59532223581563eee5c3babbd136b4c4496f92c69971b6ffb1` |
-| Published SHA256SUMS file | `sha256:8ed3810fa391f056ad840c9331a3598bb24257a16fb1f05e9752bbd7301c1b5a` |
+| Reference toolchain | `spwn02/clang-cxx26`, snapshot `cxx26-2026.10.27` |
+| Compiler source | `b56ae4e61cf1f46495f0fb08f2b9fc270aad162c` |
+| Toolchain archive | `sha256:2cf86035535289b3a9362ec54ae2272023b9b37700eea8be1286bb9f5ca303ea` |
+| Toolchain manifest | `sha256:c0e1ee1840ec2c97c9a198592efb35964d8c48c2695722c401336a5c63ca9854` |
+| Published SHA256SUMS file | `sha256:9145edf99be7ac910e1cc3210be0ee356685fedb56fc43509cc10a35029cdac6` |
 | CMake | Official Kitware 4.4.3 Linux x86-64 archive, `sha256:d6c83076c575bc00b823522ac974bda66d0af05d6ddc30e739c12385cf32c6cc` |
 | Ninja | Official Ninja 1.13.2 Linux x86-64 zip, `sha256:5749cbc4e668273514150a80e387a957f933c6ed3f5f11e03fb30955e2bbead6` |
 | Neovim | Official Neovim 0.12.5 Linux x86-64 tarball, `sha256:bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875` |
