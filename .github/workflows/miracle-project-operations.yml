@@ -43,13 +43,6 @@ jobs:
            github.event.comment.body == '/miracle-project roadmap-verify' ||
            github.event.comment.body == '/miracle-project roadmap-apply' ||
            github.event.comment.body == '/miracle-project archive-audit' ||
-           github.event.comment.body == '/miracle-project stage-b-source-plan' ||
-           github.event.comment.body == '/miracle-project stage-b-branch-plan' ||
-           github.event.comment.body == '/miracle-project stage-b-draft-plan' ||
-           github.event.comment.body == '/miracle-project stage-b-draft-pilot' ||
-           github.event.comment.body == '/miracle-project stage-b-batch-plan' ||
-           startsWith(github.event.comment.body, '/miracle-project stage-b-batch-apply ') ||
-           startsWith(github.event.comment.body, '/miracle-project stage-b-batch-restore ') ||
            github.event.comment.body == '/miracle-project g2-provenance' ||
            github.event.comment.body == '/miracle-project g6-community' ||
            github.event.comment.body == '/miracle-project g6-release-provenance' ||
@@ -87,11 +80,6 @@ jobs:
           python3 scripts/github/project-item-control.py --self-test
           python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/issue-relations.py --self-test
-          python3 scripts/github/audit-project-archive.py --self-test
-          python3 scripts/github/stage-b-source-manifest.py --self-test
-          python3 scripts/github/stage-b-branch-plan.py --self-test
-          python3 scripts/github/stage-b-draft-sync.py --self-test
-          python3 scripts/github/stage-b-draft-rollout.py --self-test
           python3 scripts/github/audit-g2-provenance.py --self-test
           python3 scripts/github/audit-g6-community.py --self-test
           python3 scripts/github/audit-g6-release-provenance.py --self-test
@@ -99,16 +87,6 @@ jobs:
           case "$REQUEST" in
             audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
             '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
-            '/miracle-project archive-audit') ;;
-            '/miracle-project stage-b-source-plan') ;;
-            '/miracle-project stage-b-branch-plan') ;;
-            '/miracle-project stage-b-draft-plan'|'/miracle-project stage-b-draft-pilot'|'/miracle-project stage-b-batch-plan') ;;
-            '/miracle-project stage-b-batch-apply '*|'/miracle-project stage-b-batch-restore '*)
-              if [[ ! "$REQUEST" =~ ^/miracle-project\ stage-b-batch-(apply|restore)\ (0|[1-9]|1[0-7])$ ]]; then
-                echo 'Invalid bounded Stage B batch command: expected exact index 0..17' >&2
-                exit 1
-              fi
-              ;;
             '/miracle-project g2-provenance') ;;
             '/miracle-project g6-community') ;;
             '/miracle-project g6-release-provenance') ;;
@@ -134,22 +112,6 @@ jobs:
           set -euo pipefail
           python3 scripts/github/issue-relations.py
 
-      - name: Verify and download pinned pre-mutation draft backup
-        if: ${{ github.event_name == 'issue_comment' && (github.event.comment.body == '/miracle-project stage-b-draft-pilot' || github.event.comment.body == '/miracle-project stage-b-batch-plan' || startsWith(github.event.comment.body, '/miracle-project stage-b-batch-apply ') || startsWith(github.event.comment.body, '/miracle-project stage-b-batch-restore ')) }}
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          identity=$(gh api repos/spwn02/Miracle/actions/artifacts/12608038204 --jq '[.id,.name,.expired,.workflow_run.head_sha] | map(tostring) | join("|")')
-          expected='12608038204|miracle-stage-b-full-draft-backup-40217537233|false|cd2c02b2691f32f6a624c32bfdef2f162bdf1aad'
-          if [[ "$identity" != "$expected" ]]; then
-            echo 'Refusing pilot: pinned 172-draft backup identity/provenance not verified' >&2
-            exit 1
-          fi
-          gh run download 40217537233 --repo spwn02/Miracle --name miracle-stage-b-full-draft-backup-40217537233 --dir stage-b-draft-backup
-          test -s stage-b-draft-backup/draft-body-backup-and-plan.json
-          echo 'PASS: original 172 draft bodies restored from prior read-only archive'
       - name: Execute only the selected native Project operation
         id: execute
         shell: bash
@@ -196,43 +158,6 @@ jobs:
               action='roadmap-apply'
               python3 scripts/github/project-roadmap-filter.py --apply
               ;;
-            '/miracle-project archive-audit')
-              action='archive-audit'
-              python3 scripts/github/audit-project-archive.py
-              ;;
-            '/miracle-project stage-b-source-plan')
-              action='stage-b-source-plan'
-              python3 scripts/github/stage-b-source-manifest.py
-              ;;
-            '/miracle-project stage-b-branch-plan')
-              action='stage-b-branch-plan'
-              python3 scripts/github/stage-b-branch-plan.py
-              ;;
-            '/miracle-project stage-b-draft-plan')
-              action='stage-b-draft-backup'
-              python3 scripts/github/stage-b-draft-sync.py --prepare
-              ;;
-            '/miracle-project stage-b-draft-pilot')
-              action='stage-b-fixed-one-draft-pilot'
-              python3 scripts/github/stage-b-draft-sync.py --pilot
-              ;;
-            '/miracle-project stage-b-batch-plan')
-              action='stage-b-complete-batch-plan-read-only'
-              python3 scripts/github/stage-b-draft-rollout.py --plan-all
-              ;;
-            '/miracle-project stage-b-batch-apply '*|'/miracle-project stage-b-batch-restore '*)
-              if [[ ! "$REQUEST" =~ ^/miracle-project\ stage-b-batch-(apply|restore)\ (0|[1-9]|1[0-7])$ ]]; then
-                echo 'Refusing invalid bounded Stage B batch request' >&2
-                exit 1
-              fi
-              batch_action="${BASH_REMATCH[1]}"
-              batch_index="${BASH_REMATCH[2]}"
-              action="stage-b-batch-${batch_action}-${batch_index}"
-              python3 scripts/github/stage-b-draft-rollout.py "--${batch_action}-batch" "$batch_index"
-              # Fresh read-only full-inventory round trip after the batch.
-              # On a partial failure, rerun an explicit plan before retry.
-              python3 scripts/github/stage-b-draft-rollout.py --plan-all
-              ;;
             '/miracle-project g2-provenance')
               action='g2-provenance'
               python3 scripts/github/audit-g2-provenance.py
@@ -263,34 +188,6 @@ jobs:
           echo "- Operation: \`$action\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Project: https://github.com/users/spwn02/projects/3" >> "$GITHUB_STEP_SUMMARY"
           echo "- Exact runner output is in this workflow's job log." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Preserve read-only Stage B source manifest
-        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-source-plan' }}
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: miracle-stage-b-source-manifest-${{ github.run_id }}
-          path: stage-b-evidence/
-          retention-days: 30
-          if-no-files-found: error
-
-      - name: Preserve read-only Stage B branch disposition manifest
-        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-branch-plan' }}
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: miracle-stage-b-branch-manifest-${{ github.run_id }}
-          path: stage-b-branch-evidence/
-          retention-days: 30
-          if-no-files-found: error
-
-      - name: Preserve complete Project draft originals BEFORE any mutation
-        id: backup_drafts
-        if: ${{ steps.execute.outcome == 'success' && github.event_name == 'issue_comment' && github.event.comment.body == '/miracle-project stage-b-draft-plan' }}
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: miracle-stage-b-full-draft-backup-${{ github.run_id }}
-          path: stage-b-draft-backup/
-          retention-days: 30
-          if-no-files-found: error
 
       - name: Acknowledge Issue #29 command with a run link
         if: ${{ always() && github.event_name == 'issue_comment' }}

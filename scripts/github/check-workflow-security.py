@@ -96,8 +96,6 @@ def check(workflows: dict[str, str]) -> list[str]:
         "scoped Project token": "GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}",
         "reviewed Roadmap update gate": "github.event.comment.body == '/miracle-project roadmap-apply'",
         "reviewed Roadmap controller": "python3 scripts/github/project-roadmap-filter.py --apply",
-        "catalog read-only command": "github.event.comment.body == '/miracle-project archive-audit'",
-        "catalog read-only runner": "python3 scripts/github/audit-project-archive.py",
         "G2 provenance read-only command": "github.event.comment.body == '/miracle-project g2-provenance'",
         "G2 provenance executor": "python3 scripts/github/audit-g2-provenance.py",
         "G6 public community read-only command": "github.event.comment.body == '/miracle-project g6-community'",

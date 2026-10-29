@@ -37,7 +37,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bash -n scripts/github/bootstrap-g2.sh
           bash -n scripts/github/audit-g2.sh
           bash -n scripts/github/miracle-project-reconcile-safe.sh
           bash -n scripts/github/audit-native-project.sh
@@ -45,20 +44,6 @@ jobs:
           python3 -m py_compile scripts/github/project-roadmap-filter.py
           python3 scripts/github/project-roadmap-filter.py --self-test
           python3 scripts/github/project-item-control.py --self-test
-          python3 -m py_compile scripts/github/audit-project-archive.py
-          python3 scripts/github/audit-project-archive.py --self-test
-          python3 -m py_compile scripts/github/stage-b-draft-sync.py
-          python3 scripts/github/stage-b-draft-sync.py --self-test
-          python3 -m py_compile scripts/github/stage-b-draft-rollout.py
-          python3 scripts/github/stage-b-draft-rollout.py --self-test
-          python3 -m py_compile scripts/github/stage-b-archive-consolidate.py
-          python3 scripts/github/stage-b-archive-consolidate.py --self-test
-          python3 -m py_compile scripts/github/stage-b-project-history.py
-          python3 scripts/github/stage-b-project-history.py --self-test
-          python3 -m py_compile scripts/github/stage-b-approved-branch-prune.py
-          python3 scripts/github/stage-b-approved-branch-prune.py --self-test
-          python3 -m py_compile scripts/github/stage-b-reconstruct-history.py
-          python3 scripts/github/stage-b-reconstruct-history.py --self-test
           python3 -m py_compile scripts/github/audit-g2-provenance.py
           python3 scripts/github/audit-g2-provenance.py --self-test
           python3 -m py_compile scripts/github/audit-g6-community.py
@@ -69,7 +54,6 @@ jobs:
           python3 scripts/github/project-issue-intake.py --self-test
           python3 -m py_compile scripts/github/issue-relations.py
           python3 scripts/github/issue-relations.py --self-test
-          bash -n scripts/github/reconcile-infrastructure-milestone.sh
           python3 scripts/github/check-workflow-pins.py
           python3 scripts/github/check-workflow-security.py
           python3 scripts/github/check-community-surface.py
