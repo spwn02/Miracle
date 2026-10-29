@@ -9,10 +9,10 @@ set(MIRACLE_BUILD_FEATURE_ARGUMENTS "\"core\", \"io\"")
 set(MIRACLE_FEATURE_BUILD_IDENTITY
     "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
 configure_file(
-  "${CMAKE_CURRENT_LIST_DIR}/../../src/public/FeatureConfiguration.ixx.in"
-  "${OUTPUT_DIR}/FeatureConfiguration.ixx" @ONLY NEWLINE_STYLE LF)
+  "${CMAKE_CURRENT_LIST_DIR}/../../src/public/FeatureConfiguration.cppm.in"
+  "${OUTPUT_DIR}/FeatureConfiguration.cppm" @ONLY NEWLINE_STYLE LF)
 
-file(READ "${OUTPUT_DIR}/FeatureConfiguration.ixx" generated)
+file(READ "${OUTPUT_DIR}/FeatureConfiguration.cppm" generated)
 foreach(expected
         "buildSet<\"core\", \"io\">"
         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")

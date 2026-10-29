@@ -19,7 +19,7 @@ endif()
 
 add_subdirectory("${MIRACLE_SOURCE_DIR}" miracle)
 
-add_executable(miracle_consumer "${CMAKE_CURRENT_LIST_DIR}/../main.cxx")
+add_executable(miracle_consumer "${CMAKE_CURRENT_LIST_DIR}/../main.cpp")
 target_compile_features(miracle_consumer PRIVATE cxx_std_26)
 target_link_libraries(miracle_consumer PRIVATE Miracle::Miracle)
 

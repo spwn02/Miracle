@@ -13,7 +13,7 @@ foreach(
         formatter-boundaries
         query-edges
         stable-controls)
-  add_executable("MiracleMetaHardening${name}" "${name}.cxx")
+  add_executable("MiracleMetaHardening${name}" "${name}.cpp")
   target_compile_features("MiracleMetaHardening${name}" PRIVATE cxx_std_26)
   set_target_properties(
     "MiracleMetaHardening${name}"
@@ -26,7 +26,7 @@ foreach(
            COMMAND "MiracleMetaHardening${name}")
 endforeach()
 
-add_executable(MiracleMetaHardeningCrossTU cross-tu-a.cxx cross-tu-b.cxx)
+add_executable(MiracleMetaHardeningCrossTU cross-tu-a.cpp cross-tu-b.cpp)
 target_compile_features(MiracleMetaHardeningCrossTU PRIVATE cxx_std_26)
 set_target_properties(
   MiracleMetaHardeningCrossTU
@@ -44,10 +44,10 @@ set(SNAPSHOT_FIELDS "")
 foreach(index RANGE 0 511)
   string(APPEND SNAPSHOT_FIELDS "  int field${index};\n")
 endforeach()
-configure_file(snapshot-stress.cxx.in
-               "${CMAKE_CURRENT_BINARY_DIR}/snapshot-stress.cxx" @ONLY)
+configure_file(snapshot-stress.cpp.in
+               "${CMAKE_CURRENT_BINARY_DIR}/snapshot-stress.cpp" @ONLY)
 add_executable(MiracleMetaSnapshotStress
-               "${CMAKE_CURRENT_BINARY_DIR}/snapshot-stress.cxx")
+               "${CMAKE_CURRENT_BINARY_DIR}/snapshot-stress.cpp")
 target_compile_features(MiracleMetaSnapshotStress PRIVATE cxx_std_26)
 set_target_properties(
   MiracleMetaSnapshotStress
