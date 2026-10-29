@@ -7,7 +7,7 @@ body:
       value: |
         This form creates a **proposal**, never an approved amendment.
         [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) is the planning workspace; only reviewed Git sources constitute authoritative contracts.
-        Read the [Development Protocol](https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md) and [Contract Revision Protocol](https://github.com/spwn02/Miracle/blob/master/docs/contracts/REVISION-PROTOCOL.md).
+        Read the [Development Protocol](https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md) and [Contract Revision Protocol](https://github.com/spwn02/Miracle/blob/master/docs/contracts/REVISION_PROTOCOL.md).
         Do not paste private material, credentials or vulnerabilities; follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md).
   - type: input
     id: canonical-source

@@ -58,19 +58,8 @@ def normalize(text: str) -> str:
     return " ".join(text.split())
 
 
-def expected() -> tuple[str, str]:
-    g3 = (ROOT / "docs/infrastructure/G3-PROGRESS.md").read_text(encoding="utf-8")
-    home = (ROOT / "docs/index.md").read_text(encoding="utf-8")
-    section = g3.split("## Live user-experience verification — maintainer report", 1)
-    if len(section) != 2:
-        raise ValueError("Canonical G3 live verification section missing")
-    entry = next(
-        (line[2:] for line in section[1].split("\n## ", 1)[0].splitlines()
-         if line.startswith("- **Tab / keyboard navigation:** ")),
-        None,
-    )
-    if entry is None:
-        raise ValueError("Canonical G3 keyboard-acceptance bullet missing")
+def expected() -> str:
+    home = (ROOT / "docs/INDEX.md").read_text(encoding="utf-8")
     paragraph = next(
         (line for line in home.splitlines()
          if line.startswith("The public umbrella module is ")),
@@ -81,9 +70,7 @@ def expected() -> tuple[str, str]:
     for link in LINKS:
         if link not in home:
             raise ValueError(f"Canonical index missing selected external URL: {link}")
-    return normalize(entry.replace("**", "").replace(chr(96), "")), normalize(
-        paragraph.replace(chr(96), "")
-    )
+    return normalize(paragraph.replace(chr(96), ""))
 
 
 def verify_page(html: str, phrase: str, links: tuple[str, ...] = ()) -> None:
@@ -98,7 +85,7 @@ def verify_page(html: str, phrase: str, links: tuple[str, ...] = ()) -> None:
 
 def fetch(url: str) -> tuple[str, str]:
     request = Request(url, headers={
-        "User-Agent": "Miracle-G3-Pages-Smoke/1.0",
+        "User-Agent": "Miracle-Pages-Smoke/1.0",
         "Cache-Control": "no-cache",
     })
     with urlopen(request, timeout=20) as response:
@@ -139,10 +126,9 @@ def self_test() -> None:
             raise AssertionError("Invalid HTML/source fixture unexpectedly passed")
         except ValueError:
             pass
-    g3, home = expected()
-    assert g3 == "Tab / keyboard navigation: reported working.", g3
+    home = expected()
     assert home.startswith("The public umbrella module is import Miracle;"), home
-    print("PASS: offline G3 source/HTML comparison and negative fixtures")
+    print("PASS: offline homepage source/HTML comparison and negative fixtures")
 
 
 def main() -> int:
@@ -153,7 +139,7 @@ def main() -> int:
         if args.self_test:
             self_test()
             return 0
-        g3, home = expected()
+        home = expected()
         suffix = "?verify=" + os.environ.get("GITHUB_SHA", "manual")[:12]
 
         def live_page(path: str, phrase: str, links: tuple[str, ...] = ()) -> None:
@@ -165,7 +151,6 @@ def main() -> int:
                 verify_page(html, phrase, links)
             retry(f"live canonical source content {path}", check)
 
-        live_page("/infrastructure/G3-PROGRESS.html", g3)
         live_page("/", home, LINKS)
         for link in LINKS:
             def check_link(target=link) -> None:
@@ -178,7 +163,7 @@ def main() -> int:
         print("LIMIT: no exhaustive link crawling or screen-reader verification")
         return 0
     except (RuntimeError, ValueError, OSError, AssertionError) as error:
-        print(f"ERROR: G3 public Pages smoke verification: {error}", file=sys.stderr)
+        print(f"ERROR: public Pages smoke verification: {error}", file=sys.stderr)
         return 1
 
 

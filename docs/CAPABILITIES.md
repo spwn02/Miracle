@@ -46,7 +46,7 @@ C++ consumers therefore reason about ordinary types constants rather than:
 - duplicated compile probes;
 - public preprocessor configuration;
 
-This is the bootstrap bridge consumed by Miracle facilities. The Feature engine adapts the capability vocabulary it currently exposes into `feature::CapabilitySet` and combines those requirements with dependency, conflict, group, and build-universe reasoning. The generated capability facts may be broader than that feature-requirement vocabulary as new runtime foundations land. See [`feature.md`](feature.md).
+This is the bootstrap bridge consumed by Miracle facilities. The Feature engine adapts the capability vocabulary it currently exposes into `feature::CapabilitySet` and combines those requirements with dependency, conflict, group, and build-universe reasoning. The generated capability facts may be broader than that feature-requirement vocabulary as new runtime foundations land. See [`feature.md`](FEATURE.md).
 
 ## Current master behavior
 

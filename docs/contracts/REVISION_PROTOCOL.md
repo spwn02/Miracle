@@ -1,6 +1,6 @@
 # Contract revision workflow — GitHub-native governance
 
-**Authority:** [Approved Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md), [Infrastructure Contract v1.0](../infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md), and the [frozen contract archive](index.md).
+**Authority:** [Approved Development Protocol v1.0](../DEVELOPMENT_PROTOCOL.md), and the [frozen contract archive](INDEX.md).
 **Planning:** [Miracle Development Project #3](https://github.com/users/spwn02/projects/3) — the only interactive project workspace.
 **Implementation tracking:** [Issue #45](https://github.com/spwn02/Miracle/issues/45), within [Workspace #29](https://github.com/spwn02/Miracle/issues/29).
 

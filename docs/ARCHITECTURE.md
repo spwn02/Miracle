@@ -41,7 +41,7 @@ Miracle may adopt any standardized facility through C++26 whenever it produces a
 
 The reference toolchain is developed in [`spwn02/clang-cxx26:cxx26`](https://github.com/spwn02/clang-cxx26/tree/cxx26) together with its matching libc++. The fork is synchronized with LLVM/Clang 22.1.8, and CI pins the immutable `cxx26-2026.10.27` snapshot. GCC compatibility is a deferred implementation concern and may trail `master`.
 
-The complete branch and compiler policy is defined in [`compiler-support.md`](compiler-support.md).
+The complete branch and compiler policy is defined in [`compiler-support.md`](COMPILER_SUPPORT.md).
 
 ## Influences and attribution
 

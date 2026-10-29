@@ -5,10 +5,10 @@ Miracle is a pre-1.0 C++26 foundation library maintained as an open-source proje
 ## Choose the right channel
 
 - **Library bug or regression:** Open a [Bug Report](https://github.com/spwn02/Miracle/issues/new?template=bug_report.yml). Include the affected revision, observed and expected behavior, and reproduction or isolation status.
-- **Compiler, standard library, modules or reflection:** Open a [Compiler / Toolchain Issue](https://github.com/spwn02/Miracle/issues/new?template=compiler_issue.yml). Include the compiler identity, Miracle revision, and available diagnostics. Consult [compiler support](docs/compiler-support.md) and [reference toolchain](docs/reference-toolchain.md) first.
+- **Compiler, standard library, modules or reflection:** Open a [Compiler / Toolchain Issue](https://github.com/spwn02/Miracle/issues/new?template=compiler_issue.yml). Include the compiler identity, Miracle revision, and available diagnostics. Consult [compiler support](docs/COMPILER_SUPPORT.md) and [reference toolchain](docs/REFERENCE_TOOLCHAIN.md) first.
 - **New API capability:** Open a [Feature Proposal](https://github.com/spwn02/Miracle/issues/new?template=feature_proposal.yml).
 - **General architecture design:** Open an [Architecture Proposal](https://github.com/spwn02/Miracle/issues/new?template=architecture_proposal.yml). This does not amend a locked contract.
-- **Explicit versioned contract amendment or revision:** Open a [Contract Revision Proposal](https://github.com/spwn02/Miracle/issues/new?template=contract_revision.yml) and follow the [contract revision protocol](docs/contracts/REVISION-PROTOCOL.md). The author must explicitly accept any normative change.
+- **Explicit versioned contract amendment or revision:** Open a [Contract Revision Proposal](https://github.com/spwn02/Miracle/issues/new?template=contract_revision.yml) and follow the [contract revision protocol](docs/contracts/REVISION_PROTOCOL.md). The author must explicitly accept any normative change.
 - **Build, CI, docs infrastructure, repository operations:** Open an [Infrastructure Request](https://github.com/spwn02/Miracle/issues/new?template=infrastructure_issue.yml).
 - **Contribution and development workflow:** Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Development Protocol](docs/DEVELOPMENT_PROTOCOL.md).
 - **Security vulnerabilities:** Follow [SECURITY.md](SECURITY.md). Do not disclose a vulnerability in a public issue.

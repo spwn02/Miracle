@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""G6 repository-source intake/navigation regression guard.
+"""Repository-source intake/navigation regression guard.
 
 No GitHub UI, Discussions category, repository admin setting or private
 reporting channel is actually exercised by this file.
@@ -20,7 +20,6 @@ FORMS = (
 )
 POLICIES = ("SECURITY.md", "CODE_OF_CONDUCT.md", "SUPPORT.md",
             "CONTRIBUTING.md", "ACCESSIBILITY.md")
-PAGES = ("G6-OPERATING-PLAN.md", "G6-PROGRESS.md")
 
 
 def scan_text(source: dict[str, str]) -> list[str]:
@@ -61,32 +60,23 @@ def scan_text(source: dict[str, str]) -> list[str]:
     require(".github/PULL_REQUEST_TEMPLATE.md", "Not run")
     require(".github/PULL_REQUEST_TEMPLATE.md", "Verification evidence")
 
-    for page in PAGES:
-        path = "docs/infrastructure/" + page
-        if not source.get(path):
-            errors.append(path + ": empty or missing")
-        require("docs/SUMMARY.md", "infrastructure/" + page)
-
     require(".github/ISSUE_TEMPLATE/contract_revision.yml", "Normative contract source")
     require(".github/ISSUE_TEMPLATE/contract_revision.yml", "Baseline version and Git revision")
-    require("docs/contracts/REVISION-PROTOCOL.md", "SOURCES.json")
-    require("docs/contracts/REVISION-PROTOCOL.md", "owner")
-    require("docs/SUMMARY.md", "contracts/REVISION-PROTOCOL.md")
-    require("SUPPORT.md", "docs/contracts/REVISION-PROTOCOL.md")
-    require("docs/infrastructure/G6-PROGRESS.md", "has_discussions: true")
-    require("docs/infrastructure/G6-OPERATING-PLAN.md", "Project #3")
+    require("docs/contracts/REVISION_PROTOCOL.md", "SOURCES.json")
+    require("docs/contracts/REVISION_PROTOCOL.md", "owner")
+    require("docs/SUMMARY.md", "contracts/REVISION_PROTOCOL.md")
+    require("SUPPORT.md", "docs/contracts/REVISION_PROTOCOL.md")
     return errors
 
 
 def sources_from_disk(root: Path) -> dict[str, str]:
     paths = [
         "README.md", "SUPPORT.md", "CONTRIBUTING.md", "SECURITY.md",
-        "docs/contracts/REVISION-PROTOCOL.md",
+        "docs/contracts/REVISION_PROTOCOL.md",
         "CODE_OF_CONDUCT.md", "ACCESSIBILITY.md", "docs/SUMMARY.md",
         ".github/PULL_REQUEST_TEMPLATE.md",
         ".github/ISSUE_TEMPLATE/config.yml",
         *(".github/ISSUE_TEMPLATE/" + name for name in FORMS),
-        *("docs/infrastructure/" + name for name in PAGES),
     ]
     found: dict[str, str] = {}
     for path in paths:
@@ -117,9 +107,7 @@ def negative_fixtures(base: dict[str, str]) -> list[str]:
         ("removed contributing Q&A route", "CONTRIBUTING.md",
          REPO + "/discussions/categories/q-a"),
         ("missing contract revision navigation", "docs/SUMMARY.md",
-         "contracts/REVISION-PROTOCOL.md"),
-        ("missing G6 documentation navigation", "docs/SUMMARY.md",
-         "infrastructure/G6-PROGRESS.md"),
+         "contracts/REVISION_PROTOCOL.md"),
     )
     for label, filename, needle in cases:
         source = base[filename]
@@ -143,7 +131,7 @@ def main() -> int:
         for error in errors:
             print("ERROR:", error, file=sys.stderr)
         return 1
-    print("PASS: G6 source routes, policies, issue/PR intake, mdBook navigation and 10 negative fixtures")
+    print("PASS: Community source routes, policies, issue/PR intake, mdBook navigation and 9 negative fixtures")
     print("NOTE: GitHub category click-through, real Q&A answers, live forms, private contact and Project #3 require independent checks.")
     return 0
 

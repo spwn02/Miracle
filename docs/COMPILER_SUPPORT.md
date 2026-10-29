@@ -51,7 +51,7 @@ The mutable development channel is `clang-cxx26:cxx26`. CI and releases never fo
 
 The historical `p2996-2026.08.23.2` snapshot remains immutable provenance for earlier releases, but it is no longer the current reference baseline.
 
-See [`reference-toolchain.md`](reference-toolchain.md) for the complete identity, provenance, selection, component-coherence, and snapshot contract.
+See [`reference-toolchain.md`](REFERENCE_TOOLCHAIN.md) for the complete identity, provenance, selection, component-coherence, and snapshot contract.
 
 ## GCC compatibility branch
 

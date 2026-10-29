@@ -9,7 +9,7 @@ body:
         Redact credentials, private data, and internal paths from any pasted output.
         For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
         Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
-        Read the [compiler support policy](https://github.com/spwn02/Miracle/blob/master/docs/compiler-support.md) and [reference-toolchain documentation](https://github.com/spwn02/Miracle/blob/master/docs/reference-toolchain.md). Missing C++26 facilities may reflect the toolchain rather than Miracle; maintainers will triage ownership.
+        Read the [compiler support policy](https://github.com/spwn02/Miracle/blob/master/docs/COMPILER_SUPPORT.md) and [reference-toolchain documentation](https://github.com/spwn02/Miracle/blob/master/docs/REFERENCE_TOOLCHAIN.md). Missing C++26 facilities may reflect the toolchain rather than Miracle; maintainers will triage ownership.
   - type: dropdown
     id: affected-line
     attributes:

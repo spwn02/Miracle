@@ -6,7 +6,7 @@ It is intentionally small at the dependency boundary and currently provides the 
 
 > **Status:** pre-1.0. The API is usable, but source and ABI compatibility are not guaranteed until the project reaches 1.0.
 
-**Documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/) — mdBook-powered, Rust-style reference and development guides built directly from the canonical [`docs/`](docs/index.md) tree.
+**Documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/) — mdBook-powered, Rust-style reference and development guides built directly from the canonical [`docs/`](docs/INDEX.md) tree.
 
 ### Philosophy
 
@@ -47,7 +47,7 @@ Miracle currently targets:
 
 `master` is intentionally free to adopt any standardized facility through C++26 as soon as it improves the design, even when mainstream compiler/library implementations have not caught up yet. GCC compatibility is developed separately and may trail `master`.
 
-See [`docs/compiler-support.md`](docs/compiler-support.md) for the compiler, branch, compatibility, and release policy.
+See [`docs/compiler-support.md`](docs/COMPILER_SUPPORT.md) for the compiler, branch, compatibility, and release policy.
 
 ### Quick start
 
@@ -171,13 +171,13 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 ## Design
 
-Browse [The Miracle Book](https://spwn02.github.io/Miracle/) (with a Rust Book-style sidebar, theme selector and search) or its [canonical documentation source](docs/index.md). The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) records deployment evidence and acceptance status.
+Browse [The Miracle Book](https://spwn02.github.io/Miracle/) (with a Rust Book-style sidebar, theme selector and search) or its [canonical documentation source](docs/INDEX.md). The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) records deployment evidence and acceptance status.
 
-See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
+See [`docs/architecture.md`](docs/ARCHITECTURE.md) for the product boundary and dependency rules.
 
-See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
+See [`docs/compiler-support.md`](docs/COMPILER_SUPPORT.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
 
-See [`docs/reference-toolchain.md`](docs/reference-toolchain.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
+See [`docs/reference-toolchain.md`](docs/REFERENCE_TOOLCHAIN.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
 
 See [Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md) for contract-driven development, milestone reviews and acceptance requirements.
 

@@ -45,7 +45,7 @@ ctest --preset tests
 
 Substitute the actual installation path. The environment setup must use a coherent compiler, standard library, ABI runtime, and module sources; a system Clang/libstdc++ combination is not a drop-in substitute.
 
-Read [compiler support](docs/compiler-support.md) and the [reference-toolchain contract](docs/reference-toolchain.md) before proposing compiler workarounds or changing the selected standard library.
+Read [compiler support](docs/COMPILER_SUPPORT.md) and the [reference-toolchain contract](docs/REFERENCE_TOOLCHAIN.md) before proposing compiler workarounds or changing the selected standard library.
 
 ### GCC compatibility
 
@@ -101,4 +101,4 @@ When opening a pull request:
 - Avoid public configuration macros where the build target can express the requirement.
 - Keep implementation and documentation changes consistent with the locked contracts.
 
-See [Miracle's architecture](docs/architecture.md) and [support policy](SUPPORT.md) for additional context.
+See [Miracle's architecture](docs/ARCHITECTURE.md) and [support policy](SUPPORT.md) for additional context.

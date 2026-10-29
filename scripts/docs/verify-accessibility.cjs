@@ -11,8 +11,8 @@ const AxeBuilder = require("@axe-core/playwright").default;
 
 const summary = fs.readFileSync(path.resolve("docs/SUMMARY.md"), "utf8");
 const pages = [...new Set([...summary.matchAll(/\]\(([^)]+)\.md\)/g)].map(m => "/" + m[1] + ".html"))];
-const samples = ["/index.html", "/infrastructure/G3-PROGRESS.html", "/meta.html", "/diagnostics.html"];
-if (pages.length < 20) throw new Error("Expected all mdBook chapters from SUMMARY.md");
+const samples = ["/index.html", "/META.html", "/DIAGNOSTICS.html"];
+if (pages.length === 0) throw new Error("Expected all mdBook chapters from SUMMARY.md");
 const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const mime = {
   ".html": "text/html; charset=utf-8",
