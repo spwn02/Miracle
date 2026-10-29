@@ -94,7 +94,7 @@ function(miracle_check_capabilities)
       "UTF-8 ordinary string literal execution encoding")
 
   file(
-    WRITE "${capability_source_dir}/import_std.cxx"
+    WRITE "${capability_source_dir}/import_std.cpp"
     [=[
 import std;
 
@@ -105,7 +105,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_core.cxx"
+    WRITE "${capability_source_dir}/reflection_core.cpp"
     [=[
 import std;
 
@@ -121,7 +121,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_queries.cxx"
+    WRITE "${capability_source_dir}/reflection_queries.cpp"
     [=[
 import std;
 
@@ -151,7 +151,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_annotations.cxx"
+    WRITE "${capability_source_dir}/reflection_annotations.cpp"
     [=[
 import std;
 
@@ -175,7 +175,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_static_storage.cxx"
+    WRITE "${capability_source_dir}/reflection_static_storage.cpp"
     [=[
 import std;
 
@@ -198,7 +198,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/expansion_statements.cxx"
+    WRITE "${capability_source_dir}/expansion_statements.cpp"
     [=[
 import std;
 
@@ -234,7 +234,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/std_vocabulary.cxx"
+    WRITE "${capability_source_dir}/std_vocabulary.cpp"
     [=[
 #include <expected>
 #include <flat_map>
@@ -258,7 +258,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/std_hive.cxx"
+    WRITE "${capability_source_dir}/std_hive.cpp"
     [=[
 #include <hive>
 
@@ -270,7 +270,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/contracts.cxx"
+    WRITE "${capability_source_dir}/contracts.cpp"
     [=[
 import std;
 
@@ -292,7 +292,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/debugging.cxx"
+    WRITE "${capability_source_dir}/debugging.cpp"
     [=[
 import std;
 
@@ -305,7 +305,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/stacktrace.cxx"
+    WRITE "${capability_source_dir}/stacktrace.cpp"
     [=[
 import std;
 
@@ -317,7 +317,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/literal_utf8.cxx"
+    WRITE "${capability_source_dir}/literal_utf8.cpp"
     [=[
 import std;
 
@@ -354,7 +354,7 @@ auto main() -> int {
     "endif()\n"
     "\n"
     "function(miracle_add_capability name)\n"
-    "  add_executable(capability_\${name} \"\${name}.cxx\")\n"
+    "  add_executable(capability_\${name} \"\${name}.cpp\")\n"
     "  set_target_properties(\n"
     "    capability_\${name}\n"
     "    PROPERTIES CXX_STANDARD 26\n"

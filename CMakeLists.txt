@@ -118,25 +118,25 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(MIRACLE_BUILD_PLATFORM Linux)
-  set(miracle_memory_source src/private/linux/Memory.cxx)
+  set(miracle_memory_source src/private/linux/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(MIRACLE_BUILD_PLATFORM Windows)
-  set(miracle_memory_source src/private/windows/Memory.cxx)
+  set(miracle_memory_source src/private/windows/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(MIRACLE_BUILD_PLATFORM MacOS)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
   set(MIRACLE_BUILD_PLATFORM IOS)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
   set(MIRACLE_BUILD_PLATFORM Android)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   set(MIRACLE_BUILD_PLATFORM FreeBSD)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 else()
   set(MIRACLE_BUILD_PLATFORM Unsupported)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 endif()
 
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" miracle_processor)
@@ -176,14 +176,14 @@ endif()
 
 set(miracle_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_generated_dir}")
-configure_file(src/public/Build.ixx.in "${miracle_generated_dir}/Build.ixx"
+configure_file(src/public/Build.cppm.in "${miracle_generated_dir}/Build.cppm"
                @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/Capabilities.ixx.in "${miracle_generated_dir}/Capabilities.ixx"
+  src/public/Capabilities.cppm.in "${miracle_generated_dir}/Capabilities.cppm"
   @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/FeatureConfiguration.ixx.in
-  "${miracle_generated_dir}/FeatureConfiguration.ixx" @ONLY NEWLINE_STYLE LF)
+  src/public/FeatureConfiguration.cppm.in
+  "${miracle_generated_dir}/FeatureConfiguration.cppm" @ONLY NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -207,45 +207,45 @@ target_sources(
          "${CMAKE_CURRENT_SOURCE_DIR}/src/public"
          "${miracle_generated_dir}"
          FILES
-         src/public/Miracle.ixx
-         src/public/Types.ixx
-         src/public/Range.ixx
-         src/public/Iter.ixx
-         src/public/StaticString.ixx
-         src/public/Feature.ixx
-         src/public/Diagnostic.ixx
-         src/public/Error.ixx
-         src/public/Panic.ixx
-         src/public/Fs.ixx
-         src/public/Memory.ixx
-         src/public/Profiling.ixx
-         src/public/Concepts.ixx
-         src/public/meta/Meta.ixx
-         src/public/meta/Types.ixx
-         src/public/meta/Storage.ixx
-         src/public/meta/Operators.ixx
-         src/public/meta/Names.ixx
-         src/public/meta/Predicates.ixx
-         src/public/meta/Access.ixx
-         src/public/meta/Cache.ixx
-         src/public/meta/Members.ixx
-         src/public/meta/Layout.ixx
-         src/public/meta/Annotations.ixx
-         src/public/meta/Values.ixx
-         src/public/meta/Substitution.ixx
-         src/public/meta/Generation.ixx
-         src/public/meta/TypeQueries.ixx
-         src/public/meta/TypeTransforms.ixx
-         src/public/meta/Reflect.ixx
-         src/public/meta/Query.ixx
-         src/public/meta/Bitflags.ixx
-         src/public/meta/Debug.ixx
-         "${miracle_generated_dir}/Build.ixx"
-         "${miracle_generated_dir}/Capabilities.ixx"
-         "${miracle_generated_dir}/FeatureConfiguration.ixx"
+         src/public/Miracle.cppm
+         src/public/Types.cppm
+         src/public/Range.cppm
+         src/public/Iter.cppm
+         src/public/StaticString.cppm
+         src/public/Feature.cppm
+         src/public/Diagnostic.cppm
+         src/public/Error.cppm
+         src/public/Panic.cppm
+         src/public/Fs.cppm
+         src/public/Memory.cppm
+         src/public/Profiling.cppm
+         src/public/Concepts.cppm
+         src/public/meta/Meta.cppm
+         src/public/meta/Types.cppm
+         src/public/meta/Storage.cppm
+         src/public/meta/Operators.cppm
+         src/public/meta/Names.cppm
+         src/public/meta/Predicates.cppm
+         src/public/meta/Access.cppm
+         src/public/meta/Cache.cppm
+         src/public/meta/Members.cppm
+         src/public/meta/Layout.cppm
+         src/public/meta/Annotations.cppm
+         src/public/meta/Values.cppm
+         src/public/meta/Substitution.cppm
+         src/public/meta/Generation.cppm
+         src/public/meta/TypeQueries.cppm
+         src/public/meta/TypeTransforms.cppm
+         src/public/meta/Reflect.cppm
+         src/public/meta/Query.cppm
+         src/public/meta/Bitflags.cppm
+         src/public/meta/Debug.cppm
+         "${miracle_generated_dir}/Build.cppm"
+         "${miracle_generated_dir}/Capabilities.cppm"
+         "${miracle_generated_dir}/FeatureConfiguration.cppm"
          ${MIRACLE_BUILD_FEATURE_SOURCES}
-  PRIVATE src/private/Diagnostic.cxx src/private/Error.cxx
-          src/private/Panic.cxx src/private/Fs.cxx src/private/Profiling.cxx
+  PRIVATE src/private/Diagnostic.cpp src/private/Error.cpp
+          src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp
           "${miracle_memory_source}")
 
 if(MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES)

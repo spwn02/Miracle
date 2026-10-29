@@ -76,7 +76,7 @@ auto main() -> int {
 }
 ```
 
-The same program lives in [`examples/quickstart.cxx`](examples/quickstart.cxx) and is built by the `tests` preset.
+The same program lives in [`examples/quickstart.cpp`](examples/quickstart.cpp) and is built by the `tests` preset.
 
 ### Public module
 
