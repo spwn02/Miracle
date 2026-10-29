@@ -617,7 +617,7 @@ miracle_register_build_feature(
   IMPLIES uuid
   REQUIRES_CAPABILITIES reflection_core
   GROUPS uuid.all
-  SOURCES src/public/UuidV7.ixx
+  SOURCES src/public/UuidV7.cppm
   PUBLIC_LIBRARIES ThirdParty::PublicApi
   PRIVATE_LIBRARIES ThirdParty::Implementation)
 ```
@@ -691,7 +691,7 @@ MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES
 MIRACLE_BUILD_FEATURE_PRIVATE_LIBRARIES
 ```
 
-The root build uses these values to generate `FeatureConfiguration.ixx`, add only selected heavy sources to Miracle's module file set, and link only dependency targets belonging to the resolved build-feature closure. Public/private dependency spelling is preserved so a facility can choose whether the target belongs to Miracle's consumer link interface.
+The root build uses these values to generate `FeatureConfiguration.cppm`, add only selected heavy sources to Miracle's module file set, and link only dependency targets belonging to the resolved build-feature closure. Public/private dependency spelling is preserved so a facility can choose whether the target belongs to Miracle's consumer link interface.
 
 ## Build-system portability
 
