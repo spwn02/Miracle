@@ -27,6 +27,8 @@
 - [Historical Phase Contracts](phases/index.md)
 - [Phase 5.4 — Frozen Contract (reading edition)](phases/phase-5.4-frozen-contract.md)
 - [Phase 5.6 — Execution Contract v1.0](phases/phase-5.6-execution-contract-v1.0.md)
+- [Module Migration Design](phases/DESIGN.md)
+- [Module Migration Implementation](phases/IMPLEMENTATION.md)
 
 # Infrastructure and Governance
 
