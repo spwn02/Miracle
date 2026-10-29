@@ -1,7 +1,7 @@
 # Miracle Development Protocol v1.0
 
 **Project:** Miracle — C++26 Core Library
-**Baseline:** v0.5.27, following completion of Phase 5
+**Baseline:** v0.5.28, following completion of Phase 5
 **Status:** APPROVED — ACTIVE
 **Approved:** October 16, 2026
 **Scope:** Phase 6 and subsequent development

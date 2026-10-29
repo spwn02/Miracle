@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only audit of Miracle v0.5.27's attached release provenance.
+"""Read-only audit of Miracle v0.5.28's attached release provenance.
 
 A historical G6 evidence check, not a new release or acceptance operation.
 """
@@ -14,14 +14,14 @@ import tempfile
 from typing import Any
 
 REPO = "spwn02/Miracle"
-TAG = "v0.5.27"
+TAG = "v0.5.28"
 ASSET = "release-metadata.json"
 SOURCE_SHA = "e1e5817c651d124d02930b86510e2b05fb7c7d2d"
 ASSET_SHA256 = "27a7a78fea1df167a79e6e7386bc62efe4faf257212d5fa09f8453248cba9635"
 ASSET_ID = 645665032
 EXPECTED = {
     "schemaVersion": 1,
-    "project": {"name": "Miracle", "version": "0.5.27", "tag": TAG},
+    "project": {"name": "Miracle", "version": "0.5.28", "tag": TAG},
     "source": {"repository": REPO, "branch": "master", "revision": SOURCE_SHA},
     "referenceToolchain": {
         "repository": "spwn02/clang-cxx26",

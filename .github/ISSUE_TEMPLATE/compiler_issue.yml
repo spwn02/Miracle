@@ -35,7 +35,7 @@ body:
     attributes:
       label: "Miracle revision"
       description: "Identify the relevant tag or commit SHA, or enter `Unknown`."
-      placeholder: "v0.5.27, SHA, or Unknown"
+      placeholder: "v0.5.28, SHA, or Unknown"
     validations:
       required: true
   - type: dropdown

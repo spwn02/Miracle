@@ -15,7 +15,7 @@ body:
     attributes:
       label: "Affected revision"
       description: "Identify a release tag, branch and commit, or enter `Unknown`."
-      placeholder: "v0.5.27, commit SHA, or Unknown"
+      placeholder: "v0.5.28, commit SHA, or Unknown"
     validations:
       required: true
   - type: dropdown

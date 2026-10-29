@@ -15,7 +15,7 @@ endif()
 
 project(
   Miracle
-  VERSION 0.5.27
+  VERSION 0.5.28
   DESCRIPTION "A modern C++26 foundation library."
   LANGUAGES CXX)
 
