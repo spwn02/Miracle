@@ -53,11 +53,11 @@ static_assert(runMiracle(std::make_index_sequence<repetitions>{}) == memberCount
   endif()
 
   configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/source.cxx.in"
-    "${miracle_meta_query_generated_dir}/${variant}-${size}.cxx" @ONLY)
+    "${CMAKE_CURRENT_SOURCE_DIR}/source.cpp.in"
+    "${miracle_meta_query_generated_dir}/${variant}-${size}.cpp" @ONLY)
 
   add_executable("MiracleMetaQuery${variant}${size}" EXCLUDE_FROM_ALL
-                 "${miracle_meta_query_generated_dir}/${variant}-${size}.cxx")
+                 "${miracle_meta_query_generated_dir}/${variant}-${size}.cpp")
   target_compile_features("MiracleMetaQuery${variant}${size}"
                           PRIVATE cxx_std_26)
   set_target_properties(
@@ -128,11 +128,11 @@ consteval auto selectedPath() -> std::size_t {
 ]=])
   endif()
 
-  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/control-flow.cxx.in"
-                 "${miracle_meta_query_control_dir}/${variant}.cxx" @ONLY)
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/control-flow.cpp.in"
+                 "${miracle_meta_query_control_dir}/${variant}.cpp" @ONLY)
 
   add_executable("MiracleMetaQueryControl${variant}" EXCLUDE_FROM_ALL
-                 "${miracle_meta_query_control_dir}/${variant}.cxx")
+                 "${miracle_meta_query_control_dir}/${variant}.cpp")
   target_compile_features("MiracleMetaQueryControl${variant}"
                           PRIVATE cxx_std_26)
   set_target_properties(

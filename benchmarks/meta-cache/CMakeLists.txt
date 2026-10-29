@@ -148,8 +148,8 @@ static_assert(run(std::make_index_sequence<repetitions>{}) == memberCount * repe
     message(FATAL_ERROR "Unknown Meta cache benchmark variant: ${variant}")
   endif()
 
-  set(source "${miracle_meta_cache_generated_dir}/${variant}-${size}.cxx")
-  configure_file(source.cxx.in "${source}" @ONLY NEWLINE_STYLE LF)
+  set(source "${miracle_meta_cache_generated_dir}/${variant}-${size}.cpp")
+  configure_file(source.cpp.in "${source}" @ONLY NEWLINE_STYLE LF)
 
   set(target "MiracleMetaCache${variant}${size}")
   add_executable("${target}" EXCLUDE_FROM_ALL "${source}")

@@ -99,7 +99,7 @@ def main() -> int:
         size_results: dict[str, Measurement] = {}
         results[size] = size_results
         for variant in VARIANTS:
-            source = f"{variant}-{size}.cxx"
+            source = f"{variant}-{size}.cpp"
             if source not in commands:
                 raise RuntimeError(f"compile command not found for {source}")
             measured = measure(commands[source], args.samples)

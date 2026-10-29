@@ -79,7 +79,7 @@ def target_name(variant: str, size: int) -> str:
 
 
 def source_name(variant: str, size: int) -> str:
-    return f"{variant}-{size}.cxx"
+    return f"{variant}-{size}.cpp"
 
 
 def measure(entry: dict[str, str], samples: int) -> Measurement:

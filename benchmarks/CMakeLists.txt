@@ -1,5 +1,5 @@
-add_executable(MiracleIterBenchmark iter.cxx)
-add_executable(MiracleIterStress iter-stress.cxx)
+add_executable(MiracleIterBenchmark iter.cpp)
+add_executable(MiracleIterStress iter-stress.cpp)
 
 foreach(target IN ITEMS MiracleIterBenchmark MiracleIterStress)
   target_compile_features(${target} PRIVATE cxx_std_26)
