@@ -1,0 +1,122 @@
+name: One-Time Final Chore and Infra Branch Cleanup
+
+on:
+  issue_comment:
+    types: [created]
+permissions: {}
+concurrency:
+  group: miracle-one-time-final-refs-20261029
+  cancel-in-progress: false
+jobs:
+  prune:
+    if: >-
+      github.repository == 'spwn02/Miracle' &&
+      github.actor == 'spwn02' &&
+      github.event_name == 'issue_comment' &&
+      github.event.issue.number == 69 &&
+      github.event.issue.pull_request == null &&
+      github.event.comment.body == '/miracle-project final-prune-chore-infra-20261029'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: read
+      issues: read
+    steps:
+      - name: Checkout protected master without stored credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: master
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Verify exact ref dispositions, retain recovery tags, delete only pinned refs and retire self
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,subprocess,sys,urllib.parse
+          repo='spwn02/Miracle'
+          wf='.github/workflows/one-time-final-branch-prune.yml'
+          fixed=[('chore/final-remove-obsolete-importer','88eccf42663b7009d1be6cba03fdc79bafa6cdfb',86,True),('infra/living-development-workspace','2b2eac4f4517bcf238d0bb6f7b2c7024ebe8ae60',30,False)]
+          self_name='chore/one-time-delete-remaining-refs-20261029'
+          folder=pathlib.Path('final-branch-prune-evidence');folder.mkdir(exist_ok=True)
+          state={'stage':'start','targets':[],'recovery_tags':[],'deleted':[],'docs_changed':False}
+          def save(): (folder/'journal.json').write_text(json.dumps(state,indent=2)+'\n')
+          def command(args,not_found=False):
+           p=subprocess.run(args,capture_output=True,text=True)
+           if p.returncode:
+            if not_found and 'HTTP 404' in p.stderr:return None
+            raise RuntimeError('Command failed '+str(args[:4])+': '+p.stderr[-450:])
+           return p.stdout
+          def api(route,method='GET',fields=None,not_found=False):
+           args=['gh','api','-X',method,'repos/'+repo+'/'+route]
+           for k,v in (fields or {}).items():args+=['-f',k+'='+str(v)]
+           x=command(args,not_found);return json.loads(x) if x else None
+          def branch(name):return api('branches/'+urllib.parse.quote(name,safe='/'),not_found=True)
+          def tag(name):return api('git/ref/tags/'+name,not_found=True)
+          def check_target(name,sha,num,merged,opened):
+           b=branch(name);p=api('pulls/'+str(num));h=p.get('head') or {}
+           if not b or b['name']!=name or b.get('protected') or b['commit']['sha']!=sha:raise RuntimeError('Ref/protection drift '+name)
+           if h.get('sha')!=sha or h.get('ref')!=name or (h.get('repo') or {}).get('full_name')!=repo:raise RuntimeError('PR head identity drift '+name)
+           if p['state']!='closed' or bool(p.get('merged_at'))!=merged:raise RuntimeError('PR merge disposition drift '+name)
+           if any((x.get('head') or {}).get('ref')==name for x in opened):raise RuntimeError('Open PR depends on '+name)
+          try:
+           opened=api('pulls?state=open&per_page=100')
+           if len(opened)>=100:raise RuntimeError('Open PR pagination exceeds guard')
+           for item in fixed:check_target(*item,opened)
+           comments=api('issues/30/comments?per_page=100')
+           if not any((c.get('user') or {}).get('login')=='spwn02' and 'explicitly out of scope' in c.get('body','') for c in comments):raise RuntimeError('Owner rejection of whiteboard PR #30 not verified')
+           closed=api('pulls?state=closed&per_page=100')
+           own=[p for p in closed if (p.get('head') or {}).get('ref')==self_name and p.get('merged_at')]
+           if len(own)!=1:raise RuntimeError('Cleanup PR not uniquely merged')
+           self_sha=own[0]['head']['sha']
+           targets=fixed+[(self_name,self_sha,own[0]['number'],True)]
+           active=api('branches?per_page=100')
+           names={b['name'] for b in active}
+           if names!={'master','gcc',*[x[0] for x in targets]}:raise RuntimeError('Unexpected repository branches: '+str(names))
+           for name in ('master','gcc'):
+            if not branch(name).get('protected'):raise RuntimeError('Protected branch not protected '+name)
+           for item in targets:check_target(*item,opened)
+           state['targets']=[{'name':n,'sha':s,'pr':p,'merged':m} for n,s,p,m in targets]
+           state['stage']='preflight';save()
+           for i,(n,s,p,m) in enumerate(targets,1):
+            label='github-cleanup-20261029-final/'+str(i).zfill(2)
+            t=tag(label)
+            if not t:api('git/refs','POST',{'ref':'refs/tags/'+label,'sha':s});t=tag(label)
+            if not t or t['object']['sha']!=s:raise RuntimeError('Recovery tag mismatch '+n)
+            state['recovery_tags'].append({'tag':label,'sha':s,'source':n});save()
+           state['stage']='all_recovery_tags_verified';save()
+           command(['gh','auth','setup-git'])
+           for i,item in enumerate(targets,1):
+            n,s,p,m=item
+            opened=api('pulls?state=open&per_page=100')
+            if len(opened)>=100:raise RuntimeError('Open PR list drift')
+            check_target(*item,opened)
+            ref='refs/heads/'+n
+            command(['git','push','--porcelain','--force-with-lease='+ref+':'+s,'https://github.com/'+repo+'.git',':'+ref])
+            if branch(n):raise RuntimeError('Deleted branch still exists '+n)
+            if tag('github-cleanup-20261029-final/'+str(i).zfill(2))['object']['sha']!=s:raise RuntimeError('Recovery tag changed '+n)
+            state['deleted'].append({'name':n,'sha':s});state['stage']='deleting';save()
+            print('DELETED',i,n,flush=True)
+           remaining=api('branches?per_page=100')
+           if {b['name'] for b in remaining}!={'master','gcc'}:raise RuntimeError('Unexpected surviving refs')
+           state['remaining']=[b['name'] for b in remaining];state['stage']='branches_verified';save()
+           live=api('contents/'+wf)
+           if live.get('name')!='one-time-final-branch-prune.yml' or live.get('type')!='file':raise RuntimeError('Self-delete scope drift')
+           response=api('contents/'+wf,'DELETE',{'message':'chore(github): retire completed branch cleanup workflow','sha':live['sha'],'branch':'master'})
+           if not (response.get('commit') or {}).get('sha'):raise RuntimeError('Self-deletion did not return commit')
+           state['workflow_removed_commit']=response['commit']['sha']
+           state['stage']='verified_complete';save()
+           print('PASS: 3 refs deleted, 3 recovery tags, 2 protected branches retained, temporary workflow removed',flush=True)
+          except Exception as e:
+           save();print('STOP: '+str(e),file=sys.stderr,flush=True);raise SystemExit(1)
+          PY
+      - name: Upload full preflight and deletion journal
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: miracle-final-branch-prune-${{ github.run_id }}
+          path: final-branch-prune-evidence/
+          retention-days: 90
+          if-no-files-found: warn
