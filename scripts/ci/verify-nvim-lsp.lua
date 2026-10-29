@@ -4,7 +4,7 @@
 -- This does not replace testing a real interactive editor session.
 local function run()
   local root = assert(vim.uv.cwd(), "missing workspace directory")
-  local target = root .. "/src/private/Error.cxx"
+  local target = root .. "/src/private/Error.cpp"
   local compile_db = root .. "/build/tests/compile_commands.json"
   local compiler = assert(os.getenv("CXX26_TOOLCHAIN_ROOT"), "reference toolchain is not selected")
     .. "/bin/clang++"

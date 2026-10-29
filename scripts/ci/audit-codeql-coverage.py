@@ -13,7 +13,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-EXTENSIONS = {".cxx", ".ixx", ".cppm"}
+EXTENSIONS = {".cppm", ".cpp"}
 ROOTS = ("src/", "tests/", "examples/", "benchmarks/")
 REQUIRED = {
     "Configuration", "Language", "File Path", "Successfully Extracted",
@@ -71,8 +71,8 @@ def evaluate(inventory: list[str], rows: list[dict[str, str]]) -> dict:
         extracted[path] = value
         reasons[path] = row["Failure Reason"]
 
-    modules = [path for path in inventory if Path(path).suffix in {".ixx", ".cppm"}]
-    conventional = [path for path in inventory if Path(path).suffix == ".cxx"]
+    modules = [path for path in inventory if Path(path).suffix in {".cppm", ".cppm"}]
+    conventional = [path for path in inventory if Path(path).suffix == ".cpp"]
 
     def group(paths: list[str]) -> dict:
         return {
@@ -110,8 +110,8 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 
 def self_test() -> None:
     files = [
-        "src/private/Test.cxx",
-        "src/public/Miracle.ixx",
+        "src/private/Test.cpp",
+        "src/public/Miracle.cppm",
         "src/public/meta/Reflect.cppm",
     ]
     rows = [
@@ -128,8 +128,8 @@ def self_test() -> None:
     assert report["moduleInterfaces"]["extracted"] == 0
     assert len(report["moduleInterfaces"]["unextracted"]) == 2
     assert report["semanticCxx26ModulesVerified"] is False
-    assert match_path("Different.ixx", set(files)) is None
-    assert match_path("src/public/Miracle.ixx", set(files)) == files[1]
+    assert match_path("Different.cppm", set(files)) is None
+    assert match_path("src/public/Miracle.cppm", set(files)) == files[1]
     assert evaluate(files, rows[:-1])["moduleInterfaces"]["notReported"] == [files[2]]
     try:
         evaluate(files, rows + [rows[0]])
@@ -143,7 +143,7 @@ def self_test() -> None:
         assert "Unrecognized" in str(error)
     else:
         raise AssertionError("Invalid extracted flag accepted")
-    print("PASS: CodeQL extraction audit, .ixx/.cppm paths and negative fixtures")
+    print("PASS: CodeQL extraction audit, .cppm/.cppm paths and negative fixtures")
 
 
 def main() -> int:

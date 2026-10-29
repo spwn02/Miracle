@@ -2,7 +2,7 @@
 # Runs inside the G5 developer image, from a Miracle repository checkout.
 set -euo pipefail
 
-if [[ $# -gt 1 || ( $# -eq 1 && "$1" != "--smoke" ) ]]; then
+if [[ $# -gt 1 || ($# -eq 1 && "$1" != "--smoke") ]]; then
   echo "Usage: bash scripts/ci/verify-container.sh [--smoke]" >&2
   exit 2
 fi
@@ -33,9 +33,9 @@ python3 -c 'import subprocess; v = subprocess.check_output(["nvim", "--version"]
 # the much heavier CMake module build starts.
 probe_dir="$(mktemp -d)"
 trap 'rm -rf "$probe_dir"' EXIT
-printf 'int main() { return 0; }\n' > "$probe_dir/main.cxx"
+printf 'int main() { return 0; }\n' >"$probe_dir/main.cpp"
 "$CXX" -std=c++26 -stdlib=libc++ -fuse-ld=lld \
-  "$probe_dir/main.cxx" -o "$probe_dir/link-probe"
+  "$probe_dir/main.cpp" -o "$probe_dir/link-probe"
 "$probe_dir/link-probe"
 if [[ "${1:-}" == "--smoke" ]]; then
   echo "PASS: reference C++26 container toolchain smoke test"
