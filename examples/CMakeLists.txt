@@ -1,4 +1,4 @@
-add_executable(MiracleQuickstart quickstart.cxx)
+add_executable(MiracleQuickstart quickstart.cpp)
 target_compile_features(MiracleQuickstart PRIVATE cxx_std_26)
 set_target_properties(
   MiracleQuickstart
@@ -8,7 +8,7 @@ set_target_properties(
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleQuickstart PRIVATE Miracle::Miracle)
 
-add_executable(MiracleDiagnosticExample diagnostic.cxx)
+add_executable(MiracleDiagnosticExample diagnostic.cpp)
 target_compile_features(MiracleDiagnosticExample PRIVATE cxx_std_26)
 set_target_properties(
   MiracleDiagnosticExample
@@ -18,7 +18,7 @@ set_target_properties(
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleDiagnosticExample PRIVATE Miracle::Miracle)
 
-add_executable(MiracleIterExample iter.cxx)
+add_executable(MiracleIterExample iter.cpp)
 target_compile_features(MiracleIterExample PRIVATE cxx_std_26)
 set_target_properties(
   MiracleIterExample
@@ -28,7 +28,7 @@ set_target_properties(
              CXX_MODULE_STD ON)
 target_link_libraries(MiracleIterExample PRIVATE Miracle::Miracle)
 
-add_executable(MiracleMetaExample meta.cxx)
+add_executable(MiracleMetaExample meta.cpp)
 target_compile_features(MiracleMetaExample PRIVATE cxx_std_26)
 set_target_properties(
   MiracleMetaExample
