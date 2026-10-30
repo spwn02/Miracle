@@ -35,7 +35,7 @@ auto File::close() noexcept -> void {
     file_.close();
 }
 
-auto File::deleteFile() noexcept -> Result<void> {
+auto File::deleteFile() -> Result<void> {
   if (ok())
     file_.close();
 

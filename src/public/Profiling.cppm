@@ -2,7 +2,8 @@ export module Miracle:Profiling;
 
 import std;
 import :Debug;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 
 export namespace Miracle::profiling {
 

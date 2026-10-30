@@ -1,6 +1,7 @@
 export module Miracle;
 
-export import :Types;
+export import Miracle.Numeric;
+export import Miracle.Types;
 export import Miracle.Range;
 export import :Iter;
 export import Miracle.StaticString;

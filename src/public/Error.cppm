@@ -1,7 +1,7 @@
 export module Miracle:Error;
 
 import std;
-import :Types;
+import Miracle.Types;
 import :Diagnostic;
 
 namespace Miracle {

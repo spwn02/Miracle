@@ -1,7 +1,7 @@
 export module Miracle:Fs;
 
 import std;
-import :Types;
+import Miracle.Types;
 import :Error;
 
 export namespace Miracle::fs {
@@ -28,7 +28,7 @@ public:
   auto write(StringView buf) -> Result<void>;
 
   auto close() noexcept -> void;
-  auto deleteFile() noexcept -> Result<void>;
+  auto deleteFile() -> Result<void>;
   [[nodiscard]] auto ok() const noexcept -> bool;
 
   [[nodiscard]] explicit operator bool() const {

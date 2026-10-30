@@ -1,7 +1,8 @@
 export module Miracle:Diagnostic;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 import Miracle.StaticString;
 
 export namespace Miracle {

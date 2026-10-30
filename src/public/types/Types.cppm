@@ -1,6 +1,6 @@
-export module Miracle:Types;
+export module Miracle.Types;
 
-export import Miracle.Numeric;
+import Miracle.Numeric;
 import std;
 
 export namespace Miracle {

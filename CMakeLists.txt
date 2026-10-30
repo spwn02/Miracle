@@ -211,7 +211,7 @@ target_sources(
          src/public/numeric/Numeric.cppm
          src/public/static_string/StaticString.cppm
          src/public/range/Range.cppm
-         src/public/Types.cppm
+         src/public/types/Types.cppm
          src/public/Iter.cppm
          src/public/Feature.cppm
          src/public/Diagnostic.cppm

@@ -1,7 +1,8 @@
 export module Miracle:Memory;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 
 export namespace Miracle::memory {
 

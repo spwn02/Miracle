@@ -1,7 +1,8 @@
 export module Miracle:Debug;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 import Miracle.Meta;
 import Miracle.StaticString;
 import :Concepts;

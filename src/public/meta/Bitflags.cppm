@@ -1,7 +1,8 @@
 export module Miracle:Bitflags;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 import Miracle.Meta;
 
 namespace Miracle {

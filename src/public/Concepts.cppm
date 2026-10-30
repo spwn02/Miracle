@@ -1,6 +1,7 @@
 export module Miracle:Concepts;
 
-import :Types;
+import std;
+import Miracle.Types;
 
 export namespace Miracle {
 

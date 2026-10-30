@@ -1,7 +1,7 @@
 module Miracle;
 
 import std;
-import :Types;
+import Miracle.Types;
 import :Diagnostic;
 import :Error;
 

@@ -1,7 +1,8 @@
 export module Miracle:Iter;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 import Miracle.Range;
 
 namespace Miracle {
