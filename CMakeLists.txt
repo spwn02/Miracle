@@ -209,10 +209,10 @@ target_sources(
          FILES
          src/public/Miracle.cppm
          src/public/numeric/Numeric.cppm
+         src/public/static_string/StaticString.cppm
          src/public/Types.cppm
          src/public/Range.cppm
          src/public/Iter.cppm
-         src/public/StaticString.cppm
          src/public/Feature.cppm
          src/public/Diagnostic.cppm
          src/public/Error.cppm
