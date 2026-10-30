@@ -1,9 +1,10 @@
-export module Miracle:Feature;
+export module Miracle.Feature;
 
 import std;
-import :Types;
+import Miracle.Numeric;
+import Miracle.Types;
 import Miracle.StaticString;
-import :Capabilities;
+import Miracle.Capabilities;
 
 export namespace Miracle::feature {
 

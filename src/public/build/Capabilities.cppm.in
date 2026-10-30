@@ -1,4 +1,4 @@
-export module Miracle:Capabilities;
+export module Miracle.Capabilities;
 
 /// Compile-time facts established by Miracle's executable toolchain probes.
 export namespace Miracle::capabilities {

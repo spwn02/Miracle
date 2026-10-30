@@ -176,14 +176,16 @@ endif()
 
 set(miracle_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_generated_dir}")
-configure_file(src/public/Build.cppm.in "${miracle_generated_dir}/Build.cppm"
-               @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/Capabilities.cppm.in "${miracle_generated_dir}/Capabilities.cppm"
+  src/public/build/Build.cppm.in "${miracle_generated_dir}/build/Build.cppm"
   @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/FeatureConfiguration.cppm.in
-  "${miracle_generated_dir}/FeatureConfiguration.cppm" @ONLY NEWLINE_STYLE LF)
+  src/public/build/Capabilities.cppm.in
+  "${miracle_generated_dir}/build/Capabilities.cppm" @ONLY NEWLINE_STYLE LF)
+configure_file(
+  src/public/build/FeatureConfiguration.cppm.in
+  "${miracle_generated_dir}/build/FeatureConfiguration.cppm" @ONLY
+  NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -210,10 +212,13 @@ target_sources(
          src/public/Miracle.cppm
          src/public/numeric/Numeric.cppm
          src/public/static_string/StaticString.cppm
+         "${miracle_generated_dir}/build/Build.cppm"
+         "${miracle_generated_dir}/build/Capabilities.cppm"
+         "${miracle_generated_dir}/build/FeatureConfiguration.cppm"
          src/public/range/Range.cppm
          src/public/types/Types.cppm
+         src/public/feature/Feature.cppm
          src/public/Iter.cppm
-         src/public/Feature.cppm
          src/public/Diagnostic.cppm
          src/public/Error.cppm
          src/public/Panic.cppm
@@ -241,9 +246,6 @@ target_sources(
          src/public/meta/Query.cppm
          src/public/meta/Bitflags.cppm
          src/public/meta/Debug.cppm
-         "${miracle_generated_dir}/Build.cppm"
-         "${miracle_generated_dir}/Capabilities.cppm"
-         "${miracle_generated_dir}/FeatureConfiguration.cppm"
          ${MIRACLE_BUILD_FEATURE_SOURCES}
   PRIVATE src/private/Diagnostic.cpp src/private/Error.cpp
           src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp
