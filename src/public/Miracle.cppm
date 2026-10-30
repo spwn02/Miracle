@@ -3,7 +3,7 @@ export module Miracle;
 export import :Types;
 export import :Range;
 export import :Iter;
-export import :StaticString;
+export import Miracle.StaticString;
 export import :Feature;
 export import :Diagnostic;
 export import :Error;

@@ -1,14 +1,14 @@
-export module Miracle:StaticString;
+export module Miracle.StaticString;
 
 import std;
-import :Types;
+import Miracle.Numeric;
 
 // NOLINTBEGIN(readability-identifier-naming, cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 namespace Miracle {
 
 struct StaticStringAccess;
 
-};
+}; // namespace Miracle
 
 export namespace Miracle {
 
@@ -805,7 +805,7 @@ constexpr auto appendArgument(BasicStaticString<char, Capacity> &result, char va
 /// Appends `true` or `false` without routing through runtime formatting.
 template <usize Capacity>
 constexpr auto appendArgument(BasicStaticString<char, Capacity> &result, bool value) noexcept -> void {
-  StaticStringAccess::append(result, StringView{value ? "true" : "false"});
+  StaticStringAccess::append(result, std::string_view{value ? "true" : "false"});
 }
 
 /// Appends an integral value in decimal form, including the minimum signed value without overflowing while
@@ -862,7 +862,7 @@ constexpr auto appendArgument(BasicStaticString<char, Capacity> &result,
 template <usize Capacity, usize N>
 constexpr auto appendArgument(BasicStaticString<char, Capacity> &result, const char (&value)[N]) noexcept
     -> void {
-  StaticStringAccess::append(result, StringView{value, N == 0 ? 0 : N - 1});
+  StaticStringAccess::append(result, std::string_view{value, N == 0 ? 0 : N - 1});
 }
 
 /// Selects the requested heterogeneous tuple argument at compile time while the format parser advances

@@ -2,7 +2,7 @@ export module Miracle:Feature;
 
 import std;
 import :Types;
-import :StaticString;
+import Miracle.StaticString;
 import :Capabilities;
 
 export namespace Miracle::feature {

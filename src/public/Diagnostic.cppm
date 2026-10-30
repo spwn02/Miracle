@@ -2,7 +2,7 @@ export module Miracle:Diagnostic;
 
 import std;
 import :Types;
-import :StaticString;
+import Miracle.StaticString;
 
 export namespace Miracle {
 

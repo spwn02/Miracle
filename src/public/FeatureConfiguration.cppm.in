@@ -1,7 +1,7 @@
 export module Miracle:FeatureConfiguration;
 
 import :Feature;
-import :StaticString;
+import Miracle.StaticString;
 
 export namespace Miracle::feature {
 

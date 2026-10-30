@@ -3,7 +3,7 @@ export module Miracle:Debug;
 import std;
 import :Types;
 import Miracle.Meta;
-import :StaticString;
+import Miracle.StaticString;
 import :Concepts;
 
 // NOLINTBEGIN(readability-identifier-naming, bugprone-reserved-identifier)
