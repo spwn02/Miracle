@@ -2,7 +2,7 @@ export module Miracle:Iter;
 
 import std;
 import :Types;
-import :Range;
+import Miracle.Range;
 
 namespace Miracle {
 

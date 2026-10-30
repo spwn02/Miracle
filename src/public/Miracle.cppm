@@ -1,7 +1,7 @@
 export module Miracle;
 
 export import :Types;
-export import :Range;
+export import Miracle.Range;
 export import :Iter;
 export import Miracle.StaticString;
 export import :Feature;

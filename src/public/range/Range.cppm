@@ -1,21 +1,20 @@
-export module Miracle:Range;
+export module Miracle.Range;
 
 import std;
-import :Types;
+import Miracle.Numeric;
 
-namespace Miracle {
+export namespace Miracle {
 
+/// Unqualified non-bool integral type supported by Range's endpoints and unit-stride iteration.
 template <class T>
 concept RangeElement =
     std::integral<T> and std::same_as<T, std::remove_cv_t<T>> and not std::same_as<T, bool>;
 
+/// Range element types with matching signedness, allowing lossless common-type endpoint deduction.
+/// Mixed signed and unsigned endpoints require an explicit conversion by the caller.
 template <class Left, class Right>
 concept CompatibleRangeEndpoints =
     RangeElement<Left> and RangeElement<Right> and (std::is_signed_v<Left> == std::is_signed_v<Right>);
-
-} // namespace Miracle
-
-export namespace Miracle {
 
 /// Finite half-open unit-stride integral interval `[start, stop)`.
 ///

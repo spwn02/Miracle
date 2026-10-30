@@ -210,8 +210,8 @@ target_sources(
          src/public/Miracle.cppm
          src/public/numeric/Numeric.cppm
          src/public/static_string/StaticString.cppm
+         src/public/range/Range.cppm
          src/public/Types.cppm
-         src/public/Range.cppm
          src/public/Iter.cppm
          src/public/Feature.cppm
          src/public/Diagnostic.cppm
