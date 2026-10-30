@@ -3,7 +3,6 @@ export module Miracle.Feature:Descriptor;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Types;
 import Miracle.Capabilities;
 
 import :Types;
@@ -137,7 +136,7 @@ struct CapabilitySet final {
 ///
 /// Capability diagnostics use names rather than implementation-dependent numberic ordinals so failures remain
 /// actionable when the enum vocabulary grows.
-[[nodiscard]] constexpr auto capabilityName(Capability capability) noexcept -> StringView {
+[[nodiscard]] constexpr auto capabilityName(Capability capability) noexcept -> std::string_view {
   switch (capability) {
     case Capability::ImportStd: return "import_std";
     case Capability::ReflectionCore: return "reflection_core";
@@ -354,7 +353,7 @@ struct Descriptor final {
 private:
   /// Cached required dependency names in declaration order.
   static constexpr auto dependencyValues = [] -> auto {
-    std::array<StringView, optionCount<OptionKind::Dependency, Options...>> result{};
+    std::array<std::string_view, optionCount<OptionKind::Dependency, Options...>> result{};
     usize index{};
     Miracle::feature::forEachOption<OptionKind::Dependency, Options...>(
         [&](auto option) -> void { result[index++] = option.target.view(); });
@@ -363,7 +362,7 @@ private:
 
   /// Cached optional dependency names in declaration order.
   static constexpr auto optionalDependencyValues = [] -> auto {
-    std::array<StringView, optionCount<OptionKind::OptionalDependency, Options...>> result{};
+    std::array<std::string_view, optionCount<OptionKind::OptionalDependency, Options...>> result{};
     usize index{};
     Miracle::feature::forEachOption<OptionKind::OptionalDependency, Options...>(
         [&](auto option) -> void { result[index++] = option.target.view(); });
@@ -372,7 +371,7 @@ private:
 
   /// Cached conflict names in declaration order.
   static constexpr auto conflictValues = [] -> auto {
-    std::array<StringView, optionCount<OptionKind::Conflict, Options...>> result{};
+    std::array<std::string_view, optionCount<OptionKind::Conflict, Options...>> result{};
     usize index{};
     Miracle::feature::forEachOption<OptionKind::Conflict, Options...>(
         [&](auto option) -> void { result[index++] = option.target.view(); });
@@ -381,7 +380,7 @@ private:
 
   /// Cached implied feature names in declaration order.
   static constexpr auto implicationValues = [] -> auto {
-    std::array<StringView, optionCount<OptionKind::Implication, Options...>> result{};
+    std::array<std::string_view, optionCount<OptionKind::Implication, Options...>> result{};
     usize index{};
     Miracle::feature::forEachOption<OptionKind::Implication, Options...>(
         [&](auto option) -> void { result[index++] = option.target.view(); });
@@ -399,7 +398,7 @@ private:
 
   /// Cached descriptive group memberships in declaration order.
   static constexpr auto groupValues = [] -> auto {
-    std::array<StringView, optionCount<OptionKind::Group, Options...>> result{};
+    std::array<std::string_view, optionCount<OptionKind::Group, Options...>> result{};
     usize index{};
     Miracle::feature::forEachOption<OptionKind::Group, Options...>(
         [&](auto option) -> void { result[index++] = option.target.view(); });
@@ -449,7 +448,7 @@ public:
 /// Defines a structural feature descriptor with concise option spelling.
 template <BasicStaticString Name, class... Options>
   requires(DescriptorOption<std::remove_cvref_t<Options>> and ...)
-[[nodiscard]] consteval auto define(Options... /*unused*/)
+[[nodiscard]] consteval auto define([[maybe_unused]] Options... /*unused*/)
     -> Descriptor<Name, std::remove_cvref_t<Options>...> {
   return {};
 }
@@ -457,8 +456,8 @@ template <BasicStaticString Name, class... Options>
 /// Primitive bootstrap concept implemented without dependending on the later Structural Trait engine.
 template <class T>
 concept Feature = requires {
-  { T::name.view() } -> std::same_as<StringView>;
-  { T::description.view() } -> std::same_as<StringView>;
+  { T::name.view() } -> std::same_as<std::string_view>;
+  { T::description.view() } -> std::same_as<std::string_view>;
   { T::version } -> std::convertible_to<Version>;
   { T::featureKind } -> std::convertible_to<FeatureKind>;
   { T::enabledByDefault } -> std::convertible_to<bool>;
@@ -521,7 +520,7 @@ struct Group final {
 
   /// Returns member feature names in declaration order.
   [[nodiscard]] static consteval auto members() {
-    return std::array<StringView, sizeof...(Members)>{Members.name.view()...};
+    return std::array<std::string_view, sizeof...(Members)>{Members.name.view()...};
   }
 };
 
@@ -532,7 +531,7 @@ inline constexpr Group<Name, Members...> group{};
 /// Primitive concept recognized by catalog resolution as a feature-group selector.
 template <class T>
 concept FeatureGroup = requires {
-  { T::name.view() } -> std::same_as<StringView>;
+  { T::name.view() } -> std::same_as<std::string_view>;
   { T::members() };
 } and not Feature<T>;
 

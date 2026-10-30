@@ -3,7 +3,6 @@ export module Miracle.Feature:Requirement;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Types;
 
 import :Descriptor;
 
@@ -22,7 +21,7 @@ struct RequirementValues<> final {
   constexpr RequirementValues() noexcept = default;
 
   /// Empty storage never contains a requested feature name.
-  [[nodiscard]] constexpr auto contains(StringView /*unused*/) const noexcept -> bool { // NOLINT
+  [[nodiscard]] constexpr auto contains([[maybe_unused]] std::string_view) const noexcept -> bool { // NOLINT
     return false;
   }
 };
@@ -45,7 +44,7 @@ struct RequirementValues<Head, Tail...> final {
   }
 
   /// Returns whether this recursive structural storage contains `name`.
-  [[nodiscard]] constexpr auto contains(StringView name) const noexcept -> bool {
+  [[nodiscard]] constexpr auto contains(std::string_view name) const noexcept -> bool {
     return Head::name.view() == name or tail.contains(name);
   }
 };
@@ -65,7 +64,7 @@ struct Requirement final {
   RequirementValues<Required...> features{};
 
   /// Returns whether a feature name belongs to this requirement.
-  [[nodiscard]] constexpr auto contains(StringView name) const noexcept -> bool {
+  [[nodiscard]] constexpr auto contains(std::string_view name) const noexcept -> bool {
     return features.contains(name);
   }
 };

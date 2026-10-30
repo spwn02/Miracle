@@ -3,7 +3,6 @@ export module Miracle.Feature:Catalog;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Types;
 
 import :Set;
 
@@ -44,7 +43,7 @@ struct Catalog final {
   }
 
   /// Returns the catalog index for `name`, or `npos` when absent.
-  [[nodiscard]] static constexpr auto findIndex(StringView name) noexcept -> usize {
+  [[nodiscard]] static constexpr auto findIndex(std::string_view name) noexcept -> usize {
     for (usize index{}; index < featureCount; ++index) {
       if (catalogNames[index] == name)
         return index;
@@ -53,13 +52,13 @@ struct Catalog final {
   }
 
   /// Returns the descriptor name at `index`; invalid indices yield an empty view.
-  [[nodiscard]] static constexpr auto nameAt(usize target) noexcept -> StringView {
-    return target < featureCount ? catalogNames[target] : StringView{};
+  [[nodiscard]] static constexpr auto nameAt(usize target) noexcept -> std::string_view {
+    return target < featureCount ? catalogNames[target] : std::string_view{};
   }
 
 private:
   /// Stable catalog names cached once for lookup, diagnostics and fingerprints.
-  static constexpr std::array<StringView, featureCount> catalogNames{Features.name.view()...};
+  static constexpr std::array<std::string_view, featureCount> catalogNames{Features.name.view()...};
 
   /// Build/semantic kind cached once for each catalog slot.
   static constexpr std::array<FeatureKind, featureCount> featureKinds{
@@ -111,7 +110,7 @@ private:
   struct RelationGraph final {
     std::array<usize, featureCount + 1> offsets{};
     std::array<usize, EdgeCount> targets{};
-    std::array<StringView, EdgeCount> names{};
+    std::array<std::string_view, EdgeCount> names{};
   };
 
   /// Builds the required dependency/implication graph exactly once per catalog.
@@ -124,12 +123,12 @@ private:
         [&] -> void {
           using DescriptorType = std::remove_cvref_t<decltype(Features)>;
           graph.offsets[source] = edge;
-          for (const StringView dependency : DescriptorType::dependencies()) {
+          for (const std::string_view dependency : DescriptorType::dependencies()) {
             graph.names[edge] = dependency;
             graph.targets[edge] = findIndex(dependency);
             ++edge;
           }
-          for (const StringView implication : DescriptorType::implications()) {
+          for (const std::string_view implication : DescriptorType::implications()) {
             graph.names[edge] = implication;
             graph.targets[edge] = findIndex(implication);
             ++edge;
@@ -152,7 +151,7 @@ private:
         [&] -> void {
           using DescriptorType = std::remove_cvref_t<decltype(Features)>;
           graph.offsets[source] = edge;
-          for (const StringView conflict : DescriptorType::conflicts()) {
+          for (const std::string_view conflict : DescriptorType::conflicts()) {
             graph.names[edge] = conflict;
             graph.targets[edge] = findIndex(conflict);
             ++edge;
@@ -171,7 +170,7 @@ private:
   static constexpr RelationGraph conflictGraph = makeConflictGraph();
 
   /// Finds the first duplicate stable feature name during catalog materialization.
-  [[nodiscard]] static consteval auto findDuplicateName() noexcept -> StringView {
+  [[nodiscard]] static consteval auto findDuplicateName() noexcept -> std::string_view {
     for (usize left{}; left < catalogNames.size(); ++left) {
       for (usize right = left + 1; right < catalogNames.size(); ++right) {
         if (catalogNames[left] == catalogNames[right]) {
@@ -183,13 +182,13 @@ private:
   }
 
   /// Cached duplicate identity; empty when the catalog names are unique.
-  static constexpr StringView duplicateFeatureName = findDuplicateName();
+  static constexpr std::string_view duplicateFeatureName = findDuplicateName();
 
   /// Returns whether a descriptor declares membership in `groupName`.
   template <class DescriptorType>
-  [[nodiscard]] static consteval auto belongsToGroup(StringView groupName) noexcept -> bool {
+  [[nodiscard]] static consteval auto belongsToGroup(std::string_view groupName) noexcept -> bool {
     return std::ranges::any_of(DescriptorType::groups(),
-        [&](const StringView groupNameCandidate) -> bool { return groupNameCandidate == groupName; });
+        [&](const std::string_view groupNameCandidate) -> bool { return groupNameCandidate == groupName; });
   }
 
   /// Resolves a canonical boolean seed set through the complete feature graph.
@@ -362,7 +361,7 @@ public:
     if constexpr (sizeof...(Requested) != 0) {
       Report selectionFailure{};
 
-      auto selectName = [&](StringView name, StringView owner) -> void {
+      auto selectName = [&](std::string_view name, std::string_view owner) -> void {
         if (not selectionFailure.succeeded()) {
           return;
         }
@@ -388,7 +387,7 @@ public:
         if constexpr (Feature<Selector>) {
           selectName(Selector::name.view(), {});
         } else {
-          for (const StringView member : Selector::members()) {
+          for (const std::string_view member : Selector::members()) {
             selectName(member, Selector::name.view());
           }
 

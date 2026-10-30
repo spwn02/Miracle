@@ -3,7 +3,6 @@ export module Miracle.Feature:Types;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Types;
 import Miracle.StaticString;
 
 export namespace Miracle::feature {
@@ -47,7 +46,7 @@ namespace Miracle::feature {
 /// Appends text to a structural static string whose capacity is already known to be sufficient by the
 /// caller's compile-time bound.
 template <usize Capacity>
-constexpr auto append(StaticString<Capacity> &target, StringView text) noexcept -> void {
+constexpr auto append(StaticString<Capacity> &target, std::string_view text) noexcept -> void {
   for (const char value : text) {
     target.storage[target.length++] = value;
   }
@@ -126,7 +125,7 @@ constexpr auto forEachOption(Function &&function) -> void {
 }
 
 /// Computes a deterministic FNV-1a hash for build/set identity diagnostics,
-constexpr auto hashName(u64 seed, StringView name) noexcept -> u64 {
+constexpr auto hashName(u64 seed, std::string_view name) noexcept -> u64 {
   u64 value = seed;
   for (const char codeUnit : name) {
     value ^= static_cast<u64>(static_cast<unsigned char>(codeUnit));

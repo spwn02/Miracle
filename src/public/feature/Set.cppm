@@ -3,7 +3,6 @@ export module Miracle.Feature:Set;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Types;
 
 import :Descriptor;
 
@@ -16,7 +15,7 @@ struct BuildFeatureSet final {
 private:
   /// Canonically sorted stable names, materialized once per build-universe type.
   static constexpr auto sortedNames = [] -> decltype(auto) { // NOLINT(readability-identifier-naming)
-    std::array<StringView, sizeof...(Names)> result{Names.view()...};
+    std::array<std::string_view, sizeof...(Names)> result{Names.view()...};
     std::ranges::sort(result);
     return result;
   }();
@@ -30,7 +29,7 @@ private:
   static constexpr u64 fingerprintValue = [] -> u64 { // NOLINT(readability-identifier-naming)
     u64 value =
         14695981039346656037ULL; // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    for (const StringView name : sortedNames) {
+    for (const std::string_view name : sortedNames) {
       value = hashName(value, name);
       value = hashName(value, "\n");
     }
@@ -46,7 +45,7 @@ public:
   }
 
   /// Returns whether `name` is present in this build universe.
-  [[nodiscard]] static constexpr auto contains(StringView name) noexcept -> bool {
+  [[nodiscard]] static constexpr auto contains(std::string_view name) noexcept -> bool {
     if constexpr (sizeof...(Names) == 0) {
       static_cast<void>(name);
       return false;
@@ -58,7 +57,8 @@ public:
   /// Returns whether `feature` is present in this build universe.
   template <class DescriptorType>
     requires Feature<std::remove_cvref_t<DescriptorType>>
-  [[nodiscard]] static constexpr auto contains(const DescriptorType & /*unused*/) noexcept -> bool {
+  [[nodiscard]] static constexpr auto contains([[maybe_unused]] const DescriptorType & /*unused*/) noexcept
+      -> bool {
     return contains(std::remove_cvref_t<DescriptorType>::name.view());
   }
 
@@ -120,7 +120,7 @@ struct FeatureSet final {
   }
 
   /// Returns whether a catalog feature name is enabled.
-  [[nodiscard]] constexpr auto contains(StringView name) const noexcept -> bool {
+  [[nodiscard]] constexpr auto contains(std::string_view name) const noexcept -> bool {
     const usize index = CatalogType::findIndex(name);
     return index != CatalogType::npos and enabled[index];
   }
@@ -128,7 +128,8 @@ struct FeatureSet final {
   /// Returns whether the given descriptor is enabled.
   template <class DescriptorType>
     requires Feature<std::remove_cvref_t<DescriptorType>>
-  [[nodiscard]] constexpr auto contains(const DescriptorType & /*unused*/) const noexcept -> bool {
+  [[nodiscard]] constexpr auto contains([[maybe_unused]] const DescriptorType & /*unused*/) const noexcept
+      -> bool {
     return contains(std::remove_cvref_t<DescriptorType>::name.view());
   }
 
