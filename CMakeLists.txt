@@ -208,6 +208,7 @@ target_sources(
          "${miracle_generated_dir}"
          FILES
          src/public/Miracle.cppm
+         src/public/numeric/Numeric.cppm
          src/public/Types.cppm
          src/public/Range.cppm
          src/public/Iter.cppm
