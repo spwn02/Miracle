@@ -1,8 +1,8 @@
 # ADR-0001: Independent Color and unified Format presentation
 
-**Status:** Accepted architectural decision — implementation and compiler verification pending  
-**Date:** 2026-10-30  
-**Applies to:** Phase M (`docs/phases/M/DESIGN.md` v2.0)  
+**Status:** Accepted architectural decision — implementation and compiler verification pending
+**Date:** 2026-10-30
+**Applies to:** Phase M (`docs/phases/M/DESIGN.md` v2.0)
 **Decision authority:** Miracle project author.
 
 ## Context

@@ -3,16 +3,16 @@
 
 **Document class:** Blueprint design, migration plan, API reconciliation, implementation and verification specification.
 **Source provenance:** v2.1 recovery baseline, 2026-10-30. Original v2.0 source and 109-page PDF preserved unchanged. Appendix D supplies recovered continuity, post-interruption corrections, detailed event-writer and type-deduction seams, additional narrow host probes and an explicit readiness checkpoint.
-**Revision status:** Original historical approvals preserved; the seven explicit 2026-10-30 decisions are approved and incorporated in the normative reconciliation.  
-**Authority:** Miracle Development Protocol v1.0; binding `docs/phases/M/DESIGN.md` v2.0; expressly approved owner decisions. API conformance still requires reference-toolchain evidence.  
-**Current remote source baseline:** `spwn02/Miracle@e2da473e6dd5637f1f70625738f8378e211a7478`, observed 2026-10-30. **This is already a partially migrated tree.**  
-**Prior Phase M contract:** v1.0 at commit `469083ed1b30e3770667e1fe35473e9f96ed1e7a`; superseded by restored, approved v2.0 `docs/phases/M/DESIGN.md` in this documentation adoption.  
-**Previous implementation guidance:** `Miracle-Phase-M-Implementation-Guide-v1.1.md`; its duplicated Builder proposal is superseded by the current unified Format design.  
-**Repository mutation:** documentation-only adoption proposed; no production source mutation by the reviewer. **Implementation and reference-compiler execution:** NONE performed by this specification; independently identified narrow host-language probes appear in the evidence appendix.  
-**Status:** **ARCHITECTURE LOCKED — DEC-COL-001–003 and DEC-FMT-001–004 approved; reference-compiler API verification still NOT RUN.**  
-**Authoritative implementation owner:** Miracle project author.  
-**Reference compiler:** `spwn02/clang-cxx26`, immutable snapshot `cxx26-2026.10.27`, source revision `b56ae4e61cf1f46495f0fb08f2b9fc270aad162c`, matching libc++ and ABI runtime; C++26; CMake ≥4.4, Ninja. Source: `docs/COMPILER_SUPPORT.md`, `docs/REFERENCE_TOOLCHAIN.md`.  
-**Available analysis host:** Clang 17.0.0 (Swift build) and CMake 3.31.6; **not** a compliant substitute for the reference toolchain.  
+**Revision status:** Original historical approvals preserved; the seven explicit 2026-10-30 decisions are approved and incorporated in the normative reconciliation.
+**Authority:** Miracle Development Protocol v1.0; binding `docs/phases/M/DESIGN.md` v2.0; expressly approved owner decisions. API conformance still requires reference-toolchain evidence.
+**Current remote source baseline:** `spwn02/Miracle@e2da473e6dd5637f1f70625738f8378e211a7478`, observed 2026-10-30. **This is already a partially migrated tree.**
+**Prior Phase M contract:** v1.0 at commit `469083ed1b30e3770667e1fe35473e9f96ed1e7a`; superseded by restored, approved v2.0 `docs/phases/M/DESIGN.md` in this documentation adoption.
+**Previous implementation guidance:** `Miracle-Phase-M-Implementation-Guide-v1.1.md`; its duplicated Builder proposal is superseded by the current unified Format design.
+**Repository mutation:** documentation-only adoption proposed; no production source mutation by the reviewer. **Implementation and reference-compiler execution:** NONE performed by this specification; independently identified narrow host-language probes appear in the evidence appendix.
+**Status:** **ARCHITECTURE LOCKED — DEC-COL-001–003 and DEC-FMT-001–004 approved; reference-compiler API verification still NOT RUN.**
+**Authoritative implementation owner:** Miracle project author.
+**Reference compiler:** `spwn02/clang-cxx26`, immutable snapshot `cxx26-2026.10.27`, source revision `b56ae4e61cf1f46495f0fb08f2b9fc270aad162c`, matching libc++ and ABI runtime; C++26; CMake ≥4.4, Ninja. Source: `docs/COMPILER_SUPPORT.md`, `docs/REFERENCE_TOOLCHAIN.md`.
+**Available analysis host:** Clang 17.0.0 (Swift build) and CMake 3.31.6; **not** a compliant substitute for the reference toolchain.
 
 > **READER SAFETY.** Every code block marked `PROPOSED` describes an illustrative declaration needing reference-toolchain verification; approved semantic decisions are locked by DESIGN.md and the normative reconciliation notice. A block marked `EXISTING` is a source-derived description, not an instruction to change behavior. A `PROBE` has an explicit environment and observed outcome. Nothing is compiler-confirmed merely because it appears in plausible C++.
 
@@ -2159,12 +2159,12 @@ The table traces stable requirements and invariants to implementation and verifi
 
 ### Readiness verdict
 
-**Architectural intent: APPROVED.**  
-**Technical design specification: substantial DRAFT, subject to decisions and C++26 verification.**  
-**Exact Color/Format public API: PROPOSED — NOT LOCKED.**  
-**Reference-compiler validation: NOT RUN (novel APIs).**  
-**Owner acceptance: PENDING.**  
-**New-foundation implementation readiness: CONDITIONAL / NOT YET LOCKED.**  
+**Architectural intent: APPROVED.**
+**Technical design specification: substantial DRAFT, subject to decisions and C++26 verification.**
+**Exact Color/Format public API: PROPOSED — NOT LOCKED.**
+**Reference-compiler validation: NOT RUN (novel APIs).**
+**Owner acceptance: PENDING.**
+**New-foundation implementation readiness: CONDITIONAL / NOT YET LOCKED.**
 **Existing in-progress source migration: may proceed only within previously approved boundaries; do not claim the novel API as frozen.**
 
 The correct next action is to resolve the pending API decisions in §12.1, execute the reference-compiler probe matrix, amend the canonical repo Design Contract for Color and Format, and only then mark the exact new public API locked. The owner remains free to implement already-approved existing migration tasks on milestone commits while those decisions are being reviewed.
@@ -2328,11 +2328,11 @@ Verify all novel public APIs with the exact `cxx26-2026.10.27` snapshot and matc
 
 ## B.2 Representative module consumer fixtures
 
-`module-consumer-01`: single consumer `import Miracle.Color;` and `constexpr auto c = Color::rgb(255,159,67); static_assert(c.toHex()==0xFF9F43);`. Expected: compile/link PASS and the Numeric/Format umbrella is not required.  
-`module-consumer-02`: `import Miracle.Format;` only; constructs `Fragment` and Message; asserts plain content and styled run counts. Expected: compile PASS and no import cycles.  
-`module-consumer-03`: `import Miracle.Diagnostics;` only; creates a reflected domain enum, calls `Diagnostic::error`, formats plain and terminal output; uses `Miracle::Severity` without importing Format explicitly if Diagnostics re-exports the owner. Expected: one type identity and correct linked renderer.  
-`module-consumer-04`: `import Miracle.Iter;` only; uses custom tuple-like and reflected aggregate elements with map/filter; proves templates can instantiate outside library without invisible Detail partition.  
-`module-consumer-05`: `import Miracle;` only; old representative example compiles with same namespace/public signatures.  
+`module-consumer-01`: single consumer `import Miracle.Color;` and `constexpr auto c = Color::rgb(255,159,67); static_assert(c.toHex()==0xFF9F43);`. Expected: compile/link PASS and the Numeric/Format umbrella is not required.
+`module-consumer-02`: `import Miracle.Format;` only; constructs `Fragment` and Message; asserts plain content and styled run counts. Expected: compile PASS and no import cycles.
+`module-consumer-03`: `import Miracle.Diagnostics;` only; creates a reflected domain enum, calls `Diagnostic::error`, formats plain and terminal output; uses `Miracle::Severity` without importing Format explicitly if Diagnostics re-exports the owner. Expected: one type identity and correct linked renderer.
+`module-consumer-04`: `import Miracle.Iter;` only; uses custom tuple-like and reflected aggregate elements with map/filter; proves templates can instantiate outside library without invisible Detail partition.
+`module-consumer-05`: `import Miracle;` only; old representative example compiles with same namespace/public signatures.
 `module-consumer-06`: `import Miracle.Meta;` only; runs reflection and Query source/terminal operations, proving no umbrella dependency.
 
 Each consumer fixture is built in three contexts: linked source subdirectory; FetchContent using local checkout; isolated installed find_package. A library-only success is insufficient. Store the actual compiler command from `compile_commands.json` and the return code/log, not just a screenshot of a green CI job.

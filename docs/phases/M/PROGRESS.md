@@ -1,10 +1,10 @@
 # Miracle — Phase M progress ledger
 
-**Status:** In progress — author-owned implementation; batched final review planned.  
-**Last reconciled:** 2026-10-30  
-**Repository baseline inspected:** `e2da473e6dd5637f1f70625738f8378e211a7478` (Miracle v0.5.28).  
-**Approved contract:** [`DESIGN.md`](DESIGN.md) v2.0.  
-**Technical guide:** [`IMPLEMENTATION.md`](IMPLEMENTATION.md) v2.2.  
+**Status:** In progress — author-owned implementation; batched final review planned.
+**Last reconciled:** 2026-10-30
+**Repository baseline inspected:** `e2da473e6dd5637f1f70625738f8378e211a7478` (Miracle v0.5.28).
+**Approved contract:** [`DESIGN.md`](DESIGN.md) v2.0.
+**Technical guide:** [`IMPLEMENTATION.md`](IMPLEMENTATION.md) v2.2.
 **Decision record:** [`../../adr/0001-phase-m-unified-format-color.md`](../../adr/0001-phase-m-unified-format-color.md).
 
 ## Confirmed repository implementation at inspected baseline
