@@ -217,6 +217,11 @@ target_sources(
          "${miracle_generated_dir}/build/FeatureConfiguration.cppm"
          src/public/range/Range.cppm
          src/public/types/Types.cppm
+         src/public/feature/Types.cppm
+         src/public/feature/Descriptor.cppm
+         src/public/feature/Set.cppm
+         src/public/feature/Catalog.cppm
+         src/public/feature/Requirement.cppm
          src/public/feature/Feature.cppm
          src/public/Iter.cppm
          src/public/Diagnostic.cppm
