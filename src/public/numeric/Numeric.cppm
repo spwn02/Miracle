@@ -14,8 +14,10 @@ using i16 = std::int16_t;
 using i32 = std::int32_t;
 using i64 = std::int64_t;
 
-using f32 = float;
-using f64 = double;
+using f16 = std::float16_t;
+using f32 = std::float32_t;
+using f64 = std::float64_t;
+using f128 = std::float128_t;
 
 using usize = std::size_t;
 using isize = std::ptrdiff_t;
