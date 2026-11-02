@@ -5,7 +5,7 @@ import Miracle.Numeric;
 import Miracle.Types;
 import Miracle.Meta;
 import Miracle.StaticString;
-import :Concepts;
+import Miracle.Concepts;
 
 // NOLINTBEGIN(readability-identifier-naming, bugprone-reserved-identifier)
 namespace Miracle::debug {
@@ -48,10 +48,10 @@ template <usize Size>
 inline constexpr bool is_debug_rename_v<DebugRename<Size>>{true};
 
 export template <class T>
-concept DebuggableAggr = meta::annotated<DebugDerive>(^^T) and not Enum<T>;
+concept DebuggableAggr = meta::annotated<DebugDerive>(^^T) and not std::is_enum_v<T>;
 
 export template <class T>
-concept DebuggableEnum = meta::annotated<DebugDerive>(^^T) and Enum<T>;
+concept DebuggableEnum = meta::annotated<DebugDerive>(^^T) and std::is_enum_v<T>;
 
 template <std::meta::info Info>
 consteval auto debug_hidden() -> bool {
@@ -93,7 +93,8 @@ constexpr auto debug_metadata() -> DebugMetadata {
   };
 }
 
-template <Enum T>
+template <typename T>
+  requires std::is_enum_v<T>
 constexpr auto enum_name(T value) -> StringView {
   StringView preferred{"<unnamed>"};
 
@@ -173,7 +174,8 @@ concept Debuggable = DebuggableAggr<T> or DebuggableEnum<T>;
 /// Exact visible enumerators win. If none matches, the last visible `[[= debug::prefer]]`
 /// enumerator in declaration order is returned. Otherwise `<unnamed>` is returned. Aliases naturally resolve
 /// to the first reflected enumerator.
-export template <Enum T>
+export template <typename T>
+  requires std::is_enum_v<T>
 constexpr auto enumName(T value) -> StringView {
   return enum_name(value);
 }

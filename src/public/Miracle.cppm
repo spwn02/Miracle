@@ -16,6 +16,6 @@ export import :Debug;
 export import Miracle.Build;
 export import Miracle.Capabilities;
 export import Miracle.FeatureConfiguration;
-export import :Concepts;
+export import Miracle.Concepts;
 export import :Profiling;
 export import :Memory;

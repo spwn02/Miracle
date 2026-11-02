@@ -230,7 +230,7 @@ target_sources(
          src/public/Fs.cppm
          src/public/Memory.cppm
          src/public/Profiling.cppm
-         src/public/Concepts.cppm
+         src/public/concepts/Concepts.cppm
          src/public/meta/Meta.cppm
          src/public/meta/Types.cppm
          src/public/meta/Storage.cppm
