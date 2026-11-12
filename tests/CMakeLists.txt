@@ -38,7 +38,8 @@ add_executable(
   meta/query/interop.cpp
   reflection.cpp
   static-string.cpp
-  feature.cpp)
+  feature.cpp
+  color.cpp)
 
 target_compile_features(MiracleTests PRIVATE cxx_std_26)
 

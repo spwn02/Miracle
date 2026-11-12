@@ -231,6 +231,7 @@ target_sources(
          src/public/Memory.cppm
          src/public/Profiling.cppm
          src/public/concepts/Concepts.cppm
+         src/public/color/Color.cppm
          src/public/meta/Meta.cppm
          src/public/meta/Types.cppm
          src/public/meta/Storage.cppm

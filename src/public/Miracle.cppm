@@ -19,3 +19,4 @@ export import Miracle.FeatureConfiguration;
 export import Miracle.Concepts;
 export import :Profiling;
 export import :Memory;
+export import Miracle.Color;
