@@ -4,6 +4,7 @@ import std;
 import Miracle.Numeric;
 import Miracle.Types;
 import Miracle.StaticString;
+import Miracle.Format;
 
 export namespace Miracle {
 
@@ -60,18 +61,6 @@ struct diagnostics final {
 
 /// Inline annotation façade used by `[[= diagnostics ]]` and its factories.
 inline constexpr struct diagnostics diagnostics{};
-
-/// Diagnostic importance used by rendering and filtering layers.
-enum class Severity : u8 {
-  /// Developer-oriented diagnostic information.
-  Debug,
-  /// Informational diagnostic context.
-  Note,
-  /// Recoverable or cautionary condition.
-  Warning,
-  /// Failure requiring caller attention.
-  Error,
-};
 
 /// Normalized runtime identity for an enum-backed diagnostic code.
 ///
@@ -498,16 +487,6 @@ private:
   Option<std::stacktrace> trace_;
 };
 
-/// Controls ANSI colour emission.
-enum class ColorMode : u8 {
-  /// Use presentation policy to decide whether colour in appropriate.
-  Automatic,
-  /// Request colour for terminal presentation.
-  Always,
-  /// Suppress ANSI colour unconditionally.
-  Never,
-};
-
 /// Controls how source-location and explicit snippet data are rendered.
 enum class SourceMode : u8 {
   /// Suppress source information.
@@ -528,24 +507,16 @@ enum class DetailMode : u8 {
   Full,
 };
 
-/// Selects plain text versus terminal-oriented presentation.
-enum class Presentation : u8 {
-  /// Stable text presentation with no terminal escape sequences.
-  Plain,
-  /// Terminal-oriented presentation eligible for ANSI styling.
-  Terminal,
-};
-
 /// Rendering policy shared by string and stream output.
 struct RenderOptions final {
   /// ANSI colour policy.
-  ColorMode color{ColorMode::Automatic};
+  format::ColorMode color{format::ColorMode::Automatic};
   /// Source-location/snippet policy.
   SourceMode source{SourceMode::Snippet};
   /// Optional-detail policy.
   DetailMode detail{DetailMode::Normal};
   /// Plain versus terminal presentation policy.
-  Presentation presentation{Presentation::Terminal};
+  format::Presentation presentation{format::Presentation::Terminal};
 };
 
 /// Renders a diagnostic into an owned string.

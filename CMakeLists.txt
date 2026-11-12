@@ -231,6 +231,13 @@ target_sources(
          src/public/Memory.cppm
          src/public/Profiling.cppm
          src/public/concepts/Concepts.cppm
+         src/public/format/Format.cppm
+         src/public/format/Code.cppm
+         src/public/format/Fragment.cppm
+         src/public/format/Message.cppm
+         src/public/format/Render.cppm
+         src/public/format/Style.cppm
+         src/public/format/Types.cppm
          src/public/color/Color.cppm
          src/public/meta/Meta.cppm
          src/public/meta/Types.cppm

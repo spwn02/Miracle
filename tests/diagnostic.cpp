@@ -99,10 +99,10 @@ static_assert(not std::copy_constructible<DiagnosticSpan>);
 static_assert(not std::is_copy_assignable_v<DiagnosticSpan>);
 
 constexpr RenderOptions plainCompact{
-    .color = Miracle::ColorMode::Never,
+    .color = Miracle::format::ColorMode::Never,
     .source = SourceMode::None,
     .detail = Miracle::DetailMode::Compact,
-    .presentation = Presentation::Plain,
+    .presentation = Miracle::format::Presentation::Plain,
 };
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto codeDescriptors() -> void {
@@ -151,10 +151,10 @@ constexpr RenderOptions plainCompact{
   Switch::check(not prefixless.contains("\033["));
 
   const String forcedColourPlain = render(Diagnostic::error(Code::Fallback),
-      {.color = Miracle::ColorMode::Always,
+      {.color = Miracle::format::ColorMode::Always,
           .source = SourceMode::None,
           .detail = Miracle::DetailMode::Compact,
-          .presentation = Presentation::Plain});
+          .presentation = Miracle::format::Presentation::Plain});
   Switch::check(not forcedColourPlain.contains("\033["));
 }
 
@@ -170,10 +170,10 @@ constexpr RenderOptions plainCompact{
                                       .label("expected a value"));
 
   const String styled = render(diagnostic,
-      {.color = Miracle::ColorMode::Always,
+      {.color = Miracle::format::ColorMode::Always,
           .source = SourceMode::Snippet,
           .detail = Miracle::DetailMode::Full,
-          .presentation = Presentation::Terminal});
+          .presentation = Miracle::format::Presentation::Terminal});
 
   Switch::check(styled.contains("\033[1;31merror[E042]\033[0m"));
   Switch::check(styled.contains("\033[1;34m--> \033[0m"));
@@ -207,10 +207,10 @@ constexpr RenderOptions plainCompact{
                                 .role(SpanRole::Secondary));
 
   const String text = render(diagnostic,
-      {.color = Miracle::ColorMode::Never,
+      {.color = Miracle::format::ColorMode::Never,
           .source = SourceMode::Snippet,
           .detail = Miracle::DetailMode::Full,
-          .presentation = Presentation::Plain});
+          .presentation = Miracle::format::Presentation::Plain});
   Switch::check(text.contains("specific occurrence"));
   Switch::check(text.contains("--> "));
   Switch::check(text.contains("alpha beta gamma"));
@@ -223,10 +223,10 @@ constexpr RenderOptions plainCompact{
   Switch::check(not text.contains("\033["));
 
   const String locationOnly = render(diagnostic,
-      {.color = Miracle::ColorMode::Never,
+      {.color = Miracle::format::ColorMode::Never,
           .source = SourceMode::Location,
           .detail = Miracle::DetailMode::Compact,
-          .presentation = Presentation::Plain});
+          .presentation = Miracle::format::Presentation::Plain});
   Switch::check(locationOnly.contains("--> "));
   Switch::check(not locationOnly.contains("alpha beta gamma"));
 }

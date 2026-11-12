@@ -8,16 +8,6 @@ namespace Miracle {
 
 namespace {
 
-[[nodiscard]] constexpr auto severityName(Severity severity) noexcept -> StringView {
-  switch (severity) {
-    case Severity::Debug: return "debug";
-    case Severity::Note: return "note";
-    case Severity::Warning: return "warning";
-    case Severity::Error: return "error";
-  }
-  return "error";
-}
-
 [[nodiscard]] constexpr auto severityAnsi(Severity severity) noexcept -> StringView {
   switch (severity) {
     case Severity::Debug: return "\033[1;36m";
@@ -111,10 +101,10 @@ private:
   };
 
   [[nodiscard]] auto coloursEnabled() const noexcept -> bool {
-    if (options_.presentation == Presentation::Plain or options_.color == ColorMode::Never) {
+    if (options_.presentation == format::Presentation::Plain or options_.color == format::ColorMode::Never) {
       return false;
     }
-    return options_.color == ColorMode::Always or options_.color == ColorMode::Automatic;
+    return options_.color == format::ColorMode::Always or options_.color == format::ColorMode::Automatic;
   }
 
   auto indent(usize depth) -> void {

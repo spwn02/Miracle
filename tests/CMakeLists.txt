@@ -39,7 +39,8 @@ add_executable(
   reflection.cpp
   static-string.cpp
   feature.cpp
-  color.cpp)
+  color.cpp
+  format.cpp)
 
 target_compile_features(MiracleTests PRIVATE cxx_std_26)
 

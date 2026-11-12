@@ -20,3 +20,4 @@ export import Miracle.Concepts;
 export import :Profiling;
 export import :Memory;
 export import Miracle.Color;
+export import Miracle.Format;

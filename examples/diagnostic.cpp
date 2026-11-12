@@ -17,8 +17,8 @@ auto main() -> int {
           .help("provide a value after '='");
 
   std::cout << render(diagnostic,
-      {.color = ColorMode::Never,
+      {.color = format::ColorMode::Never,
           .source = SourceMode::Snippet,
           .detail = DetailMode::Normal,
-          .presentation = Presentation::Plain});
+          .presentation = format::Presentation::Plain});
 }
