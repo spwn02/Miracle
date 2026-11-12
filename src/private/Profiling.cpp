@@ -1,8 +1,4 @@
-module Miracle;
-
-import :Profiling;
-
-import std;
+module Miracle.Profiling;
 
 namespace Miracle::profiling {
 

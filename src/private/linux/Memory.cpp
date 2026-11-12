@@ -2,11 +2,7 @@ module;
 
 #include <unistd.h>
 
-module Miracle;
-
-import :Memory;
-
-import std;
+module Miracle.Memory;
 
 namespace Miracle::memory {
 
@@ -18,7 +14,7 @@ auto processMemory() noexcept -> Option<ProcessMemorySnapshot> {
     return None;
   static_cast<void>(totalPages);
 
-  const isize pageSize = static_cast<isize>(::sysconf(_SC_PAGESIZE));
+  const auto pageSize = static_cast<isize>(::sysconf(_SC_PAGESIZE));
   if (pageSize <= 0)
     return None;
 

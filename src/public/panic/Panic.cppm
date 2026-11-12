@@ -1,9 +1,10 @@
-export module Miracle:Panic;
+export module Miracle.Panic;
 
 import std;
+import Miracle.Numeric;
 import Miracle.Types;
-import :Diagnostic;
-import :Error;
+import Miracle.Diagnostic;
+import Miracle.Error;
 
 namespace Miracle {
 

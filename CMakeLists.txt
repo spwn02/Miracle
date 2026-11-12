@@ -223,13 +223,13 @@ target_sources(
          src/public/feature/Catalog.cppm
          src/public/feature/Requirement.cppm
          src/public/feature/Feature.cppm
-         src/public/Iter.cppm
-         src/public/Diagnostic.cppm
-         src/public/Error.cppm
-         src/public/Panic.cppm
-         src/public/Fs.cppm
-         src/public/Memory.cppm
-         src/public/Profiling.cppm
+         src/public/iter/Iter.cppm
+         src/public/diagnostic/Diagnostic.cppm
+         src/public/error/Error.cppm
+         src/public/panic/Panic.cppm
+         src/public/fs/Fs.cppm
+         src/public/memory/Memory.cppm
+         src/public/profiling/Profiling.cppm
          src/public/concepts/Concepts.cppm
          src/public/format/Format.cppm
          src/public/format/Code.cppm
@@ -257,8 +257,8 @@ target_sources(
          src/public/meta/TypeTransforms.cppm
          src/public/meta/Reflect.cppm
          src/public/meta/Query.cppm
-         src/public/meta/Bitflags.cppm
-         src/public/meta/Debug.cppm
+         src/public/derive/Bitflags.cppm
+         src/public/derive/Debug.cppm
          ${MIRACLE_BUILD_FEATURE_SOURCES}
   PRIVATE src/private/Diagnostic.cpp src/private/Error.cpp
           src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp

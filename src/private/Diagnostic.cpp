@@ -1,8 +1,4 @@
-module Miracle;
-
-import std;
-import Miracle.Types;
-import :Diagnostic;
+module Miracle.Diagnostic;
 
 namespace Miracle {
 

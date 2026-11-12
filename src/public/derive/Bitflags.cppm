@@ -1,4 +1,4 @@
-export module Miracle:Bitflags;
+export module Miracle.Bitflags;
 
 import std;
 import Miracle.Numeric;

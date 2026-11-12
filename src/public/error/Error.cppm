@@ -1,8 +1,9 @@
-export module Miracle:Error;
+export module Miracle.Error;
 
 import std;
+import Miracle.Numeric;
 import Miracle.Types;
-import :Diagnostic;
+import Miracle.Diagnostic;
 
 namespace Miracle {
 

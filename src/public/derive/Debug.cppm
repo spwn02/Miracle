@@ -1,4 +1,4 @@
-export module Miracle:Debug;
+export module Miracle.Debug;
 
 import std;
 import Miracle.Numeric;

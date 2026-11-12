@@ -1,7 +1,4 @@
-module Miracle;
-
-import std;
-import :Fs;
+module Miracle.Fs;
 
 namespace Miracle::fs {
 

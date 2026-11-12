@@ -1,4 +1,4 @@
-export module Miracle:Memory;
+export module Miracle.Memory;
 
 import std;
 import Miracle.Numeric;

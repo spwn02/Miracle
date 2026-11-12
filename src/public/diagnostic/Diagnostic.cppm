@@ -1,4 +1,4 @@
-export module Miracle:Diagnostic;
+export module Miracle.Diagnostic;
 
 import std;
 import Miracle.Numeric;

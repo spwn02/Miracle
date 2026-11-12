@@ -1,4 +1,4 @@
-export module Miracle:Iter;
+export module Miracle.Iter;
 
 import std;
 import Miracle.Numeric;

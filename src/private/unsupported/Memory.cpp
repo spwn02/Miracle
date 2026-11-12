@@ -1,6 +1,4 @@
-module Miracle;
-
-import :Memory;
+module Miracle.Memory;
 
 namespace Miracle::memory {
 

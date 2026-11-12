@@ -1,8 +1,9 @@
-export module Miracle:Fs;
+export module Miracle.Fs;
 
 import std;
+import Miracle.Numeric;
 import Miracle.Types;
-import :Error;
+import Miracle.Error;
 
 export namespace Miracle::fs {
 

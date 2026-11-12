@@ -1,7 +1,7 @@
-export module Miracle:Profiling;
+export module Miracle.Profiling;
 
 import std;
-import :Debug;
+import Miracle.Debug;
 import Miracle.Numeric;
 import Miracle.Types;
 

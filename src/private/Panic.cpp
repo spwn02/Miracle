@@ -1,10 +1,4 @@
-module Miracle;
-
-import std;
-import Miracle.Types;
-import :Diagnostic;
-import :Error;
-import :Panic;
+module Miracle.Panic;
 
 namespace Miracle {
 
