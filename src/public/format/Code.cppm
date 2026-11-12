@@ -19,6 +19,7 @@ private:
 public:
   /// The text representation of the diagnostic code, null-terminated for C-style APIs.
   std::array<char, totalCapacity_ + 1> text{};
+  /// The number of characters in the diagnostic code, excluding the null terminator.
   usize length{};
 
   /// Constructs a diagnostic code with the specified prefix and numeric value.

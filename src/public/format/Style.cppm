@@ -63,6 +63,7 @@ struct Style final {
   constexpr auto operator<=>(const Style &) const noexcept -> std::strong_ordering = default;
 };
 
+/// Returns the style associated with the specified diagnostic severity.
 [[nodiscard]] constexpr auto severityStyle(const Severity severity) noexcept -> Style {
   // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
   switch (severity) {

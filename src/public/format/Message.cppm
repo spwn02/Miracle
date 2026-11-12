@@ -45,10 +45,15 @@ template <usize Capacity, usize Styles, bool Diagnostic = false, Section Current
 struct Message final {
 
 private:
+  /// The string used to indent lines in the message text.
   static constexpr std::string_view indent_ = "\n   "sv;
+  /// The string used to prefix the heading section of a diagnostic message.
   static constexpr std::string_view contextPrefix_ = "\n  --> "sv;
+  /// The string used to separate field names from their values in the message text.
   static constexpr std::string_view fieldsSeparator_ = ": "sv;
+  /// The string used to prefix note sections in the message text.
   static constexpr std::string_view notePrefix_ = "= note: "sv;
+  /// The string used to prefix help sections in the message text.
   static constexpr std::string_view helpPrefix_ = "= help: "sv;
 
 public:
@@ -70,7 +75,7 @@ public:
     std::ranges::copy(text, this->text.begin());
     std::ranges::copy(styles, styleStorage.begin());
   }
-
+  /// Constructs a diagnostic message with the specified severity, code, and summary text.
   template <usize PrefixN, usize Width, usize SummaryN>
   constexpr Message(const Severity severity,
       const Code<PrefixN, Width> code,
@@ -80,6 +85,7 @@ public:
     initializeDiagnostic(severity, code, std::string_view{static_cast<const char *>(summary), SummaryN});
   }
 
+  /// Constructs a diagnostic message with the specified severity, code, and summary text fragment.
   template <usize PrefixN, usize Width, usize SummaryN>
   constexpr Message(const Severity severity,
       const Code<PrefixN, Width> code,
@@ -119,6 +125,7 @@ public:
     return {styleStorage.data(), styleCount};
   }
 
+  /// Appends the specified text to the message, returning a new message with the combined text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto append(const char (&text)[N]) const && // NOLINT
       noexcept
@@ -133,6 +140,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends the specified text fragment to the message, returning a new message with the combined text and
+  /// styles.
   template <usize N>
   [[nodiscard]] constexpr auto append(const Fragment<N> text) const && noexcept
     requires(not Diagnostic)
@@ -159,6 +168,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends the specified numeric value to the message, returning a new message with the combined text and
+  /// styles.
   template <Numeric T>
   [[nodiscard]] constexpr auto append(const T number) const &&
     requires(not Diagnostic)
@@ -173,6 +184,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends the specified boolean value to the message, returning a new message with the combined text and
+  /// styles.
   [[nodiscard]] constexpr auto append(bool value) const &&
     requires(not Diagnostic)
   {
@@ -186,8 +199,10 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends the specified enum value to the message, returning a new message with the combined text and
+  /// styles.
   template <usize N>
-  [[nodiscard]] constexpr auto context(const char (&text)[N]) const && // NOLINT
+  [[nodiscard]] constexpr auto context(const char (&text)[N]) const // NOLINT
     requires(Diagnostic and Current <= Section::Context)
   {
     static constexpr usize contextPrefixBytes_ = Current < Section::Context ? contextPrefix_.length() : 0;
@@ -218,6 +233,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends the specified text fragment to the message as context, returning a new message with the combined
+  /// text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto context(const Fragment<N> text) const && noexcept
     requires(Diagnostic and Current <= Section::Context)
@@ -259,6 +276,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
+  /// styles.
   template <usize K, usize V>
   [[nodiscard]] constexpr auto field(const char (&key)[K], const char (&value)[V]) const && // NOLINT
     requires(Diagnostic and Current <= Section::Fields)
@@ -282,6 +301,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
+  /// styles.
   template <usize K, usize V>
   [[nodiscard]] constexpr auto field(const char (&key)[K], const Fragment<V> value) const && // NOLINT
     requires(Diagnostic and Current <= Section::Fields)
@@ -317,6 +338,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
+  /// styles.
   template <usize K, usize V>
   [[nodiscard]] constexpr auto field(const Fragment<K> key, const char (&value)[V]) const && // NOLINT
     requires(Diagnostic and Current <= Section::Fields)
@@ -353,6 +376,8 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
+  /// styles.
   template <usize K, usize V>
   [[nodiscard]] constexpr auto field(const Fragment<K> key, const Fragment<V> value) const && // NOLINT
     requires(Diagnostic and Current <= Section::Fields)
@@ -399,6 +424,7 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a note to the message, returning a new message with the combined text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto note(const char (&text)[N]) const && // NOLINT
     requires(Diagnostic and Current <= Section::Notes)
@@ -439,6 +465,7 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a note to the message, returning a new message with the combined text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto note(const Fragment<N> value) const &&
     requires(Diagnostic and Current <= Section::Notes)
@@ -488,6 +515,7 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a help message to the message, returning a new message with the combined text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto help(const char (&text)[N]) const && // NOLINT
     requires(Diagnostic and Current <= Section::Help)
@@ -528,6 +556,7 @@ public:
     return std::forward<decltype(result)>(result);
   }
 
+  /// Appends a help message to the message, returning a new message with the combined text and styles.
   template <usize N>
   [[nodiscard]] constexpr auto help(const Fragment<N> value) const &&
     requires(Diagnostic and Current <= Section::Help)
@@ -581,8 +610,10 @@ private:
   template <usize C, usize S, bool D, Section Sec>
   friend struct Message;
 
+  /// Default constructor for Message, initializes an empty message with no text or styles.
   constexpr Message() noexcept = default;
 
+  /// Initializes a diagnostic message with the specified severity, code, and summary text.
   template <usize PrefixN, usize Width>
   constexpr auto initializeDiagnostic(const Severity severity,
       const Code<PrefixN, Width> code,
@@ -649,6 +680,8 @@ private:
     out = {};
   }
 
+  /// Appends the specified text to the message without bounds checking, updating the length and
+  /// null-terminating the text.
   constexpr auto appendUnchecked(std::string_view value, usize len) noexcept -> void {
     auto destination = std::next(text.begin(), static_cast<isize>(length));
     auto out = std::ranges::copy_n(value.begin(), len, destination).out;
@@ -693,17 +726,20 @@ Message(Severity, Code<PrefixN, Width>, const char (&text)[Capacity])
         Section::Plain // Initial completed section before context/fields/notes
         >;
 
+/// Constructs a message with the specified text.
 template <usize Capacity>
 constexpr auto message(const char (&text)[Capacity]) -> Message<Capacity, 0> {
   return Message<Capacity, 0>{text, {}};
 }
 
+/// Constructs a message with the specified text and style spans.
 template <usize Capacity, usize Styles>
 constexpr auto message(const char (&text)[Capacity], const std::array<StyleSpan, Styles> styles)
     -> Message<Capacity, Styles> {
   return Message<Capacity, Styles>{text, styles};
 }
 
+/// Constructs a diagnostic message with the specified severity, code, and summary text.
 template <usize PrefixN, usize Width, usize SummaryN>
 constexpr auto message(const Severity severity,
     const Code<PrefixN, Width> code,

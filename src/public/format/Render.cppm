@@ -25,11 +25,15 @@ enum class Presentation : u8 {
   Terminal,
 };
 
+/// Controls how a message is rendered to an output iterator.
 struct RenderPolicy final {
+  /// Selects plain text versus terminal-oriented presentation.
   Presentation presentation{Presentation::Plain};
+  /// Controls ANSI colour emission.
   ColorMode colorMode{ColorMode::Never};
 };
 
+/// Renders a message to an output iterator according to the specified render policy.
 template <class OutputIterator>
   requires std::output_iterator<OutputIterator, char>
 auto writeFragment(OutputIterator out,
@@ -96,6 +100,7 @@ auto writeFragment(OutputIterator out,
   return out;
 }
 
+/// Renders a message to an output iterator according to the specified render policy.
 template <class MessageType, class OutputIterator>
   requires requires(const MessageType &message) {
     { message.view() } -> std::convertible_to<std::string_view>;
@@ -137,6 +142,7 @@ template <class MessageType, class OutputIterator>
   return out;
 }
 
+/// Renders a message to a string according to the specified render policy.
 template <class MessageType>
 [[nodiscard]] auto render(const MessageType &message, RenderPolicy policy = {}) -> std::string {
   std::string result;
