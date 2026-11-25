@@ -19,7 +19,7 @@ IMPORT = re.compile(r"^\s*(export\s+)?import\s+(?:(std(?:\.compat)?)|([A-Za-z_][
 # Architectural dependency matrix: module -> modules it must never import (directly).
 FORBIDDEN = {
     "Miracle.Numeric": {"*"},
-    "Miracle.Color": {"Miracle.Format", "Miracle.Diagnostics", "Miracle.StaticString", "Miracle.Meta", "Miracle"},
+    "Miracle.Color": {"Miracle.Format", "Miracle.Diagnostics", "Miracle.StaticString", "Miracle.Meta", "Miracle.Iter", "Miracle"},
     "Miracle.Format": {"Miracle.Diagnostics", "Miracle.StaticString", "Miracle.Meta", "Miracle.Iter", "Miracle"},
     "Miracle.Diagnostics": {"Miracle.Meta", "Miracle"},
     "Miracle.StaticString": {"Miracle.Diagnostics", "Miracle"},

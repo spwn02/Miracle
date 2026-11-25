@@ -119,10 +119,10 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 - Added tests: TEST-FMT-STATIC-004 (long reflected type name, no truncation), TEST-FMT-SINK-005 (unwritable iterator rejected by constraint), TEST-DIAG-PARITY-001 (compile-time vs runtime heading), TEST-DIAG-TREE-002 (sibling order/indent).
 - Docs: `DIAGNOSTICS.md` module list, `CHANGELOG.md` entry, milestone ledger refreshed.
 - Open findings / owner decisions (spec vs. repository):
-  1. REQ-REST-001/§6.1: Debug and Bitflags live in `src/public/derive/`; the spec names `debug/` and `bitflags/`.
-  2. REQ-MOD-004: `Miracle.Types` does not re-export `Miracle.Numeric`; `import Miracle.Types;` alone does not make `Miracle::usize` visible (verified by compile probe).
-  3. §8.2/DEC-FMT-004: the runtime Diagnostics renderer emits message/note/snippet bytes verbatim (no control-character escaping); Format core escapes only one-line compile-time fields.
-  4. DESIGN.md §177: Format may import only `Miracle.Color`, yet Format imports `Miracle.Numeric` (and Color imports Numeric — kept by earlier owner decision).
+  1. RESOLVED (owner): Debug and Bitflags moved from `src/public/derive/` to `src/public/debug/` and `src/public/bitflags/` per REQ-REST-001.
+  2. RESOLVED (owner: keep + document): `Miracle.Types` does not re-export `Miracle.Numeric`; the contract is pinned by compile-fail fixture `types-without-numeric.cpp`.
+  3. RESOLVED (owner): Diagnostics now escapes C0/DEL bytes in messages, notes, help, labels, paths and snippet source via `format::writeEscaped` (`\n \r \t \0 \xNN`); snippet carets are computed in escaped columns. Test `untrustedTextIsEscaped`.
+  4. RESOLVED (owner): DESIGN.md amended — Format and Color may import `Miracle.Numeric` (alias-only leaf) in addition to Color for Format.
   5. §6.1 layout: private units are flat (`src/private/Diagnostics.cpp`), spec shows `src/private/diagnostics/Diagnostic.cpp`; Iter partition names follow the spec's recommended SourceViews/Views/Core/SourceFactories variant.
   6. REQ-STR-002 (StaticString messages via Format) is in the owner's uncommitted WIP; not touched.
   7. TEST-FMT-STATIC-003 (dangling consteval message storage) and TEST-STR-* negatives, TEST-COL property tests not re-audited line by line in this pass.

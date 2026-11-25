@@ -349,6 +349,9 @@ miracle_add_compile_fail_test(
   DiagnosticNonEnum compile-fail/diagnostic-non-enum.cpp
   "because 'NotAnEnum' does not satisfy 'DiagnosticCode'")
 miracle_add_compile_fail_test(
+  TypesWithoutNumeric compile-fail/types-without-numeric.cpp
+  "must be imported from module 'Miracle.Numeric'")
+miracle_add_compile_fail_test(
   DiagnosticEmptyPrefix compile-fail/diagnostic-empty-prefix.cpp
   "because 'EmptyPrefix' does not satisfy 'DiagnosticCode'")
 miracle_add_compile_fail_test(

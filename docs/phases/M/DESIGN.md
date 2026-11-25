@@ -85,7 +85,7 @@ A post-migration requirement from an **approved preceding phase** may justify a 
 | `Miracle` | `Miracle.ixx` umbrella | Pure primary re-export interface; no feature ownership |
 | `Miracle.Numeric` | Numeric aliases currently in `Miracle:Types` | Own `u8`/`i8` families, `f32`/`f64`, `usize`/`isize`; standard library only |
 | `Miracle.Types` | Remaining `Miracle:Types` aliases | Transitional owner of existing standard-backed aliases; may re-export Numeric; Core Revisit decides later redesign |
-| `Miracle.Format` | New foundational capability | Own compile-time formatting primitives and canonical diagnostic-layout conventions; no Miracle-module imports |
+| `Miracle.Format` | New foundational capability | Own compile-time formatting primitives and canonical diagnostic-layout conventions; imports only `Miracle.Color` and `Miracle.Numeric` among Miracle modules |
 | `Miracle.StaticString` | `Miracle:StaticString` | Own existing StaticString public API and formatting operations; may consume Format |
 | `Miracle.Range` | `Miracle:Range` | Own Range semantics and public API |
 | `Miracle.Iter` | `Miracle:Iter` | Own Iter source, adaptors, views, terminals; decompose internally |
@@ -174,7 +174,7 @@ Arrows signify **imports by the source on the left**, not a requirement to intro
 
 ### 4.2 Strict prohibitions
 
-- `Miracle.Color` imports **no** `Miracle.*` module. `Miracle.Format` may import **only** `Miracle.Color` among Miracle modules; Numeric, StaticString and higher-level modules remain forbidden dependencies.
+- `Miracle.Color` imports no `Miracle.*` module other than `Miracle.Numeric` (alias-only leaf). `Miracle.Format` may import only `Miracle.Color` and `Miracle.Numeric` among Miracle modules; StaticString and higher-level modules remain forbidden dependencies. (Amended 2026-11-25 by owner decision.)
 - `Miracle.StaticString` does not import Diagnostics, Meta, Validation, Shapes, or Traits.
 - `Miracle.Diagnostics` does not import Validation or the `Miracle` umbrella. If reflecting diagnostic-code enums remains necessary, use C++26 `std::meta` directly or an approved acyclic lower-level adapter; do not create a cycle for the sake of an abstraction.
 - `Miracle.Iter` does not import Validation/Traits merely for its generic algorithms or diagnostic messages.
