@@ -124,6 +124,8 @@ enum class DetailMode : u8 { Compact, Normal, Full };
 enum class Presentation : u8 { Plain, Terminal };
 ```
 
+Runtime text (messages, notes, help, labels, paths and snippet source) is treated as untrusted: C0 controls and DEL are rendered as escapes (`\n`, `\r`, `\t`, `\0`, `\xNN`) through `format::writeEscaped`, so embedded ESC or line breaks cannot forge terminal output, and snippet carets are aligned in escaped columns.
+
 `Presentation::Plain` is an absolute ANSI boundary: it never emits terminal escape sequences. `ColorMode::Never` also disables color. Full detail includes the normalized diagnostic domain/enumerator/value, while compact detail omits stacktrace and metadata expansion.
 
 Rendering is implemented by an unexported stateful `DiagnosticRenderer` so the public surface remains small and output state stays local to one operation.

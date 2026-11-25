@@ -345,6 +345,43 @@ constexpr RenderOptions snippetOptions{
   Switch::check(text.find("\033[", text.rfind('\n') + 1) == String::npos);
 }
 
+// TEST-FMT-CTRL-002 / §8.2: untrusted control bytes can neither forge terminal output nor extra lines.
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto untrustedTextIsEscaped() -> void {
+  const auto location = std::source_location::current();
+  const auto diagnostic =
+      Diagnostic::error(Code::Zero, location)
+          .message("bad\x1b[31m\nerror[E999]: forged")
+          .note("line1\nline2\r")
+          .help("tab\there\x7f")
+          .span(DiagnosticSpan{"a\tb\x1b" "c", location}.select({.begin = 2, .end = 4}).label("la\nbel"));
+  const String plain = render(diagnostic,
+      {.color = ColorMode::Always,
+          .source = SourceMode::Snippet,
+          .detail = Miracle::DetailMode::Compact,
+          .presentation = Presentation::Plain});
+  Switch::check(not plain.contains('\x1b') and not plain.contains('\r') and not plain.contains('\t') and
+                not plain.contains('\x7f'));
+  Switch::check(plain.contains("error[E000]: bad\\x1B[31m\\nerror[E999]: forged\n"));
+  Switch::check(plain.contains("note: line1\\nline2\\r\n"));
+  Switch::check(plain.contains("help: tab\\there\\x7F\n"));
+  Switch::check(plain.contains("la\\nbel"));
+  // The forged text never starts a line of its own.
+  Switch::check(not plain.contains("\nerror[E999]"));
+  // Carets stay under the selected bytes after escaping: `a\tb\x1b c` -> `a\\tb\\x1Bc`, selection [2,4) = `b\x1b`.
+  Switch::check(plain.contains(" | a\\tb\\x1Bc\n | " + String(3, ' ') + "^^^^^"));
+
+  const String terminal = render(diagnostic,
+      {.color = ColorMode::Always,
+          .source = SourceMode::Snippet,
+          .detail = Miracle::DetailMode::Compact,
+          .presentation = Presentation::Terminal});
+  // Every ESC left in terminal output starts a renderer-generated SGR sequence (`ESC [ 0-9...m`), never payload.
+  for (usize at = terminal.find('\x1b'); at != String::npos; at = terminal.find('\x1b', at + 1)) {
+    Switch::check(terminal.compare(at, 2, "\x1b[") == 0);
+  }
+  Switch::check(not terminal.contains("[31m\nerror[E999]"));
+}
+
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto errorAdapter() -> void {
   Error error{Error::Message{"inner"}};
   error.with(Error::Message{"middle"}).with(Error::Message{"outer"});

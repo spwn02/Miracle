@@ -351,6 +351,29 @@ constexpr auto writeCode(Writer &writer, const CodeView &code, const Style &styl
   return detail::putCode(writer, code, style);
 }
 
+/// Writes untrusted `text` through any writer with `put(text, style)`, replacing C0/DEL bytes by their escape
+/// spellings (`\n`, `\r`, `\t`, `\0`, `\xNN`). Used for runtime diagnostic text so ESC or line breaks cannot forge
+/// terminal output.
+template <class Writer>
+constexpr auto writeEscaped(Writer &writer, const std::string_view text, const Style &style) -> bool {
+  return detail::putEscaped(writer, text, style);
+}
+
+/// Number of bytes `writeEscaped` produces for `text`; equals `text.size()` when nothing needs escaping.
+[[nodiscard]] constexpr auto escapedSize(const std::string_view text) noexcept -> usize {
+  usize size{};
+  for (const char character : text) {
+    const auto byte = static_cast<unsigned char>(character);
+    if (detail::needsEscape(byte)) {
+      std::array<char, detail::maxEscapeBytes> spelling{};
+      size += detail::encodeEscape(byte, spelling);
+    } else {
+      ++size;
+    }
+  }
+  return size;
+}
+
 /// Style-aware byte writer shared by every renderer: encodes style transitions as SGR sequences, honours
 /// `RenderState::policy` and keeps all state in the caller's `RenderState`.
 template <TextSink Sink>

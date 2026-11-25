@@ -115,6 +115,11 @@ private:
     auto _ = writer_.put(text, style);
   }
 
+  /// Untrusted runtime text (messages, notes, labels, paths, source): control bytes are escaped, never emitted raw.
+  auto putText(const StringView text, const Style &style = {}) -> void {
+    auto _ = format::writeEscaped(writer_, text, style);
+  }
+
   auto putNumber(const u64 value, const Style &style = {}) -> void {
     put(std::to_string(value), style);
   }
@@ -129,7 +134,7 @@ private:
     put(severityName(diagnostic.severity()), style);
     auto _ = format::writeCode(writer_, diagnostic.code().codeView(), style);
     put(": ");
-    put(diagnostic.messageText());
+    putText(diagnostic.messageText());
     put("\n");
   }
 
@@ -139,7 +144,7 @@ private:
     }
     indent(depth);
     put("--> ", sourceStyle);
-    put(displayPath(location));
+    putText(displayPath(location));
     put(":");
     putNumber(location.line());
     put(":");
@@ -180,7 +185,7 @@ private:
     const StringView line = source.substr(lineStart, lineEnd - lineStart);
 
     renderGutter(depth);
-    put(line);
+    putText(line);
     put("\n");
 
     const Style marker = spanStyle(span.spanRole(), severity);
@@ -188,17 +193,18 @@ private:
       const usize markerBegin = std::min(begin, lineEnd) - lineStart;
       const usize markerEnd = std::min(std::max(end, begin + 1UZ), lineEnd) - lineStart;
       renderGutter(depth);
-      put(String(markerBegin, ' '));
-      const usize markerLength = std::max(1UZ, markerEnd > markerBegin ? markerEnd - markerBegin : 1);
+      put(String(format::escapedSize(line.substr(0, markerBegin)), ' '));
+      const usize markerLength =
+          std::max(1UZ, markerEnd > markerBegin ? format::escapedSize(line.substr(markerBegin, markerEnd - markerBegin)) : 1);
       put(String(markerLength, spanMarker(span.spanRole())), marker);
       if (not span.labelText().empty()) {
         put(" ", marker);
-        put(span.labelText(), marker);
+        putText(span.labelText(), marker);
       }
       put("\n");
     } else if (not span.labelText().empty()) {
       renderGutter(depth);
-      put(span.labelText(), marker);
+      putText(span.labelText(), marker);
       put("\n");
     }
   }
@@ -216,7 +222,7 @@ private:
     indent(depth);
     put(label, style);
     put(" ");
-    put(text);
+    putText(text);
     put("\n");
   }
 
@@ -240,7 +246,7 @@ private:
     String line;
     while (std::getline(input, line)) {
       indent(depth + 1);
-      put(line);
+      putText(line);
       put("\n");
     }
   }
@@ -252,9 +258,9 @@ private:
     indent(depth);
     put("diagnostic:", auxiliaryStyle);
     put(" ");
-    put(diagnostic.code().domain);
+    putText(diagnostic.code().domain);
     put("::");
-    put(diagnostic.code().enumerator);
+    putText(diagnostic.code().enumerator);
     put(" (");
     putNumber(diagnostic.code().numeric);
     put(")\n");
