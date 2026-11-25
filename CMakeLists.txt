@@ -268,8 +268,8 @@ target_sources(
          src/public/meta/QueryState.cppm
          src/public/meta/QueryEval.cppm
          src/public/meta/Query.cppm
-         src/public/derive/Bitflags.cppm
-         src/public/derive/Debug.cppm
+         src/public/bitflags/Bitflags.cppm
+         src/public/debug/Debug.cppm
          ${MIRACLE_BUILD_FEATURE_SOURCES}
   PRIVATE src/private/Diagnostics.cpp src/private/Error.cpp
           src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp
