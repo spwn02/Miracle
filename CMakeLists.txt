@@ -263,6 +263,10 @@ target_sources(
          src/public/meta/TypeQueries.cppm
          src/public/meta/TypeTransforms.cppm
          src/public/meta/Reflect.cppm
+         src/public/meta/QueryIR.cppm
+         src/public/meta/QueryPlan.cppm
+         src/public/meta/QueryState.cppm
+         src/public/meta/QueryEval.cppm
          src/public/meta/Query.cppm
          src/public/derive/Bitflags.cppm
          src/public/derive/Debug.cppm

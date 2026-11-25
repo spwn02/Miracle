@@ -15,4 +15,8 @@ export import :Generation;
 export import :TypeQueries;
 export import :TypeTransforms;
 export import :Reflect;
+export import :QueryIR;
+export import :QueryPlan;
+export import :QueryState;
+export import :QueryEval;
 export import :Query;
