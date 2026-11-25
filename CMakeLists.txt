@@ -224,6 +224,11 @@ target_sources(
          src/public/feature/Requirement.cppm
          src/public/feature/Feature.cppm
          src/public/iter/Iter.cppm
+         src/public/iter/Detail.cppm
+         src/public/iter/SourceViews.cppm
+         src/public/iter/Views.cppm
+         src/public/iter/Core.cppm
+         src/public/iter/SourceFactories.cppm
          src/public/diagnostics/Diagnostics.cppm
          src/public/error/Error.cppm
          src/public/panic/Panic.cppm
