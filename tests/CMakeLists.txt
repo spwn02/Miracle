@@ -53,6 +53,26 @@ set_target_properties(
 
 target_link_libraries(MiracleTests PRIVATE Miracle::Miracle Switch::Switch)
 
+# Every primary module must be consumable through a direct import alone: no umbrella, no transitive
+# reliance on another module's re-export. One probe per module; all are built with the normal test build.
+file(GLOB miracle_import_probes CONFIGURE_DEPENDS
+     "${CMAKE_CURRENT_SOURCE_DIR}/import/*.cpp")
+foreach(probe IN LISTS miracle_import_probes)
+  get_filename_component(probe_name "${probe}" NAME_WE)
+  add_executable("MiracleImportProbe${probe_name}" "${probe}")
+  target_compile_features("MiracleImportProbe${probe_name}" PRIVATE cxx_std_26)
+  set_target_properties(
+    "MiracleImportProbe${probe_name}"
+    PROPERTIES CXX_EXTENSIONS OFF
+               CXX_STANDARD_REQUIRED ON
+               CXX_SCAN_FOR_MODULES ON
+               CXX_MODULE_STD ON)
+  target_link_libraries("MiracleImportProbe${probe_name}"
+                        PRIVATE Miracle::Miracle)
+  add_test(NAME "Miracle.Import.${probe_name}"
+           COMMAND "MiracleImportProbe${probe_name}")
+endforeach()
+
 # Verify that the narrow Meta module is independently consumable; this probe
 # deliberately does not import the Miracle umbrella or std module.
 add_executable(MiracleMetaImportProbe import.cpp)
@@ -322,6 +342,20 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   DiagnosticEmptyPrefix compile-fail/diagnostic-empty-prefix.cpp
   "because 'EmptyPrefix' does not satisfy 'DiagnosticCode'")
+miracle_add_compile_fail_test(
+  FormatOrderFieldAfterNote compile-fail/format-order-field-after-note.cpp "no matching member function for call to 'field'")
+miracle_add_compile_fail_test(
+  FormatOrderContextAfterNote compile-fail/format-order-context-after-note.cpp "no matching member function for call to 'context'")
+miracle_add_compile_fail_test(
+  FormatOrderSecondContext compile-fail/format-order-second-context.cpp "no matching member function for call to 'context'")
+miracle_add_compile_fail_test(
+  FormatOrderNoteAfterHelp compile-fail/format-order-note-after-help.cpp "no matching member function for call to 'note'")
+miracle_add_compile_fail_test(
+  FormatEmptyFieldKey compile-fail/format-empty-field-key.cpp "no matching member function for call to 'field'")
+miracle_add_compile_fail_test(
+  FormatAppendToDiagnostic compile-fail/format-append-to-diagnostic.cpp "no matching member function for call to 'append'")
+miracle_add_compile_fail_test(
+  FormatStaticAssertMessage compile-fail/format-static-assert-message.cpp "static assertion failed: error[FMT007]: bad Iter pipeline")
 
 miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cpp
