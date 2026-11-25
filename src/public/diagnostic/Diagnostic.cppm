@@ -510,13 +510,13 @@ enum class DetailMode : u8 {
 /// Rendering policy shared by string and stream output.
 struct RenderOptions final {
   /// ANSI colour policy.
-  format::ColorMode color{format::ColorMode::Automatic};
+  ColorMode color{ColorMode::Automatic};
   /// Source-location/snippet policy.
   SourceMode source{SourceMode::Snippet};
   /// Optional-detail policy.
   DetailMode detail{DetailMode::Normal};
   /// Plain versus terminal presentation policy.
-  format::Presentation presentation{format::Presentation::Terminal};
+  Presentation presentation{Presentation::Terminal};
 };
 
 /// Renders a diagnostic into an owned string.

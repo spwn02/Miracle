@@ -2,751 +2,380 @@ export module Miracle.Format:Message;
 
 import std;
 import Miracle.Numeric;
-import Miracle.Concepts;
 
+import :Types;
 import :Style;
-import :Code;
 import :Fragment;
+import :Code;
+import :Text;
+import :Emit;
 
-using namespace std::string_view_literals;
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
+namespace Miracle::format::detail {
+
+/// Reaching this means a type-level capacity bound was wrong. During constant evaluation it is a compile
+/// error; at run time it traps. It never writes out of bounds.
+[[noreturn]] constexpr auto capacityViolated() noexcept -> void {
+  __builtin_trap();
+}
+
+/// Overflow-checked static addition for type-level capacities.
+[[nodiscard]] consteval auto checkedAdd(const usize lhs, const usize rhs) -> usize {
+  if (rhs > std::numeric_limits<usize>::max() - lhs)
+    capacityViolated(); // not a constant expression: a wrapped bound must never become a tiny buffer
+  return lhs + rhs;
+}
+
+/// Worst-case bytes of a heading: severity word, optional `[code]`, `: `, escaped summary and the LF.
+[[nodiscard]] consteval auto headingCapacity(const usize prefixBytes, const usize minimumDigits, const usize summaryBytes)
+    -> usize {
+  constexpr usize severityBytes = 7; // "warning"
+  usize total = severityBytes;
+  if (prefixBytes > 0)
+    total = checkedAdd(total, 2 + escapedBound(prefixBytes) + std::max(minimumDigits, maxU64Digits));
+  return checkedAdd(checkedAdd(total, 2 + 1), escapedBound(summaryBytes));
+}
+
+/// Worst-case bytes of one grammar line with `bodyBytes` escaped body bytes and `fixedBytes` of layout.
+[[nodiscard]] consteval auto lineCapacity(const usize fixedBytes, const usize bodyBytes) -> usize {
+  return checkedAdd(fixedBytes, escapedBound(bodyBytes));
+}
+
+// Fixed layout bytes per line, including the optional blank separator and the LF.
+inline constexpr usize contextFixedBytes = 1 + 2 + 3 + 1 + 1;     // "\n" "  " "-->" " " ... "\n"
+inline constexpr usize fieldFixedBytes = 1 + 2 + 2 + 1;           // "\n" "  " ... ": " ... "\n"
+inline constexpr usize noteFixedBytes = 1 + 3 + 7 + 1 + 1;        // "\n" "   " "= note:" " " ... "\n"
+
+} // namespace Miracle::format::detail
 
 export namespace Miracle::format {
 
-/// Represents a section of a formatted message, such as a heading, context, or detail.
-enum class Section : u8 {
-  /// Plain text section with no special formatting.
-  Plain,
-  /// Heading section with severity, code, and summary.
-  Heading,
-  /// Context section with source location or snippet information.
-  Context,
-  /// Detail section with key-value pairs of additional information.
-  Fields,
-  /// Note section with additional information or suggestions.
-  Notes,
-  /// Help section with guidance or instructions for resolving the issue.
-  Help,
-};
-
-/// Represents a span of text with an associated style in a formatted message.
+/// Half-open byte range `[begin, end)` of a message with an associated style. Ranges are ordered,
+/// non-overlapping, never empty and measured in bytes.
 struct StyleSpan final {
-  /// The starting index of the span in the message text.
+  /// First styled byte.
   usize begin{};
-  /// The ending index of the span in the message text.
+  /// One past the last styled byte.
   usize end{};
-  /// The style associated with the span of text.
+  /// Style of the range.
   Style style{};
 
   constexpr auto operator<=>(const StyleSpan &) const noexcept -> std::strong_ordering = default;
 };
 
-/// Represents a formatted message with text, styles, and optional diagnostic sections.
-template <usize Capacity, usize Styles, bool Diagnostic = false, Section Current = Section::Plain>
+/// Immutable compile-time message: owned plain text plus style ranges. Extending a message returns a new value
+/// of a larger type and leaves the original unchanged. `Capacity` and `Runs` are inferred upper bounds, never
+/// supplied by callers. In diagnostic mode (`Diagnostic`), `Current` records the last completed section and the
+/// grammar can only advance.
+///
+/// The text and run storage are public so the type stays a structural literal type usable as a reflection
+/// annotation value; treat them as read-only and use `view()`, `data()` and `styles()`.
+template <usize Capacity, usize Runs, bool Diagnostic = false, Section Current = Section::Plain>
 struct Message final {
-
-private:
-  /// The string used to indent lines in the message text.
-  static constexpr std::string_view indent_ = "\n   "sv;
-  /// The string used to prefix the heading section of a diagnostic message.
-  static constexpr std::string_view contextPrefix_ = "\n  --> "sv;
-  /// The string used to separate field names from their values in the message text.
-  static constexpr std::string_view fieldsSeparator_ = ": "sv;
-  /// The string used to prefix note sections in the message text.
-  static constexpr std::string_view notePrefix_ = "= note: "sv;
-  /// The string used to prefix help sections in the message text.
-  static constexpr std::string_view helpPrefix_ = "= help: "sv;
-
-public:
-  /// The text content of the message, null-terminated for C-style APIs.
+  /// Plain text. `text[length] == '\0'`; interior NULs are legal.
   std::array<char, Capacity + 1> text{};
-  /// The style spans associated with the message text.
-  std::array<StyleSpan, Styles> styleStorage{};
-  /// The number of active characters in the message text, excluding the null terminator.
+  /// Style ranges; the first `styleCount` entries are active.
+  std::array<StyleSpan, Runs> styleStorage{};
+  /// Number of active text bytes.
   usize length{};
-  /// The number of active style spans in the message.
+  /// Number of active style ranges.
   usize styleCount{};
 
-  /// Constructs a formatted message with the specified text and optional style spans.
+  /// Ordinary text from a string literal.
   template <usize N>
-  constexpr Message(const char (&text)[N], const std::array<StyleSpan, Styles> styles = {}) noexcept // NOLINT
-    requires(not Diagnostic)
-      : length(N - 1)
-      , styleCount(styles.size()) {
-    std::ranges::copy(text, this->text.begin());
-    std::ranges::copy(styles, styleStorage.begin());
-  }
-  /// Constructs a diagnostic message with the specified severity, code, and summary text.
-  template <usize PrefixN, usize Width, usize SummaryN>
-  constexpr Message(const Severity severity,
-      const Code<PrefixN, Width> code,
-      const char (&summary)[SummaryN]) noexcept // NOLINT
-    requires(Diagnostic)
+  constexpr Message(const char (&literal)[N]) noexcept // NOLINT
+    requires(not Diagnostic and N - 1 <= Capacity)
   {
-    initializeDiagnostic(severity, code, std::string_view{static_cast<const char *>(summary), SummaryN});
+    emitInto(*this, Event{.kind = EventKind::Text, .text = std::string_view{literal, N - 1}}, RenderState{});
   }
 
-  /// Constructs a diagnostic message with the specified severity, code, and summary text fragment.
-  template <usize PrefixN, usize Width, usize SummaryN>
-  constexpr Message(const Severity severity,
-      const Code<PrefixN, Width> code,
-      const Fragment<SummaryN> summary) noexcept
-    requires(Diagnostic)
+  /// Diagnostic heading from a severity, a code and a literal summary (rendered bold).
+  template <usize PrefixCharacters, usize MinDigits, usize N>
+  constexpr Message(const Severity severity, const Code<PrefixCharacters, MinDigits> code, const char (&summary)[N]) noexcept
+    requires(Diagnostic and Current == Section::Heading)
   {
-    initializeDiagnostic(severity, code, summary.view());
+    emitInto(*this,
+        Event{.kind = EventKind::Heading,
+            .text = std::string_view{summary, N - 1},
+            .style = Style{.bold = true},
+            .severity = severity,
+            .code = code.codeView()},
+        RenderState{});
   }
 
-  /// Returns the total capacity of the message text, including null terminator.
+  /// Diagnostic heading from a severity, a code and a styled summary fragment.
+  template <usize PrefixCharacters, usize MinDigits, usize N>
+  constexpr Message(const Severity severity, const Code<PrefixCharacters, MinDigits> code, const Fragment<N> summary) noexcept
+    requires(Diagnostic and Current == Section::Heading)
+  {
+    emitInto(*this,
+        Event{.kind = EventKind::Heading,
+            .text = summary.view(),
+            .style = summary.style(),
+            .severity = severity,
+            .code = code.codeView()},
+        RenderState{});
+  }
+
+  /// Returns the capacity bound in bytes, excluding the terminating NUL.
   [[nodiscard]] static constexpr auto capacity() noexcept -> usize {
     return Capacity;
   }
 
-  /// Returns the number of active characters in the message text, excluding the null terminator.
+  /// Returns the number of active bytes.
   [[nodiscard]] constexpr auto size() const noexcept -> usize {
     return length;
   }
 
-  /// Returns true when the message text contains no active characters.
+  /// Returns true when no bytes are active.
   [[nodiscard]] constexpr auto empty() const noexcept -> bool {
     return length == 0;
   }
 
-  /// Returns a pointer to the message text, null-terminated for C-style APIs.
+  /// Returns the plain text, NUL-terminated at `size()`. Never contains ANSI. Borrows this message.
   [[nodiscard]] constexpr auto data() const noexcept -> const char * {
     return text.data();
   }
 
-  /// Returns a string view of the message text, excluding the null terminator.
+  /// Returns the plain text. Never contains ANSI. Borrows this message.
   [[nodiscard]] constexpr auto view() const noexcept -> std::string_view {
     return {text.data(), length};
   }
 
-  /// Returns a span of the active style spans in the message.
+  /// Returns the active style ranges.
   [[nodiscard]] constexpr auto styles() const noexcept -> std::span<const StyleSpan> {
     return {styleStorage.data(), styleCount};
   }
 
-  /// Appends the specified text to the message, returning a new message with the combined text and styles.
+  /// Appends literal text byte-for-byte.
   template <usize N>
-  [[nodiscard]] constexpr auto append(const char (&text)[N]) const && // NOLINT
-      noexcept
+  [[nodiscard]] constexpr auto append(const char (&literal)[N]) const
     requires(not Diagnostic)
   {
-    Message<Capacity + N - 1, Styles, false, Current> result{};
-    result.appendUnchecked(view());
-    result.appendUnchecked({static_cast<const char *>(text), N - 1});
-    std::ranges::move(styleStorage, result.styleStorage.begin());
-    result.styleCount = styleCount;
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, N - 1), Runs, false, Current>;
+    return extendWith<Result>(Event{.kind = EventKind::Text, .text = std::string_view{literal, N - 1}});
   }
 
-  /// Appends the specified text fragment to the message, returning a new message with the combined text and
-  /// styles.
+  /// Appends a styled fragment byte-for-byte; an empty or default-styled fragment adds no style range.
   template <usize N>
-  [[nodiscard]] constexpr auto append(const Fragment<N> text) const && noexcept
+  [[nodiscard]] constexpr auto append(const Fragment<N> fragment) const
     requires(not Diagnostic)
   {
-    constexpr usize newStyles = Styles > 0 ? Styles + 1 : 0;
-    Message<Capacity + N - 1, newStyles, false, Current> result{};
-    result.appendUnchecked(view());
-
-    const usize textBegin = result.length;
-    result.appendUnchecked(text.view(), N - 1);
-    const usize textEnd = result.length;
-
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = textBegin,
-          .end = textEnd,
-          .style = text.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, N), detail::checkedAdd(Runs, 1), false, Current>;
+    return extendWith<Result>(Event{.kind = EventKind::Text, .text = fragment.view(), .style = fragment.style()});
   }
 
-  /// Appends the specified numeric value to the message, returning a new message with the combined text and
-  /// styles.
-  template <Numeric T>
-  [[nodiscard]] constexpr auto append(const T number) const &&
-    requires(not Diagnostic)
+  /// Appends the decimal spelling of a non-bool, non-character integer.
+  template <std::integral Integer>
+  [[nodiscard]] constexpr auto append(const Integer number) const
+    requires(not Diagnostic and not std::same_as<Integer, bool> and not std::same_as<Integer, char> and
+             not std::same_as<Integer, wchar_t> and not std::same_as<Integer, char8_t> and
+             not std::same_as<Integer, char16_t> and not std::same_as<Integer, char32_t>)
   {
-    constexpr usize maxDigits = std::numeric_limits<std::make_unsigned_t<T>>::digits10 + 3;
-    Message<Capacity + maxDigits, Styles, false, Current> result{};
-    result.appendUnchecked(view());
-    result.appendUnchecked(std::to_string(number));
-    std::ranges::move(styleStorage, result.styleStorage.begin());
-    result.styleCount = styleCount;
+    using Unsigned = std::make_unsigned_t<Integer>;
+    constexpr usize digitBound = std::numeric_limits<Unsigned>::digits10 + 3;
+    using Result = Message<detail::checkedAdd(Capacity, digitBound), Runs, false, Current>;
 
-    return std::forward<decltype(result)>(result);
+    // Magnitude in the unsigned type through modular arithmetic: no `-min` overflow.
+    const bool negative = number < Integer{};
+    const auto magnitude = negative ? static_cast<Unsigned>(Unsigned{} - static_cast<Unsigned>(number))
+                                    : static_cast<Unsigned>(number);
+    std::array<char, detail::maxU64Digits> digits{};
+    const usize count = detail::encodeDecimal(static_cast<u64>(magnitude), digits);
+
+    std::array<char, detail::maxU64Digits + 1> spelling{};
+    usize at{};
+    if (negative)
+      spelling[at++] = '-';
+    for (usize index{}; index < count; ++index)
+      spelling[at++] = digits[index];
+    return extendWith<Result>(Event{.kind = EventKind::Text, .text = std::string_view{spelling.data(), at}});
   }
 
-  /// Appends the specified boolean value to the message, returning a new message with the combined text and
-  /// styles.
-  [[nodiscard]] constexpr auto append(bool value) const &&
-    requires(not Diagnostic)
-  {
-    constexpr usize maxDigits = 5; // "false"
-    Message<Capacity + maxDigits, Styles, false, Current> result{};
-    result.appendUnchecked(view());
-    result.appendUnchecked(value ? "true" : "false");
-    std::ranges::move(styleStorage, result.styleStorage.begin());
-    result.styleCount = styleCount;
-
-    return std::forward<decltype(result)>(result);
-  }
-
-  /// Appends the specified enum value to the message, returning a new message with the combined text and
-  /// styles.
+  /// Adds the single `--> context` line, directly after the heading.
   template <usize N>
-  [[nodiscard]] constexpr auto context(const char (&text)[N]) const // NOLINT
-    requires(Diagnostic and Current <= Section::Context)
+  [[nodiscard]] constexpr auto context(const char (&literal)[N]) const
+    requires(Diagnostic and Current == Section::Heading)
   {
-    static constexpr usize contextPrefixBytes_ = Current < Section::Context ? contextPrefix_.length() : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Context ? 1 : 0) : 0;
-
-    Message<Capacity + N + contextPrefixBytes_ - 1, newStyles_, true, Section::Context> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current < Section::Context) {
-      const usize arrowBegin = result.length;
-      result.appendUnchecked(contextPrefix_);
-      const usize arrowEnd = result.length;
-
-      if constexpr (newStyles_ > 0) {
-        *styleIter = StyleSpan{
-            .begin = arrowBegin,
-            .end = arrowEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    result.appendUnchecked({static_cast<const char *>(text), N - 1});
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::contextFixedBytes, N - 1)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Context>;
+    return extendWith<Result>(Event{.kind = EventKind::Context, .text = std::string_view{literal, N - 1}});
   }
 
-  /// Appends the specified text fragment to the message as context, returning a new message with the combined
-  /// text and styles.
+  /// Adds the single `--> context` line from a styled fragment, e.g. a reflected name copied into an owned fragment.
   template <usize N>
-  [[nodiscard]] constexpr auto context(const Fragment<N> text) const && noexcept
-    requires(Diagnostic and Current <= Section::Context)
+  [[nodiscard]] constexpr auto context(const Fragment<N> fragment) const
+    requires(Diagnostic and Current == Section::Heading)
   {
-    static constexpr usize contextPrefixBytes_ = Current < Section::Context ? contextPrefix_.length() : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Context ? 1 : 0) + 1 : 0;
-
-    Message<Capacity + N + contextPrefixBytes_ - 1, newStyles_, true, Section::Context> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current < Section::Context) {
-      const usize arrowBegin = result.length;
-      result.appendUnchecked(contextPrefix_);
-      const usize arrowEnd = result.length;
-
-      if constexpr (Styles > 0) {
-        *styleIter++ = StyleSpan{
-            .begin = arrowBegin,
-            .end = arrowEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    const usize textBegin = result.length;
-    result.appendUnchecked(text.view(), N - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = textBegin,
-          .end = result.length,
-          .style = text.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::contextFixedBytes, N)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Context>;
+    return extendWith<Result>(
+        Event{.kind = EventKind::Context, .text = fragment.view(), .style = fragment.style()});
   }
 
-  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
-  /// styles.
+  /// Adds a `key: value` line. The key must be non-empty.
   template <usize K, usize V>
-  [[nodiscard]] constexpr auto field(const char (&key)[K], const char (&value)[V]) const && // NOLINT
-    requires(Diagnostic and Current <= Section::Fields)
+  [[nodiscard]] constexpr auto field(const char (&key)[K], const char (&value)[V]) const
+    requires(Diagnostic and Current <= Section::Fields and K > 1)
   {
-    static constexpr usize punctuationBytes_ =
-        indent_.length() + fieldsSeparator_.length() + (Current == Section::Context ? 1 : 0);
-
-    Message<Capacity + K + V + punctuationBytes_ - 2, Styles, true, Section::Fields> result{};
-    result.appendUnchecked(view());
-    std::ranges::move(styleStorage, result.styleStorage.begin());
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Context) {
-      result.appendUnchecked("\n");
-    }
-    result.appendUnchecked(indent_);
-    result.appendUnchecked({static_cast<const char *>(key), K - 1});
-    result.appendUnchecked(fieldsSeparator_);
-    result.appendUnchecked({static_cast<const char *>(value), V - 1});
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::fieldFixedBytes, K - 1 + V - 1)),
+        detail::checkedAdd(Runs, 1),
+        true,
+        Section::Fields>;
+    return extendWith<Result>(Event{.kind = EventKind::Field,
+        .text = std::string_view{value, V - 1},
+        .key = std::string_view{key, K - 1}});
   }
 
-  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
-  /// styles.
+  /// Adds a `key: value` line with a styled value. The key must be non-empty.
   template <usize K, usize V>
-  [[nodiscard]] constexpr auto field(const char (&key)[K], const Fragment<V> value) const && // NOLINT
-    requires(Diagnostic and Current <= Section::Fields)
+  [[nodiscard]] constexpr auto field(const char (&key)[K], const Fragment<V> value) const
+    requires(Diagnostic and Current <= Section::Fields and K > 1)
   {
-    static constexpr usize punctuationBytes_ =
-        indent_.length() + fieldsSeparator_.length() + (Current == Section::Context ? 1 : 0);
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + 1 : 0;
-
-    Message<Capacity + K + V + punctuationBytes_ - 2, newStyles_, true, Section::Fields> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Context) {
-      result.appendUnchecked("\n");
-    }
-
-    result.appendUnchecked(indent_);
-    result.appendUnchecked({static_cast<const char *>(key), K - 1});
-    result.appendUnchecked(fieldsSeparator_);
-
-    const usize textBegin = result.length;
-    result.appendUnchecked(value.view(), V - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = textBegin,
-          .end = result.length,
-          .style = value.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::fieldFixedBytes, K - 1 + V)),
+        detail::checkedAdd(Runs, 1),
+        true,
+        Section::Fields>;
+    return extendWith<Result>(Event{.kind = EventKind::Field,
+        .text = value.view(),
+        .key = std::string_view{key, K - 1},
+        .style = value.style()});
   }
 
-  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
-  /// styles.
-  template <usize K, usize V>
-  [[nodiscard]] constexpr auto field(const Fragment<K> key, const char (&value)[V]) const && // NOLINT
-    requires(Diagnostic and Current <= Section::Fields)
-  {
-    static constexpr usize punctuationBytes_ =
-        indent_.length() + fieldsSeparator_.length() + (Current == Section::Context ? 1 : 0);
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + 1 : 0;
-
-    Message<Capacity + K + V + punctuationBytes_ - 2, newStyles_, true, Section::Fields> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Context) {
-      result.appendUnchecked("\n");
-    }
-
-    result.appendUnchecked(indent_);
-
-    const usize textBegin = result.length;
-    result.appendUnchecked(key.view(), K - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = textBegin,
-          .end = result.length,
-          .style = key.style,
-      };
-      ++result.styleCount;
-    }
-
-    result.appendUnchecked(fieldsSeparator_);
-    result.appendUnchecked({static_cast<const char *>(value), V - 1});
-
-    return std::forward<decltype(result)>(result);
-  }
-
-  /// Appends a key-value pair to the message as a field, returning a new message with the combined text and
-  /// styles.
-  template <usize K, usize V>
-  [[nodiscard]] constexpr auto field(const Fragment<K> key, const Fragment<V> value) const && // NOLINT
-    requires(Diagnostic and Current <= Section::Fields)
-  {
-    static constexpr usize punctuationBytes_ =
-        indent_.length() + fieldsSeparator_.length() + (Current == Section::Context ? 1 : 0);
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + 2 : 0;
-
-    Message<Capacity + K + V + punctuationBytes_ - 2, newStyles_, true, Section::Fields> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Context) {
-      result.appendUnchecked("\n");
-    }
-
-    result.appendUnchecked(indent_);
-
-    const usize keyBegin = result.length;
-    result.appendUnchecked(key.view(), K - 1);
-    if constexpr (Styles > 0) {
-      *styleIter++ = StyleSpan{
-          .begin = keyBegin,
-          .end = result.length,
-          .style = key.style,
-      };
-      ++result.styleCount;
-    }
-
-    result.appendUnchecked(fieldsSeparator_);
-
-    const usize valueBegin = result.length;
-    result.appendUnchecked(value.view(), V - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = valueBegin,
-          .end = result.length,
-          .style = value.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
-  }
-
-  /// Appends a note to the message, returning a new message with the combined text and styles.
+  /// Adds a `= note:` line.
   template <usize N>
-  [[nodiscard]] constexpr auto note(const char (&text)[N]) const && // NOLINT
+  [[nodiscard]] constexpr auto note(const char (&literal)[N]) const
     requires(Diagnostic and Current <= Section::Notes)
   {
-    static constexpr usize newlineBytes_ = Current == Section::Fields ? 1 : 0;
-    static constexpr usize notePrefixBytes_ =
-        Current < Section::Notes ? indent_.length() + notePrefix_.length() + newlineBytes_ : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Notes ? 1 : 0) : 0;
-
-    Message<Capacity + N + notePrefixBytes_ - 1, newStyles_, true, Section::Notes> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Fields) {
-      result.appendUnchecked("\n");
-    }
-
-    if constexpr (Current < Section::Notes) {
-      result.appendUnchecked(indent_);
-      const usize noteBegin = result.length;
-
-      result.appendUnchecked(notePrefix_);
-      const usize noteEnd = result.length;
-
-      if constexpr (newStyles_ > 0) {
-        *styleIter = StyleSpan{
-            .begin = noteBegin,
-            .end = noteEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    result.appendUnchecked({static_cast<const char *>(text), N - 1});
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::noteFixedBytes, N - 1)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Notes>;
+    return extendWith<Result>(Event{.kind = EventKind::Note, .text = std::string_view{literal, N - 1}});
   }
 
-  /// Appends a note to the message, returning a new message with the combined text and styles.
+  /// Adds a `= note:` line from a styled fragment.
   template <usize N>
-  [[nodiscard]] constexpr auto note(const Fragment<N> value) const &&
+  [[nodiscard]] constexpr auto note(const Fragment<N> fragment) const
     requires(Diagnostic and Current <= Section::Notes)
   {
-    static constexpr usize newlineBytes_ = Current == Section::Fields ? 1 : 0;
-    static constexpr usize notePrefixBytes_ =
-        Current < Section::Notes ? indent_.length() + notePrefix_.length() + newlineBytes_ : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Notes ? 1 : 0) + 1 : 0;
-
-    Message<Capacity + N + notePrefixBytes_ - 1, newStyles_, true, Section::Notes> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Fields) {
-      result.appendUnchecked("\n");
-    }
-
-    if constexpr (Current < Section::Notes) {
-      result.appendUnchecked(indent_);
-      const usize noteBegin = result.length;
-
-      result.appendUnchecked(notePrefix_);
-      const usize noteEnd = result.length;
-
-      if constexpr (Styles > 0) {
-        *styleIter++ = StyleSpan{
-            .begin = noteBegin,
-            .end = noteEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    const usize valueBegin = result.length;
-    result.appendUnchecked(value.view(), N - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = valueBegin,
-          .end = result.length,
-          .style = value.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::noteFixedBytes, N)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Notes>;
+    return extendWith<Result>(Event{.kind = EventKind::Note, .text = fragment.view(), .style = fragment.style()});
   }
 
-  /// Appends a help message to the message, returning a new message with the combined text and styles.
+  /// Adds a `= help:` line.
   template <usize N>
-  [[nodiscard]] constexpr auto help(const char (&text)[N]) const && // NOLINT
+  [[nodiscard]] constexpr auto help(const char (&literal)[N]) const
     requires(Diagnostic and Current <= Section::Help)
   {
-    static constexpr usize newlineBytes_ = Current == Section::Fields ? 1 : 0;
-    static constexpr usize helpPrefixBytes_ =
-        Current < Section::Help ? indent_.length() + helpPrefix_.length() + newlineBytes_ : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Help ? 1 : 0) : 0;
-
-    Message<Capacity + N + helpPrefixBytes_ - 1, newStyles_, true, Section::Help> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Fields) {
-      result.appendUnchecked("\n");
-    }
-
-    if constexpr (Current < Section::Help) {
-      result.appendUnchecked(indent_);
-      const usize helpBegin = result.length;
-
-      result.appendUnchecked(helpPrefix_);
-      const usize helpEnd = result.length;
-
-      if constexpr (newStyles_ > 0) {
-        *styleIter = StyleSpan{
-            .begin = helpBegin,
-            .end = helpEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    result.appendUnchecked({static_cast<const char *>(text), N - 1});
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::noteFixedBytes, N - 1)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Help>;
+    return extendWith<Result>(Event{.kind = EventKind::Help, .text = std::string_view{literal, N - 1}});
   }
 
-  /// Appends a help message to the message, returning a new message with the combined text and styles.
+  /// Adds a `= help:` line from a styled fragment.
   template <usize N>
-  [[nodiscard]] constexpr auto help(const Fragment<N> value) const &&
+  [[nodiscard]] constexpr auto help(const Fragment<N> fragment) const
     requires(Diagnostic and Current <= Section::Help)
   {
-    static constexpr usize newlineBytes_ = Current == Section::Fields ? 1 : 0;
-    static constexpr usize helpPrefixBytes_ =
-        Current < Section::Help ? indent_.length() + helpPrefix_.length() + newlineBytes_ : 0;
-    static constexpr usize newStyles_ = Styles > 0 ? Styles + (Current < Section::Help ? 1 : 0) + 1 : 0;
-
-    Message<Capacity + N + helpPrefixBytes_ - 1, newStyles_, true, Section::Help> result{};
-    result.appendUnchecked(view());
-    [[maybe_unused]] auto styleIter = std::ranges::move(styleStorage, result.styleStorage.begin()).out;
-    result.styleCount = styleCount;
-
-    if constexpr (Current == Section::Fields) {
-      result.appendUnchecked("\n");
-    }
-
-    if constexpr (Current < Section::Help) {
-      result.appendUnchecked(indent_);
-      const usize helpBegin = result.length;
-
-      result.appendUnchecked(helpPrefix_);
-      const usize helpEnd = result.length;
-
-      if constexpr (Styles > 0) {
-        *styleIter++ = StyleSpan{
-            .begin = helpBegin,
-            .end = helpEnd,
-            .style = severityStyle(Severity::Note),
-        };
-        ++result.styleCount;
-      }
-    }
-
-    const usize valueBegin = result.length;
-    result.appendUnchecked(value.view(), N - 1);
-    if constexpr (Styles > 0) {
-      *styleIter = StyleSpan{
-          .begin = valueBegin,
-          .end = result.length,
-          .style = value.style,
-      };
-      ++result.styleCount;
-    }
-
-    return std::forward<decltype(result)>(result);
+    using Result = Message<detail::checkedAdd(Capacity, detail::lineCapacity(detail::noteFixedBytes, N)),
+        detail::checkedAdd(Runs, 2),
+        true,
+        Section::Help>;
+    return extendWith<Result>(Event{.kind = EventKind::Help, .text = fragment.view(), .style = fragment.style()});
   }
 
 private:
-  template <usize C, usize S, bool D, Section Sec>
+  template <usize C, usize R, bool D, Section S>
   friend struct Message;
 
-  /// Default constructor for Message, initializes an empty message with no text or styles.
+  /// Message storage seen as a span writer, so the compile-time path runs the same layout code as the sink path.
+  struct Writer final {
+    Message &target;
+
+    constexpr auto put(const std::string_view bytes, const Style &style) noexcept -> bool {
+      if (bytes.empty())
+        return true;
+      if (bytes.size() > Capacity - target.length)
+        return false;
+
+      const usize begin = target.length;
+      std::ranges::copy(bytes, target.text.begin() + static_cast<isize>(begin));
+      target.length += bytes.size();
+
+      if (style == Style{})
+        return true;
+      if (target.styleCount > 0) {
+        StyleSpan &last = target.styleStorage[target.styleCount - 1];
+        if (last.end == begin and last.style == style) {
+          last.end = target.length;
+          return true;
+        }
+      }
+      if (target.styleCount == Runs)
+        return false;
+      target.styleStorage[target.styleCount++] = StyleSpan{.begin = begin, .end = target.length, .style = style};
+      return true;
+    }
+  };
+
   constexpr Message() noexcept = default;
 
-  /// Initializes a diagnostic message with the specified severity, code, and summary text.
-  template <usize PrefixN, usize Width>
-  constexpr auto initializeDiagnostic(const Severity severity,
-      const Code<PrefixN, Width> code,
-      const std::string_view summary) noexcept -> void
-    requires(Diagnostic)
-  {
-    // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-    auto textIter = text.begin();
-    auto styleIter = styleStorage.begin();
-
-    // Append newline
-    *textIter++ = '\n';
-
-    // Format and append severity string
-    const std::string_view sevStr = severityName(severity);
-    const auto sevBegin = textIter;
-    textIter = std::ranges::copy(sevStr, textIter).out;
-
-    // Append code
-    *textIter++ = '[';
-    textIter = std::ranges::copy(code.view(), textIter).out;
-    *textIter++ = ']';
-    const auto codeEnd = textIter;
-
-    // Record style span for severity
-    if constexpr (Styles > 0) {
-      *styleIter++ = StyleSpan{
-          .begin = static_cast<usize>(std::distance(text.begin(), sevBegin)),
-          .end = static_cast<usize>(std::distance(text.begin(), textIter)),
-          .style = severityStyle(severity),
-      };
-    }
-
-    // Append summary separator
-    *textIter++ = ':';
-    *textIter++ = ' ';
-
-    // Append summary
-    textIter = std::ranges::copy_n(summary.begin(), summary.length() - 1, textIter).out;
-    const auto summaryEnd = textIter;
-
-    // Record style span for summary
-    if constexpr (Styles > 1) {
-      *styleIter++ = StyleSpan{
-          .begin = static_cast<usize>(std::distance(text.begin(), codeEnd)),
-          .end = static_cast<usize>(std::distance(text.begin(), summaryEnd)),
-          .style = Style{.bold = true},
-      };
-    }
-
-    // Null-terminate
-    *textIter = '\0';
-    length = static_cast<usize>(std::distance(text.begin(), textIter));
-    styleCount = static_cast<usize>(std::distance(styleStorage.begin(), styleIter));
-    // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+  /// Runs `event` through the shared layout, starting from the grammar position `state` of the source message.
+  static constexpr auto emitInto(Message &message, const Event &event, RenderState state) noexcept -> void {
+    Writer writer{message};
+    if (detail::layout(writer, state, event) != WriteResult::Written)
+      detail::capacityViolated();
   }
 
-  /// Appends the specified text to the message without bounds checking, updating the length and
-  /// null-terminating the text.
-  constexpr auto appendUnchecked(std::string_view value) noexcept -> void {
-    auto destination = std::next(text.begin(), static_cast<isize>(length));
-    auto out = std::ranges::copy(value, destination).out;
-    length += value.length();
-    out = {};
-  }
-
-  /// Appends the specified text to the message without bounds checking, updating the length and
-  /// null-terminating the text.
-  constexpr auto appendUnchecked(std::string_view value, usize len) noexcept -> void {
-    auto destination = std::next(text.begin(), static_cast<isize>(length));
-    auto out = std::ranges::copy_n(value.begin(), len, destination).out;
-    length += len;
-    out = {};
+  template <class Result>
+  [[nodiscard]] constexpr auto extendWith(const Event &event) const -> Result {
+    Result result{};
+    std::ranges::copy_n(text.begin(), static_cast<isize>(length), result.text.begin());
+    std::ranges::copy_n(styleStorage.begin(), static_cast<isize>(styleCount), result.styleStorage.begin());
+    result.length = length;
+    result.styleCount = styleCount;
+    Result::emitInto(result, event, RenderState{.section = Current, .started = Diagnostic});
+    return result;
   }
 };
 
-} // namespace Miracle::format
+template <usize N>
+Message(const char (&)[N]) -> Message<N - 1, 0>;
 
-namespace Miracle::format {
+template <usize P, usize W, usize N>
+Message(Severity, Code<P, W>, const char (&)[N])
+    -> Message<detail::headingCapacity(P, W, N - 1), 2, true, Section::Heading>;
 
-/// Computes the maximum number of characters needed to represent a diagnostic message with the given prefix
-/// length, numeric width, and summary length.
-consteval auto computeDiagnosticCapacity(const usize prefixN,
-    const usize width,
-    const usize summaryLen) noexcept -> usize {
-  constexpr usize severityMaxBytes = 7; // "warning"
-  usize prefixBytes = (prefixN > 1) ? prefixN - 1 : 0;
-  // constexpr usize maxNumericBytes = 20;
-  // usize numericBytes = std::max(width, maxNumericBytes);
-  constexpr usize punctuationBytes = 5; // spacing, brackets, separators
+template <usize P, usize W, usize N>
+Message(Severity, Code<P, W>, Fragment<N>) -> Message<detail::headingCapacity(P, W, N), 2, true, Section::Heading>;
 
-  return severityMaxBytes + prefixBytes + width + punctuationBytes + summaryLen;
+/// Constructs an ordinary message from a literal.
+template <usize N>
+[[nodiscard]] constexpr auto message(const char (&text)[N]) noexcept -> Message<N - 1, 0> {
+  return Message<N - 1, 0>{text};
 }
 
-} // namespace Miracle::format
-
-export namespace Miracle::format {
-
-// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
-/// Constructs a diagnostic message with the specified summary text.
-template <usize Capacity>
-Message(const char (&text)[Capacity]) -> Message<Capacity, 0>;
-
-/// Constructs a diagnostic message with the specified severity, code, and summary text.
-template <usize PrefixN, usize Width, usize Capacity>
-Message(Severity, Code<PrefixN, Width>, const char (&text)[Capacity])
-    -> Message<computeDiagnosticCapacity(PrefixN, Width, Capacity),
-        2, // Upper bound on initial style spans (severity + code, summary)
-        true,
-        Section::Plain // Initial completed section before context/fields/notes
-        >;
-
-/// Constructs a message with the specified text.
-template <usize Capacity>
-constexpr auto message(const char (&text)[Capacity]) -> Message<Capacity, 0> {
-  return Message<Capacity, 0>{text, {}};
-}
-
-/// Constructs a message with the specified text and style spans.
-template <usize Capacity, usize Styles>
-constexpr auto message(const char (&text)[Capacity], const std::array<StyleSpan, Styles> styles)
-    -> Message<Capacity, Styles> {
-  return Message<Capacity, Styles>{text, styles};
-}
-
-/// Constructs a diagnostic message with the specified severity, code, and summary text.
-template <usize PrefixN, usize Width, usize SummaryN>
-constexpr auto message(const Severity severity,
-    const Code<PrefixN, Width> code,
-    const char (&summary)[SummaryN]) noexcept // NOLINT
-{
+/// Constructs a diagnostic message from a severity, a code and a literal summary.
+template <usize P, usize W, usize N>
+[[nodiscard]] constexpr auto message(const Severity severity, const Code<P, W> code, const char (&summary)[N]) noexcept {
   return Message{severity, code, summary};
 }
-// NOLINTEND(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
+
+/// Constructs a diagnostic message from a severity, a code and a styled summary fragment.
+template <usize P, usize W, usize N>
+[[nodiscard]] constexpr auto message(const Severity severity, const Code<P, W> code, const Fragment<N> summary) noexcept {
+  return Message{severity, code, summary};
+}
 
 } // namespace Miracle::format
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)

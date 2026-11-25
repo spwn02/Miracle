@@ -3,88 +3,72 @@ export module Miracle.Format:Code;
 import std;
 import Miracle.Numeric;
 
+import :Text;
+import :Emit;
+
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 export namespace Miracle::format {
 
-/// Represents a diagnostic code with a prefix and numeric value, formatted as a string.
-template <usize PrefixN, usize Width = 3>
-struct Code {
-private:
-  /// The maximum number of decimal digits in a u64 value with sign and null-terminator.
-  static constexpr usize maxValueDigits_ = 20;
-  /// The number of bytes in the prefix, excluding the null terminator.
-  static constexpr usize prefixBytes_ = (PrefixN > 1) ? PrefixN - 1 : 0;
-  /// The total capacity of the diagnostic code, including prefix and numeric value.
-  static constexpr usize totalCapacity_ = prefixBytes_ + std::max(Width, maxValueDigits_);
-
+/// Presentation value of a diagnostic code: an owned `PrefixCharacters`-byte prefix and a number padded to at
+/// least `MinDigits` digits. It is not a code registry; the producer of the code stays its authority.
+template <usize PrefixCharacters, usize MinDigits = 3>
+class Code final {
 public:
-  /// The text representation of the diagnostic code, null-terminated for C-style APIs.
-  std::array<char, totalCapacity_ + 1> text{};
-  /// The number of characters in the diagnostic code, excluding the null terminator.
-  usize length{};
+  /// Worst-case number of bytes in the formatted code.
+  static constexpr usize capacity = PrefixCharacters + std::max(MinDigits, detail::maxU64Digits);
 
-  /// Constructs a diagnostic code with the specified prefix and numeric value.
-  constexpr Code(const char (&prefix)[PrefixN], const u64 value) noexcept // NOLINT
-  {
-    auto ptr = text.begin();
+  /// Builds `<prefix><zero-padded number>`; the number is never truncated.
+  constexpr Code(const char (&prefix)[PrefixCharacters + 1], const u64 value) noexcept // NOLINT
+      : numeric_(value) {
+    std::ranges::copy_n(static_cast<const char *>(prefix), static_cast<isize>(PrefixCharacters), text_.begin());
 
-    // Copy prefix if P > 0 (omits prefix if PrefixN <= 1)
-    if constexpr (prefixBytes_ > 0) {
-      ptr =
-          std::ranges::copy(std::span<const char>(static_cast<const char *>(prefix), prefixBytes_), ptr).out;
-    }
+    std::array<char, detail::maxU64Digits> digits{};
+    const usize count = detail::encodeDecimal(value, digits);
+    const usize zeros = MinDigits > count ? MinDigits - count : 0;
 
-    // Convert u64 to string digits
-    std::array<char, maxValueDigits_> buf{};
-    const auto [p_end, ec] = std::to_chars(buf.begin(), buf.end(), value);
-    const auto len = static_cast<usize>(p_end - buf.begin());
-
-    // Calculate minimum width padding: max(Width, decimalDigits(number))
-    const usize targetWidth = std::max(Width, len);
-    const usize zeros = targetWidth - len;
-
-    // Append zero padding
-    ptr = std::ranges::fill_n(ptr, zeros, '0');
-
-    // Append number digits
-    ptr = std::ranges::copy(buf.begin(), p_end, ptr).out;
-
-    // Null-terminate
-    *ptr = '\0';
-
-    length = static_cast<usize>(ptr - text.begin());
+    usize at = PrefixCharacters;
+    for (usize pad{}; pad < zeros; ++pad)
+      text_[at++] = '0';
+    for (usize index{}; index < count; ++index)
+      text_[at++] = digits[index];
+    length_ = at;
   }
 
-  /// Returns the total capacity of the diagnostic code, including prefix and numeric value.
-  [[nodiscard]] static constexpr auto capacity() noexcept -> usize {
-    return totalCapacity_;
-  }
-
-  /// Returns the number of characters in the diagnostic code, excluding the null terminator.
+  /// Returns the number of bytes in the formatted code.
   [[nodiscard]] constexpr auto size() const noexcept -> usize {
-    return length;
+    return length_;
   }
 
-  /// Returns a pointer to the diagnostic code text, null-terminated for C-style APIs.
+  /// Returns the formatted code; not NUL-terminated.
   [[nodiscard]] constexpr auto data() const noexcept -> const char * {
-    return text.data();
+    return text_.data();
   }
 
-  /// Returns a string view of the diagnostic code text, excluding the null terminator.
+  /// Returns the formatted code, e.g. `ITR004`; borrows this object.
   [[nodiscard]] constexpr auto view() const noexcept -> std::string_view {
-    return {text.data(), length};
+    return {text_.data(), length_};
   }
+
+  /// Returns the borrowed projection used by the shared header encoder.
+  [[nodiscard]] constexpr auto codeView() const noexcept -> CodeView {
+    return CodeView{
+        .prefix = std::string_view{text_.data(), PrefixCharacters}, .numeric = numeric_, .minimumDigits = MinDigits};
+  }
+
+private:
+  std::array<char, capacity> text_{};
+  usize length_{};
+  u64 numeric_{};
 };
 
-/// Deduction guide for constructing a diagnostic code with the specified prefix and numeric value, using a
-/// default width of 3.
-template <usize PrefixN, usize Width = 3>
-Code(const char (&prefix)[PrefixN], const u64 value) -> Code<PrefixN, Width>; // NOLINT
+template <usize N>
+Code(const char (&)[N], u64) -> Code<N - 1, 3>;
 
-/// Constructs a diagnostic code with the specified prefix and numeric value, using a default width of 3.
+/// Builds a code with prefix `prefix` and number `value`, padded to at least `Width` digits.
 template <usize Width = 3, usize N>
-[[nodiscard]] constexpr auto code(const char (&prefix)[N], const u64 value) noexcept // NOLINT
-    -> Code<N, Width> {
-  return Code<N, Width>{prefix, value};
+[[nodiscard]] constexpr auto code(const char (&prefix)[N], const u64 value) noexcept -> Code<N - 1, Width> {
+  return Code<N - 1, Width>{prefix, value};
 }
 
 } // namespace Miracle::format
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)

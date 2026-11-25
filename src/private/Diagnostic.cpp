@@ -97,10 +97,10 @@ private:
   };
 
   [[nodiscard]] auto coloursEnabled() const noexcept -> bool {
-    if (options_.presentation == format::Presentation::Plain or options_.color == format::ColorMode::Never) {
+    if (options_.presentation == Presentation::Plain or options_.color == ColorMode::Never) {
       return false;
     }
-    return options_.color == format::ColorMode::Always or options_.color == format::ColorMode::Automatic;
+    return options_.color == ColorMode::Always or options_.color == ColorMode::Automatic;
   }
 
   auto indent(usize depth) -> void {

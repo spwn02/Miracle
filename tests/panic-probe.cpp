@@ -67,10 +67,10 @@ auto main(int argc, char **argv) -> int {
   const PanicOptions options{
       .render =
           {
-              .color = format::ColorMode::Never,
+              .color = ColorMode::Never,
               .source = SourceMode::None,
               .detail = DetailMode::Compact,
-              .presentation = format::Presentation::Plain,
+              .presentation = Presentation::Plain,
           },
       .trace = TraceMode::None,
       .breakpoint = false,

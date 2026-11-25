@@ -234,6 +234,8 @@ target_sources(
          src/public/format/Format.cppm
          src/public/format/Code.cppm
          src/public/format/Fragment.cppm
+         src/public/format/Text.cppm
+         src/public/format/Emit.cppm
          src/public/format/Message.cppm
          src/public/format/Render.cppm
          src/public/format/Style.cppm

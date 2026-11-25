@@ -27,10 +27,10 @@ void handle_contract_violation(const std::contracts::contract_violation &violati
       diagnostic.notes().at(2) == "terminating: true";
 
   const String text = render(diagnostic,
-      {.color = format::ColorMode::Never,
+      {.color = ColorMode::Never,
           .source = SourceMode::Location,
           .detail = DetailMode::Compact,
-          .presentation = format::Presentation::Plain});
+          .presentation = Presentation::Plain});
   std::cerr << text;
   std::cerr.flush();
   constexpr int successExit = 42;

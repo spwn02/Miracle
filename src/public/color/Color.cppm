@@ -3,7 +3,6 @@ export module Miracle.Color;
 import std;
 
 import Miracle.Numeric;
-import Miracle.Concepts;
 
 export namespace Miracle {
 
@@ -34,11 +33,13 @@ struct Color final {
     return Color{.red = red, .green = green, .blue = blue};
   }
 
-  /// Creates a new Color instance from the specified red, green, and blue components, with bounds checking.
-  [[nodiscard]] static constexpr auto checkedRgb(const Numeric auto red,
-      const Numeric auto green,
-      const Numeric auto blue) noexcept -> std::optional<Color> {
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+  /// Creates a Color from arbitrary integral channel values, or `nullopt` when any channel is outside 0..255.
+  /// `bool` and floating-point inputs do not participate; each channel is range-checked before narrowing.
+  template <std::integral R, std::integral G, std::integral B>
+    requires(not std::same_as<std::remove_cv_t<R>, bool> and not std::same_as<std::remove_cv_t<G>, bool> and
+             not std::same_as<std::remove_cv_t<B>, bool>)
+  [[nodiscard]] static constexpr auto checkedRgb(const R red, const G green, const B blue) noexcept
+      -> std::optional<Color> {
     if (not std::in_range<u8>(red) or not std::in_range<u8>(green) or not std::in_range<u8>(blue))
         [[unlikely]]
       return std::nullopt;
@@ -46,7 +47,7 @@ struct Color final {
     return Color{.red = static_cast<u8>(red), .green = static_cast<u8>(green), .blue = static_cast<u8>(blue)};
   }
 
-  /// Creates a new Color instance from the specified 24-bit RGB value.
+  /// Creates a Color from a 0xRRGGBB value; any bit above the 24-bit range yields `nullopt`.
   [[nodiscard]] static constexpr auto hex(const u32 rgb24) noexcept -> std::optional<Color> {
     // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
     if (rgb24 > 0xFFFFFF) [[unlikely]]
@@ -58,47 +59,76 @@ struct Color final {
     // NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
   }
 
-  /// Creates a new Color instance from the specified hexadecimal color string (e.g., "#RRGGBB" or "#RGB").
-  [[nodiscard]] static constexpr auto parseHex(std::string_view text) noexcept -> std::optional<Color> {
+  /// Parses exactly `#RRGGBB` or `#RGB` (case-insensitive ASCII hex digits). A short digit `n` expands to
+  /// `17 * n`. A missing `#`, a `0x` prefix, whitespace, alpha or any other length yields `nullopt`.
+  [[nodiscard]] static constexpr auto parseHex(const std::string_view text) noexcept -> std::optional<Color> {
     // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    if (text.empty()) [[unlikely]]
+    if ((text.size() != 4 and text.size() != 7) or text.front() != '#') [[unlikely]]
       return std::nullopt;
 
-    if (text.front() == '#')
-      text.remove_prefix(1);
-
-    if (text.length() != 3 and text.length() != 6) [[unlikely]]
+    const auto digit = [](const char character) noexcept -> std::optional<u8> {
+      if (character >= '0' and character <= '9')
+        return static_cast<u8>(character - '0');
+      if (character >= 'a' and character <= 'f')
+        return static_cast<u8>(character - 'a' + 10);
+      if (character >= 'A' and character <= 'F')
+        return static_cast<u8>(character - 'A' + 10);
       return std::nullopt;
+    };
 
-    u32 num{};
-
-    const auto res = std::from_chars(text.begin(), text.end(), num, 16);
-    if (not res) [[unlikely]]
-      return std::nullopt;
-
-    if (text.length() == 3)
-      num |= (num << 12);
-
-    return hex(num);
+    const bool shorthand = text.size() == 4;
+    std::array<u8, 3> channels{};
+    for (usize index{}; index < channels.size(); ++index) {
+      if (shorthand) {
+        const auto nibble = digit(text[1 + index]);
+        if (not nibble) [[unlikely]]
+          return std::nullopt;
+        channels[index] = static_cast<u8>(17 * *nibble);
+      } else {
+        const auto high = digit(text[1 + (2 * index)]);
+        const auto low = digit(text[2 + (2 * index)]);
+        if (not high or not low) [[unlikely]]
+          return std::nullopt;
+        channels[index] = static_cast<u8>((16 * *high) + *low);
+      }
+    }
+    return Color{.red = channels[0], .green = channels[1], .blue = channels[2]};
     // NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
   }
 
-  /// Creates a new Color instance from the specified HSV color.
+  /// Creates a Color from HSV, or `nullopt` for non-finite components, hue outside [0, 360) or saturation and
+  /// value outside [0, 1]. Zero saturation yields gray; channels are quantized to nearest, halves up.
   [[nodiscard]] static constexpr auto fromHsv(const Hsv hsv) noexcept -> std::optional<Color> {
     // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
-    if (not std::isfinite(hsv.hueDegrees) or not std::isfinite(hsv.saturation) or
-        not std::isfinite(hsv.value) or (hsv.hueDegrees < 0 or hsv.hueDegrees >= 360) or
-        (hsv.saturation < 0 or hsv.saturation > 1) or (hsv.value < 0 or hsv.value > 1)) [[unlikely]]
+    const auto [hue, saturation, value] = hsv;
+    if (not std::isfinite(hue) or not std::isfinite(saturation) or not std::isfinite(value) or hue < 0 or
+        hue >= 360 or saturation < 0 or saturation > 1 or value < 0 or value > 1) [[unlikely]]
       return std::nullopt;
 
-    const auto func = [=](u8 n) -> f64 {
-      const f64 chroma = std::fmod(n + (hsv.hueDegrees / 60), 6);
-      return hsv.value -
-             (hsv.value * hsv.saturation * std::max(f64{0.0}, std::min({chroma, 4 - chroma, f64{1.0}})));
+    const f64 chroma = value * saturation;
+    const f64 scaledHue = hue / 60;
+    const auto sector = static_cast<i32>(scaledHue);
+    const f64 fraction = scaledHue - sector;
+    const f64 second = chroma * (sector % 2 == 0 ? fraction : 1 - fraction);
+    const f64 floor = value - chroma;
+
+    f64 red{};
+    f64 green{};
+    f64 blue{};
+    switch (sector) {
+      case 0: red = chroma, green = second; break;
+      case 1: red = second, green = chroma; break;
+      case 2: green = chroma, blue = second; break;
+      case 3: green = second, blue = chroma; break;
+      case 4: red = second, blue = chroma; break;
+      default: red = chroma, blue = second; break;
+    }
+
+    const auto quantize = [](const f64 channel) noexcept -> u8 {
+      return static_cast<u8>(std::clamp(static_cast<i32>((channel * 255) + 0.5), 0, 255));
     };
-    return Color::rgb(static_cast<u8>(std::floor((func(5) * 255) + 0.5)),
-        static_cast<u8>(std::floor((func(3) * 255) + 0.5)),
-        static_cast<u8>(std::floor((func(1) * 255) + 0.5)));
+    return Color{
+        .red = quantize(red + floor), .green = quantize(green + floor), .blue = quantize(blue + floor)};
     // NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
   }
 

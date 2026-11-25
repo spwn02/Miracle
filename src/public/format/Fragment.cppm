@@ -5,63 +5,73 @@ import Miracle.Numeric;
 
 import :Style;
 
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 export namespace Miracle::format {
 
-/// Represents a fragment of text with an associated style.
-template <usize Capacity>
-struct Fragment {
-  /// The text content of the fragment.
-  std::array<char, Capacity + 1> text{};
-  /// The style associated with the fragment.
-  Style style{};
-
-  /// Constructs a text fragment with the specified text and style.
-  constexpr Fragment(const std::array<char, Capacity> &text, const Style style = {}) noexcept
-      : style(style) {
-    std::ranges::copy(text, this->text.begin());
+/// Owns exactly `Characters` text bytes plus one `Style`. Embeds no ANSI; `data()` and `view()` are plain text.
+template <usize Characters>
+class Fragment final {
+public:
+  /// Copies a string literal without its terminating NUL.
+  constexpr Fragment(const char (&text)[Characters + 1], const Style style = {}) noexcept // NOLINT
+      : style_(style) {
+    std::ranges::copy_n(static_cast<const char *>(text), static_cast<isize>(Characters), text_.begin());
   }
 
-  /// Constructs a text fragment with the specified text and style from a string literal.
-  constexpr Fragment(const char (&text)[Capacity], const Style style = {}) noexcept // NOLINT
-      : style(style) {
-    std::ranges::copy(text, this->text.begin());
+  /// Copies exactly `Characters` bytes, including embedded NULs.
+  constexpr Fragment(const std::array<char, Characters> &text, const Style style = {}) noexcept // NOLINT
+      : text_(text)
+      , style_(style) {}
+
+  /// Returns the number of owned bytes.
+  [[nodiscard]] static constexpr auto size() noexcept -> usize {
+    return Characters;
   }
 
-  // Returns the number of characters in the fragment, excluding the null terminator.
-  [[nodiscard]] constexpr auto size() const noexcept -> usize {
-    return Capacity;
-  }
-
-  /// Returns a pointer to the text content of the fragment, null-terminated for C-style APIs.
+  /// Returns the owned bytes; not NUL-terminated.
   [[nodiscard]] constexpr auto data() const noexcept -> const char * {
-    return text.data();
+    return text_.data();
   }
 
-  /// Returns a string view of the text content of the fragment, excluding the null terminator.
+  /// Returns the owned bytes as a view that borrows this fragment.
   [[nodiscard]] constexpr auto view() const noexcept -> std::string_view {
-    return {text.data(), Capacity};
+    return {text_.data(), Characters};
   }
+
+  /// Returns the style associated with the whole fragment.
+  [[nodiscard]] constexpr auto style() const noexcept -> const Style & {
+    return style_;
+  }
+
+private:
+  std::array<char, Characters> text_{};
+  Style style_{};
 };
 
-/// Constructs a text fragment with the optionally specified style from a string literal.
 template <usize N>
-[[nodiscard]] constexpr auto fragment(const char (&text)[N], const Style style = {}) noexcept // NOLINT
-    -> Fragment<N> {
-  return Fragment<N>{text, style};
+Fragment(const char (&)[N], Style = {}) -> Fragment<N - 1>;
+
+template <usize N>
+Fragment(const std::array<char, N> &, Style = {}) -> Fragment<N>;
+
+/// Constructs a fragment from a string literal; the terminating NUL is not stored.
+template <usize N>
+[[nodiscard]] constexpr auto fragment(const char (&text)[N], const Style style = {}) noexcept -> Fragment<N - 1> {
+  return Fragment<N - 1>{text, style};
 }
 
-/// Constructs a text fragment with the specified style from a character array.
+/// Constructs a fragment from exactly `N` bytes, including embedded NULs.
 template <usize N>
 [[nodiscard]] constexpr auto fragment(const std::array<char, N> &text, const Style style = {}) noexcept
     -> Fragment<N> {
   return Fragment<N>{text, style};
 }
 
-/// Constructs a text fragment with the specified style from a string literal.
+/// Clarity alias for `fragment(literal, style)`.
 template <usize N>
-[[nodiscard]] constexpr auto styled(const char (&text)[N], const Style style) noexcept // NOLINT
-    -> Fragment<N> {
-  return Fragment<N>{text, style};
+[[nodiscard]] constexpr auto styled(const char (&text)[N], const Style style) noexcept -> Fragment<N - 1> {
+  return Fragment<N - 1>{text, style};
 }
 
 } // namespace Miracle::format
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
