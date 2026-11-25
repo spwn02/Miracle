@@ -100,3 +100,6 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 - Incremental `tests`-preset rebuild after appending a comment, 3 runs, median (min–max): private .cpp 2.4 s (1.7–3.3) → 2.5 s (2.2–3.4); `Numeric.cppm` (leaf) 54.4 s (49.1–68.0) → 68.7 s (47.2–83.5); `Iter.cppm` 54.6 s (48.6–65.0) → 63.2 s (51.8–68.3). Ranges overlap heavily; the tree builds ~27 more targets (18 import probes, extra tests), which accounts for part of the public-edit delta. Not isolated per target.
 - Cold-build peak RSS of the largest compiler process: 1.50 GB → 1.50 GB (unchanged).
 - Disabled-feature matrix: no optional build feature is registered in the main project yet (CMakeLists.txt: "no optional heavy feature"), so the matrix is vacuous; gating logic is covered by the existing `Miracle.Features.*` CMake/compile-fail ctest cases (green).
+
+### M.8 Meta Query stress (2026-11-25)
+- `src/public/meta` is byte-identical to the baseline, so Query behaviour is unchanged by construction. Compile-only fixtures (1 run, Debug, reference compiler): RawOnce1024 13.3 s → 13.1 s; MiracleOnce1024 17.3 s → 15.3 s. The `Repeat` fixtures fail with "constexpr evaluation hit maximum step limit" identically on the HEAD baseline and the current tree (pre-existing; they need the step-limit flag used for the recorded baseline) — not a regression.
