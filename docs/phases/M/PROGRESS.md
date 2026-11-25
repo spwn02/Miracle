@@ -103,3 +103,10 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 
 ### M.8 Meta Query stress (2026-11-25)
 - `src/public/meta` is byte-identical to the baseline, so Query behaviour is unchanged by construction. Compile-only fixtures (1 run, Debug, reference compiler): RawOnce1024 13.3 s → 13.1 s; MiracleOnce1024 17.3 s → 15.3 s. The `Repeat` fixtures fail with "constexpr evaluation hit maximum step limit" identically on the HEAD baseline and the current tree (pre-existing; they need the step-limit flag used for the recorded baseline) — not a regression.
+
+### M.8 remaining gates (2026-11-25)
+- Real working tree (including uncommitted `examples/meta.cpp` and `StaticString.cppm` edits), fresh out-of-tree build dir, reference compiler, Debug + tests/examples: builds; ctest 98/98.
+- GCC: not applicable on this branch (`cmake/toolchains/GCC.cmake` does not exist; GCC support lives on `origin/gcc`).
+- CodeQL: not installed here; extraction coverage unverified (known limitation).
+- clangd smoke: system clangd rejects the reference compiler's PCMs (`ast_file_version_too_old`), so semantic results are unusable; the compile database itself is generated. Needs a clangd from the reference toolchain.
+- `scripts/ci/verify-container.sh`: not run (needs the container toolchain); its added diagnostics-consumer steps were run by hand.
