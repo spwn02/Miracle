@@ -3,7 +3,7 @@ export module Miracle.Panic;
 import std;
 import Miracle.Numeric;
 import Miracle.Types;
-import Miracle.Diagnostic;
+import Miracle.Diagnostics;
 import Miracle.Error;
 
 namespace Miracle {

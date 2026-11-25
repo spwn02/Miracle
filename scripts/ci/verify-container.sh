@@ -71,4 +71,9 @@ cmake -S tests/consumer/find-package -B build/g5-consumer-package -G Ninja \
   -DCMAKE_PREFIX_PATH="$PWD/build/g5-install"
 cmake --build build/g5-consumer-package --parallel 2
 ./build/g5-consumer-package/miracle_consumer
+cmake -S tests/consumer/diagnostics -B build/g5-consumer-diagnostics -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE" \
+  -DCMAKE_PREFIX_PATH="$PWD/build/g5-install"
+cmake --build build/g5-consumer-diagnostics --parallel 2
+./build/g5-consumer-diagnostics/miracle_diagnostics_consumer
 echo "PASS: all reference C++26 container self-tests, examples and consumers"

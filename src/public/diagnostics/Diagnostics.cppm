@@ -1,10 +1,10 @@
-export module Miracle.Diagnostic;
+export module Miracle.Diagnostics;
 
 import std;
 import Miracle.Numeric;
 import Miracle.Types;
 import Miracle.StaticString;
-import Miracle.Format;
+export import Miracle.Format;
 
 export namespace Miracle {
 
@@ -79,6 +79,11 @@ struct DiagnosticCodeDescriptor final {
   u64 numeric{};
   /// Resolved minimum zero-padding width.
   usize alignment{};
+
+  /// Borrowed view for Format's shared code encoder; valid while the descriptor lives.
+  [[nodiscard]] auto codeView() const noexcept -> format::CodeView {
+    return format::CodeView{.prefix = prefix, .numeric = numeric, .minimumDigits = alignment};
+  }
 };
 
 } // namespace Miracle

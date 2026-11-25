@@ -6,7 +6,7 @@ export import Miracle.Range;
 export import Miracle.Iter;
 export import Miracle.StaticString;
 export import Miracle.Feature;
-export import Miracle.Diagnostic;
+export import Miracle.Diagnostics;
 export import Miracle.Error;
 export import Miracle.Panic;
 export import Miracle.Fs;

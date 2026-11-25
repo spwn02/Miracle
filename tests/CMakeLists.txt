@@ -316,6 +316,12 @@ miracle_add_compile_fail_test(
 miracle_add_compile_fail_test(
   DiagnosticAlignWithoutPrefix compile-fail/diagnostic-align-without-prefix.cpp
   "because 'InvalidAlignment' does not satisfy 'DiagnosticCode'")
+miracle_add_compile_fail_test(
+  DiagnosticNonEnum compile-fail/diagnostic-non-enum.cpp
+  "because 'NotAnEnum' does not satisfy 'DiagnosticCode'")
+miracle_add_compile_fail_test(
+  DiagnosticEmptyPrefix compile-fail/diagnostic-empty-prefix.cpp
+  "because 'EmptyPrefix' does not satisfy 'DiagnosticCode'")
 
 miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cpp

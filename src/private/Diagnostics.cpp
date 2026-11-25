@@ -1,30 +1,40 @@
-module Miracle.Diagnostic;
+module Miracle.Diagnostics;
 
 namespace Miracle {
 
 namespace {
 
-[[nodiscard]] constexpr auto severityAnsi(Severity severity) noexcept -> StringView {
-  switch (severity) {
-    case Severity::Debug: return "\033[1;36m";
-    case Severity::Note: return "\033[1;34m";
-    case Severity::Warning: return "\033[1;33m";
-    case Severity::Error: return "\033[1;31m";
-  }
-  return "\033[1;31m";
-}
+using format::Style;
+using format::TerminalColor;
 
-constexpr StringView ansiReset = "\033[0m";
-constexpr StringView sourceAnsi = "\033[1;34m";
-constexpr StringView auxiliaryAnsi = "\033[1;36m";
-constexpr StringView helpAnsi = "\033[1;32m";
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+constexpr Style sourceStyle{.foreground = TerminalColor::indexed(12), .bold = true};
+constexpr Style auxiliaryStyle{.foreground = TerminalColor::indexed(14), .bold = true};
+constexpr Style helpStyle{.foreground = TerminalColor::indexed(10), .bold = true};
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+
+/// Byte destination over a standard stream, adapting it to Format's `TextSink` protocol.
+class StreamSink final {
+public:
+  explicit StreamSink(std::ostream &output) noexcept
+      : output_(output) {
+  }
+
+  auto write(const StringView text) -> bool {
+    output_.get().write(text.data(), static_cast<std::streamsize>(text.size()));
+    return static_cast<bool>(output_.get());
+  }
+
+private:
+  std::reference_wrapper<std::ostream> output_;
+};
 
 [[nodiscard]] constexpr auto spanMarker(SpanRole role) noexcept -> char {
   return role == SpanRole::Primary ? '^' : '-';
 }
 
-[[nodiscard]] constexpr auto spanAnsi(SpanRole role, Severity severity) noexcept -> StringView {
-  return role == SpanRole::Primary ? severityAnsi(severity) : auxiliaryAnsi;
+[[nodiscard]] constexpr auto spanStyle(SpanRole role, Severity severity) noexcept -> Style {
+  return role == SpanRole::Primary ? format::severityStyle(severity) : auxiliaryStyle;
 }
 
 [[nodiscard]] auto displayPath(std::source_location location) -> String {
@@ -80,13 +90,17 @@ constexpr StringView helpAnsi = "\033[1;32m";
 class DiagnosticRenderer final {
 public:
   DiagnosticRenderer(std::ostream &output, RenderOptions options)
-      : output_(output)
+      : sink_(output)
+      , state_{.policy = {.presentation = options.presentation, .color = options.color}}
+      , writer_(sink_, state_)
       , options_(options) {
   }
 
   auto render(const Diagnostic &diagnostic) -> void {
     renderOne(diagnostic, 0, false);
     renderCauses(diagnostic);
+    // Console style must be back to default after every diagnostic tree.
+    auto _ = writer_.finish();
   }
 
 private:
@@ -96,52 +110,27 @@ private:
     usize depth{};
   };
 
-  [[nodiscard]] auto coloursEnabled() const noexcept -> bool {
-    if (options_.presentation == Presentation::Plain or options_.color == ColorMode::Never) {
-      return false;
-    }
-    return options_.color == ColorMode::Always or options_.color == ColorMode::Automatic;
+  /// Writes `text` under `style`; the shared writer owns SGR encoding and plain/terminal suppression.
+  auto put(const StringView text, const Style &style = {}) -> void {
+    auto _ = writer_.put(text, style);
+  }
+
+  auto putNumber(const u64 value, const Style &style = {}) -> void {
+    put(std::to_string(value), style);
   }
 
   auto indent(usize depth) -> void {
-    for (usize index{}; index < depth * 2; ++index) {
-      output().put(' ');
-    }
-  }
-
-  auto beginStyle(StringView ansi) -> void {
-    if (coloursEnabled()) {
-      output() << ansi;
-    }
-  }
-
-  auto endStyle() -> void {
-    if (coloursEnabled()) {
-      output() << ansiReset;
-    }
-  }
-
-  auto renderCode(const DiagnosticCodeDescriptor &code) -> void {
-    if (code.prefix.empty()) {
-      return;
-    }
-    output().put('[');
-    output() << code.prefix;
-    if (code.alignment == 0) {
-      output() << code.numeric;
-    } else {
-      output() << std::format("{:0{}}", code.numeric, code.alignment);
-    }
-    output().put(']');
+    put(String(depth * 2, ' '));
   }
 
   auto renderHeader(const Diagnostic &diagnostic, usize depth) -> void {
     indent(depth);
-    beginStyle(severityAnsi(diagnostic.severity()));
-    output() << severityName(diagnostic.severity());
-    renderCode(diagnostic.code());
-    endStyle();
-    output() << ": " << diagnostic.messageText() << '\n';
+    const Style style = format::severityStyle(diagnostic.severity());
+    put(severityName(diagnostic.severity()), style);
+    auto _ = format::writeCode(writer_, diagnostic.code().codeView(), style);
+    put(": ");
+    put(diagnostic.messageText());
+    put("\n");
   }
 
   auto renderLocation(std::source_location location, usize depth) -> void {
@@ -149,10 +138,18 @@ private:
       return;
     }
     indent(depth);
-    beginStyle(sourceAnsi);
-    output() << "--> ";
-    endStyle();
-    output() << displayPath(location) << ':' << location.line() << ':' << location.column() << '\n';
+    put("--> ", sourceStyle);
+    put(displayPath(location));
+    put(":");
+    putNumber(location.line());
+    put(":");
+    putNumber(location.column());
+    put("\n");
+  }
+
+  auto renderGutter(usize depth) -> void {
+    indent(depth);
+    put(" | ", sourceStyle);
   }
 
   auto renderSnippet(const DiagnosticSpan &span, Severity severity, usize depth) -> void {
@@ -182,41 +179,27 @@ private:
     const usize lineEnd = lineEndFound == StringView::npos ? source.size() : lineEndFound;
     const StringView line = source.substr(lineStart, lineEnd - lineStart);
 
-    indent(depth);
-    beginStyle(sourceAnsi);
-    output() << " | ";
-    endStyle();
-    output() << line << '\n';
+    renderGutter(depth);
+    put(line);
+    put("\n");
 
+    const Style marker = spanStyle(span.spanRole(), severity);
     if (span.selection()) {
       const usize markerBegin = std::min(begin, lineEnd) - lineStart;
       const usize markerEnd = std::min(std::max(end, begin + 1UZ), lineEnd) - lineStart;
-      indent(depth);
-      beginStyle(sourceAnsi);
-      output() << " | ";
-      endStyle();
-      for (usize index{}; index < markerBegin; ++index) {
-        output().put(' ');
-      }
+      renderGutter(depth);
+      put(String(markerBegin, ' '));
       const usize markerLength = std::max(1UZ, markerEnd > markerBegin ? markerEnd - markerBegin : 1);
-      beginStyle(spanAnsi(span.spanRole(), severity));
-      for (usize index{}; index < markerLength; ++index) {
-        output().put(spanMarker(span.spanRole()));
-      }
+      put(String(markerLength, spanMarker(span.spanRole())), marker);
       if (not span.labelText().empty()) {
-        output() << ' ' << span.labelText();
+        put(" ", marker);
+        put(span.labelText(), marker);
       }
-      endStyle();
-      output().put('\n');
+      put("\n");
     } else if (not span.labelText().empty()) {
-      indent(depth);
-      beginStyle(sourceAnsi);
-      output() << " | ";
-      endStyle();
-      beginStyle(spanAnsi(span.spanRole(), severity));
-      output() << span.labelText();
-      endStyle();
-      output() << '\n';
+      renderGutter(depth);
+      put(span.labelText(), marker);
+      put("\n");
     }
   }
 
@@ -229,20 +212,20 @@ private:
     }
   }
 
+  auto renderLabelled(const StringView label, const Style &style, const String &text, usize depth) -> void {
+    indent(depth);
+    put(label, style);
+    put(" ");
+    put(text);
+    put("\n");
+  }
+
   auto renderNotes(const Diagnostic &diagnostic, usize depth) -> void {
     for (const String &note : diagnostic.notes()) {
-      indent(depth);
-      beginStyle(auxiliaryAnsi);
-      output() << "note:";
-      endStyle();
-      output() << ' ' << note << '\n';
+      renderLabelled("note:", auxiliaryStyle, note, depth);
     }
     for (const String &help : diagnostic.helpMessages()) {
-      indent(depth);
-      beginStyle(helpAnsi);
-      output() << "help:";
-      endStyle();
-      output() << ' ' << help << '\n';
+      renderLabelled("help:", helpStyle, help, depth);
     }
   }
 
@@ -251,15 +234,14 @@ private:
       return;
     }
     indent(depth);
-    beginStyle(auxiliaryAnsi);
-    output() << "stacktrace:";
-    endStyle();
-    output().put('\n');
+    put("stacktrace:", auxiliaryStyle);
+    put("\n");
     std::istringstream input{std::to_string(*diagnostic.stacktrace())};
     String line;
     while (std::getline(input, line)) {
       indent(depth + 1);
-      output() << line << '\n';
+      put(line);
+      put("\n");
     }
   }
 
@@ -268,20 +250,21 @@ private:
       return;
     }
     indent(depth);
-    beginStyle(auxiliaryAnsi);
-    output() << "diagnostic:";
-    endStyle();
-    output() << ' ' << diagnostic.code().domain << "::" << diagnostic.code().enumerator << " ("
-             << diagnostic.code().numeric << ")\n";
+    put("diagnostic:", auxiliaryStyle);
+    put(" ");
+    put(diagnostic.code().domain);
+    put("::");
+    put(diagnostic.code().enumerator);
+    put(" (");
+    putNumber(diagnostic.code().numeric);
+    put(")\n");
   }
 
   auto renderOne(const Diagnostic &diagnostic, usize depth, bool cause) -> void {
     if (cause) {
       indent(depth);
-      beginStyle(auxiliaryAnsi);
-      output() << "caused by:";
-      endStyle();
-      output().put('\n');
+      put("caused by:", auxiliaryStyle);
+      put("\n");
       ++depth;
     }
     renderHeader(diagnostic, depth);
@@ -322,11 +305,9 @@ private:
     }
   }
 
-  [[nodiscard]] auto output() noexcept -> std::ostream & {
-    return output_.get();
-  }
-
-  std::reference_wrapper<std::ostream> output_;
+  StreamSink sink_;
+  format::RenderState state_;
+  format::AnsiWriter<StreamSink> writer_;
   RenderOptions options_;
 };
 

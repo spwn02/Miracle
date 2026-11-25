@@ -224,7 +224,7 @@ target_sources(
          src/public/feature/Requirement.cppm
          src/public/feature/Feature.cppm
          src/public/iter/Iter.cppm
-         src/public/diagnostic/Diagnostic.cppm
+         src/public/diagnostics/Diagnostics.cppm
          src/public/error/Error.cppm
          src/public/panic/Panic.cppm
          src/public/fs/Fs.cppm
@@ -262,7 +262,7 @@ target_sources(
          src/public/derive/Bitflags.cppm
          src/public/derive/Debug.cppm
          ${MIRACLE_BUILD_FEATURE_SOURCES}
-  PRIVATE src/private/Diagnostic.cpp src/private/Error.cpp
+  PRIVATE src/private/Diagnostics.cpp src/private/Error.cpp
           src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp
           "${miracle_memory_source}")
 

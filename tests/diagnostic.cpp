@@ -99,10 +99,10 @@ static_assert(not std::copy_constructible<DiagnosticSpan>);
 static_assert(not std::is_copy_assignable_v<DiagnosticSpan>);
 
 constexpr RenderOptions plainCompact{
-    .color = Miracle::ColorMode::Never,
+    .color = ColorMode::Never,
     .source = SourceMode::None,
     .detail = Miracle::DetailMode::Compact,
-    .presentation = Miracle::Presentation::Plain,
+    .presentation = Presentation::Plain,
 };
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto codeDescriptors() -> void {
@@ -151,10 +151,10 @@ constexpr RenderOptions plainCompact{
   Switch::check(not prefixless.contains("\033["));
 
   const String forcedColourPlain = render(Diagnostic::error(Code::Fallback),
-      {.color = Miracle::ColorMode::Always,
+      {.color = ColorMode::Always,
           .source = SourceMode::None,
           .detail = Miracle::DetailMode::Compact,
-          .presentation = Miracle::Presentation::Plain});
+          .presentation = Presentation::Plain});
   Switch::check(not forcedColourPlain.contains("\033["));
 }
 
@@ -170,17 +170,17 @@ constexpr RenderOptions plainCompact{
                                       .label("expected a value"));
 
   const String styled = render(diagnostic,
-      {.color = Miracle::ColorMode::Always,
+      {.color = ColorMode::Always,
           .source = SourceMode::Snippet,
           .detail = Miracle::DetailMode::Full,
-          .presentation = Miracle::Presentation::Terminal});
+          .presentation = Presentation::Terminal});
 
-  Switch::check(styled.contains("\033[1;31merror[E042]\033[0m"));
-  Switch::check(styled.contains("\033[1;34m--> \033[0m"));
-  Switch::check(styled.contains("\033[1;31m^^^^^ expected a value\033[0m"));
-  Switch::check(styled.contains("\033[1;36mnote:\033[0m context note"));
-  Switch::check(styled.contains("\033[1;32mhelp:\033[0m actionable help"));
-  Switch::check(styled.contains("\033[1;36mdiagnostic:\033[0m Code::Annotated (42)"));
+  Switch::check(styled.contains("\033[1m\033[38;5;9merror[E042]\033[0m"));
+  Switch::check(styled.contains("\033[1m\033[38;5;12m--> \033[0m"));
+  Switch::check(styled.contains("\033[1m\033[38;5;9m^^^^^ expected a value\033[0m"));
+  Switch::check(styled.contains("\033[1m\033[38;5;14mnote:\033[0m context note"));
+  Switch::check(styled.contains("\033[1m\033[38;5;10mhelp:\033[0m actionable help"));
+  Switch::check(styled.contains("\033[1m\033[38;5;14mdiagnostic:\033[0m Code::Annotated (42)"));
 
   const usize firstLocation = styled.find("--> ");
   Switch::require(firstLocation != String::npos);
@@ -207,10 +207,10 @@ constexpr RenderOptions plainCompact{
                                 .role(SpanRole::Secondary));
 
   const String text = render(diagnostic,
-      {.color = Miracle::ColorMode::Never,
+      {.color = ColorMode::Never,
           .source = SourceMode::Snippet,
           .detail = Miracle::DetailMode::Full,
-          .presentation = Miracle::Presentation::Plain});
+          .presentation = Presentation::Plain});
   Switch::check(text.contains("specific occurrence"));
   Switch::check(text.contains("--> "));
   Switch::check(text.contains("alpha beta gamma"));
@@ -223,12 +223,111 @@ constexpr RenderOptions plainCompact{
   Switch::check(not text.contains("\033["));
 
   const String locationOnly = render(diagnostic,
-      {.color = Miracle::ColorMode::Never,
+      {.color = ColorMode::Never,
           .source = SourceMode::Location,
           .detail = Miracle::DetailMode::Compact,
-          .presentation = Miracle::Presentation::Plain});
+          .presentation = Presentation::Plain});
   Switch::check(locationOnly.contains("--> "));
   Switch::check(not locationOnly.contains("alpha beta gamma"));
+}
+
+namespace {
+
+constexpr RenderOptions snippetOptions{
+    .color = ColorMode::Never,
+    .source = SourceMode::Snippet,
+    .detail = Miracle::DetailMode::Compact,
+    .presentation = Presentation::Plain,
+};
+
+[[nodiscard]] auto snippetOf(DiagnosticSpan span) -> String {
+  return render(Diagnostic::error(Code::Fallback).span(std::move(span)), snippetOptions);
+}
+
+[[nodiscard]] auto afterHeading(const String &text) -> String {
+  const usize newline = text.find('\n');
+  return newline == String::npos ? String{} : text.substr(newline + 1);
+}
+
+[[nodiscard]] auto gutterLines(const String &text) -> Vec<String> {
+  Vec<String> lines;
+  std::istringstream input{text};
+  String line;
+  while (std::getline(input, line)) {
+    if (line.starts_with(" | "))
+      lines.push_back(line);
+  }
+  return lines;
+}
+
+} // namespace
+
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto snippetEdgeCases() -> void {
+  const auto location = std::source_location::current();
+
+  // Empty snippet: no gutter lines at all, even with a label.
+  const String empty = snippetOf(DiagnosticSpan{"", location}.select({.begin = 0, .end = 3}).label("x"));
+  Switch::check(gutterLines(empty).empty());
+
+  // No selection: source line only; label (if any) on its own gutter line, no carets.
+  const String unselected = snippetOf(DiagnosticSpan{"abc def", location});
+  Switch::check(gutterLines(unselected) == Vec<String>{" | abc def"});
+  const String labelled = snippetOf(DiagnosticSpan{"abc def", location}.label("why"));
+  Switch::check(gutterLines(labelled) == Vec<String>{" | abc def", " | why"});
+
+  // Zero-length selection still draws one marker at the offset.
+  const String zero = snippetOf(DiagnosticSpan{"abc def", location}.select({.begin = 4, .end = 4}));
+  Switch::check(gutterLines(zero) == Vec<String>{" | abc def", " |     ^"});
+
+  // Out-of-range offsets clamp to the snippet; huge values never overflow or throw.
+  const String large =
+      snippetOf(DiagnosticSpan{"abc", location}.select({.begin = 2, .end = std::numeric_limits<usize>::max()}));
+  Switch::check(gutterLines(large) == Vec<String>{" | abc", " |   ^"});
+  const String beyond = snippetOf(DiagnosticSpan{"abc", location}.select({.begin = 99, .end = 100}));
+  Switch::check(gutterLines(beyond).size() == 2);
+
+  // Reversed endpoints normalise to the same marker as the ordered pair.
+  const String ordered = snippetOf(DiagnosticSpan{"abcdef", location}.select({.begin = 1, .end = 4}));
+  const String reversed = snippetOf(DiagnosticSpan{"abcdef", location}.select({.begin = 4, .end = 1}));
+  Switch::check(gutterLines(ordered) == Vec<String>{" | abcdef", " |  ^^^"});
+  Switch::check(gutterLines(reversed) == gutterLines(ordered));
+
+  // Multi-line source: only the selection's line is shown; markers are relative to that line.
+  const String multi = snippetOf(DiagnosticSpan{"one\ntwo three\nfour", location}.select({.begin = 8, .end = 13}));
+  Switch::check(gutterLines(multi) == Vec<String>{" | two three", " |     ^^^^^"});
+
+  // A selection crossing a line boundary is truncated at the end of its first line.
+  const String crossing = snippetOf(DiagnosticSpan{"ab\ncd", location}.select({.begin = 1, .end = 5}));
+  Switch::check(gutterLines(crossing) == Vec<String>{" | ab", " |  ^"});
+
+  // Secondary spans use '-' markers.
+  const String secondary =
+      snippetOf(DiagnosticSpan{"abc", location}.select({.begin = 0, .end = 2}).role(SpanRole::Secondary));
+  Switch::check(gutterLines(secondary) == Vec<String>{" | abc", " | --"});
+}
+
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto zeroWidthCodes() -> void {
+  // align(0) / no align: numeric printed without padding; padding never truncates wide values.
+  const String unpadded = render(Diagnostic::error(Code::Fallback), plainCompact);
+  Switch::check(unpadded.starts_with("error[E007]"));
+  const String wide = render(Diagnostic::error(LargeCode::Value), plainCompact);
+  Switch::check(wide.starts_with("error[L1234]"));
+}
+
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto styleResetsAfterTree() -> void {
+  const auto diagnostic = Diagnostic::error(Code::Annotated).note("n").cause(Diagnostic::warning(Code::Zero));
+  const String text = render(diagnostic,
+      {.color = ColorMode::Always,
+          .source = SourceMode::None,
+          .detail = Miracle::DetailMode::Compact,
+          .presentation = Presentation::Terminal});
+  // Every SGR start is matched by a reset before the next text/newline; the tree never ends styled.
+  Switch::check(text.ends_with("\n"));
+  const usize lastReset = text.rfind("\033[0m");
+  const usize lastStart = text.rfind("\033[1m");
+  Switch::require(lastReset != String::npos);
+  Switch::check(lastStart == String::npos or lastStart < lastReset);
+  Switch::check(text.find("\033[", text.rfind('\n') + 1) == String::npos);
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto errorAdapter() -> void {
