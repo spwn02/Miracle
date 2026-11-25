@@ -53,6 +53,15 @@ set_target_properties(
 
 target_link_libraries(MiracleTests PRIVATE Miracle::Miracle Switch::Switch)
 
+# ALG-MOD-001: provider/ownership/acyclicity/forbidden-edge validation over the actual sources.
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+  add_test(NAME Miracle.Modules.Graph
+           COMMAND "${Python3_EXECUTABLE}"
+                   "${PROJECT_SOURCE_DIR}/scripts/ci/module-graph.py" --root
+                   "${PROJECT_SOURCE_DIR}")
+endif()
+
 # Every primary module must be consumable through a direct import alone: no umbrella, no transitive
 # reliance on another module's re-export. One probe per module; all are built with the normal test build.
 file(GLOB miracle_import_probes CONFIGURE_DEPENDS

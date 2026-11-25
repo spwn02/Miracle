@@ -8,6 +8,8 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Added
 
+- Added the standalone `Miracle.Color` (checked sRGB8, strict `#RGB`/`#RRGGBB` parsing, HSV conversion) and `Miracle.Format` (inferred-capacity `Message`, styled `Fragment`, typed `Code`, event/sink protocol with one shared layout and ANSI encoder) modules; `Severity`, `ColorMode` and `Presentation` moved to `Miracle`/Format.
+- Split the monolithic `Miracle` module into independently importable named modules (`Miracle.Diagnostics`, `Error`, `Panic`, `Fs`, `Concepts`, `Memory`, `Profiling`, `Debug`, `Bitflags`, `Iter`, …) behind the unchanged `import Miracle;` umbrella; `Miracle.Iter` and the Meta Query implementation are decomposed into acyclic interface partitions.
 - Added lazy `Iter` pipelines with universal range/integer/Option/Result construction, adaptive tuple/reflected-aggregate callable invocation, positional slicing, Rust-inspired adaptors and terminals, and standard-range capability preservation.
 - Added standard-backed `empty`, `once`, `repeat`, and `repeatN` Iter sources plus allocation-free `onceWith`, `repeatWith`, `fromFn`, and `successors` generated sources.
 - Added `copied`, `cloned`, and forward-range `cycle` adaptors; reverse `nthBack`, `rFind`, and `rFold` terminals; and C++-native lexicographical `compare`.

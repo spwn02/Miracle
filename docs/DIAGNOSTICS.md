@@ -4,18 +4,21 @@ Miracle currently introduces structured diagnostic foundation and the terminal `
 
 ## Modules
 
-`import Miracle;` re-exports:
+`import Miracle;` re-exports the independently importable named modules:
 
 ```text
-Miracle:Diagnostic
-Miracle:Error
-Miracle:Panic
+Miracle.Diagnostics
+Miracle.Error
+Miracle.Panic
 ```
+
+`Miracle.Diagnostics` re-exports `Miracle.Format`, which owns `Severity`, `ColorMode` and `Presentation`, the style
+vocabulary and the single SGR encoder used by both the compile-time `format::Message` and the runtime renderer.
 
 The dependency direction is one-way:
 
 ```text
-Types / StaticString -> Diagnostic -> Error -> Panic
+Numeric / Color -> Format -> Diagnostics -> Error -> Panic
 ```
 
 ## Diagnostic code domains

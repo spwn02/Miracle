@@ -199,6 +199,30 @@ constexpr auto ansiAlways = format::RenderPolicy{Presentation::Terminal, ColorMo
 
 } // namespace
 
+// TEST-FMT-STATIC-004: a reflection-derived (long) type name is copied into an owned fragment whose extent is the
+// name's constant length: nothing is guessed or truncated.
+struct ThisIsAnIntentionallyVeryLongTypeNameUsedToProveThatInferredCapacityNeverTruncatesReflectedNames {};
+
+template <class T>
+consteval auto reflectedNameFragment() {
+  constexpr std::string_view name = std::meta::identifier_of(^^T);
+  std::array<char, name.size()> bytes{};
+  std::ranges::copy(name, bytes.begin());
+  return format::fragment(bytes);
+}
+
+constexpr auto reflectedMessage =
+    format::Message{Severity::Error, format::code("FMT", 9), "bad type"}.field("type", reflectedNameFragment<ThisIsAnIntentionallyVeryLongTypeNameUsedToProveThatInferredCapacityNeverTruncatesReflectedNames>());
+static_assert(reflectedMessage.view().contains(
+    "type: ThisIsAnIntentionallyVeryLongTypeNameUsedToProveThatInferredCapacityNeverTruncatesReflectedNames\n"));
+
+// TEST-FMT-SINK-005: an output iterator that cannot accept `char` is rejected by constraints.
+using UnwritableIterator = std::back_insert_iterator<std::vector<std::string *>>;
+template <class Iterator>
+concept CanRenderTo = requires(Iterator out) { format::renderTo(reflectedMessage, out); };
+static_assert(not CanRenderTo<UnwritableIterator>);
+static_assert(CanRenderTo<std::back_insert_iterator<std::string>>);
+
 namespace Tests::formatting {
 
 

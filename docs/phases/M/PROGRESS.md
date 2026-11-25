@@ -1,7 +1,7 @@
 # Miracle — Phase M progress ledger
 
 **Status:** In progress — author-owned implementation; batched final review planned.
-**Last reconciled:** 2026-10-30
+**Last reconciled:** 2026-11-25
 **Repository baseline inspected:** `e2da473e6dd5637f1f70625738f8378e211a7478` (Miracle v0.5.28).
 **Approved contract:** [`DESIGN.md`](DESIGN.md) v2.0.
 **Technical guide:** [`IMPLEMENTATION.md`](IMPLEMENTATION.md) v2.2.
@@ -18,27 +18,29 @@
 
 ## Milestone ledger (implementation ≠ verification ≠ acceptance)
 
-| Milestone | Source progress observed | Review/acceptance | Author action / evidence |
+Updated 2026-11-25. "Implemented" means committed source plus the evidence listed below; nothing is Accepted.
+
+| Milestone | Source progress | Review/acceptance | Evidence / remaining |
 |---|---|---|---|
-| M.1 Baseline/graph | Partial remote inventory; no reproducible perf baseline in this handoff | Not accepted | Commit DAG, module map, cold/incremental measurements and toolchain identity |
-| M.2 Extensions/toolchain | Source rename reflected in repository | Not accepted | Produce final path-inventory/build+consumer verification for the M.2 commit |
-| M.3 Foundations | Numeric/Types/StaticString work present; Color and Format absent | Not accepted | Complete Color/Format direct import, source APIs, constexpr tests |
-| M.4 Diagnostics | Legacy `Miracle:Diagnostic` still present | Not accepted | Move semantic module and adapt renderer to Format sink/events |
-| M.5 Other modules | Partial (Feature/Range); Iter and others still partitions | Not accepted | Complete named module ownership, correct implementation-unit declarations |
-| M.6 Decomposition | Feature partitioned; Iter and Meta Query pending analysis | Not accepted | Split where dependency/instantiation analysis justifies; preserve Meta behavior |
-| M.7 Umbrella/package | Umbrella still reexports legacy partitions | Not accepted | Reexport independently importable modules and test installed package |
-| M.8 Final gates | Not executed for finished Phase M | Not accepted | Run full reference compiler, negative/positive fixtures, consumer matrix and perf comparison |
+| M.1 Baseline/graph | Source inventory and import graph now produced by `scripts/ci/module-graph.py` (`Miracle.Modules.Graph`); HEAD-vs-tree timings recorded below | Not accepted | No pre-rename historical perf baseline exists (UNRECOVERABLE; HEAD `c26771b` used as the baseline). Raw CSV/JSON artefacts not exported |
+| M.2 Extensions/toolchain | `.cppm`/`.cpp` layout in place; module graph script checks every unit is in CMake | Not accepted | CodeQL not available locally |
+| M.3 Foundations | Color and Format rewritten to spec; Numeric/Types/StaticString unchanged (StaticString has uncommitted author WIP) | Not accepted | Types does not re-export Numeric (REQ-MOD-004 decision pending) |
+| M.4 Diagnostics | `Miracle.Diagnostics`; renderer on shared `AnsiWriter` and code encoder | Not accepted | Control-character escaping policy (§8.2) pending decision |
+| M.5 Other modules | All primaries named; per-module import probes | Not accepted | Windows/unsupported Memory units not compiled here |
+| M.6 Decomposition | Iter split into five partitions; Meta Query split into IR/Plan/State/Eval/Query | Not accepted | Query split follows the user's explicit instruction; see section below |
+| M.7 Umbrella/package | Umbrella re-exports every primary; add_subdirectory, FetchContent, installed consumers pass | Not accepted | disabled-feature matrix vacuous (no optional features registered) |
+| M.8 Final gates | Partial: tests, compile-fail fixtures, consumers, benchmarks recorded | Not accepted | Author sign-off, GCC/CodeQL/clangd, CI container run |
 
 ## Scope, verification and handoff
 
 - Color/Format F7–F10 and DEC-COL-001–003 / DEC-FMT-001–004: **design approved 2026-10-30**.
-- Exact new API reference-compiler verification: **NOT RUN**. Host C++23 probes attached to earlier draft establish only limited language shapes.
+- Exact new API reference-compiler verification: run on `cxx26-2026.10.27` and `cxx29-2026.11.10` (see sections below); GCC not run.
 - No milestone is marked Accepted solely from a commit, passing CI subset or this ledger.
 - Author commits each milestone independently. Reviewer conducts one batched milestone-by-milestone contract review after the author's M.8 handoff.
 - Protocol review outcomes: Accepted / Changes requested / Verification pending / Contract revision required.
 - Core Revisit owns broad format grammars, dynamic formatting and advanced color frameworks; not Phase M.
 
-**Next author action:** Implement the approved minimal `Miracle.Color` and `Miracle.Format` interfaces, plus specified API and compiler probes, against current local checkout; reconcile any divergences from this remote snapshot in commits/progress. No production code was authored by the reviewer.
+**Next author action:** review the open decisions listed at the end of this ledger and sign off (or reject) each acceptance gate.
 
 ## Color/Format conformance pass — 2026-11-25
 
@@ -110,3 +112,17 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 - CodeQL: not installed here; extraction coverage unverified (known limitation).
 - clangd smoke: system clangd rejects the reference compiler's PCMs (`ast_file_version_too_old`), so semantic results are unusable; the compile database itself is generated. Needs a clangd from the reference toolchain.
 - `scripts/ci/verify-container.sh`: not run (needs the container toolchain); its added diagnostics-consumer steps were run by hand.
+
+### Meta Query split and spec audit (2026-11-25, second pass)
+- Meta Query split on explicit owner instruction (supersedes the earlier "not split" note): `Miracle.Meta:QueryIR` (opcode/Instruction/ProgramNode), `:QueryPlan` (SegmentNode/SegmentPlan/evaluation-state slots), `:QueryState` (capture environment, sources, adaptive invocation, stored values), `:QueryEval` (emit/evaluate), `:Query` (public `Query<State>` facade, `query()`). Text moved mechanically from the original 2,190-line partition at its existing section boundaries; declaration order, constraints and reflection observation points are unchanged. Import order is linear (IR → Plan → State → Eval → Query), no cycles. Evidence: ctest 99/99 incl. all 47 Meta parity/hardening/compile-fail cases, 18 installed direct-import probes on the Release package. Compile cost (`MiracleOnce1024`, 5 alternating runs, same machine state): pre-split median 13.2 s (12.1–14.1) vs split 12.5 s (11.1–14.6) — neutral.
+- New `scripts/ci/module-graph.py` (ctest `Miracle.Modules.Graph`, ALG-MOD-001/TEST-MOD-DAG/OWNER/AUDIT-COVER-001): one primary per module, resolved imports and partitions, no `module Miracle;` units, no partitions outside Format/Feature/Iter/Meta, no `.ixx/.cxx`, acyclic, forbidden-edge matrix (Format↛Diagnostics/StaticString/Meta/Iter, Color↛Format/…, Diagnostics↛Meta), umbrella is re-exports only, every unit in CMakeLists.txt. Negative cases (cycle, forbidden edge, legacy unit) verified by mutation.
+- Added tests: TEST-FMT-STATIC-004 (long reflected type name, no truncation), TEST-FMT-SINK-005 (unwritable iterator rejected by constraint), TEST-DIAG-PARITY-001 (compile-time vs runtime heading), TEST-DIAG-TREE-002 (sibling order/indent).
+- Docs: `DIAGNOSTICS.md` module list, `CHANGELOG.md` entry, milestone ledger refreshed.
+- Open findings / owner decisions (spec vs. repository):
+  1. REQ-REST-001/§6.1: Debug and Bitflags live in `src/public/derive/`; the spec names `debug/` and `bitflags/`.
+  2. REQ-MOD-004: `Miracle.Types` does not re-export `Miracle.Numeric`; `import Miracle.Types;` alone does not make `Miracle::usize` visible (verified by compile probe).
+  3. §8.2/DEC-FMT-004: the runtime Diagnostics renderer emits message/note/snippet bytes verbatim (no control-character escaping); Format core escapes only one-line compile-time fields.
+  4. DESIGN.md §177: Format may import only `Miracle.Color`, yet Format imports `Miracle.Numeric` (and Color imports Numeric — kept by earlier owner decision).
+  5. §6.1 layout: private units are flat (`src/private/Diagnostics.cpp`), spec shows `src/private/diagnostics/Diagnostic.cpp`; Iter partition names follow the spec's recommended SourceViews/Views/Core/SourceFactories variant.
+  6. REQ-STR-002 (StaticString messages via Format) is in the owner's uncommitted WIP; not touched.
+  7. TEST-FMT-STATIC-003 (dangling consteval message storage) and TEST-STR-* negatives, TEST-COL property tests not re-audited line by line in this pass.

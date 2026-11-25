@@ -158,6 +158,21 @@ constexpr RenderOptions plainCompact{
   Switch::check(not forcedColourPlain.contains("\033["));
 }
 
+// TEST-DIAG-PARITY-001 / INV-DIAG-001: the compile-time Message and the runtime Diagnostic share one heading
+// grammar, code encoder and zero padding for equivalent semantic input.
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto compileTimeRuntimeHeadingParity()
+    -> void {
+  constexpr auto compileTime =
+      format::Message{Severity::Warning, format::code("E", 42), "annotated failure"};
+  Switch::check(render(Diagnostic::warning(Code::Annotated), plainCompact) == compileTime.view());
+
+  constexpr auto wide = format::Message{Severity::Note, format::code<3>("L", 1234), "Value"};
+  Switch::check(render(Diagnostic::note(LargeCode::Value), plainCompact) == wide.view());
+
+  constexpr auto prefixless = format::Message{Severity::Debug, format::code("", 4), "Value"};
+  Switch::check(render(Diagnostic::debug(Prefixless::Value), plainCompact) == prefixless.view());
+}
+
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto terminalStyling() -> void {
   constexpr usize selectionBegin = 5;
   constexpr usize selectionEnd = 10;
@@ -340,6 +355,27 @@ constexpr RenderOptions snippetOptions{
   Switch::check(diagnostic.causes().front().messageText() == "middle");
   Switch::require(diagnostic.causes().front().causes().size() == 1);
   Switch::check(diagnostic.causes().front().causes().front().messageText() == "inner");
+}
+
+// TEST-DIAG-TREE-002: siblings render in insertion order, depth-first, with per-depth indentation.
+[[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto causeOrderAndIndentation() -> void {
+  auto first = Diagnostic::error(Code::Zero).message("first").note("n1");
+  first = std::move(first).cause(Diagnostic::error(Code::Zero).message("nested").help("h"));
+  const auto root = Diagnostic::error(Code::Zero)
+                        .message("root")
+                        .cause(std::move(first))
+                        .cause(Diagnostic::warning(Code::Zero).message("second"));
+  const String text = render(root, plainCompact);
+  Switch::check(text ==
+                "error[E000]: root\n"
+                "caused by:\n"
+                "  error[E000]: first\n"
+                "  note: n1\n"
+                "  caused by:\n"
+                "    error[E000]: nested\n"
+                "    help: h\n"
+                "caused by:\n"
+                "  warning[E000]: second\n");
 }
 
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto deepCausesAreIterative()
