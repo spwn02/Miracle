@@ -22,7 +22,7 @@ namespace Tests::error {
 
   const String rendered = error.display({.colours = true});
   check(rendered ==
-        "Error: top-level failure\n\n\033[33mCaused by:\033[0m\n  \033[33m0:\033[0m original cause"_exp);
+        "Error: top-level failure\n\n\033[38;5;3mCaused by:\033[0m\n  \033[38;5;3m0:\033[0m original cause"_exp);
 }
 
 [[ = test, = group("Core"), = tag("error") ]] auto errorFunction() -> void {

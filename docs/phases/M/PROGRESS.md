@@ -126,7 +126,7 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
   5. §6.1 layout: private units are flat (`src/private/Diagnostics.cpp`), spec shows `src/private/diagnostics/Diagnostic.cpp`; Iter partition names follow the spec's recommended SourceViews/Views/Core/SourceFactories variant.
   6. REQ-STR-002 (StaticString messages via Format) is in the owner's uncommitted WIP; not touched.
   7. TEST-COL property/boundary tests and TEST-REC-COLOR/EVENT rows now covered (see below); TEST-FMT-STATIC-003 and TEST-STR-* remain open.
-  8. OWNER DECISION NEEDED: `src/private/Error.cpp` hard-codes SGR bytes (`\033[33m`, `\033[0m`) for `Error::display`, a second ANSI encoder outside Format (§11.10 pattern "ad-hoc duplicate SGR engine"). Not mandated by REQ-*; `tests/error.cpp` snapshots the current bytes. Routing it through `format::AnsiWriter` is possible (Error sits above Format) and byte-preserving if yellow maps to `ESC[33m`.
+  8. RESOLVED (owner: yes): `Error::display` now renders through `format::AnsiWriter` (no local SGR bytes). Visible change: chain labels use indexed colour 3 (`ESC[38;5;3m`) instead of `ESC[33m`; spec §5.2 prescribes `38;5;i` for indexed colours, so a short-form special case was not added. `tests/error.cpp` snapshot updated.
 
 ### Color/Format test-matrix audit (2026-11-26)
 - TEST-COL-*: added RGB-001..003, HEX-001, TYPE-002 (structural NTTP), PARSE-002/004..008, HSV-008/009/010 (every sector boundary ±1e-9, `nextafter(360, 0)`, 359.999999), REV-003/004, PROP-001 (10,000 SplitMix64 samples, seed `0x4D6972616375'6C65`, plus tied-channel adversaries; measured max channel error ≤ 1, asserted), PROP-002 (all `#RRGGBB` with zero low byte, 10,000 random, 216 boundary triples; upper and lower case).

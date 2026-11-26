@@ -57,46 +57,54 @@ static constexpr auto embed(const Error::Message &message) -> String {
       message.message);
 }
 
-static constexpr auto generateStyle(bool locations, bool colours) -> decltype(auto) {
-  return [locations, colours](const Pair<usize, Error::Message> &pair) constexpr -> String {
-    const auto &[idx, msg] = pair;
-    String res{};
+namespace {
 
-    String message{};
+/// Text sink appending to a `String`; the only output channel of `Error::display`.
+struct StringSink final {
+  String &bytes;
 
-    if (locations)
-      message = embed(msg);
-    else
-      message = msg.message;
+  auto write(const StringView text) -> bool {
+    bytes.append(text);
+    return true;
+  }
+};
 
-    if (idx == 0) {
-      if (colours) {
-        res = std::format("Error: {}\n\n\033[33mCaused by:\033[0m", message);
-      } else {
-        res = std::format("Error: {}\n\nCaused by:", message);
-      }
-    } else {
-      if (colours) {
-        res = std::format("  \033[33m{:d}:\033[0m {}", idx - 1, message);
-      } else {
-        res = std::format("  {:d}: {}", idx - 1, message);
-      }
-    }
+/// Chain labels ("Caused by:", "0:") use the shared Format encoder; there is no local SGR table.
+constexpr auto labelStyle = format::Style{.foreground = format::TerminalColor::indexed(3)};
 
-    return res;
-  };
-}
+} // namespace
 
 auto Error::display(std::ostream &output, ErrorDisplayOptions options) const -> void {
+  String text;
+  StringSink sink{text};
+  format::RenderState state{.policy = {options.colours ? Presentation::Terminal : Presentation::Plain,
+                                options.colours ? ColorMode::Always : ColorMode::Never}};
+  format::AnsiWriter<StringSink> writer{sink, state};
+  const auto plain = format::Style{};
+  const auto render = [&](const Message &message) { return options.locations ? embed(message) : message.message; };
+
   if (messages.size() == 1) {
-    const Message &first = *messages.begin();
-    output << std::format("Error: {}\n", options.locations ? embed(first) : first.message);
+    auto _ = writer.put(std::format("Error: {}\n", render(*messages.begin())), plain);
+    output << text;
     return;
   }
 
-  output << (messages | std::views::reverse | std::views::enumerate |
-             std::views::transform(generateStyle(options.locations, options.colours)) |
-             std::views::join_with('\n') | std::ranges::to<String>());
+  bool first = true;
+  for (const auto &[index, message] : messages | std::views::reverse | std::views::enumerate) {
+    if (not first)
+      auto _ = writer.put("\n", plain);
+    if (index == 0) {
+      auto _ = writer.put(std::format("Error: {}\n\n", render(message)), plain);
+      _ = writer.put("Caused by:", labelStyle);
+    } else {
+      auto _ = writer.put("  ", plain);
+      _ = writer.put(std::format("{:d}:", index - 1), labelStyle);
+      _ = writer.put(std::format(" {}", render(message)), plain);
+    }
+    first = false;
+  }
+  auto _ = writer.finish();
+  output << text;
 }
 
 auto Error::display(ErrorDisplayOptions options) const -> String {
