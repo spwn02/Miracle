@@ -170,7 +170,8 @@ static_assert(rawCallableCanDriveForEach());
 consteval auto rawProjectionsSurvivePersistenceBarriers() -> bool {
   const auto members =
       query(std::meta::nonstatic_data_members_of(^^Members, std::meta::access_context::unchecked()))
-          .sortByKey(std::meta::identifier_of)
+          // C++29 adds token overloads of identifier_of; the raw projection names the std::meta::info one.
+          .sortByKey(static_cast<std::string_view (*)(std::meta::info)>(std::meta::identifier_of))
           .uniqueBy(std::meta::type_of)
           .materialize();
   return members.size() == 2 && std::meta::identifier_of(members.at(0)) == "a" &&
