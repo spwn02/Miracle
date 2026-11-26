@@ -35,3 +35,20 @@ The original umbrella module mixed low-level compilation utilities with higher-l
 
 Earlier Phase M contract v1.0: Git commit `469083ed1b30e3770667e1fe35473e9f96ed1e7a`, formerly `docs/phases/M/DESIGN.md`.
 Current consulted snapshot: `e2da473e6dd5637f1f70625738f8378e211a7478`.
+
+## Amendments recorded during implementation (2026-11-26)
+
+Owner decisions (see `docs/phases/M/PROGRESS.md`, findings 1-8):
+
+- `Miracle.Color` and `Miracle.Format` may import `Miracle.Numeric` (alias-only leaf) in addition to the standard library; Format still imports Color and no other higher-level module. `DESIGN.md` is amended accordingly.
+- Control bytes (C0 and DEL) in headings, context, field keys/values, notes, help, paths and snippet source are escaped as `\n`, `\r`, `\t`, `\0`, `\xNN` (DEC-FMT-004 spelling). Raw `Text` events and `Message::append` are not escaped.
+- Blank-line rule: the `--> context` line follows the heading directly (§5.3 example); every later section is preceded by one blank line (ALG-FMT-002).
+- `Error::display` renders through `format::AnsiWriter`; chain labels use indexed colour 3 (`ESC[38;5;3m`), not `ESC[33m`.
+- `Miracle.StaticString` imports `Miracle.Format` to author its hard errors; Format never imports StaticString.
+- `Debug` and `Bitflags` moved to `src/public/debug/` and `src/public/bitflags/`.
+
+Implementation choices awaiting owner confirmation:
+
+- INV-REC-CAP-003: literal-style overloads reject a `char[N]` that is not NUL-terminated (spec option (b)); exact byte arrays use `fragment(std::array<char, N>)`.
+- Feature (`FEA`) and Iter (`ITR`) hard errors were moved to Format-authored messages with their original wording as the summary; Meta Query hard errors and `DiagnosticCode` concept failures keep their original text.
+- Exported helpers beyond the spec inventory: `AnsiWriter`, `writeCode`, `writeEscaped`, `escapedSize`, `severityName`, `severityStyle`.
