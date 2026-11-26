@@ -91,8 +91,17 @@ auto Error::display(std::ostream &output, ErrorDisplayOptions options) const -> 
     return;
   }
 
+  // Newest message first. Indexing a vector of references keeps the traversal independent of how the message
+  // container's iterators compose with reverse/enumerate views.
+  Vec<const Message *> newestFirst;
+  newestFirst.reserve(messages.size());
+  for (const Message &entry : messages)
+    newestFirst.push_back(&entry);
+  std::ranges::reverse(newestFirst);
+
   bool first = true;
-  for (const auto &[index, message] : messages | std::views::reverse | std::views::enumerate) {
+  for (const auto [index, entry] : newestFirst | std::views::enumerate) {
+    const Message &message = *entry;
     if (not first)
       auto _ = put("\n", plain);
     if (index == 0) {
