@@ -133,3 +133,21 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 - TEST-REC-EVENT-003: sink failure inside an SGR prefix and while writing the final reset → `SinkFailed`, `state.failed`, partial bytes exact.
 - Verified in the isolated tree: `MiracleTests` 104 cases PASS; ctest 100/100.
 - Remaining: TEST-FMT-STATIC-003 (no portable way to assert "invalid consteval pointer lifetime" is rejected without a compiler-specific diagnostic; not added), TEST-STR-* (StaticString WIP is the owner's), PERF rows, §10.5–10.6.
+
+### §10.6 API verification matrix — current status (2026-11-26)
+`IMPLEMENTATION.md` keeps the spec's original "NOT RUN" column (it describes the pre-implementation document). Status against the pinned reference compiler (clang 22.1.8, cxx26-2026.10.27), isolated tree:
+
+| ID | Status | Evidence |
+|---|---|---|
+| API-V-COL-01..03 | PASS | `tests/color.cpp` (constexpr RGB/hex/parse/HSV, finite checks, boundary round-trips), `Miracle.Import.Color` |
+| API-V-FMT-01 | PASS | `Miracle.Import.Format`, installed `find-package` consumer |
+| API-V-FMT-02 | PASS | single owner enforced by `Miracle.Modules.Graph`; `Miracle.Import.Diagnostics` |
+| API-V-FMT-03..06 | PASS | `tests/format.cpp` static_asserts (aggregate, CTAD, width, append, section order) and `format-*` compile-fail fixtures |
+| API-V-FMT-07 | PASS | `FormatStaticAssertMessage` compile-fail snapshot |
+| API-V-FMT-08 | PASS | `runsAreOrdered`, `renderAnsi*` tests |
+| API-V-FMT-09 | PASS | `renderTo`/`render`/`emit`/`finish` tests, `CanRenderTo`, `UnwritableIterator` |
+| API-V-DIAG-01 | PASS | `tests/diagnostic.cpp`, `tests/consumer/diagnostics/` |
+| API-V-ITER-01 | PASS | `tests/iter.cpp`, `Miracle.Import.Iter`, TEST-ITER-MOD-001 |
+| API-V-BLD-01 | PASS | Release install + 18 per-module import probes |
+
+PERF coverage: PERF-01 (cold build, 5 runs, peak RSS), PERF-02/03 (incremental private/public edits), BMI footprint and PERF-05 (Meta Query stress; Iter/Feature instantiation counts not stress-timed) are recorded in the M.8 sections above; noise on this machine is large, so only "neutral/overlapping" is claimed. Not measured: PERF-04 per-module granular-import compile cost/RSS, PERF-06 chained-vs-bulk Message at 100/1K/10K, PERF-07 runtime render throughput, PERF-08 cold/warm installed-consumer timing (the installed consumers were only verified to build and pass).
