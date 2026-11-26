@@ -31,7 +31,10 @@ if(NOT CMAKE_GENERATOR MATCHES "^Ninja")
       "supports 'import std;' for Ninja and Ninja Multi-Config.")
 endif()
 
-if(NOT 26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
+# CMake 4.5 made import std generally available and no longer reports it through
+# CMAKE_CXX_COMPILER_IMPORT_STD; with 4.5 and newer the build itself decides.
+if(CMAKE_VERSION VERSION_LESS 4.5 AND NOT 26 IN_LIST
+                                      CMAKE_CXX_COMPILER_IMPORT_STD)
   message(
     FATAL_ERROR
       "Miracle requires toolchain support for C++23 'import std;'. "

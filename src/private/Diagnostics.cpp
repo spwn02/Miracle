@@ -87,6 +87,17 @@ private:
   return "unspecified";
 }
 
+/// The final standard spells the accessor `detection_mode()`; the earlier P2900 revision shipped by libstdc++ 16 calls
+/// it `mode()`. Both denote the same value.
+template <class Violation>
+[[nodiscard]] auto detectionOf(const Violation &violation) noexcept -> std::contracts::detection_mode {
+  if constexpr (requires { violation.detection_mode(); }) {
+    return violation.detection_mode();
+  } else {
+    return violation.mode();
+  }
+}
+
 class DiagnosticRenderer final {
 public:
   DiagnosticRenderer(std::ostream &output, RenderOptions options)
@@ -370,7 +381,7 @@ auto render(const Diagnostic &diagnostic, std::ostream &output, RenderOptions op
 
   diagnostic = std::move(diagnostic)
                    .note(std::format("semantic: {}", semanticName(violation.semantic())))
-                   .note(std::format("detection: {}", detectionName(violation.detection_mode())))
+                   .note(std::format("detection: {}", detectionName(detectionOf(violation))))
                    .note(std::format("terminating: {}", violation.is_terminating() ? "true" : "false"));
   return diagnostic;
 }
