@@ -72,6 +72,9 @@ struct StyleSpan final {
 /// annotation value; treat them as read-only and use `view()`, `data()` and `styles()`.
 template <usize Capacity, usize Runs, bool Diagnostic = false, Section Current = Section::Plain>
 struct Message final {
+  static_assert(Capacity < std::numeric_limits<usize>::max(),
+      "format::Message capacity must leave room for the terminating NUL without wrapping");
+
   /// Plain text. `text[length] == '\0'`; interior NULs are legal.
   std::array<char, Capacity + 1> text{};
   /// Style ranges; the first `styleCount` entries are active.
@@ -168,7 +171,8 @@ struct Message final {
   /// Appends the decimal spelling of a non-bool, non-character integer.
   template <std::integral Integer>
   [[nodiscard]] constexpr auto append(const Integer number) const
-    requires(not Diagnostic and not std::same_as<Integer, bool> and not std::same_as<Integer, char> and
+    requires(not Diagnostic and sizeof(Integer) <= sizeof(u64) and not std::same_as<Integer, bool> and
+             not std::same_as<Integer, char> and
              not std::same_as<Integer, wchar_t> and not std::same_as<Integer, char8_t> and
              not std::same_as<Integer, char16_t> and not std::same_as<Integer, char32_t>)
   {

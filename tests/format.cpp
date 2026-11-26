@@ -18,6 +18,41 @@ static_assert(format::Style{} == format::Style{} and format::Style{.bold = true}
 static_assert(format::Message{"a\0b"}.size() == 3 and format::Message{"a\0b"}.view() == std::string_view{"a\0b", 3});
 static_assert(format::fragment("a\0b").size() == 3);
 static_assert(format::fragment(std::array<char, 3>{'a', 'b', 'c'}).view() == "abc");
+// TEST-FMT-NUM-004: bool and character types never reach the numeric overload; 128-bit integers cannot be
+// truncated into the 64-bit encoder.
+template <class T>
+concept AppendsNumber = requires { format::Message{"n"}.append(T{}); };
+static_assert(AppendsNumber<int> and AppendsNumber<u64> and AppendsNumber<i8> and AppendsNumber<unsigned short>);
+static_assert(not AppendsNumber<bool> and not AppendsNumber<char> and not AppendsNumber<wchar_t> and
+              not AppendsNumber<char8_t> and not AppendsNumber<char16_t> and not AppendsNumber<char32_t>);
+static_assert(not AppendsNumber<__int128> and not AppendsNumber<unsigned __int128>);
+
+// TEST-FMT-STYLE-006: 20 alternating runs stay in ascending, non-overlapping, correctly attributed intervals.
+constexpr format::Style runStyleA{.foreground = format::TerminalColor::indexed(1)};
+constexpr format::Style runStyleB{.foreground = format::TerminalColor::indexed(2), .bold = true};
+constexpr auto alternating = format::Message{"-"}.append(format::styled("a", runStyleA)).append(format::styled("b", runStyleB)).append(format::styled("c", runStyleA)).append(format::styled("d", runStyleB)).append(format::styled("e", runStyleA)).append(format::styled("f", runStyleB)).append(format::styled("g", runStyleA)).append(format::styled("h", runStyleB)).append(format::styled("i", runStyleA)).append(format::styled("j", runStyleB)).append(format::styled("k", runStyleA)).append(format::styled("l", runStyleB)).append(format::styled("m", runStyleA)).append(format::styled("n", runStyleB)).append(format::styled("o", runStyleA)).append(format::styled("p", runStyleB)).append(format::styled("q", runStyleA)).append(format::styled("r", runStyleB)).append(format::styled("s", runStyleA)).append(format::styled("t", runStyleB));
+static_assert(alternating.view() == "-abcdefghijklmnopqrst");
+static_assert(alternating.styles().size() == 20);
+consteval auto alternatingRunsAreExact() -> bool {
+  for (usize index{}; index < 20; ++index) {
+    const format::StyleSpan span = alternating.styles()[index];
+    if (span.begin != index + 1 or span.end != index + 2 or span.style != (index % 2 == 0 ? runStyleA : runStyleB))
+      return false;
+  }
+  return true;
+}
+static_assert(alternatingRunsAreExact());
+
+// TEST-FMT-OWN-001/002: a message owns its bytes, survives the local array, and copies/moves never point back
+// into the source object.
+consteval auto ownedAfterLocalArray() {
+  const std::array<char, 3> local{'x', 'y', 'z'};
+  return format::Message{"-"}.append(format::fragment(local));
+}
+constexpr auto owned = ownedAfterLocalArray();
+static_assert(owned.view() == "-xyz");
+constexpr auto copied = owned;
+static_assert(copied.view() == "-xyz" and copied.data() != owned.data());
 static_assert(not std::formattable<decltype(format::Message{"abc"}), char>);
 static_assert(not std::formattable<format::Fragment<3>, char>);
 static_assert(not noexcept(format::render(format::Message{"a"})));
@@ -393,6 +428,45 @@ namespace Tests::formatting {
   Switch::check(format::emit(plain, plainState, {.kind = format::EventKind::Text, .text = "x", .style = accent}) == format::WriteResult::Written);
   Switch::check(format::finish(plain, plainState) == format::WriteResult::Written);
   Switch::check(plain.bytes == "x");
+}
+
+// TEST-FMT-COLOR-004: every indexed colour is encoded as its index and never as a palette RGB value.
+[[= Switch::test]] auto everyIndexedColourKeepsItsIndex() -> void {
+  for (usize index{}; index < 256; ++index) {
+    const auto colour = format::TerminalColor::indexed(static_cast<u8>(index));
+    const auto foreground = format::render(
+        format::Message{""}.append(format::styled("x", {.foreground = colour})), ansiAlways);
+    const auto background = format::render(
+        format::Message{""}.append(format::styled("x", {.background = colour})), ansiAlways);
+    Switch::check(foreground == std::format("\x1b[38;5;{}mx\x1b[0m", index));
+    Switch::check(background == std::format("\x1b[48;5;{}mx\x1b[0m", index));
+  }
+}
+
+// INV-ANSI-001: stripping the renderer's own SGR sequences from an ANSI rendering yields the plain rendering.
+[[= Switch::test]] auto strippedAnsiEqualsPlain() -> void {
+  const auto stripped = [](const std::string_view text) {
+    std::string result;
+    for (usize index{}; index < text.size(); ++index) {
+      if (text[index] == '\x1b' and index + 1 < text.size() and text[index + 1] == '[') {
+        while (index < text.size() and text[index] != 'm')
+          ++index;
+        continue;
+      }
+      result.push_back(text[index]);
+    }
+    return result;
+  };
+  const auto message = format::Message{"head "}
+                           .append(format::styled("a", runStyleA))
+                           .append(format::styled("b", runStyleB))
+                           .append(format::fragment("c"))
+                           .append(format::styled("d", {.foreground = format::TerminalColor::trueColor(Color::rgb(1, 2, 3)),
+                                                          .underline = true}))
+                           .append(42);
+  Switch::check(stripped(format::render(message, ansiAlways)) == format::render(message, {}));
+  Switch::check(stripped(format::render(alternating, ansiAlways)) == std::string{alternating.view()});
+  Switch::check(format::render(alternating, ansiAlways).ends_with("\x1b[0m"));
 }
 
 [[= Switch::test]] auto sinkFailureIsIrreversible() -> void {

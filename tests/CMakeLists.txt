@@ -368,6 +368,11 @@ miracle_add_compile_fail_test(
   FormatUnterminatedArray compile-fail/format-unterminated-array.cpp
   "in call to 'unterminatedLiteral()'")
 miracle_add_compile_fail_test(
+  FormatCapacityOverflow compile-fail/format-capacity-overflow.cpp
+  "format::Message capacity must leave room for the terminating NUL without wrapping")
+miracle_add_compile_fail_test(
+  ColorBraceNarrowing compile-fail/color-brace-narrowing.cpp "cannot be narrowed")
+miracle_add_compile_fail_test(
   FormatMessageDanglingStorage compile-fail/format-message-dangling-storage.cpp
   "pointer to subobject of 'message' is not a constant expression")
 

@@ -29,6 +29,7 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Changed
 
+- `format::Message::append(integer)` rejects integers wider than 64 bits (would have been truncated); `Message` rejects a type-level capacity that would wrap `Capacity + 1`.
 - Format literal overloads (`Message`, `Fragment`, `Code`, section methods) now reject a `char[N]` that is not NUL-terminated instead of silently dropping its last byte (INV-REC-CAP-003); exact byte arrays use `fragment(std::array<char, N>)`.
 - `BasicStaticString` and `staticFormat` hard failures now report Format-authored messages (`error[SSTR001]`–`error[SSTR004]`) with the same summary text; `Miracle.StaticString` imports `Miracle.Format`.
 - `Error::display` now renders through the shared Format ANSI encoder; coloured chain labels emit `ESC[38;5;3m` instead of `ESC[33m` (same colour on 256-colour terminals).
