@@ -117,8 +117,10 @@ template <std::meta::info Annotation>
   static_assert(diagnosticIsPrefix(Annotation) or diagnosticIsMessage(Annotation));
   constexpr auto type = diagnosticAnnotationType(Annotation);
   using AnnotationType = [:type:];
-  static constexpr auto annotationValue_ = std::meta::extract<AnnotationType>(Annotation);
-  constexpr StringView text = annotationValue_.value.view();
+  // Static object storage gives the text view a constant address without a function-local static, whose mangled
+  // name collides between reflection-parameterized instantiations on GCC.
+  constexpr const AnnotationType *annotationValue = std::define_static_object(std::meta::extract<AnnotationType>(Annotation));
+  constexpr StringView text = annotationValue->value.view();
   return {std::define_static_string(text), text.size()};
 }
 
@@ -128,8 +130,8 @@ template <std::meta::info Annotation>
 
 template <class Code>
 [[nodiscard]] consteval auto diagnosticDomainValid() -> bool {
-  constexpr auto domainAnnotations = std::define_static_array(std::meta::annotations_of(^^Code));
-  constexpr auto typedAlignments =
+  static constexpr auto domainAnnotations = std::define_static_array(std::meta::annotations_of(^^Code));
+  static constexpr auto typedAlignments =
       std::define_static_array(std::meta::annotations_of_with_type(^^Code, ^^diagnostics::Alignment));
   usize markers{};
   usize prefixes{};
@@ -155,11 +157,11 @@ template <class Code>
 
 template <class Code>
 [[nodiscard]] consteval auto diagnosticEnumeratorsValid() -> bool {
-  constexpr auto enumerators = std::define_static_array(std::meta::enumerators_of(^^Code));
+  static constexpr auto enumerators = std::define_static_array(std::meta::enumerators_of(^^Code));
   using Underlying = std::underlying_type_t<Code>;
 
   template for (constexpr auto enumerator : enumerators) {
-    constexpr auto annotations = std::define_static_array(std::meta::annotations_of(enumerator));
+    static constexpr auto annotations = std::define_static_array(std::meta::annotations_of(enumerator));
     usize messages{};
     template for (constexpr auto annotation : annotations) {
       if (diagnosticIsMessage(annotation)) {
@@ -211,10 +213,10 @@ namespace Miracle {
 
 template <DiagnosticCode Code>
 [[nodiscard]] auto makeDiagnosticCodeDescriptor(Code code) -> DiagnosticCodeDescriptor {
-  constexpr auto domainAnnotations = std::define_static_array(std::meta::annotations_of(^^Code));
-  constexpr auto typedAlignments =
+  static constexpr auto domainAnnotations = std::define_static_array(std::meta::annotations_of(^^Code));
+  static constexpr auto typedAlignments =
       std::define_static_array(std::meta::annotations_of_with_type(^^Code, ^^diagnostics::Alignment));
-  constexpr auto enumerators = std::define_static_array(std::meta::enumerators_of(^^Code));
+  static constexpr auto enumerators = std::define_static_array(std::meta::enumerators_of(^^Code));
 
   String prefix;
   constexpr usize resolvedAlignment = [] consteval -> usize {
@@ -249,7 +251,7 @@ template <DiagnosticCode Code>
     if (declared == code) {
       descriptor.enumerator = String{std::meta::identifier_of(enumerator)};
       descriptor.canonicalMessage = descriptor.enumerator;
-      constexpr auto annotations = std::define_static_array(std::meta::annotations_of(enumerator));
+      static constexpr auto annotations = std::define_static_array(std::meta::annotations_of(enumerator));
       template for (constexpr auto annotation : annotations) {
         if constexpr (diagnosticIsMessage(annotation)) {
           constexpr StringView text = diagnosticAnnotationText<annotation>();

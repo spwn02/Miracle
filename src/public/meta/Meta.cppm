@@ -1,6 +1,7 @@
 export module Miracle.Meta;
 
 export import :Types;
+export import :Cache;
 export import :Storage;
 export import :Operators;
 export import :Names;

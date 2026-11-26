@@ -85,13 +85,16 @@ inline constexpr SourceLocation sourceLocation{};
 
 /// Exact callable wrapper for `std::meta::identifier_of`; unlike `name`, absence remains a standard semantic
 /// error.
-inline constexpr MetaFunction identifierOf{std::meta::identifier_of};
+// C++29 adds token overloads of identifier_of; select the std::meta::info one explicitly.
+inline constexpr MetaFunction identifierOf{
+    static_cast<std::string_view (*)(std::meta::info)>(std::meta::identifier_of)};
 
 /// Exact callable wrapper for `std::meta::display_string_of`.
 inline constexpr MetaFunction displayStringOf{std::meta::display_string_of};
 
 /// Exact UTF-8 callable wrapper for `std::meta::u8identifier_of`.
-inline constexpr MetaFunction u8IdentifierOf{std::meta::u8identifier_of};
+inline constexpr MetaFunction u8IdentifierOf{
+    static_cast<std::u8string_view (*)(std::meta::info)>(std::meta::u8identifier_of)};
 
 /// Exact UTF-8 callable wrapper for `std::meta::u8display_string_of`.
 inline constexpr MetaFunction u8DisplayStringOf{std::meta::u8display_string_of};
