@@ -43,13 +43,15 @@ Owner decisions (see `docs/phases/M/PROGRESS.md`, findings 1-8):
 - `Miracle.Color` and `Miracle.Format` may import `Miracle.Numeric` (alias-only leaf) in addition to the standard library; Format still imports Color and no other higher-level module. `DESIGN.md` is amended accordingly.
 - Control bytes (C0 and DEL) in headings, context, field keys/values, notes, help, paths and snippet source are escaped as `\n`, `\r`, `\t`, `\0`, `\xNN` (DEC-FMT-004 spelling). Raw `Text` events and `Message::append` are not escaped.
 - Blank-line rule: the `--> context` line follows the heading directly (§5.3 example); every later section is preceded by one blank line (ALG-FMT-002).
-- `Error::display` renders through `format::AnsiWriter`; chain labels use indexed colour 3 (`ESC[38;5;3m`), not `ESC[33m`.
+- `Error::display` renders through `format::emit`/`finish` Text events; chain labels use indexed colour 3 (`ESC[38;5;3m`), not `ESC[33m`.
 - `Miracle.StaticString` imports `Miracle.Format` to author its hard errors; Format never imports StaticString.
 - `Debug` and `Bitflags` moved to `src/public/debug/` and `src/public/bitflags/`.
 
-Implementation choices awaiting owner confirmation:
+Implementation choices confirmed by the owner (2026-11-26):
 
-- INV-REC-CAP-003 (owner decision, 2026-11-26): literal-style overloads accept any `char[N]` and truncate at the first NUL; the last array byte is always the terminator position. This is none of the spec's options (a)-(c) and has no negative test; the unterminated-array compile-fail fixture was removed. Exact byte arrays use `fragment(std::array<char, N>)`.
-- Feature (`FEA`) and Iter (`ITR`) hard errors were moved to Format-authored messages with their original wording as the summary; Meta Query hard errors and `DiagnosticCode` concept failures keep their original text.
-- Extra helpers hidden at owner request: `AnsiWriter`, `writeCode`, `writeEscaped`, `escapedSize`, `severityName` are unexported; `Message::empty/capacity` and `Code::size/data/view/capacity` removed. `Error::display` and the Diagnostics renderer now go through `emit`/`finish` Text events. Added `Event::escape` (public) and kept `severityStyle` exported (Diagnostics span markers use it); both await owner confirmation.
+- INV-REC-CAP-003: literal-style overloads accept any `char[N]` and truncate at the first NUL; the last array byte is always the terminator position. This is none of the spec's options (a)-(c) and has no negative test; the owner accepted the deviation and the unterminated-array compile-fail fixture was removed. Exact byte arrays use `fragment(std::array<char, N>)`.
+- Feature (`FEA`) and Iter (`ITR`) hard errors are Format-authored messages with their original wording as the summary; Meta Query hard errors and `DiagnosticCode` concept failures keep their original text. Accepted.
+- Extra helpers hidden: `AnsiWriter`, `writeCode`, `writeEscaped`, `escapedSize`, `severityName` are unexported; `Message::empty/capacity` and `Code::size/data/view/capacity` removed. `Error::display` and the Diagnostics renderer go through `emit`/`finish` Text events.
+- `Event::escape` is a public field of the exported `Event`; accepted.
+- `severityStyle` stays exported because Diagnostics span markers use it; accepted.
 - Implementation helpers are unexported declarations in the module namespace; no `detail` namespaces are used.
