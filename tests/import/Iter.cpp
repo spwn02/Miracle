@@ -1,5 +1,6 @@
-// Direct import only: view/borrow/category customizations and method-template bodies must be reachable
-// from outside the library without the umbrella module (INV-ITER-003/004).
+// TEST-ITER-MOD-001, TEST-ITER-RANGE-004, TEST-ITER-INV-005: direct import only. View/borrow/category customizations
+// and method-template bodies must be reachable from outside the library without the umbrella module
+// (INV-ITER-003/004); move-only callables keep their value categories.
 import std;
 import Miracle.Iter;
 

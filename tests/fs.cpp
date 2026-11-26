@@ -6,6 +6,7 @@ using namespace Miracle;
 using namespace Miracle::fs;
 using namespace Switch;
 
+// TEST-REST-003: Fs OpenOptions create/truncate/read/write contracts are preserved.
 namespace Tests::fs {
 
 [[ = test, = group("core"), = tag("fs") ]] auto fileIsDirectory() -> void {

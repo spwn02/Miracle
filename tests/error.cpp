@@ -25,6 +25,7 @@ namespace Tests::error {
         "Error: top-level failure\n\n\033[38;5;3mCaused by:\033[0m\n  \033[38;5;3m0:\033[0m original cause"_exp);
 }
 
+// TEST-REST-001: Error propagation keeps the Result semantics.
 [[ = test, = group("Core"), = tag("error") ]] auto errorFunction() -> void {
   check(not fail());
 }

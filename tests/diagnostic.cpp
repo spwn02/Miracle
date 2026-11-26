@@ -83,14 +83,17 @@ static_assert(DiagnosticCode<Prefixless>);
 static_assert(DiagnosticCode<LargeCode>);
 static_assert(DiagnosticCode<SignedCode>);
 static_assert(DiagnosticCode<ComposedCode>);
+// TEST-DIAG-NEG-001: a negative enumerator value is rejected.
 static_assert(not DiagnosticCode<NegativeCode>);
 static_assert(not DiagnosticCode<MarkerAndPrefix>);
+// TEST-DIAG-NEG-002: align without a prefix is rejected.
 static_assert(not DiagnosticCode<AlignmentWithoutPrefix>);
 static_assert(not DiagnosticCode<MessageOnDomain>);
 static_assert(not DiagnosticCode<DuplicatePrefix>);
 static_assert(not DiagnosticCode<InvalidEnumeratorAnnotation>);
 static_assert(not DiagnosticCode<EmptyPrefix>);
 static_assert(not DiagnosticCode<DuplicateAlignment>);
+// TEST-DIAG-NEG-003: a duplicate message annotation is rejected.
 static_assert(not DiagnosticCode<DuplicateMessage>);
 static_assert(not DiagnosticCode<AlignmentOnEnumerator>);
 static_assert(not std::copy_constructible<Diagnostic>);
@@ -105,6 +108,7 @@ constexpr RenderOptions plainCompact{
     .presentation = Presentation::Plain,
 };
 
+// TEST-DIAG-API-001: an annotated enum yields its code and canonical message.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto codeDescriptors() -> void {
   const auto fallback = Diagnostic::error(Code::Fallback);
   Switch::check(fallback.code().domain == "Code");
@@ -134,6 +138,8 @@ constexpr RenderOptions plainCompact{
   Switch::check(signedCode.code().enumerator == "Positive");
 }
 
+// TEST-DIAG-API-002/004, TEST-DIAG-RENDER-002: prefix-less domains, align below and above the digit count, and
+// Plain presentation never emitting SGR even under ColorMode::Always.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto renderingCodesAndSeverity()
     -> void {
   const String seven = render(Diagnostic::error(Code::Fallback), plainCompact);
@@ -173,6 +179,7 @@ constexpr RenderOptions plainCompact{
   Switch::check(render(Diagnostic::debug(Prefixless::Value), plainCompact) == prefixless.view());
 }
 
+// TEST-DIAG-RENDER-001, TEST-DIAG-SPAN-001: Terminal/Always styling with trailing reset, and the caret count.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto terminalStyling() -> void {
   constexpr usize selectionBegin = 5;
   constexpr usize selectionEnd = 10;
@@ -277,6 +284,7 @@ constexpr RenderOptions snippetOptions{
 
 } // namespace
 
+// TEST-DIAG-SPAN-001..003: single-line, out-of-bounds, reversed and secondary spans.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto snippetEdgeCases() -> void {
   const auto location = std::source_location::current();
 
@@ -321,6 +329,7 @@ constexpr RenderOptions snippetOptions{
   Switch::check(gutterLines(secondary) == Vec<String>{" | abc", " | --"});
 }
 
+// TEST-DIAG-API-004: width never truncates.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto zeroWidthCodes() -> void {
   // align(0) / no align: numeric printed without padding; padding never truncates wide values.
   const String unpadded = render(Diagnostic::error(Code::Fallback), plainCompact);
@@ -415,6 +424,7 @@ constexpr RenderOptions snippetOptions{
                 "  warning[E000]: second\n");
 }
 
+// TEST-DIAG-TREE-001: a 4,096-deep cause chain renders iteratively.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("diagnostic") ]] auto deepCausesAreIterative()
     -> void {
   constexpr usize depth = 4096;

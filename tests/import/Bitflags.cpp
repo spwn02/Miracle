@@ -1,3 +1,4 @@
+// TEST-REST-004: Bitflags is usable through its direct import.
 import Miracle.Bitflags;
 
 enum class[[= Miracle::bitflags]] Probe : unsigned char {

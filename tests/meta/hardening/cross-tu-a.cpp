@@ -1,3 +1,4 @@
+// TEST-META-SNAP-003: cross-translation-unit snapshots observe the same reflected facts.
 import std;
 import Miracle.Meta;
 namespace SharedSnapshot {

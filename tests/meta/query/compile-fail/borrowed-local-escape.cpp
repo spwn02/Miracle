@@ -1,3 +1,4 @@
+// TEST-META-SNAP-002: a borrowed local cannot escape; it is rejected at the intended barrier.
 import std;
 import Miracle.Meta;
 

@@ -1,3 +1,4 @@
+// TEST-META-SNAP-003: members declared late are observed at the declaration point.
 import std;
 import Miracle.Meta;
 struct Late {

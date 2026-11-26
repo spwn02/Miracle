@@ -1,3 +1,4 @@
+// TEST-META-SNAP-004: cached/extracted reflected values keep their access and storage lifetime semantics.
 import std;
 import Miracle.Meta;
 

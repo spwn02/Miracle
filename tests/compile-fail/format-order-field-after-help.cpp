@@ -1,3 +1,4 @@
+// TEST-FMT-ORDER-003
 import Miracle;
 
 using namespace Miracle;

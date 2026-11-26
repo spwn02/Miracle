@@ -1,3 +1,4 @@
+// TEST-FMT-ORDER-007: an empty field key is rejected, so no malformed `  : value` line can be produced.
 import Miracle;
 
 using namespace Miracle;

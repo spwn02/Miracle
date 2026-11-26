@@ -1,3 +1,4 @@
+// TEST-ITER-INV-004: no direct, tuple or aggregate shape is invocable; the Format-authored ITR error says so.
 import Miracle;
 
 using namespace Miracle;

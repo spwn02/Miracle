@@ -1,3 +1,4 @@
+// TEST-META-SNAP-001: public query source/map/filter/terminal results and value categories match the baseline.
 import std;
 import Miracle.Meta;
 

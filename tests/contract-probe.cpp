@@ -1,3 +1,4 @@
+// TEST-REST-002: a contract violation is turned into the established diagnostic report.
 import std;
 import Miracle;
 

@@ -18,7 +18,8 @@ from pathlib import Path
 
 ID = r"TEST-[A-Z0-9]+(?:-[A-Z0-9]+)*-\d{3}"
 ROW = re.compile(rf"^\|\s*({ID})\s*\|", re.M)
-REFERENCE = re.compile(ID)
+REFERENCE = re.compile(rf"({ID})((?:(?:/|\.\.)\d{{3}})*)")
+SUFFIX = re.compile(r"(/|\.\.)(\d{3})")
 SUFFIXES = {".cpp", ".cppm", ".cmake", ".txt", ".py", ".md"}
 
 
@@ -29,11 +30,24 @@ def definitions(spec: str) -> Counter[str]:
     return found
 
 
+def expand_reference(first: str, tail: str) -> set[str]:
+    """`TEST-X-001..003` and `TEST-X-001/004/006..008` name every ID they list or span."""
+    stem, number = first.rsplit("-", 1)
+    found = {first}
+    previous = int(number)
+    for separator, digits in SUFFIX.findall(tail):
+        value = int(digits)
+        found.update(f"{stem}-{item:03d}" for item in range(previous + 1 if separator == ".." else value, value + 1))
+        previous = value
+    return found
+
+
 def references(root: Path) -> set[str]:
     found: set[str] = set()
     for path in sorted(root.rglob("*")):
         if path.is_file() and path.suffix in SUFFIXES and "build" not in path.parts:
-            found.update(REFERENCE.findall(path.read_text(encoding="utf-8", errors="replace")))
+            for first, tail in REFERENCE.findall(path.read_text(encoding="utf-8", errors="replace")):
+                found |= expand_reference(first, tail)
     return found
 
 
@@ -51,6 +65,8 @@ def self_test() -> None:
     assert missing == ["TEST-A-001", "TEST-B-002"], missing
     assert duplicate == ["TEST-A-001"], duplicate
     assert orphan == ["TEST-C-001"], orphan
+    assert expand_reference("TEST-X-001", "/004..006") == {f"TEST-X-00{n}" for n in (1, 4, 5, 6)}
+    assert expand_reference("TEST-X-001", "..003") == {f"TEST-X-00{n}" for n in (1, 2, 3)}
 
 
 def main() -> int:

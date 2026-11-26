@@ -30,7 +30,7 @@ static_assert(not AppendsNumber<bool> and not AppendsNumber<char> and not Append
               not AppendsNumber<char8_t> and not AppendsNumber<char16_t> and not AppendsNumber<char32_t>);
 static_assert(not AppendsNumber<__int128> and not AppendsNumber<unsigned __int128>);
 
-// TEST-FMT-STYLE-006: 20 alternating runs stay in ascending, non-overlapping, correctly attributed intervals.
+// TEST-FMT-STYLE-006, TEST-REC-MSG-003: 20 chained appends of differently styled fragments type-check, and the 20 runs stay in ascending, non-overlapping, correctly attributed intervals.
 constexpr format::Style runStyleA{.foreground = format::TerminalColor::indexed(1)};
 constexpr format::Style runStyleB{.foreground = format::TerminalColor::indexed(2), .bold = true};
 constexpr auto alternating = format::Message{"-"}.append(format::styled("a", runStyleA)).append(format::styled("b", runStyleB)).append(format::styled("c", runStyleA)).append(format::styled("d", runStyleB)).append(format::styled("e", runStyleA)).append(format::styled("f", runStyleB)).append(format::styled("g", runStyleA)).append(format::styled("h", runStyleB)).append(format::styled("i", runStyleA)).append(format::styled("j", runStyleB)).append(format::styled("k", runStyleA)).append(format::styled("l", runStyleB)).append(format::styled("m", runStyleA)).append(format::styled("n", runStyleB)).append(format::styled("o", runStyleA)).append(format::styled("p", runStyleB)).append(format::styled("q", runStyleA)).append(format::styled("r", runStyleB)).append(format::styled("s", runStyleA)).append(format::styled("t", runStyleB));
@@ -46,7 +46,7 @@ consteval auto alternatingRunsAreExact() -> bool {
 }
 static_assert(alternatingRunsAreExact());
 
-// TEST-FMT-OWN-001/002: a message owns its bytes, survives the local array, and copies/moves never point back
+// TEST-FMT-OWN-001, TEST-FMT-OWN-002: a message owns its bytes, survives the local array, and copies/moves never point back
 // into the source object.
 consteval auto ownedAfterLocalArray() {
   const std::array<char, 3> local{'x', 'y', 'z'};
@@ -58,6 +58,7 @@ constexpr auto copied = owned;
 static_assert(copied.view() == "-xyz" and copied.data() != owned.data());
 static_assert(not std::formattable<decltype(format::Message{"abc"}), char>);
 static_assert(not std::formattable<format::Fragment<3>, char>);
+// TEST-FMT-SINK-006: the allocating string path is not marked noexcept.
 static_assert(not noexcept(format::render(format::Message{"a"})));
 
 namespace {
@@ -75,14 +76,14 @@ static_assert(format::Message{Severity::Debug, format::code("X", 1), "s"}.view()
               format::Message{Severity::Warning, format::code("X", 1), "s"}.view() == "warning[X001]: s\n" and
               format::Message{Severity::Error, format::code("X", 1), "s"}.view() == "error[X001]: s\n");
 
-// --- TerminalColor keeps its tag: an index is never turned into RGB. ---
+// --- TEST-FMT-COLOR-001/002: TerminalColor keeps its tag: an index is never turned into RGB. ---
 static_assert(format::TerminalColor::indexed(1).kind == format::ColorKind::Indexed);
 static_assert(format::TerminalColor::indexed(1).index == 1 and format::TerminalColor::indexed(1).rgb == Color{});
 static_assert(format::TerminalColor::indexed(1) != format::TerminalColor::trueColor(Color::rgb(255, 0, 0)));
 static_assert(format::TerminalColor::trueColor(Color::rgb(255, 159, 67)).rgb == Color::rgb(255, 159, 67));
 static_assert(format::TerminalColor::defaultColor() == format::TerminalColor{});
 
-// --- Fragment: owns exactly its bytes, no NUL for literals, embedded NULs survive. ---
+// --- TEST-FMT-TYPE-001..003, TEST-FMT-BINARY-001/002: Fragment owns its bytes, no NUL for literals, exact arrays keep NULs. ---
 static_assert(format::fragment("abc").size() == 3 and format::fragment("abc").view() == "abc");
 static_assert(format::fragment("").size() == 0 and format::fragment("").view().empty());
 static_assert(format::styled("x", accent).view() == "x" and format::styled("x", accent).style() == accent);
@@ -90,9 +91,17 @@ static_assert(format::fragment("abc").style() == format::Style{});
 static_assert(format::fragment(std::array<char, 3>{'a', '\0', 'b'}).size() == 3);
 static_assert(format::fragment(std::array<char, 3>{'a', '\0', 'b'}).view() == std::string_view{"a\0b", 3});
 static_assert(format::fragment(std::array<char, 0>{}).size() == 0);
+static_assert(format::Message{"a"}.append(format::fragment(std::array<char, 0>{})).view() == "a" and
+              format::Message{"a"}.append(format::fragment(std::array<char, 0>{})).styles().empty());
+// TEST-FMT-TYPE-006: no length-inferring API accepts a runtime view.
+template <class Text>
+concept MessageFromRuntimeText = requires(Text text) { format::Message{text}; };
+template <class Text>
+concept FragmentFromRuntimeText = requires(Text text) { format::fragment(text); };
+static_assert(not MessageFromRuntimeText<std::string_view> and not FragmentFromRuntimeText<std::string_view>);
 static_assert(not std::same_as<decltype(format::fragment("ab")), decltype(format::fragment("abc"))>);
 
-// --- Code: prefix + zero-padded number, width is a minimum, never truncates. ---
+// --- TEST-FMT-CODE-001..005: prefix + zero-padded number, width is a minimum, never truncates. ---
 static_assert(format::Message{Severity::Error, format::code<3>("ITR", 4), "x"}.view() == "error[ITR004]: x\n");
 static_assert(format::Message{Severity::Error, format::code<5>("CTR", 7), "x"}.view() == "error[CTR00007]: x\n");
 static_assert(format::Message{Severity::Error, format::code<2>("E", 12345), "x"}.view() == "error[E12345]: x\n");
@@ -101,7 +110,7 @@ static_assert(format::Message{Severity::Error, format::code("ITR", 4), "x"}.view
 static_assert(format::Message{Severity::Error, format::code<3>("X", std::numeric_limits<u64>::max()), "x"}.view() == "error[X18446744073709551615]: x\n");
 static_assert(format::code<3>("ITR", 4).codeView().prefix == "ITR" and format::code<3>("ITR", 4).codeView().numeric == 4);
 
-// --- Plain messages: NUL-terminated at the active size, immutable growth, no phantom runs. ---
+// --- TEST-FMT-TYPE-004/005, TEST-FMT-STYLE-001..003, TEST-REC-MSG-001: NUL-terminated at the active size, immutable growth, no phantom runs. ---
 constexpr auto abc = format::Message{"abc"};
 static_assert(abc.size() == 3 and abc.view() == "abc" and abc.data()[3] == '\0');
 constexpr auto abcx = abc.append("x");
@@ -112,6 +121,9 @@ static_assert(format::Message{"Hello "}.append(format::styled("world", accent)).
               format::StyleSpan{.begin = 6, .end = 11, .style = accent});
 static_assert(format::Message{"a"}.append(format::fragment("")).styles().empty());
 static_assert(format::Message{"a"}.append(format::styled("", accent)).styles().empty());
+static_assert(format::Message{"a"}.append(format::styled("b", accent)).append("c").styles().size() == 1 and
+              format::Message{"a"}.append(format::styled("b", accent)).append("c").styles()[0] ==
+                  format::StyleSpan{.begin = 1, .end = 2, .style = accent});
 static_assert(format::Message{"a"}.append(format::fragment("b")).styles().empty());
 static_assert(format::Message{"a"}.append(format::styled("b", accent)).append(format::styled("c", accent)).styles().size() == 1);
 static_assert(format::Message{"a"}.append(format::styled("b", accent)).append(format::styled("c", accent)).styles()[0].end == 3);
@@ -120,7 +132,7 @@ static_assert(format::Message{"a"}.append(format::fragment(std::array<char, 3>{'
               std::string_view{"ax\0y", 4});
 static_assert(format::Message{"a"}.append(format::fragment(std::array<char, 3>{'x', '\0', 'y'})).data()[4] == '\0');
 
-// --- Decimal append ---
+// --- TEST-FMT-NUM-001..003, TEST-REC-MSG-005: decimal append ---
 static_assert(format::Message{""}.append(0).view() == "0");
 static_assert(format::Message{""}.append(std::numeric_limits<u64>::max()).view() == "18446744073709551615");
 static_assert(format::Message{""}.append(std::numeric_limits<i64>::min()).view() == "-9223372036854775808");
@@ -136,7 +148,7 @@ static_assert(not CanAppend<decltype(abc), char>);
 static_assert(not CanAppend<decltype(abc), double>);
 static_assert(not CanAppend<decltype(abc), wchar_t>);
 
-// --- Diagnostic grammar ---
+// --- TEST-FMT-HEAD-001/002, TEST-FMT-ORDER-001/002/006: diagnostic grammar ---
 constexpr auto heading = format::Message{Severity::Error, format::code<3>("ITR", 4), "callable cannot accept"};
 static_assert(heading.view() == "error[ITR004]: callable cannot accept\n");
 static_assert(format::Message{Severity::Warning, format::code("W", 12345), "x"}.view() == "warning[W12345]: x\n");
@@ -187,6 +199,21 @@ consteval auto runsAreOrdered(std::span<const format::StyleSpan> runs, const usi
   return true;
 }
 static_assert(runsAreOrdered(styledMessage.styles(), styledMessage.size()));
+// TEST-FMT-STYLE-004: the accent-styled context, field value and note are each covered by exactly their own bytes;
+// the layout punctuation and newlines between them are never inside a run.
+consteval auto styledTextsAreExact() -> bool {
+  constexpr std::array<std::string_view, 3> expected{"Iter::map", "F", "n"};
+  usize found{};
+  for (const auto &run : styledMessage.styles()) {
+    if (run.style != accent)
+      continue;
+    if (found >= expected.size() or styledMessage.view().substr(run.begin, run.end - run.begin) != expected[found])
+      return false;
+    ++found;
+  }
+  return found == expected.size();
+}
+static_assert(styledTextsAreExact());
 
 // TEST-REC-MSG-002: pseudo-random sequences of plain, styled and empty fragments yield ordered, non-overlapping,
 // non-empty runs that match an independent model (adjacent equal styles coalesce).
@@ -259,7 +286,7 @@ static_assert(styledMessage.view().substr(styledMessage.styles()[0].begin,
                   styledMessage.styles()[0].end - styledMessage.styles()[0].begin) == "error[ITR004]");
 static_assert(styledMessage.styles()[0].style == format::severityStyle(Severity::Error));
 
-// Control bytes are escaped inside single-line fields, byte-preserved in plain text.
+// TEST-REC-SEC-001: control bytes are escaped inside single-line fields, byte-preserved in plain text.
 static_assert(format::Message{Severity::Error, format::code("E", 1), "a\nb\rc\td"}.view() ==
               "error[E001]: a\\nb\\rc\\td\n");
 static_assert(format::Message{Severity::Error, format::code("E", 1), "x"}
@@ -270,7 +297,7 @@ static_assert(format::Message{"a\nb\x1b"}.view() == "a\nb\x1b");
 // Extension never changes the original value and the types are distinct.
 static_assert(not std::same_as<decltype(abc), decltype(abcx)>);
 
-// Ordering is enforced by constraints.
+// TEST-REC-MSG-004, TEST-REC-API-001: ordering is enforced by constraints; every illegal transition is rejected.
 template <class Message>
 concept CanContext = requires(Message message) { message.context("c"); };
 template <class Message>
@@ -298,7 +325,7 @@ static_assert(not CanContext<HelpMessage> and not CanField<HelpMessage> and not 
 static_assert(not CanFieldEmptyKey<HeadingMessage>);
 static_assert(not CanAppendText<HeadingMessage> and not CanAppendText<HelpMessage>);
 
-// A generated static_assert message works (positive case).
+// TEST-FMT-STATIC-002: a generated static_assert message works (positive case).
 static_assert(true, full);
 
 // --- Runtime event emitter ---
@@ -324,7 +351,7 @@ constexpr auto ansiAlways = format::RenderPolicy{Presentation::Terminal, ColorMo
 
 } // namespace
 
-// TEST-FMT-STATIC-004: a reflection-derived (long) type name is copied into an owned fragment whose extent is the
+// TEST-FMT-STATIC-004, TEST-FMT-LIFE-003: a reflection-derived (long) type name is copied into an owned fragment whose extent is the
 // name's constant length: nothing is guessed or truncated.
 struct ThisIsAnIntentionallyVeryLongTypeNameUsedToProveThatInferredCapacityNeverTruncatesReflectedNames {};
 
@@ -351,6 +378,7 @@ static_assert(CanRenderTo<std::back_insert_iterator<std::string>>);
 namespace Tests::formatting {
 
 
+// TEST-FMT-ANSI-001/002, TEST-REC-ANSI-002: plain presentation and Terminal/Never emit exactly view().
 [[= Switch::test]] auto renderPlainEqualsView() -> void {
   Switch::check(format::render(styledMessage) == styledMessage.view());
   Switch::check(format::render(full) == full.view());
@@ -362,6 +390,8 @@ namespace Tests::formatting {
                 styledMessage.view());
 }
 
+// TEST-FMT-ANSI-003..006, TEST-FMT-COLOR-003, TEST-FMT-STYLE-005, TEST-REC-ANSI-001: exact SGR bytes for attributes,
+// indexed and RGB foreground/background, and no escapes for the default style.
 [[= Switch::test]] auto renderAnsiExact() -> void {
   constexpr auto message = format::Message{"a"}
                                .append(format::styled("b", accent))
@@ -382,6 +412,7 @@ namespace Tests::formatting {
   Switch::check(format::render(attributes, ansiAlways) == "\x1b[2m\x1b[4mx\x1b[0m");
 }
 
+// TEST-FMT-ANSI-007: styles never leak into a plain middle region.
 [[= Switch::test]] auto renderAnsiTransitionsDoNotLeak() -> void {
   constexpr format::Style bold{.bold = true};
   constexpr auto message = format::Message{""}
@@ -395,8 +426,18 @@ namespace Tests::formatting {
                                 .append(format::styled("A", bold))
                                 .append(format::styled("B", {.italic = true}));
   Switch::check(format::render(adjacent, ansiAlways) == "\x1b[1mA\x1b[0m\x1b[3mB\x1b[0m");
+
+  // TEST-FMT-ANSI-008: a styled last run is reset, so a following message starts from the default state.
+  Switch::check((format::render(message, ansiAlways) + format::render(format::Message{"z"}, ansiAlways)) ==
+                "\x1b[1mA\x1b[0mm\x1b[1mB\x1b[0mz");
+  // TEST-FMT-ANSI-009: an empty message carrying style metadata emits nothing.
+  Switch::check(format::render(format::Message{""}.append(format::styled("", bold)), ansiAlways).empty());
+  // TEST-FMT-BINARY-002: rendering uses the explicit length, so an embedded NUL survives.
+  Switch::check(format::render(format::Message{"a"}.append(format::fragment(std::array<char, 3>{'x', '\0', 'y'}))) ==
+                std::string{"ax\0y", 4});
 }
 
+// TEST-FMT-SINK-001: iterator and string rendering agree.
 [[= Switch::test]] auto renderToIteratorMatchesString() -> void {
   std::string viaIterator;
   auto _ = format::renderTo(styledMessage, std::back_inserter(viaIterator), ansiAlways);
@@ -404,6 +445,7 @@ namespace Tests::formatting {
   Switch::check(viaIterator.size() > styledMessage.size());
 }
 
+// TEST-REC-EVENT-001: the event stream reproduces the owned Message layout byte for byte.
 [[= Switch::test]] auto emitMatchesCompileTimeMessage() -> void {
   StringSink sink;
   format::RenderState state;
@@ -423,6 +465,7 @@ namespace Tests::formatting {
   Switch::check(sink.bytes == full.view());
 }
 
+// TEST-FMT-CODE-006: runtime code number/width parity.
 [[= Switch::test]] auto emitRuntimeCodeParity() -> void {
   for (const u64 number : {u64{0}, u64{4}, u64{12345}, std::numeric_limits<u64>::max()}) {
     StringSink sink;
@@ -437,6 +480,7 @@ namespace Tests::formatting {
   }
 }
 
+// TEST-REC-EVENT-002: misuse is InvalidOrder and leaves sink and state untouched.
 [[= Switch::test]] auto emitRejectsInvalidOrderWithoutSideEffects() -> void {
   StringSink sink;
   format::RenderState state;
@@ -482,6 +526,7 @@ namespace Tests::formatting {
   Switch::check(escaped.bytes == "note: a\\nb\n\n  k\\tk: \\x1B[31m\\x7F\xe2\x82\xac\n");
 }
 
+// TEST-FMT-SINK-002: one ANSI state machine across runtime fragments, no extra resets.
 [[= Switch::test]] auto emitAnsiStateIsLocalAndFinishResets() -> void {
   StringSink sink;
   format::RenderState state{.policy = ansiAlways};
@@ -516,7 +561,7 @@ namespace Tests::formatting {
   }
 }
 
-// INV-ANSI-001: stripping the renderer's own SGR sequences from an ANSI rendering yields the plain rendering.
+// TEST-FMT-ANSI-010: stripping the renderer's own SGR sequences from an ANSI rendering yields the plain rendering.
 [[= Switch::test]] auto strippedAnsiEqualsPlain() -> void {
   const auto stripped = [](const std::string_view text) {
     std::string result;
@@ -542,6 +587,7 @@ namespace Tests::formatting {
   Switch::check(format::render(alternating, ansiAlways).ends_with("\x1b[0m"));
 }
 
+// TEST-FMT-SINK-004: a failing sink is reported and never followed by false success.
 [[= Switch::test]] auto sinkFailureIsIrreversible() -> void {
   StringSink sink{.failAfter = 4};
   format::RenderState state;
@@ -577,6 +623,7 @@ namespace Tests::formatting {
   }
 }
 
+// TEST-FMT-SINK-003: a temporary runtime view is consumed immediately and never retained.
 [[= Switch::test]] auto eventViewsAreConsumedImmediately() -> void {
   StringSink sink;
   format::RenderState state;

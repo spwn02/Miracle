@@ -1,3 +1,5 @@
+# TEST-BLD-INSTALL-003, TEST-BLD-INSTALL-004: installed find_package consumer; direct named imports and public
+# templates work against the exported module file sets.
 cmake_minimum_required(VERSION 4.4 FATAL_ERROR)
 
 set(CMAKE_CXX_STANDARD 26)

@@ -1,3 +1,4 @@
+// TEST-FMT-ORDER-008: free-form append to a diagnostic message is unavailable, so the grammar cannot be bypassed.
 import Miracle;
 
 using namespace Miracle;

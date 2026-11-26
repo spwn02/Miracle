@@ -1,3 +1,4 @@
+// TEST-META-SNAP-006: flattening a temporary range or nested Query leaves no dangling reference.
 import std;
 import Miracle.Meta;
 consteval bool test() {

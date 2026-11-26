@@ -1,3 +1,4 @@
+// TEST-FMT-STATIC-001: a failing static_assert shows the authored Message body.
 import Miracle;
 
 using namespace Miracle;

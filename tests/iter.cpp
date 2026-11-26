@@ -25,6 +25,9 @@ template <class T>
 concept CopiedPipeline = requires(T value) { std::move(value).copied(); };
 
 template <class T>
+concept ParallelPipeline = requires(T value) { std::move(value).parallel(); };
+
+template <class T>
 concept CycledPipeline = requires(T value) { std::move(value).cycle(); };
 
 static_assert(not std::convertible_to<Infinity, usize>);
@@ -136,6 +139,7 @@ static_assert([] -> bool {
   Switch::check(iter(10, 2, 2).toVec().empty());
 }
 
+// TEST-ITER-RANGE-001: iter(lvalue) borrows the source; TEST-ITER-RANGE-002: rvalue sources are moved in.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto standardSources() -> void {
   static_assert(std::ranges::random_access_range<decltype(empty<i32>())>);
   static_assert(std::ranges::sized_range<decltype(empty<i32>())>);
@@ -272,6 +276,8 @@ static_assert([] -> bool {
   Switch::check(terminalCalls == static_cast<i32>(values.size()));
 }
 
+// TEST-ITER-INV-001..003: direct, tuple-expanding and reflected-aggregate invocation (direct wins; the failure shape is
+// the compile-fail fixture iter-adaptive-invocation, TEST-ITER-INV-004).
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto adaptiveInvocation() -> void {
   Vec<i32> values{1, 2, 3};
   const Vec<i32> tupleValues =
@@ -280,6 +286,8 @@ static_assert([] -> bool {
           .map([](isize index, i32 value) -> i32 { return static_cast<i32>(index) + value; })
           .toVec();
   Switch::check(tupleValues == Vec<i32>{1, 3, 5});
+  // Direct invocation takes precedence: a callable accepting any arity receives the single item, never an expansion.
+  Switch::check(iter(values).enumerate().map([](auto... arguments) -> usize { return sizeof...(arguments); }).sum() == 3);
 
   Vec<Point> points{{.x = 1, .y = 2}, {.x = 3, .y = 4}};
   i32 aggregate{};
@@ -391,6 +399,7 @@ static_assert([] -> bool {
   static_assert(not CycledPipeline<decltype(input)>);
 }
 
+// TEST-ITER-RANGE-005: chunks, windows and intersperse on edge sizes keep the baseline elements and cardinality.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto compoundViews() -> void {
   Vec<i32> values{1, 2, 3, 4, 5, 6, 7, 8};
 
@@ -501,6 +510,7 @@ static_assert([] -> bool {
       iter(generatedIntegers()).map([](i32 value) -> i32 { return value / 2; }).toVec() == Vec<i32>{1, 2, 3});
 }
 
+// TEST-ITER-RANGE-003: peek/next interactions keep one cached cursor state and never pull twice.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto peekableStateMachine() -> void {
   Vec<i32> borrowed{1, 2, 3, 4};
   auto borrowedPeek = iter(borrowed).peekable();
@@ -905,7 +915,12 @@ static_assert([] -> bool {
   Switch::check(calls == 1);
 }
 
+// TEST-ITER-PAR-001/002: eligible ranges run under standard policies; ranges that are not random-access are rejected.
 [[ = Switch::test, = Switch::group("Core"), = Switch::tag("iter") ]] auto standardParallelPolicies() -> void {
+  std::list<i32> linkedValues{1, 2, 3};
+  static_assert(not ParallelPipeline<decltype(iter(linkedValues))>);
+  static_assert(ParallelPipeline<decltype(iter(std::declval<Vec<i32> &>()))>);
+
   Vec<i32> values(20'000);
   std::ranges::iota(values, 0);
 

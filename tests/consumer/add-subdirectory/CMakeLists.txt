@@ -1,3 +1,4 @@
+# TEST-BLD-INSTALL-001: add_subdirectory consumer with `import Miracle;`.
 cmake_minimum_required(VERSION 4.4 FATAL_ERROR)
 
 set(CMAKE_CXX_STANDARD 26)

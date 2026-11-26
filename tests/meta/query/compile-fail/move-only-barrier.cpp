@@ -1,3 +1,4 @@
+// TEST-META-SNAP-005: a move-only captured callable keeps its rejection barrier.
 import std;
 import Miracle.Meta;
 

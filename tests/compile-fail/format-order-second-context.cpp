@@ -1,3 +1,4 @@
+// TEST-FMT-ORDER-005: a second context is rejected.
 import Miracle;
 
 using namespace Miracle;

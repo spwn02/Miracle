@@ -125,6 +125,7 @@ static_assert(semanticReport.features.contains(logging));
 static_assert(semanticReport.features.contains(tracing));
 static_assert(not semanticReport.features.contains(metrics)); // optional does not auto-enable
 
+// TEST-FEA-007: a build feature selected but not built is reported as unavailable.
 constexpr auto buildRejected = features.analyze<gpu>(feature::buildSet<>);
 static_assert(buildRejected.error == feature::ResolutionError::MissingBuildFeature);
 static_assert(buildRejected.message.contains("gpu"));
@@ -145,19 +146,23 @@ static_assert(groupedByMetadata.features.contains(logging));
 static_assert(groupedByMetadata.features.contains(base));
 static_assert(groupedByMetadata.features.size() == 2);
 
+// TEST-FEA-005: a conflict names the conflicting identities.
 constexpr auto conflictReport = features.analyze<tracing, incompatible>(feature::buildSet<>);
 static_assert(conflictReport.error == feature::ResolutionError::Conflict);
 static_assert(conflictReport.message.contains("tracing"));
 static_assert(conflictReport.message.contains("incompatible"));
 
+// TEST-FEA-003: a missing dependency is reported as a missing feature naming it.
 constexpr auto missingReport = missingCatalog.analyze<missing>(feature::buildSet<>);
 static_assert(missingReport.error == feature::ResolutionError::MissingFeature);
 static_assert(missingReport.message.contains("not-present"));
 
+// TEST-FEA-006: a required dependency cycle is explained in full.
 constexpr auto cycleReport = cycle.analyze<cycleA>(feature::buildSet<>);
 static_assert(cycleReport.error == feature::ResolutionError::DependencyCycle);
 static_assert(cycleReport.message.contains("cycle-a --> cycle-b --> cycle-c --> cycle-a"));
 
+// TEST-FEA-002: duplicate stable names are rejected as DuplicateFeature.
 constexpr auto duplicateReport = duplicateCatalog.analyze<duplicateOne>(feature::buildSet<>);
 static_assert(duplicateReport.error == feature::ResolutionError::DuplicateFeature);
 
@@ -171,6 +176,7 @@ static_assert(emptyReport.features.fingerprint() == emptyCatalog.analyze<>(featu
 
 static_assert(feature::capabilityName(feature::Capability::ReflectionCore) == "reflection_core");
 constexpr auto noCapabilities = feature::CapabilitySet{};
+// TEST-FEA-004: an unavailable capability is named in the error.
 constexpr auto capabilityReport = features.analyze<reflection>(feature::buildSet<>, noCapabilities);
 static_assert(capabilityReport.error == feature::ResolutionError::MissingCapability);
 static_assert(capabilityReport.message.contains("reflection"));

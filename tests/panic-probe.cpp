@@ -1,3 +1,4 @@
+// TEST-REST-002: panic reports through the established renderer and terminates, even when rendering throws.
 import std;
 import Miracle;
 

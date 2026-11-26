@@ -1,3 +1,4 @@
+# TEST-BLD-INSTALL-002: FetchContent consumer of the local checkout.
 cmake_minimum_required(VERSION 4.4 FATAL_ERROR)
 
 set(CMAKE_CXX_STANDARD 26)

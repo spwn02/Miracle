@@ -25,14 +25,16 @@ static_assert(not CheckedRgbAccepts<int, bool, int>);
 static_assert(not CheckedRgbAccepts<int, int, bool>);
 static_assert(not CheckedRgbAccepts<double, int, int>);
 
-// hex: only 24 bits are valid.
+// TEST-COL-HEX-002..004: only 24 bits are valid; high bits are never discarded.
 static_assert(Color::hex(0x000000) == Color::rgb(0, 0, 0));
 static_assert(Color::hex(0xFF9F43) == Color::rgb(255, 159, 67));
 static_assert(not Color::hex(0x1000000));
 static_assert(not Color::hex(0xFF000000));
+static_assert(not Color::hex(0xFFFFFFFFU));
 static_assert(Color::rgb(255, 159, 67).toHex() == 0xFF9F43U);
 
-// parseHex: exactly #RGB or #RRGGBB, ASCII hex digits, case-insensitive.
+// TEST-COL-PARSE-001/003: parseHex accepts exactly #RGB or #RRGGBB, ASCII hex digits, case-insensitive.
+static_assert(Color::parseHex("#FF0000") == Color::rgb(255, 0, 0));
 static_assert(Color::parseHex("#F00FFF") == Color::rgb(240, 15, 255));
 static_assert(Color::parseHex("#abc") == Color::rgb(0xAA, 0xBB, 0xCC));
 static_assert(Color::parseHex("#ABC") == Color::rgb(0xAA, 0xBB, 0xCC));
@@ -57,7 +59,7 @@ static_assert(not Color::parseHex("#+12"));
 static_assert(not Color::parseHex(std::string_view{"#f\0f", 4}));
 static_assert(not Color::parseHex("#\xC3\xA9\xC3\xA9"));
 
-// HSV: sectors, grayscale, boundaries and rejection of invalid input.
+// TEST-COL-HSV-001..007: sectors, grayscale, boundaries and rejection of invalid input (NaN/Inf in every field).
 static_assert(Color::fromHsv({0, 1, 1}) == Color::rgb(255, 0, 0));
 static_assert(Color::fromHsv({60, 1, 1}) == Color::rgb(255, 255, 0));
 static_assert(Color::fromHsv({120, 1, 1}) == Color::rgb(0, 255, 0));
@@ -78,7 +80,12 @@ static_assert(not Color::fromHsv({std::numeric_limits<f64>::quiet_NaN(), 1, 1}))
 static_assert(not Color::fromHsv({0, std::numeric_limits<f64>::quiet_NaN(), 1}));
 static_assert(not Color::fromHsv({0, 1, std::numeric_limits<f64>::infinity()}));
 static_assert(not Color::fromHsv({std::numeric_limits<f64>::infinity(), 1, 1}));
+static_assert(not Color::fromHsv({0, std::numeric_limits<f64>::infinity(), 1}));
+static_assert(not Color::fromHsv({0, 1, std::numeric_limits<f64>::quiet_NaN()}));
+static_assert(not Color::fromHsv({-std::numeric_limits<f64>::infinity(), 1, 1}));
+static_assert(Color::fromHsv({0, 0, 0.5}) == Color::rgb(128, 128, 128));
 
+// TEST-COL-REV-001..003: RGB to HSV for black, white and the primaries.
 static_assert(Color::rgb(0, 0, 0).toHsv() == Hsv{0, 0, 0});
 static_assert(Color::rgb(255, 255, 255).toHsv() == Hsv{0, 0, 1});
 static_assert(Color::rgb(128, 128, 128).toHsv().hueDegrees == 0);
@@ -88,7 +95,7 @@ static_assert(Color::rgb(0, 0, 255).toHsv() == Hsv{240, 1, 1});
 static_assert(Color::rgb(255, 0, 255).toHsv().hueDegrees == 300);
 static_assert(Color::rgb(255, 0, 1).toHsv().hueDegrees < 360);
 
-// Default is black; the type is a structural, trivially copyable value.
+// TEST-COL-TYPE-001, TEST-COL-RGB-001: default is black; the type is a structural, trivially copyable value.
 static_assert(Color{} == Color::rgb(0, 0, 0));
 static_assert(std::is_trivially_copyable_v<Color> and std::is_standard_layout_v<Color>);
 static_assert(sizeof(Color) == 3);
@@ -107,7 +114,7 @@ consteval auto roundTripsAllChannels() -> bool {
 }
 static_assert(roundTripsAllChannels());
 
-// TEST-COL-RGB-001..003, HEX-001, TYPE-002: raw channels, structural template argument.
+// TEST-COL-RGB-002/003, TEST-COL-HEX-001, TEST-COL-TYPE-002: raw channels, structural template argument.
 static_assert(Color{}.red == 0 and Color{}.green == 0 and Color{}.blue == 0 and Color{}.toHex() == 0);
 static_assert(Color::rgb(255, 255, 255).toHex() == 0xFFFFFFU);
 static_assert(Color::rgb(12, 34, 56).red == 12 and Color::rgb(12, 34, 56).green == 34 and
@@ -124,7 +131,7 @@ static_assert(StructuralColor<Color{1, 2, 3}>::value == Color::rgb(1, 2, 3));
 static_assert(std::is_same_v<StructuralColor<Color{1, 2, 3}>, StructuralColor<Color::rgb(1, 2, 3)>>);
 static_assert(not std::is_same_v<StructuralColor<Color{1, 2, 3}>, StructuralColor<Color{1, 2, 4}>>);
 
-// TEST-COL-PARSE-002/004/005..008: remaining parse fixtures.
+// TEST-COL-PARSE-002/004/005..009: remaining parse fixtures.
 static_assert(Color::parseHex("#fF9aC0") == Color::rgb(255, 154, 192));
 static_assert(Color::parseHex("#FFF") == Color::rgb(255, 255, 255));
 static_assert(not Color::parseHex("#12G456"));
@@ -135,7 +142,7 @@ static_assert(not Color::parseHex("#1234567"));
 static_assert(not Color::parseHex(std::string_view{"#12\0ABC", 7}));
 static_assert(not Color::parseHex(" #ABC"));
 
-// TEST-COL-HSV-008/010: every sector boundary and its neighbours stay valid and continuous.
+// TEST-COL-HSV-008/010, TEST-REC-COLOR-003: every sector boundary and its neighbours stay valid and continuous.
 consteval auto sectorBoundariesAreContinuous() -> bool {
   constexpr f64 epsilon = 1e-9;
   const auto near = [](u8 left, u8 right) { return left > right ? left - right <= 1 : right - left <= 1; };
@@ -158,14 +165,14 @@ consteval auto sectorBoundariesAreContinuous() -> bool {
 }
 static_assert(sectorBoundariesAreContinuous());
 
-// TEST-COL-HSV-009, REV-003/004.
+// TEST-COL-HSV-009, TEST-COL-REV-003/004.
 static_assert(Color::fromHsv({0, 0, 0}) == Color::rgb(0, 0, 0));
 static_assert(Color::fromHsv({0, 0, 1}) == Color::rgb(255, 255, 255));
 static_assert(Color::rgb(127, 127, 127).toHsv().hueDegrees == 0 and
               Color::rgb(127, 127, 127).toHsv().saturation == 0);
 static_assert(std::abs(Color::rgb(127, 127, 127).toHsv().value - (127.0 / 255.0)) < 1e-12);
 
-// TEST-COL-PROP-001/002 (compile-time part): every channel boundary combination, tied channels included.
+// TEST-COL-PROP-001/002 (compile-time part), TEST-REC-COLOR-001: every channel boundary combination, tied channels included.
 constexpr std::array<u8, 6> boundaryChannels{0, 1, 127, 128, 254, 255};
 
 consteval auto boundaryRoundTrips() -> bool {
@@ -237,7 +244,7 @@ auto channelDistance(const u8 left, const u8 right) -> int {
 
 } // namespace
 
-// TEST-COL-PROP-001: 10,000 seeded samples plus tied-channel adversaries; maxima are tracked, not assumed.
+// TEST-COL-PROP-001, TEST-REC-COLOR-004: 10,000 seeded samples plus tied-channel adversaries; maxima are tracked, not assumed.
 [[= Switch::test]] auto hsvRoundTripProperty() -> void {
   u64 state = propertySeed;
   int maxError = 0;

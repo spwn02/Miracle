@@ -1,3 +1,4 @@
+// TEST-META-SNAP-001: public query semantics match the baseline.
 import std;
 import Miracle.Meta;
 import Switch;

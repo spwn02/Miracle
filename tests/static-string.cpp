@@ -33,6 +33,7 @@ static_assert(not RawPointerOrderable<StaticString<8>>);
 
 namespace Tests::staticString {
 
+// TEST-STR-API-001: BasicStaticString construction, capacity and NTTP use keep their layout and constexpr behaviour.
 [[ = test, = group("foundation"), = tag("static-string") ]] auto construction() -> void {
   constexpr auto value = BasicStaticString{"Miracle"};
   static_assert(value.size() == 7);
@@ -76,6 +77,7 @@ namespace Tests::staticString {
   static_assert(*left.rbegin() == 'c');
 }
 
+// TEST-STR-API-002: find, substr, trim, join and split keep their exact behaviour.
 [[ = test, = group("foundation"), = tag("static-string") ]] auto searching() -> void {
   constexpr auto value = BasicStaticString{"alpha beta alpha"};
 
@@ -150,6 +152,7 @@ namespace Tests::staticString {
   static_assert(words[1] == BasicStaticString{"two"});
 }
 
+// TEST-STR-API-003: staticFormat substitutions and grammar.
 [[ = test, = group("foundation"), = tag("static-string") ]] auto formatting() -> void {
   enum class Code : i32 { Failed = -12 };
 

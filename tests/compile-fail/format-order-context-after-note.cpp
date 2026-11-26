@@ -1,3 +1,4 @@
+// TEST-FMT-ORDER-004: context after note is rejected.
 import Miracle;
 
 using namespace Miracle;
