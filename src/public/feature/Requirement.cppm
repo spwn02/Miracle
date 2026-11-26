@@ -5,6 +5,7 @@ import std;
 import Miracle.Numeric;
 
 import :Descriptor;
+import :Types;
 
 namespace Miracle::feature {
 
@@ -84,10 +85,9 @@ template <auto Required, auto Set>
   requires FeatureValue<Required>
 consteval auto requireEnabled() -> void {
   constexpr bool enabled = Set.template contains<Required>();
-  constexpr auto message =
-      staticFormat<"feature `{}` is not enabled\n\nhelp:\n  enable `{}` in the active Miracle FeatureSet">(
-          Required.name, Required.name);
-  static_assert(enabled, message);
+  static_assert(enabled,
+      detail::diagnostic(7, detail::textFragment<staticFormat<"feature `{}` is not enabled">(Required.name)>())
+          .help(detail::textFragment<staticFormat<"enable `{}` in the active Miracle FeatureSet">(Required.name)>()));
 }
 
 } // namespace Miracle::feature

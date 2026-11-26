@@ -11,6 +11,7 @@
 # Library Guides
 
 - [Diagnostics and panic](DIAGNOSTICS.md)
+- [Color and Format](FORMAT.md)
 - [Meta and reflection](META.md)
 - [Iter](ITER.md)
 - [Range](RANGE.md)

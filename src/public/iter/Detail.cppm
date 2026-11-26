@@ -1,11 +1,32 @@
 export module Miracle.Iter:Detail;
 
 import std;
+import Miracle.Format;
 import Miracle.Numeric;
 import Miracle.Types;
 import Miracle.Range;
 
 namespace Miracle {
+
+/// Owned, exactly sized spelling of `T` for Format-authored diagnostics; it never retains a view.
+template <class T>
+[[nodiscard]] consteval auto typeNameFragment() {
+  constexpr std::string_view name = std::define_static_string(std::meta::display_string_of(^^T));
+  std::array<char, name.size()> bytes{};
+  std::ranges::copy(name, bytes.begin());
+  return format::fragment(bytes);
+}
+
+/// Iter diagnostics live in the module-owned `ITR` domain: 1 item callable, 2 accumulator callable, 3 tuple
+/// elements not invocable, 4-7 Peekable `nextIfMap` contract violations. Messages are built only on failing
+/// branches (a `static_assert` message is evaluated only when its condition is false).
+template <class Item, class Function, usize N>
+[[nodiscard]] consteval auto invocationError(const u64 number, const char (&summary)[N]) {
+  return format::Message{Severity::Error, format::code("ITR", number), summary}
+      .context("Iter adaptive invocation")
+      .field("item", typeNameFragment<Item>())
+      .field("callable", typeNameFragment<Function>());
+}
 
 /// Miracle-owned range values opt into the standard view concept structurally rather than through
 /// view_interface inheritance. Public semantic adaptor names are exported here while implementation helpers
@@ -130,7 +151,8 @@ constexpr auto adaptiveInvoke(Function &&function, Item &&item) -> decltype(auto
         return std::invoke(std::forward<Function>(function), std::get<Index>(std::forward<Item>(item))...);
       } else {
         static_assert(canInvoke,
-            "Miracle adaptive invocation cannot invoke the callable with this tuple-like item's elements");
+            invocationError<Item, Function>(
+                3, "Miracle adaptive invocation cannot invoke the callable with this tuple-like item's elements"));
       }
     }(std::make_index_sequence<tupleSize>{});
   } else if constexpr (std::is_aggregate_v<std::remove_cvref_t<Item>>) {
@@ -143,13 +165,15 @@ constexpr auto adaptiveInvoke(Function &&function, Item &&item) -> decltype(auto
           std::make_index_sequence<memberCount>{});
     } else {
       static_assert(canInvoke,
-          "Miracle adaptive invocation requires a callable accepting the item directly, its tuple elements, "
-          "or its reflected aggregate members");
+          invocationError<Item, Function>(1,
+              "Miracle adaptive invocation requires a callable accepting the item directly, its tuple elements, "
+              "or its reflected aggregate members"));
     }
   } else {
     static_assert(std::invocable<Function, Item>,
-        "Miracle adaptive invocation requires a callable accepting the item directly, its tuple elements, or "
-        "its reflected aggregate members");
+        invocationError<Item, Function>(1,
+            "Miracle adaptive invocation requires a callable accepting the item directly, its tuple elements, or "
+            "its reflected aggregate members"));
   }
 }
 
@@ -197,8 +221,9 @@ constexpr auto adaptiveInvokeWithPrefix(Function &&function, Prefix &&prefix, It
             std::get<Index>(std::forward<Item>(item))...);
       } else {
         static_assert(canInvoke,
-            "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item "
-            "or its decomposed fields");
+            invocationError<Item, Function>(2,
+                "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item "
+                "or its decomposed fields"));
       }
     }(std::make_index_sequence<count>{});
   } else if constexpr (std::is_aggregate_v<std::remove_cvref_t<Item>>) {
@@ -213,13 +238,15 @@ constexpr auto adaptiveInvokeWithPrefix(Function &&function, Prefix &&prefix, It
           std::make_index_sequence<count>{});
     } else {
       static_assert(canInvoke,
-          "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item or "
-          "its decomposed fields");
+          invocationError<Item, Function>(2,
+              "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item or "
+              "its decomposed fields"));
     }
   } else {
     static_assert(std::invocable<Function, Prefix, Item>,
-        "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item or "
-        "its decomposed fields");
+        invocationError<Item, Function>(2,
+            "Miracle adaptive invocation requires a callable accepting the accumulator followed by the item or "
+            "its decomposed fields"));
   }
 }
 

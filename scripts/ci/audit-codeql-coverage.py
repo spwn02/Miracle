@@ -71,7 +71,7 @@ def evaluate(inventory: list[str], rows: list[dict[str, str]]) -> dict:
         extracted[path] = value
         reasons[path] = row["Failure Reason"]
 
-    modules = [path for path in inventory if Path(path).suffix in {".cppm", ".cppm"}]
+    modules = [path for path in inventory if Path(path).suffix in {".cppm"}]
     conventional = [path for path in inventory if Path(path).suffix == ".cpp"]
 
     def group(paths: list[str]) -> dict:
@@ -143,7 +143,7 @@ def self_test() -> None:
         assert "Unrecognized" in str(error)
     else:
         raise AssertionError("Invalid extracted flag accepted")
-    print("PASS: CodeQL extraction audit, .cppm/.cppm paths and negative fixtures")
+    print("PASS: CodeQL extraction audit, .cppm/.cpp paths and negative fixtures")
 
 
 def main() -> int:

@@ -23,6 +23,7 @@ These are **maintained prose and usage documentation**, not automatically extrac
 | Area | Documentation |
 | --- | --- |
 | Diagnostics and errors | [Diagnostics and panic](DIAGNOSTICS.md) |
+| Color and Format (messages, styles, event writer, diagnostic codes) | [Color and Format](FORMAT.md) |
 | Reflection | [Meta](META.md) |
 | Iteration | [Iter](ITER.md) |
 | Ranges | [Range](RANGE.md) |

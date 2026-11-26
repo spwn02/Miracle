@@ -5,6 +5,7 @@ import std;
 import Miracle.Numeric;
 
 import :Descriptor;
+import :Types;
 
 export namespace Miracle::feature {
 
@@ -37,7 +38,7 @@ private:
   }();
 
 public:
-  static_assert(uniqueNames(), "BuildFeatureSet cannot contain duplicate feature names");
+  static_assert(uniqueNames(), detail::diagnostic(8, "BuildFeatureSet cannot contain duplicate feature names"));
 
   /// Returns the number of configured build features.
   [[nodiscard]] static consteval auto size() noexcept -> usize {

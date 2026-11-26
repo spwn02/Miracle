@@ -1,6 +1,7 @@
 export module Miracle.Iter:Core;
 
 import std;
+import Miracle.Format;
 import Miracle.Numeric;
 import Miracle.Types;
 import Miracle.Range;
@@ -239,7 +240,8 @@ public:
     using CandidateReference = std::conditional_t<borrowed_, decltype(*candidate), Item &&>;
     using Outcome = std::remove_cvref_t<decltype(adaptiveInvoke(
         std::declval<Function &>(), std::declval<CandidateReference>()))>;
-    static_assert(ExpectedLike<Outcome>, "Peekable::nextIfMap requires an expected-like return value");
+    static_assert(ExpectedLike<Outcome>,
+        invocationError<Item, Function>(4, "Peekable::nextIfMap requires an expected-like return value"));
     using Mapped = std::remove_cvref_t<typename Outcome::value_type>;
 
     if (not candidate.has_value()) {
@@ -263,11 +265,13 @@ public:
         cache_.emplace(outcome.error().get());
       } else {
         static_assert(std::same_as<std::remove_cvref_t<Error>, Ref<Borrowed>>,
-            "nextIfMap on a borrowed Peekable must reject with Ref<Item> so the put-back item cannot dangle");
+            invocationError<Item, Function>(
+                5, "nextIfMap on a borrowed Peekable must reject with Ref<Item> so the put-back item cannot dangle"));
       }
     } else {
       static_assert(std::constructible_from<Item, Error &&>,
-          "nextIfMap rejection must carry an item that can be put back into the Peekable cache");
+          invocationError<Item, Function>(
+              6, "nextIfMap rejection must carry an item that can be put back into the Peekable cache"));
       cache_.emplace(std::move(outcome.error()));
     }
     cacheConsumesSource_ = false;
@@ -281,7 +285,8 @@ public:
   {
     using Result =
         std::remove_cvref_t<decltype(adaptiveInvoke(std::declval<Function &>(), std::declval<Item &>()))>;
-    static_assert(OptionalLike<Result>, "Peekable::nextIfMapMut requires an Optional-like return value");
+    static_assert(OptionalLike<Result>,
+        invocationError<Item, Function>(7, "Peekable::nextIfMapMut requires an Optional-like return value"));
     if (not fillFront()) {
       return Result{};
     }

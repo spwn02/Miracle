@@ -2,8 +2,36 @@ export module Miracle.Feature:Types;
 
 import std;
 
+import Miracle.Format;
 import Miracle.Numeric;
 import Miracle.StaticString;
+
+namespace Miracle::feature::detail {
+
+/// Owns the exact bytes of a constant `StaticString` as a Format fragment, so a computed report can become part
+/// of a Format-authored `static_assert` message without a dangling view or a guessed capacity.
+template <auto Text>
+[[nodiscard]] consteval auto textFragment() {
+  std::array<char, Text.size()> bytes{};
+  std::ranges::copy(Text.view(), bytes.begin());
+  return format::fragment(bytes);
+}
+
+/// Feature diagnostics live in the module-owned `FEA` domain. Codes 1-6 mirror `ResolutionError` (1 duplicate,
+/// 2 missing feature, 3 missing build feature, 4 missing capability, 5 cycle, 6 conflict); 7 is a disabled
+/// feature, 8 a duplicate build-feature name and 9-12 descriptor option misuse.
+template <usize N>
+[[nodiscard]] consteval auto diagnostic(const u64 number, const char (&summary)[N]) {
+  return format::Message{Severity::Error, format::code("FEA", number), summary}.context("Miracle::feature");
+}
+
+/// Variant whose summary is an owned, exactly sized fragment.
+template <usize N>
+[[nodiscard]] consteval auto diagnostic(const u64 number, const format::Fragment<N> summary) {
+  return format::Message{Severity::Error, format::code("FEA", number), summary}.context("Miracle::feature");
+}
+
+} // namespace Miracle::feature::detail
 
 export namespace Miracle::feature {
 

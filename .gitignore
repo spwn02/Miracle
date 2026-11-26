@@ -6,3 +6,4 @@
 
 # Generated documentation site (mdBook)
 /site/
+__pycache__/

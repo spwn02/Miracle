@@ -310,14 +310,14 @@ concept DescriptorOption = requires {
 template <BasicStaticString Name, DescriptorOption... Options>
 struct Descriptor final {
   static_assert(optionCount<OptionKind::Description, Options...> <= 1,
-      "A Feature may contain at most one description option");
+      detail::diagnostic(9, "A Feature may contain at most one description option"));
   static_assert(optionCount<OptionKind::Version, Options...> <= 1,
-      "A Feature may contain at most one version option");
+      detail::diagnostic(10, "A Feature may contain at most one version option"));
   static_assert(
       optionCount<OptionKind::Build, Options...> + optionCount<OptionKind::Semantic, Options...> <= 1,
-      "A Feature cannot be both build and semantic");
+      detail::diagnostic(11, "A Feature cannot be both build and semantic"));
   static_assert(optionCount<OptionKind::DefaultEnabled, Options...> <= 1,
-      "A Feature may contain defaultEnabled at most once");
+      detail::diagnostic(12, "A Feature may contain defaultEnabled at most once"));
 
   /// Stable feature identity used by dependency/conflict resolution.
   static constexpr auto name = Name;

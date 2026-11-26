@@ -320,13 +320,13 @@ miracle_add_meta_compile_fail_test(
   "provided value cannot be represented by a reflection")
 
 miracle_add_compile_fail_test(Disabled compile-fail/feature-disabled.cpp
-                              "feature `tracing` is not enabled")
+                              "error[FEA007]: feature `tracing` is not enabled")
 miracle_add_compile_fail_test(
   Cycle compile-fail/feature-cycle.cpp
-  "feature dependency cycle: cycle-a --> cycle-b --> cycle-c --> cycle-a")
+  "error[FEA005]: feature dependency cycle: cycle-a --> cycle-b --> cycle-c --> cycle-a")
 miracle_add_compile_fail_test(
   Conflict compile-fail/feature-conflict.cpp
-  "feature conflict: `first` conflicts with `second`")
+  "error[FEA006]: feature conflict: `first` conflicts with `second`")
 miracle_add_compile_fail_test(
   DiagnosticNegative compile-fail/diagnostic-negative.cpp
   "because 'NegativeCode' does not satisfy 'DiagnosticCode'")
@@ -397,7 +397,16 @@ miracle_add_compile_fail_test(
 
 miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cpp
-  "Miracle adaptive invocation requires a callable accepting the item directly")
+  "error[ITR001]: Miracle adaptive invocation requires a callable accepting the item directly")
+miracle_add_compile_fail_test(
+  IterAccumulatorInvocation compile-fail/iter-accumulator-invocation.cpp
+  "error[ITR002]: Miracle adaptive invocation requires a callable accepting the accumulator")
+miracle_add_compile_fail_test(
+  FeatureDescriptorOptions compile-fail/feature-descriptor-options.cpp
+  "error[FEA009]: A Feature may contain at most one description option")
+miracle_add_compile_fail_test(
+  FeatureBuildSetDuplicate compile-fail/feature-build-set-duplicate.cpp
+  "error[FEA008]: BuildFeatureSet cannot contain duplicate feature names")
 
 miracle_add_compile_fail_test(
   MetaRequireName compile-fail/meta-require-name.cpp

@@ -1,0 +1,1378 @@
+{
+ "count": 196,
+ "files": {
+  "benchmarks/iter-stress.cpp": {
+   "area": "benchmarks",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "benchmarks/iter.cpp": {
+   "area": "benchmarks",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "benchmarks/meta-cache/source.cpp.in": {
+   "area": "benchmarks",
+   "category": "generated-source-template",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "benchmarks/meta-query/control-flow.cpp.in": {
+   "area": "benchmarks",
+   "category": "generated-source-template",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "benchmarks/meta-query/source.cpp.in": {
+   "area": "benchmarks",
+   "category": "generated-source-template",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "examples/diagnostic.cpp": {
+   "area": "examples",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "examples/iter.cpp": {
+   "area": "examples",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "examples/meta.cpp": {
+   "area": "examples",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "examples/quickstart.cpp": {
+   "area": "examples",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "src/private/Diagnostics.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Diagnostics",
+   "partition": null
+  },
+  "src/private/Error.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Error",
+   "partition": null
+  },
+  "src/private/Fs.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Fs",
+   "partition": null
+  },
+  "src/private/Panic.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Panic",
+   "partition": null
+  },
+  "src/private/Profiling.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Profiling",
+   "partition": null
+  },
+  "src/private/linux/Memory.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Memory",
+   "partition": null
+  },
+  "src/private/unsupported/Memory.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Memory",
+   "partition": null
+  },
+  "src/private/windows/Memory.cpp": {
+   "area": "src",
+   "category": "cxx-source",
+   "exported": false,
+   "module": "Miracle.Memory",
+   "partition": null
+  },
+  "src/public/Miracle.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle",
+   "partition": null
+  },
+  "src/public/bitflags/Bitflags.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Bitflags",
+   "partition": null
+  },
+  "src/public/build/Build.cppm.in": {
+   "area": "src",
+   "category": "generated-module-template",
+   "exported": true,
+   "module": "Miracle.Build",
+   "partition": null
+  },
+  "src/public/build/Capabilities.cppm.in": {
+   "area": "src",
+   "category": "generated-module-template",
+   "exported": true,
+   "module": "Miracle.Capabilities",
+   "partition": null
+  },
+  "src/public/build/FeatureConfiguration.cppm.in": {
+   "area": "src",
+   "category": "generated-module-template",
+   "exported": true,
+   "module": "Miracle.FeatureConfiguration",
+   "partition": null
+  },
+  "src/public/color/Color.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Color",
+   "partition": null
+  },
+  "src/public/concepts/Concepts.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Concepts",
+   "partition": null
+  },
+  "src/public/debug/Debug.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Debug",
+   "partition": null
+  },
+  "src/public/diagnostics/Diagnostics.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Diagnostics",
+   "partition": null
+  },
+  "src/public/error/Error.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Error",
+   "partition": null
+  },
+  "src/public/feature/Catalog.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": "Catalog"
+  },
+  "src/public/feature/Descriptor.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": "Descriptor"
+  },
+  "src/public/feature/Feature.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": null
+  },
+  "src/public/feature/Requirement.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": "Requirement"
+  },
+  "src/public/feature/Set.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": "Set"
+  },
+  "src/public/feature/Types.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Feature",
+   "partition": "Types"
+  },
+  "src/public/format/Code.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Code"
+  },
+  "src/public/format/Emit.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Emit"
+  },
+  "src/public/format/Format.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": null
+  },
+  "src/public/format/Fragment.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Fragment"
+  },
+  "src/public/format/Message.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Message"
+  },
+  "src/public/format/Render.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Render"
+  },
+  "src/public/format/Style.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Style"
+  },
+  "src/public/format/Text.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Text"
+  },
+  "src/public/format/Types.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Format",
+   "partition": "Types"
+  },
+  "src/public/fs/Fs.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Fs",
+   "partition": null
+  },
+  "src/public/iter/Core.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": "Core"
+  },
+  "src/public/iter/Detail.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": "Detail"
+  },
+  "src/public/iter/Iter.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": null
+  },
+  "src/public/iter/SourceFactories.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": "SourceFactories"
+  },
+  "src/public/iter/SourceViews.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": "SourceViews"
+  },
+  "src/public/iter/Views.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Iter",
+   "partition": "Views"
+  },
+  "src/public/memory/Memory.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Memory",
+   "partition": null
+  },
+  "src/public/meta/Access.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Access"
+  },
+  "src/public/meta/Annotations.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Annotations"
+  },
+  "src/public/meta/Cache.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Cache"
+  },
+  "src/public/meta/Generation.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Generation"
+  },
+  "src/public/meta/Layout.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Layout"
+  },
+  "src/public/meta/Members.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Members"
+  },
+  "src/public/meta/Meta.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": null
+  },
+  "src/public/meta/Names.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Names"
+  },
+  "src/public/meta/Operators.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Operators"
+  },
+  "src/public/meta/Predicates.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Predicates"
+  },
+  "src/public/meta/Query.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Query"
+  },
+  "src/public/meta/QueryEval.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "QueryEval"
+  },
+  "src/public/meta/QueryIR.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "QueryIR"
+  },
+  "src/public/meta/QueryPlan.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "QueryPlan"
+  },
+  "src/public/meta/QueryState.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "QueryState"
+  },
+  "src/public/meta/Reflect.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Reflect"
+  },
+  "src/public/meta/Storage.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Storage"
+  },
+  "src/public/meta/Substitution.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Substitution"
+  },
+  "src/public/meta/TypeQueries.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "TypeQueries"
+  },
+  "src/public/meta/TypeTransforms.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "TypeTransforms"
+  },
+  "src/public/meta/Types.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Types"
+  },
+  "src/public/meta/Values.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Meta",
+   "partition": "Values"
+  },
+  "src/public/numeric/Numeric.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Numeric",
+   "partition": null
+  },
+  "src/public/panic/Panic.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Panic",
+   "partition": null
+  },
+  "src/public/profiling/Profiling.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Profiling",
+   "partition": null
+  },
+  "src/public/range/Range.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Range",
+   "partition": null
+  },
+  "src/public/static_string/StaticString.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.StaticString",
+   "partition": null
+  },
+  "src/public/types/Types.cppm": {
+   "area": "src",
+   "category": "module-interface",
+   "exported": true,
+   "module": "Miracle.Types",
+   "partition": null
+  },
+  "tests/bitflags.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/color.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/color-brace-narrowing.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/diagnostic-align-without-prefix.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/diagnostic-empty-prefix.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/diagnostic-negative.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/diagnostic-non-enum.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/feature-conflict.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/feature-cycle.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/feature-disabled.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-append-to-diagnostic.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-capacity-overflow.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-empty-field-key.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-fragment-runtime-view.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-message-dangling-storage.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-order-context-after-note.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-order-field-after-help.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-order-field-after-note.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-order-note-after-help.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-order-second-context.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-static-assert-message.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-styled-runtime-view.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/format-unterminated-array.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/iter-adaptive-invocation.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-enumerators-non-enum.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-parent-no-parent.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-query-dangling-nested-query.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-query-map-void.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-query-materialize-reference.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-query-persistence-move-only.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-query-temporary-array.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/meta-require-name.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-bad-placeholder.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-nontrivial-char.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-placeholder-count.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-unmatched-close.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-unmatched-open.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/static-string-wide-format.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/compile-fail/types-without-numeric.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/consumer/diagnostics/main.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/consumer/main.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/contract-probe.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/debug.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/diagnostic.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/error.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/feature.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/format.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/fs.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Bitflags.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Build.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Color.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Concepts.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Debug.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Diagnostics.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Error.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Feature.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Format.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Fs.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Iter.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Memory.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Meta.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Numeric.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Panic.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Profiling.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Range.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/StaticString.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/import/Types.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/iter.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/main.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/memory-profiling.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/annotation-redeclaration-visibility.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/annotation-typed-redeclaration-visibility.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/api-participation.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/cross-tu-a.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/cross-tu-b.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/formatter-boundaries.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/late-class-members.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/meta-function-participation.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/namespace-cache-visibility.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/namespace-functions-visibility.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/pointer-sort.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/predicate-participation.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/query-edges.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/rvalue-range-flatten.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/snapshot-stress.cpp.in": {
+   "area": "tests",
+   "category": "generated-source-template",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/hardening/stable-controls.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/access.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/annotations.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/generation.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/layout.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/members.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/names.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/operators.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/predicates.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/reflect.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/std.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/storage.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/substitution.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/surface.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/type-queries.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/type-transforms.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/types.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/parity/values.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/barriers.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/borrowed-local-escape.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/local-reference-barrier.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/move-only-barrier.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/non-structural-barrier.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/reference-materialize.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/compile-fail/temporary-array.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/interop.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/lifetimes.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/query/sources.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/meta/semantics/meta.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/panic-probe.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/range.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/reflection.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  },
+  "tests/static-string.cpp": {
+   "area": "tests",
+   "category": "cxx-source",
+   "exported": false,
+   "module": null,
+   "partition": null
+  }
+ },
+ "revision": "38cf27622dd8bd1ba1f005ce2125664ee7374885"
+}
