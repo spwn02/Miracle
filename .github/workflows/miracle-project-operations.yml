@@ -1,0 +1,208 @@
+name: Miracle Project Operations
+
+# Commands can be issued by the owner in Issue #29 (including via the
+# existing authenticated GitHub connector), or dispatched from the Actions UI.
+# No untrusted issue text is passed to a shell command or evaluated as code.
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Native Project operation
+        required: true
+        type: choice
+        default: audit
+        options:
+          - audit
+          - reconcile-plan
+          - reconcile-verify
+          - reconcile-apply
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: miracle-native-project-operations
+  cancel-in-progress: false
+
+jobs:
+  project:
+    if: >-
+      github.repository == 'spwn02/Miracle' &&
+      github.actor == 'spwn02' &&
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issue_comment' &&
+          github.event.issue.number == 29 &&
+          github.event.issue.pull_request == null &&
+          (github.event.comment.body == '/miracle-project audit' ||
+           github.event.comment.body == '/miracle-project reconcile-plan' ||
+           github.event.comment.body == '/miracle-project reconcile-verify' ||
+           github.event.comment.body == '/miracle-project reconcile-apply' ||
+           github.event.comment.body == '/miracle-project roadmap-plan' ||
+           github.event.comment.body == '/miracle-project roadmap-verify' ||
+           github.event.comment.body == '/miracle-project roadmap-apply' ||
+           github.event.comment.body == '/miracle-project archive-audit' ||
+           github.event.comment.body == '/miracle-project g2-provenance' ||
+           github.event.comment.body == '/miracle-project g6-community' ||
+           github.event.comment.body == '/miracle-project g6-release-provenance' ||
+           startsWith(github.event.comment.body, '/miracle-project intake-inspect ') ||
+           startsWith(github.event.comment.body, '/miracle-project intake-add ') ||
+           startsWith(github.event.comment.body, '/miracle-project inspect ') ||
+           startsWith(github.event.comment.body, '/miracle-project update ') ||
+           startsWith(github.event.comment.body, '/miracle-project progress ') ||
+           github.event.comment.body == '/miracle-project accept-workspace-29' ||
+           startsWith(github.event.comment.body, '/miracle-project relations ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-child ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-blocker ') ||
+           startsWith(github.event.comment.body, '/miracle-project resolve-workspace-blocker '))))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read # Read one pinned previous all-draft backup via repository token.
+      issues: write # Only to acknowledge owner commands in Issue #29.
+    steps:
+      - name: Checkout reviewed default branch, without stored credentials
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Verify shell scripts and command
+        shell: bash
+        env:
+          REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
+        run: |
+          set -euo pipefail
+          bash -n scripts/github/audit-native-project.sh
+          bash -n scripts/github/miracle-project-reconcile-safe.sh
+          python3 scripts/github/project-item-control.py --self-test
+          python3 scripts/github/project-roadmap-filter.py --self-test
+          python3 scripts/github/issue-relations.py --self-test
+          python3 scripts/github/audit-g2-provenance.py --self-test
+          python3 scripts/github/audit-g6-community.py --self-test
+          python3 scripts/github/audit-g6-release-provenance.py --self-test
+          python3 scripts/github/project-issue-intake.py --self-test
+          case "$REQUEST" in
+            audit|reconcile-plan|reconcile-verify|reconcile-apply|'/miracle-project audit'|'/miracle-project reconcile-plan'|'/miracle-project reconcile-verify'|'/miracle-project reconcile-apply') ;;
+            '/miracle-project roadmap-plan'|'/miracle-project roadmap-verify'|'/miracle-project roadmap-apply') ;;
+            '/miracle-project g2-provenance') ;;
+            '/miracle-project g6-community') ;;
+            '/miracle-project g6-release-provenance') ;;
+            '/miracle-project intake-inspect '*|'/miracle-project intake-add '*) ;;
+            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*|'/miracle-project accept-workspace-29') ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*) ;;
+            *) echo 'Unexpected operation'; exit 1 ;;
+          esac
+
+      - name: Execute native Issue relationships with repository-scoped token
+        id: relation
+        if: >-
+          github.event_name == 'issue_comment' &&
+          (startsWith(github.event.comment.body, '/miracle-project relations ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-child ') ||
+           startsWith(github.event.comment.body, '/miracle-project add-blocker ') ||
+           startsWith(github.event.comment.body, '/miracle-project resolve-workspace-blocker '))
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          python3 scripts/github/issue-relations.py
+
+      - name: Execute only the selected native Project operation
+        id: execute
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.MIRACLE_PROJECT_TOKEN }}
+          REQUEST: ${{ github.event_name == 'issue_comment' && github.event.comment.body || inputs.operation }}
+        run: |
+          set -euo pipefail
+          if [[ "$REQUEST" == '/miracle-project relations '* || "$REQUEST" == '/miracle-project add-child '* || "$REQUEST" == '/miracle-project add-blocker '* || "$REQUEST" == '/miracle-project resolve-workspace-blocker '* ]]; then
+            echo 'Native Issue relationship handled by the repository-token step.'
+            exit 0
+          fi
+          if [[ -z "$GH_TOKEN" ]]; then
+            echo 'MIRACLE_PROJECT_TOKEN secret missing: configure a Projects-scoped credential (not the repository GITHUB_TOKEN).' >&2
+            exit 1
+          fi
+          # Use fixed allowlisted commands only, never arbitrary issue content.
+          case "$REQUEST" in
+            audit|'/miracle-project audit')
+              action='audit'
+              bash scripts/github/audit-native-project.sh
+              ;;
+            reconcile-plan|'/miracle-project reconcile-plan')
+              action='reconcile-plan'
+              bash scripts/github/miracle-project-reconcile-safe.sh --plan
+              ;;
+            reconcile-verify|'/miracle-project reconcile-verify')
+              action='reconcile-verify'
+              bash scripts/github/miracle-project-reconcile-safe.sh --verify
+              ;;
+            reconcile-apply|'/miracle-project reconcile-apply')
+              action='reconcile-apply'
+              bash scripts/github/miracle-project-reconcile-safe.sh --apply
+              ;;
+            '/miracle-project roadmap-plan')
+              action='roadmap-plan'
+              python3 scripts/github/project-roadmap-filter.py --plan
+              ;;
+            '/miracle-project roadmap-verify')
+              action='roadmap-verify'
+              python3 scripts/github/project-roadmap-filter.py --verify
+              ;;
+            '/miracle-project roadmap-apply')
+              action='roadmap-apply'
+              python3 scripts/github/project-roadmap-filter.py --apply
+              ;;
+            '/miracle-project g2-provenance')
+              action='g2-provenance'
+              python3 scripts/github/audit-g2-provenance.py
+              ;;
+            '/miracle-project g6-community')
+              action='g6-community'
+              python3 scripts/github/audit-g6-community.py
+              ;;
+            '/miracle-project g6-release-provenance')
+              action='g6-release-provenance'
+              python3 scripts/github/audit-g6-release-provenance.py
+              ;;
+            '/miracle-project intake-inspect '*|'/miracle-project intake-add '*)
+              action='issue-intake'
+              python3 scripts/github/project-issue-intake.py
+              ;;
+            '/miracle-project inspect '*|'/miracle-project update '*|'/miracle-project progress '*|'/miracle-project accept-workspace-29')
+              action='project-item-control'
+              python3 scripts/github/project-item-control.py
+              ;;
+            '/miracle-project relations '*|'/miracle-project add-child '*|'/miracle-project add-blocker '*|'/miracle-project resolve-workspace-blocker '*)
+              action='native-issue-relationship'
+              echo 'Issue relation command executed in separate repository-scoped step.'
+              ;;
+            *) echo 'Invalid operation' >&2; exit 1 ;;
+          esac
+          echo "## Miracle native Project operation" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Operation: \`$action\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Project: https://github.com/users/spwn02/projects/3" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exact runner output is in this workflow's job log." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Acknowledge Issue #29 command with a run link
+        if: ${{ always() && github.event_name == 'issue_comment' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ steps.relation.outcome == 'skipped' && steps.execute.outcome || steps.relation.outcome }}
+          REQUEST: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          {
+            echo "Native Project operation \`$REQUEST\`: **$RESULT**."
+            echo
+            echo "Workflow run: https://github.com/spwn02/Miracle/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "No accepted-contract or release state was changed by the workflow."
+          } > "$RUNNER_TEMP/project-result.md"
+          gh issue comment 29 --repo spwn02/Miracle --body-file "$RUNNER_TEMP/project-result.md"

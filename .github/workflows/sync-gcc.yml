@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: sync-master-to-gcc
@@ -16,9 +16,11 @@ jobs:
   sync:
     name: Validate and advance gcc
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           ref: master
@@ -35,14 +37,12 @@ jobs:
             +gcc:refs/remotes/origin/gcc
           git switch --detach origin/gcc
 
-          # gcc is a compatibility branch, so its compiler-specific edits are
-          # authoritative whenever both branches changed the same file. The
-          # three-way merge still brings across master-only commits and files,
-          # while -X ours resolves edits made on both sides in favour of the
-          # existing GCC implementation. This is important after an amended
-          # or force-pushed master commit: a stale gcc tip must be recoverable
-          # by the same synchronization job instead of getting permanently
-          # wedged on a merge-conflict failure.
+          # authoritative for conflicting hunks. Cleanly mergeable master edits
+          # still enter the candidate; -X ours only chooses the gcc side when
+          # the merge algorithm finds an actual content conflict. This is
+          # important after an amended or force-pushed master commit: a stale
+          # gcc tip must be recoverable by the same synchronization job instead
+          # of getting permanently wedged on a merge-conflict failure.
           if ! git merge --no-ff --no-edit -X ours origin/master; then
             git status --short
             git merge --abort || true
@@ -53,11 +53,14 @@ jobs:
           git diff --check origin/gcc..HEAD
 
       - name: Validate synchronization candidate on GCC
+        id: gcc_validation
         shell: bash
         run: |
           set -euo pipefail
 
+          set +e
           docker run --rm \
+            --env MIRACLE_GCC_SYNC_CANDIDATE=1 \
             --volume "$GITHUB_WORKSPACE:/workspace" \
             --workdir /workspace \
             archlinux:latest \
@@ -65,27 +68,39 @@ jobs:
               set -euo pipefail
               pacman -Syu --noconfirm --needed \
                 base-devel ca-certificates cmake git ninja
-              bash ./.github/scripts/validate-gcc.sh
+              bash ./scripts/ci/validate-gcc.sh
             '
+          status="$?"
+          set -e
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+          if [[ "$status" == "20" ]]; then
+            echo "::notice::Current GCC cannot satisfy this master revision; gcc remains at its last compatible commit."
+            exit 0
+          fi
+
+          exit "$status"
 
       - name: Measure GCC convergence
         shell: bash
         run: |
           set -euo pipefail
 
-          python3 .github/scripts/report-gcc-convergence.py \
+          python3 scripts/ci/report-gcc-convergence.py \
             --master origin/master \
             --gcc HEAD \
             --output "$RUNNER_TEMP/gcc-convergence.json"
 
       - name: Upload GCC convergence report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: gcc-sync-convergence-${{ github.run_id }}
           path: ${{ runner.temp }}/gcc-convergence.json
           if-no-files-found: error
 
       - name: Advance gcc
+        if: steps.gcc_validation.outputs.status == '0'
         shell: bash
         run: |
           set -euo pipefail

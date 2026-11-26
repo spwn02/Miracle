@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "title": "Miracle historical frozen-contract preservation register",
+  "authority": "Historical sources only; this manifest does not imply a new approval or current implementation completeness.",
+  "lockedSources": [
+    {
+      "id": "foundation-v1.0",
+      "kind": "original-markdown",
+      "path": "docs/contracts/FOUNDATION_V1.0.md",
+      "sha256": "dd51415ac699c3c7818ab598fcf2eaad54ad7878e3f378b64cf0237f5db36ec9",
+      "gitBlobSha1": "d6bf031026187a17553c3f5d9d73d00f14c48ed2",
+      "origin": "ChatGPT Library: miracle-foundation-contract-v1.0.md; three copies verified identical"
+    }
+  ],
+  "pendingOriginals": [],
+  "followUp": "Only sources retained in the current documentation tree are preservation-checked. Removed phase artifacts remain in Git history."
+}

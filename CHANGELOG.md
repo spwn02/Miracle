@@ -8,22 +8,59 @@ The project is currently pre-1.0 and follows semantic versioning for release num
 
 ### Added
 
+- Added the standalone `Miracle.Color` (checked sRGB8, strict `#RGB`/`#RRGGBB` parsing, HSV conversion) and `Miracle.Format` (inferred-capacity `Message`, styled `Fragment`, typed `Code`, event/sink protocol with one shared layout and ANSI encoder) modules; `Severity`, `ColorMode` and `Presentation` moved to `Miracle`/Format.
+- Split the monolithic `Miracle` module into independently importable named modules (`Miracle.Diagnostics`, `Error`, `Panic`, `Fs`, `Concepts`, `Memory`, `Profiling`, `Debug`, `Bitflags`, `Iter`, …) behind the unchanged `import Miracle;` umbrella; `Miracle.Iter` and the Meta Query implementation are decomposed into acyclic interface partitions.
+- Added lazy `Iter` pipelines with universal range/integer/Option/Result construction, adaptive tuple/reflected-aggregate callable invocation, positional slicing, Rust-inspired adaptors and terminals, and standard-range capability preservation.
+- Added standard-backed `empty`, `once`, `repeat`, and `repeatN` Iter sources plus allocation-free `onceWith`, `repeatWith`, `fromFn`, and `successors` generated sources.
+- Added `copied`, `cloned`, and forward-range `cycle` adaptors; reverse `nthBack`, `rFind`, and `rFold` terminals; and C++-native lexicographical `compare`.
+- Expanded the iterator-parity surface with stateful `Peekable`, public semantic adaptor values, free `chain`/`zip`, optional-seed `successors`, `std::generator` interoperability, selected Rust-nightly `intersperseWith`/`mapWindows`/`arrayChunks`/`eqBy`, and explicit Rust-to-Miracle parity/defer/divergence documentation.
+- Added Meta reflection vocabulary with the standalone `Miracle.Meta` module, `Reflect<T>`/`reflect<T>()`, strict C++26 reflection sources and transformations, and composable reflection predicates.
+- Added explicit `ParallelIter` execution as a thin façade over standard C++ execution policies for indexable pipelines.
+- Added nonnumeric `Infinity`/`infinity` positional-bound vocabulary and conservative `SizeHint` iterator size knowledge.
+- Added structural finite half-open `Range<T>` views with safe signed sizing, standard range interoperability, and conservative endpoint deduction.
+- Added reflected enum diagnostic domains, structured move-only diagnostics/spans, source-aware rendering, Error and C++26 contract adapters, and terminal `panic()` integration with stacktraces and debugger breakpoints.
+- Added executable capability probes for contracts, debugging, stacktraces, UTF-8 literal encoding, and typed reflection-annotation extraction.
 - Added the structural compile-time Feature engine with build/semantic descriptors, dependency/implication/conflict resolution, feature groups, capability requirements, canonical local sets, third-party metadata, and reflection-friendly requirements.
 - Added a build-system feature that omits disabled heavy module sources and dependencies and generates the typed configured `BuildFeatureSet`, capability universe, and build identity.
 - Added structural `BasicStaticString<Char, Capacity>` / `StaticString<Capacity>` with NTTP support, searching, trimming, case conversion, replacement/removal, split/join, hashing, compile-time diagnostic formatting, and `std::formatter` integration.
 - Exposed executable toolchain probe results as generated `Miracle::capability` compile-time facts consumed by the Feature engine.
+- Added canonical, independently lazy Miracle.Meta reflection caches with caller-sensitive access projections and shared backing across type, raw-`Info`, and `Reflect<T>` entry points.
+- Added compile-time `Miracle::meta::Query` with transformation, selection, search, ordering, set-like, partition, source-composition, terminal, and explicit static-materialization operations, including exact reference preservation, captured-lambda support, and C++26 `std::optional<T&>` support.
 
 ### Changed
 
-- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.09.04.1` toolchain snapshot (`543a397a185d3038ce505877a64e74b60b279887`).
+- Miracle-authored hard errors in Feature (`FEA001-012`) and Iter (`ITR001-007`) are now Format-authored `error[CODE]: summary` messages with context and type fields; wording is unchanged. `Miracle.Iter` and `Miracle.Feature` now import `Miracle.Format`. See `docs/FORMAT.md`.
+- `format::Message::append(integer)` rejects integers wider than 64 bits (would have been truncated); `Message` rejects a type-level capacity that would wrap `Capacity + 1`.
+- Format literal overloads (`Message`, `Fragment`, `Code`, section methods) read a `char[N]` as C text: content ends at the first NUL and never exceeds `N - 1` bytes (INV-REC-CAP-003); exact byte arrays use `fragment(std::array<char, N>)`.
+- `BasicStaticString` and `staticFormat` hard failures now report Format-authored messages (`error[SSTR001]`–`error[SSTR004]`) with the same summary text; `Miracle.StaticString` imports `Miracle.Format`.
+- `Error::display` now renders through the shared Format ANSI encoder; coloured chain labels emit `ESC[38;5;3m` instead of `ESC[33m` (same colour on 256-colour terminals).
+- Promoted the immutable reference-toolchain baseline to `cxx26-2026.10.27` (`b56ae4e61cf1f46495f0fb08f2b9fc270aad162c`).
+- Promoted reference validation and release provenance to the LLVM 22.1.8-synchronized `cxx26-2026.10.08` toolchain snapshot (`19a66e9bb4ac00a7a5f0510970e5694379a39757`).
+- Reworked Miracle-owned Iter range types around composition and structural `std::ranges::view` conformance rather than `view_interface`/CRTP inheritance, and modernized borrowed optional terminal results to C++26 `Option<T&>` semantics.
+
+### Fixed
+
+- Preserved reserve-range emptiness for positively-strided integer `iter(...)` construction and made fused map/filter traversal valid for non-common ranges.
+- Preserved move-only ownership through rvalue Option/Expected sources, `filterMap`, `mapWhile`, `scan`, and `unzip` materialization.
+- Made `count()` traverse lazy pipelines so projections and `inspect()` side effects are observed, and cached extrema keys so key projections execute once per visited item.
+- Made `rposition()` search and short-circuit from the back, aligned `max`, `maxBy`, and `maxByKey` with last-equivalent-maximum selection.
+- Replaced the forward-only identity `peekable()` façade with a real one-item lookahead state machine that supports single-pass sources, borrowing, mutable peeking, conditional consumption/mapping, and truthful double-ended access where available.
 
 ### Performance
 
+- Simplified Iter to delegate ordinary traversal to standard views/algorithms, removing the custom exhaustion lattice, worker pool, bounded-concurrency protocol, and custom executor runtime.
+- Composed consecutive Iter maps into one pending projection and fused projected-filter terminals so mapped values are evaluated once per source item without `cache_latest` capability loss.
+- Preserved random-access and sized traversal through chunks, windows, and intersperse when the source supports those capabilities.
+- Kept callable-generated sources allocation-free with one invocation per logical iter, and implemented `cycle()` by restarting its forward base without buffering.
+- Rendered diagnostic cause trees with iterative parent/index DFS in O(n) time, O(depth) auxiliary storage, and O(1) native recursion.
 - Resolved local feature sets through cached catalog-order graph indices and a flat constexpr traversal stack, avoiding repeated relationship lookup and dependency-depth call recursion.
 - Reused configured capability probe results when generating C++ capability facts instead of introducing duplicate compile-time/compiler probes.
+- Added 32/128/512/1024-member Meta compiler-cost fixtures measuring one-shot and repeated raw-vs-cached reflection wall time and peak RSS; repeated cache lookups avoid rebuilding source universes and access-filtered projections.
+- Replaced the legacy tuple/stage Query machinery with normalized reflected value IR, flat capture storage, typed homogeneous segments, expansion-statement lowering, and evaluation-local state; depth-64 template topology remains flat and the final `Miracle.Meta` module uses 42.9% less AST type/declaration allocation than the legacy module on the pinned completion snapshot.
 
 ### Diagnostics
 
+- Added configurable diagnostic-code prefixes/messages/alignment, plain/terminal presentation, notes/help, explicit source snippets/selections, causal diagnostics, and normalized unknown runtime codes.
 - Diagnosed duplicate features, missing build/dependency/capability requirements, complete dependency cycles, conflicts, disabled façades, and colliding build identifiers at compile time.
 
 ## 0.1.0-rc.1 - 2026-08-25

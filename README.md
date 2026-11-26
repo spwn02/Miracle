@@ -6,6 +6,8 @@ It is intentionally small at the dependency boundary and currently provides the 
 
 > **Status:** pre-1.0. The API is usable, but source and ABI compatibility are not guaranteed until the project reaches 1.0.
 
+**Documentation:** [The Miracle Book](https://spwn02.github.io/Miracle/) — mdBook-powered, Rust-style reference and development guides built directly from the canonical [`docs/`](docs/INDEX.md) tree.
+
 ### Philosophy
 
 Miracle is written in C++, but its API philosophy is strongly influenced by Rust.
@@ -41,11 +43,11 @@ Miracle currently targets:
 - the complete C++26-and-earlier language and standard-library model
 - CMake 4.4 or newer
 - Ninja
-- [`spwn02/clang-cxx26:cxx26`](https://github.com/spwn02/clang-cxx26/tree/cxx26) and its matching libc++ as the reference implementation, pinned in CI to the immutable `cxx26-2026.09.04.1` snapshot.
+- [`spwn02/clang-cxx26:cxx26`](https://github.com/spwn02/clang-cxx26/tree/cxx26) and its matching libc++ as the reference implementation, pinned in CI to the immutable `cxx26-2026.10.27` snapshot.
 
 `master` is intentionally free to adopt any standardized facility through C++26 as soon as it improves the design, even when mainstream compiler/library implementations have not caught up yet. GCC compatibility is developed separately and may trail `master`.
 
-See [`docs/compiler-support.md`](docs/compiler-support.md) for the compiler, branch, compatibility, and release policy.
+See [`docs/compiler-support.md`](docs/COMPILER_SUPPORT.md) for the compiler, branch, compatibility, and release policy.
 
 ### Quick start
 
@@ -74,7 +76,7 @@ auto main() -> int {
 }
 ```
 
-The same program lives in [`examples/quickstart.cxx`](examples/quickstart.cxx) and is built by the `tests` preset.
+The same program lives in [`examples/quickstart.cpp`](examples/quickstart.cpp) and is built by the `tests` preset.
 
 ### Public module
 
@@ -89,7 +91,7 @@ It currently re-exports:
 - `Miracle:Types`
 - `Miracle:Error`
 - `Miracle:Fs`
-- `Miracle:Meta`
+- `Miracle:Meta` (also directly importable as `import Miracle.Meta;`)
 - `Miracle:Bitflags`
 - `Miracle:Debug`
 - `Miracle:Build`
@@ -169,15 +171,51 @@ Miracle's production library does **not** depend on [Switch](https://github.com/
 
 ## Design
 
-See [`docs/architecture.md`](docs/architecture.md) for the product boundary and dependency rules.
+Browse [The Miracle Book](https://spwn02.github.io/Miracle/) (with a Rust Book-style sidebar, theme selector and search) or its [canonical documentation source](docs/INDEX.md). The [G3 publishing ledger](docs/infrastructure/G3-PROGRESS.md) records deployment evidence and acceptance status.
 
-See [`docs/compiler-support.md`](docs/compiler-support.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
+See [`docs/architecture.md`](docs/ARCHITECTURE.md) for the product boundary and dependency rules.
 
-See [`docs/reference-toolchain.md`](docs/reference-toolchain.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
+See [`docs/compiler-support.md`](docs/COMPILER_SUPPORT.md) for the C++26 reference-toolchain and deferred GCC compatibility contract.
 
-## Contributing and security
+See [`docs/reference-toolchain.md`](docs/REFERENCE_TOOLCHAIN.md) for the reference Clang/libc++ identity, provenance, component-coherence rules, and future snapshot model.
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
+See [Development Protocol v1.0](docs/DEVELOPMENT_PROTOCOL.md) for contract-driven development, milestone reviews and acceptance requirements.
+
+See [GitHub Infrastructure Contract](docs/infrastructure/GITHUB-INFRASTRUCTURE-CONTRACT.md) for public project governance and operational roadmap.
+
+Follow [Miracle Development — the public roadmap and work tracker](https://github.com/users/spwn02/projects/3), and consult the [G2 progress ledger](docs/infrastructure/G2-PROGRESS.md) for configuration and acceptance status.
+
+## Developer commands
+
+The root [`Makefile`](Makefile) is a thin interface over the existing **CMake presets**, pinned Docker image and mdBook. It does not choose a compiler, introduce alternate build rules or change CMake's authority.
+
+```sh
+make help
+make docker-verify NO_CACHE=1   # No host C++26 compiler required
+```
+
+With the reference compiler already activated (`CXX26_CMAKE_TOOLCHAIN_FILE` set), use `make verify` for a fresh local test build, or `make PRESET=release configure` then `make PRESET=release build`. The [G5 operating plan](docs/infrastructure/G5-OPERATING-PLAN.md) documents target options and command behavior.
+
+## Reference C++26 Docker environment
+
+Miracle uses a single [root Dockerfile](Dockerfile) with the same coherent `clang-cxx26`/libc++ snapshot as reference CI, CMake 4.4.3, Ninja, clangd and Neovim. The maintained development workflow is **standard Docker**, not Dev Containers or Codespaces.
+
+```sh
+make docker-build
+make docker-dev    # live bind-mounted checkout; edits persist on host
+# Do not run this target with sudo; it checks for root and incompatible CMake caches.
+# In Docker shell:
+bash scripts/ci/verify-container.sh --smoke
+make verify
+```
+
+Run `make docker-verify NO_CACHE=1` for the full disposable reference tests and three consumer modes. See [G5 operating plan](docs/infrastructure/G5-OPERATING-PLAN.md) and [G5 progress](docs/infrastructure/G5-PROGRESS.md) for reproducibility, acceptance and explicit Codespaces decline.
+
+## Contributing and community
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contributor workflow and compiler setup. Use [GitHub Discussions](https://github.com/spwn02/Miracle/discussions) for community Q&A, early-stage ideas, announcements and project showcases; use the [New Issue chooser](https://github.com/spwn02/Miracle/issues/new/choose) for actionable defects or proposals.
+
+Community policies: [Support](SUPPORT.md), [Code of Conduct](CODE_OF_CONDUCT.md), [Accessibility](ACCESSIBILITY.md), and [Security](SECURITY.md). Report potential vulnerabilities privately according to the Security policy, not in a public issue.
 
 ## License
 

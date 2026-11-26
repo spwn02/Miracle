@@ -1,0 +1,37 @@
+import std;
+import Miracle.Meta;
+
+namespace {
+
+struct Subject final {
+@FIELD_DECLARATIONS@};
+
+inline constexpr std::size_t memberCount = @MEMBER_COUNT@;
+inline constexpr std::size_t repetitions = @REPETITIONS@;
+
+consteval auto rawPipeline() -> std::size_t {
+  std::size_t result{};
+  for (const std::meta::info member :
+      std::meta::nonstatic_data_members_of(^^Subject, std::meta::access_context::unchecked())) {
+    const auto name = std::meta::identifier_of(member);
+    if (not name.empty() and name.size() > 3) {
+      ++result;
+    }
+  }
+  return result;
+}
+
+consteval auto miraclePipeline() -> std::size_t {
+  return Miracle::meta::query(Miracle::meta::fields<Subject>(Miracle::Access::unchecked()))
+      .filter(Miracle::meta::isInstanceData)
+      .map(Miracle::meta::name)
+      .filterMap([](std::optional<std::string_view> name) consteval { return name; })
+      .filter([](std::string_view name) consteval { return name.size() > 3; })
+      .count();
+}
+
+@BENCHMARK_BODY@
+
+} // namespace
+
+int main() {}

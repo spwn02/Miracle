@@ -64,7 +64,11 @@ function(miracle_check_capabilities)
       reflection_static_storage
       expansion_statements
       std_vocabulary
-      std_hive)
+      std_hive
+      contracts
+      debugging
+      stacktrace
+      literal_utf8)
 
   # These native capabilities may be supplied by a compatibility backend on this
   # branch. They remain probed and reported so the backend has an explicit
@@ -86,9 +90,16 @@ function(miracle_check_capabilities)
   set(capability_std_vocabulary_description
       "expected, flat containers, and inplace_vector")
   set(capability_std_hive_description "C++26 std::hive")
+  set(capability_contracts_description "C++26 contracts violation inspection")
+  set(capability_debugging_description
+      "C++26 debugger detection and breakpoint support")
+  set(capability_stacktrace_description
+      "C++23 stacktrace capture exported by import std")
+  set(capability_literal_utf8_description
+      "UTF-8 ordinary string literal execution encoding")
 
   file(
-    WRITE "${capability_source_dir}/import_std.cxx"
+    WRITE "${capability_source_dir}/import_std.cpp"
     [=[
 import std;
 
@@ -99,7 +110,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_core.cxx"
+    WRITE "${capability_source_dir}/reflection_core.cpp"
     [=[
 import std;
 
@@ -115,7 +126,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_queries.cxx"
+    WRITE "${capability_source_dir}/reflection_queries.cpp"
     [=[
 import std;
 
@@ -145,7 +156,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_annotations.cxx"
+    WRITE "${capability_source_dir}/reflection_annotations.cpp"
     [=[
 import std;
 
@@ -156,8 +167,8 @@ struct Marker final {
 [[= Marker{7}]]
 auto annotated() -> void;
 
-constexpr auto annotations =
-    std::define_static_array(std::meta::annotations_of(^^annotated));
+constexpr auto annotations = std::define_static_array(
+    std::meta::annotations_of_with_type(^^annotated, ^^Marker));
 
 static_assert(annotations.size() == 1);
 static_assert(std::meta::is_annotation(annotations.front()));
@@ -169,7 +180,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/reflection_static_storage.cxx"
+    WRITE "${capability_source_dir}/reflection_static_storage.cpp"
     [=[
 import std;
 
@@ -192,7 +203,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/expansion_statements.cxx"
+    WRITE "${capability_source_dir}/expansion_statements.cpp"
     [=[
 import std;
 
@@ -228,7 +239,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/std_vocabulary.cxx"
+    WRITE "${capability_source_dir}/std_vocabulary.cpp"
     [=[
 #include <expected>
 #include <flat_map>
@@ -252,7 +263,7 @@ auto main() -> int {
 ]=])
 
   file(
-    WRITE "${capability_source_dir}/std_hive.cxx"
+    WRITE "${capability_source_dir}/std_hive.cpp"
     [=[
 #include <hive>
 
@@ -262,6 +273,64 @@ auto main() -> int {
   return values.size() == 1 && *values.begin() == 42 ? 0 : 1;
 }
 ]=])
+
+  file(
+    WRITE "${capability_source_dir}/contracts.cpp"
+    [=[
+import std;
+
+[[nodiscard]] auto inspect(const std::contracts::contract_violation &violation) -> bool {
+  static_cast<void>(std::contracts::evaluation_semantic::ignore);
+  static_cast<void>(std::contracts::evaluation_semantic::quick_enforce);
+  static_cast<void>(violation.kind());
+  static_cast<void>(violation.semantic());
+  static_cast<void>(violation.detection_mode());
+  static_cast<void>(violation.location());
+  static_cast<void>(violation.comment());
+  static_cast<void>(violation.is_terminating());
+  return true;
+}
+
+auto main() -> int {
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/debugging.cpp"
+    [=[
+import std;
+
+auto main() -> int {
+  if (std::is_debugger_present()) {
+    std::breakpoint_if_debugging();
+  }
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/stacktrace.cpp"
+    [=[
+import std;
+
+auto main() -> int {
+  const auto trace = std::stacktrace::current();
+  static_cast<void>(trace);
+  return 0;
+}
+]=])
+
+  file(
+    WRITE "${capability_source_dir}/literal_utf8.cpp"
+    [=[
+import std;
+
+static_assert(std::text_encoding::literal() == std::text_encoding::UTF8);
+
+auto main() -> int {
+  return 0;
+}]=])
 
   set(capability_targets)
   foreach(name IN LISTS capability_names)
@@ -290,7 +359,7 @@ auto main() -> int {
     "endif()\n"
     "\n"
     "function(miracle_add_capability name)\n"
-    "  add_executable(capability_\${name} \"\${name}.cxx\")\n"
+    "  add_executable(capability_\${name} \"\${name}.cpp\")\n"
     "  set_target_properties(\n"
     "    capability_\${name}\n"
     "    PROPERTIES CXX_STANDARD 26\n"

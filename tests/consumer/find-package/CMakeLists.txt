@@ -1,3 +1,5 @@
+# TEST-BLD-INSTALL-003, TEST-BLD-INSTALL-004: installed find_package consumer; direct named imports and public
+# templates work against the exported module file sets.
 cmake_minimum_required(VERSION 4.4 FATAL_ERROR)
 
 set(CMAKE_CXX_STANDARD 26)
@@ -13,9 +15,9 @@ endif()
 
 project(MiracleConsumer LANGUAGES CXX)
 
-find_package(Miracle 0.1.0 CONFIG REQUIRED)
+find_package(Miracle 0.5.28 CONFIG REQUIRED)
 
-add_executable(miracle_consumer "${CMAKE_CURRENT_LIST_DIR}/../main.cxx")
+add_executable(miracle_consumer "${CMAKE_CURRENT_LIST_DIR}/../main.cpp")
 target_compile_features(miracle_consumer PRIVATE cxx_std_26)
 target_link_libraries(miracle_consumer PRIVATE Miracle::Miracle)
 

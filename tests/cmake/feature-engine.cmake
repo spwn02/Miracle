@@ -14,7 +14,7 @@ miracle_register_build_feature(
   REQUIRES_CAPABILITIES
   reflection_core
   SOURCES
-  src/public/Io.ixx
+  src/public/Io.cppm
   PUBLIC_LIBRARIES
   Example::Public
   PRIVATE_LIBRARIES
@@ -28,7 +28,7 @@ miracle_register_build_feature(
   metrics
   GROUPS
   all)
-miracle_register_build_feature(NAME metrics SOURCES src/public/Metrics.ixx
+miracle_register_build_feature(NAME metrics SOURCES src/public/Metrics.cppm
                                PRIVATE_LIBRARIES Example::Disabled)
 miracle_register_feature_group(NAME all MEMBERS io)
 
@@ -52,7 +52,7 @@ if(NOT MIRACLE_BUILD_FEATURE_ARGUMENTS STREQUAL
     FATAL_ERROR
       "Unexpected C++ feature arguments: ${MIRACLE_BUILD_FEATURE_ARGUMENTS}")
 endif()
-if(NOT MIRACLE_BUILD_FEATURE_SOURCES STREQUAL "src/public/Io.ixx")
+if(NOT MIRACLE_BUILD_FEATURE_SOURCES STREQUAL "src/public/Io.cppm")
   message(
     FATAL_ERROR "Unexpected feature sources: ${MIRACLE_BUILD_FEATURE_SOURCES}")
 endif()

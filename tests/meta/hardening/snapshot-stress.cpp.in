@@ -1,0 +1,21 @@
+import std;
+import Miracle.Meta;
+
+struct Stress final {
+@SNAPSHOT_FIELDS@};
+
+constexpr auto expectedCount =
+    std::meta::members_of(^^Stress, Miracle::Access::unchecked()).size();
+consteval auto repeatedSnapshots() -> std::size_t {
+  std::size_t result{};
+  for (int index = 0; index < 16; ++index) {
+    result += Miracle::meta::members<Stress>(Miracle::Access::unchecked()).size();
+  }
+  return result;
+}
+static_assert(repeatedSnapshots() == expectedCount * 16);
+namespace EmptySnapshot {}
+static_assert(Miracle::meta::members(^^EmptySnapshot).empty());
+static_assert(Miracle::meta::annotations(^^Stress).empty());
+
+auto main() -> int {}

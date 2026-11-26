@@ -1,0 +1,9 @@
+# Build context for root Dockerfile: only the toolchain verifier is copied.
+.git
+.github
+build/
+site/
+.venv/
+CMakeUserPresets.json
+*.tar.zst
+*.tar.gz

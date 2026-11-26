@@ -1,0 +1,22 @@
+add_executable(MiracleIterBenchmark iter.cpp)
+add_executable(MiracleIterStress iter-stress.cpp)
+
+foreach(target IN ITEMS MiracleIterBenchmark MiracleIterStress)
+  target_compile_features(${target} PRIVATE cxx_std_26)
+  set_target_properties(
+    ${target}
+    PROPERTIES CXX_EXTENSIONS OFF
+               CXX_STANDARD_REQUIRED ON
+               CXX_SCAN_FOR_MODULES ON
+               CXX_MODULE_STD ON)
+  target_link_libraries(${target} PRIVATE Miracle::Miracle)
+endforeach()
+
+if(MIRACLE_BUILD_TESTS)
+  add_test(NAME MiracleIterStress COMMAND MiracleIterStress)
+endif()
+
+# Compile-time reflection-cache benchmarks are isolated from runtime benchmark
+# targets.
+add_subdirectory(meta-cache)
+add_subdirectory(meta-query)

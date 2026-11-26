@@ -15,7 +15,7 @@ endif()
 
 project(
   Miracle
-  VERSION 0.1.0
+  VERSION 0.5.28
   DESCRIPTION "A modern C++26 foundation library."
   LANGUAGES CXX)
 
@@ -85,7 +85,11 @@ set(miracle_capability_names
     reflection_static_storage
     expansion_statements
     std_vocabulary
-    std_hive)
+    std_hive
+    contracts
+    debugging
+    stacktrace
+    literal_utf8)
 
 foreach(name IN LISTS miracle_capability_names)
   string(TOUPPER "${name}" capability_name)
@@ -114,25 +118,25 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(MIRACLE_BUILD_PLATFORM Linux)
-  set(miracle_memory_source src/private/linux/Memory.cxx)
+  set(miracle_memory_source src/private/linux/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(MIRACLE_BUILD_PLATFORM Windows)
-  set(miracle_memory_source src/private/windows/Memory.cxx)
+  set(miracle_memory_source src/private/windows/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   set(MIRACLE_BUILD_PLATFORM MacOS)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "iOS")
   set(MIRACLE_BUILD_PLATFORM IOS)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
   set(MIRACLE_BUILD_PLATFORM Android)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   set(MIRACLE_BUILD_PLATFORM FreeBSD)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 else()
   set(MIRACLE_BUILD_PLATFORM Unsupported)
-  set(miracle_memory_source src/private/unsupported/Memory.cxx)
+  set(miracle_memory_source src/private/unsupported/Memory.cpp)
 endif()
 
 string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" miracle_processor)
@@ -172,14 +176,16 @@ endif()
 
 set(miracle_generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${miracle_generated_dir}")
-configure_file(src/public/Build.ixx.in "${miracle_generated_dir}/Build.ixx"
-               @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/Capabilities.ixx.in "${miracle_generated_dir}/Capabilities.ixx"
+  src/public/build/Build.cppm.in "${miracle_generated_dir}/build/Build.cppm"
   @ONLY NEWLINE_STYLE LF)
 configure_file(
-  src/public/FeatureConfiguration.ixx.in
-  "${miracle_generated_dir}/FeatureConfiguration.ixx" @ONLY NEWLINE_STYLE LF)
+  src/public/build/Capabilities.cppm.in
+  "${miracle_generated_dir}/build/Capabilities.cppm" @ONLY NEWLINE_STYLE LF)
+configure_file(
+  src/public/build/FeatureConfiguration.cppm.in
+  "${miracle_generated_dir}/build/FeatureConfiguration.cppm" @ONLY
+  NEWLINE_STYLE LF)
 
 add_library(Miracle STATIC)
 add_library(Miracle::Miracle ALIAS Miracle)
@@ -203,23 +209,70 @@ target_sources(
          "${CMAKE_CURRENT_SOURCE_DIR}/src/public"
          "${miracle_generated_dir}"
          FILES
-         src/public/Miracle.ixx
-         src/public/Types.ixx
-         src/public/StaticString.ixx
-         src/public/Feature.ixx
-         src/public/Error.ixx
-         src/public/Fs.ixx
-         src/public/Memory.ixx
-         src/public/Profiling.ixx
-         src/public/Concepts.ixx
-         src/public/meta/Meta.ixx
-         src/public/meta/Bitflags.ixx
-         src/public/meta/Debug.ixx
-         "${miracle_generated_dir}/Build.ixx"
-         "${miracle_generated_dir}/Capabilities.ixx"
-         "${miracle_generated_dir}/FeatureConfiguration.ixx"
-         # "${MIRACLE_BUILD_FEATURE_SOURCES}"
-  PRIVATE src/private/Error.cxx src/private/Fs.cxx src/private/Profiling.cxx
+         src/public/Miracle.cppm
+         src/public/numeric/Numeric.cppm
+         src/public/static_string/StaticString.cppm
+         "${miracle_generated_dir}/build/Build.cppm"
+         "${miracle_generated_dir}/build/Capabilities.cppm"
+         "${miracle_generated_dir}/build/FeatureConfiguration.cppm"
+         src/public/range/Range.cppm
+         src/public/types/Types.cppm
+         src/public/feature/Types.cppm
+         src/public/feature/Descriptor.cppm
+         src/public/feature/Set.cppm
+         src/public/feature/Catalog.cppm
+         src/public/feature/Requirement.cppm
+         src/public/feature/Feature.cppm
+         src/public/iter/Iter.cppm
+         src/public/iter/Detail.cppm
+         src/public/iter/SourceViews.cppm
+         src/public/iter/Views.cppm
+         src/public/iter/Core.cppm
+         src/public/iter/SourceFactories.cppm
+         src/public/diagnostics/Diagnostics.cppm
+         src/public/error/Error.cppm
+         src/public/panic/Panic.cppm
+         src/public/fs/Fs.cppm
+         src/public/memory/Memory.cppm
+         src/public/profiling/Profiling.cppm
+         src/public/concepts/Concepts.cppm
+         src/public/format/Format.cppm
+         src/public/format/Code.cppm
+         src/public/format/Fragment.cppm
+         src/public/format/Text.cppm
+         src/public/format/Emit.cppm
+         src/public/format/Message.cppm
+         src/public/format/Render.cppm
+         src/public/format/Style.cppm
+         src/public/format/Types.cppm
+         src/public/color/Color.cppm
+         src/public/meta/Meta.cppm
+         src/public/meta/Types.cppm
+         src/public/meta/Storage.cppm
+         src/public/meta/Operators.cppm
+         src/public/meta/Names.cppm
+         src/public/meta/Predicates.cppm
+         src/public/meta/Access.cppm
+         src/public/meta/Cache.cppm
+         src/public/meta/Members.cppm
+         src/public/meta/Layout.cppm
+         src/public/meta/Annotations.cppm
+         src/public/meta/Values.cppm
+         src/public/meta/Substitution.cppm
+         src/public/meta/Generation.cppm
+         src/public/meta/TypeQueries.cppm
+         src/public/meta/TypeTransforms.cppm
+         src/public/meta/Reflect.cppm
+         src/public/meta/QueryIR.cppm
+         src/public/meta/QueryPlan.cppm
+         src/public/meta/QueryState.cppm
+         src/public/meta/QueryEval.cppm
+         src/public/meta/Query.cppm
+         src/public/bitflags/Bitflags.cppm
+         src/public/debug/Debug.cppm
+         ${MIRACLE_BUILD_FEATURE_SOURCES}
+  PRIVATE src/private/Diagnostics.cpp src/private/Error.cpp
+          src/private/Panic.cpp src/private/Fs.cpp src/private/Profiling.cpp
           "${miracle_memory_source}")
 
 if(MIRACLE_BUILD_FEATURE_PUBLIC_LIBRARIES)
@@ -268,6 +321,7 @@ install(FILES LICENSE DESTINATION "${CMAKE_INSTALL_DATADIR}/Miracle")
 
 option(MIRACLE_BUILD_EXAMPLES "Build Miracle examples" OFF)
 option(MIRACLE_BUILD_TESTS "Build Miracle's self-test suite" OFF)
+option(MIRACLE_BUILD_BENCHMARKS "Build Miracle benchmarks and stress gates" OFF)
 
 if(MIRACLE_BUILD_EXAMPLES)
   add_subdirectory(examples)
@@ -276,6 +330,10 @@ endif()
 if(MIRACLE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+if(MIRACLE_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()
 
 # GCC-compatibility hive backend. Isolated in its own file and wired up via a

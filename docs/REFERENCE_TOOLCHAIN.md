@@ -1,0 +1,271 @@
+# Reference toolchain
+
+This document defines the source-level identity and ownership contract of the C++26 reference toolchain used by this project.
+
+Immutable binary snapshots, checksums, manifests, and CI distribution are implemented. This document defines the coherence and provenance contract those artifacts must preserve.
+
+## Identity
+
+The reference toolchain is developed in:
+
+```text
+repository:
+  https://github.com/spwn02/clang-cxx26
+
+development branch:
+  cxx26
+```
+
+The repository is an experimental LLVM fork with a broad C++26 scope. It preserves upstream LLVM history and the Bloomberg-originated reflection implementation; that provenance does not imply Bloomberg endorsement of the fork.
+
+The current development line is synchronized with LLVM/Clang 22.1.8 and continues to expand compiler, libc++, modules, and reflection support for real-world C++26 workloads.
+
+The `cxx26` branch is a mutable development channel. It is not, by itself, an immutable release or CI dependency.
+
+## One toolchain unit
+
+The reference toolchain is not just a `clang++` executable.
+
+A validated toolchain consists of a coherent set built from the same source revision and configuration:
+
+```text
+clang / clang++
+matching libc++ headers and libraries
+matching libc++ module sources and metadata
+libc++abi
+runtime support required by that libc++/libc++abi build
+```
+
+`lld` and other LLVM utilities may be distributed with reference snapshots and may be used by the build, but they are not part of the semantic C++ library contract unless the selected configuration requires them.
+
+The important invariant is coherence:
+
+> The compiler, C++ standard-library headers, standard-library binaries, ABI runtime, and module sources used for one validated build must belong to the same reference-toolchain build.
+
+Do not intentionally combine, for example:
+
+- the reference Clang frontend with unrelated system libstdc++;
+- libc++ headers from one fork revision with libc++ binaries from another;
+- module sources from one libc++ installation with headers from another;
+- a reference compiler snapshot with arbitrary newer `cxx26` runtime components.
+
+C++ modules, reflection intrinsics, library feature macros, ABI configuration, and in-progress C++26 facilities make such mixes especially fragile.
+
+## Standard model
+
+The reference fork exists to implement the `master` contract:
+
+```text
+complete standardized C++26
++
+all standardized facilities from earlier C++ revisions
+```
+
+This is intentionally an aspirational implementation target.
+
+When `master` needs a standardized feature that the fork does not yet provide, the preferred development path is:
+
+```text
+standardized feature needed by master
+              |
+              v
+implement / port / stabilize it in clang-cxx26 or its libc++
+              |
+              v
+validate the toolchain
+              |
+              v
+use the feature normally from master
+```
+
+The library is not expected to permanently carry a substitute merely because mainstream implementations have not reached that part of the standard yet.
+
+## Reflection mode
+
+The reference Clang family exposes the current reflection feature set through:
+
+```text
+-freflection-latest
+```
+
+The project treats this as the reference-fork feature switch, not as part of the portable public API.
+
+Source code should target standardized C++ syntax and semantics. Build configuration is responsible for selecting whatever compiler flags the current reference implementation requires.
+
+As the implementation converges with upstream standardized compiler modes, reference-specific flags may disappear without changing the public library contract.
+
+## Standard library and `import std`
+
+The matching libc++ is part of the reference toolchain because the project deliberately uses modern standard-library facilities and C++ modules.
+
+A usable reference installation must provide everything necessary for CMake's native C++ module support to compile:
+
+```cpp
+import std;
+```
+
+for C++26 mode, including the matching libc++ module sources/metadata expected by the compiler installation.
+
+A compiler that supports the required reflection syntax but lacks the required C++26 standard-library surface is not a complete reference toolchain.
+
+Likewise, a library implementation with the required headers but an incompatible compiler frontend is not sufficient.
+
+## Toolchain ownership
+
+Miracle, Switch, and Nyx do not own compiler installation.
+
+Their normal CMake projects must not:
+
+- clone LLVM automatically;
+- build Clang or libc++ as an ordinary project dependency;
+- change `CMAKE_CXX_COMPILER` after language enablement;
+- silently replace the user's selected standard library;
+- contain machine-specific absolute paths to a developer toolchain.
+
+The toolchain must be selected before the top-level CMake `project()` enables C++.
+
+For local development this may be done through environment selection:
+
+```bash
+source /path/to/reference/share/clang-cxx26/activate.sh
+cmake --preset tests --fresh \
+  -DCMAKE_TOOLCHAIN_FILE="$CXX26_CMAKE_TOOLCHAIN_FILE"
+```
+
+or through a developer-owned `CMakeUserPresets.json` / CMake toolchain file.
+
+Checked-in project presets remain machine-independent.
+
+CI selects an immutable binary snapshot and verifies its manifest and checksums before use. Local development may still select an explicitly built `cxx26` toolchain.
+
+## Source channel versus snapshots
+
+Two identities must remain distinct:
+
+```text
+cxx26
+  mutable development branch (not an immutable build input)
+
+cxx26-2026.10.27
+  immutable reference snapshot pinned by Miracle CI as of 2026-10-27
+```
+
+The pinned reference version is defined by `.github/workflows/ci.yml`; documentation describing it must be reconciled whenever that workflow changes. A newer snapshot published by the compiler project is not automatically Miracle's validated baseline.
+
+The historical `p2996-2026.08.23.2` snapshot predates the `clang-cxx26` rebrand and remains immutable provenance for releases that recorded it. It has been superseded as the current validation baseline, not renamed or rewritten.
+
+Current snapshots use the `cxx26-YYYY.MM.DD[.N]` identity established by the toolchain packager. Published snapshot identifiers remain immutable.
+
+The snapshot rules are:
+
+1. A snapshot identifies one exact source commit.
+2. Published snapshot bytes are immutable.
+3. Rebuilding different bytes requires a new snapshot identifier.
+4. Snapshot metadata records the source commit.
+5. Snapshot metadata records artifact checksums.
+6. CI and released library versions pin snapshots, never the moving `cxx26` branch.
+7. The development branch remains free to advance independently after a snapshot is published.
+
+The reference snapshot pinned by Miracle CI as of 2026-10-27 is:
+
+```text
+snapshot: cxx26-2026.10.27
+source revision: b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
+asset: clang-cxx26-2026.10.27-linux-x86_64
+```
+
+Miracle's reference CI verifies the corresponding published asset's checksums and manifest, including its source revision, before compiling. This statement concerns the snapshot actually selected by Miracle, rather than all snapshots available from the compiler's release channel.
+
+## Validation scope
+
+The initial reference validation platform is:
+
+```text
+host/target:
+  Linux x86_64
+```
+
+This is a validation scope, not a permanent architecture restriction.
+
+Additional hosts and targets may be added once the reference toolchain and project test suites are reproducible there. They should not be advertised as validated merely because the compiler can theoretically target them.
+
+## Toolchain candidate promotion
+
+A new reference snapshot should move through this validation direction:
+
+```text
+clang-cxx26 / libc++ candidate
+          |
+          v
+compiler + libc++ regression tests
+          |
+          v
+Miracle
+          |
+          v
+Switch
+          |
+          v
+Nyx integration
+          |
+          v
+publish immutable reference snapshot
+```
+
+A project regression discovered during this process may reveal either:
+
+- a library/framework bug; or
+- a compiler/libc++ regression.
+
+The purpose of using Miracle, Switch, and Nyx in the toolchain validation stack is to catch both.
+
+Switch is particularly valuable here because its reflection-heavy discovery and metadata pipeline exercises compiler behavior beyond isolated proposal tests.
+
+## Release relationship
+
+Official Miracle and Switch releases are built from `master`.
+
+Release workflows verify that the tag resolves to `master` history and attach deterministic `release-metadata.json`. The metadata records the exact project source commit together with the immutable validated reference snapshot, its source revision, and artifact identity.
+
+For the reference snapshot pinned by Miracle's CI configuration on 2026-10-27:
+
+```text
+Miracle reference/release provenance
+  source branch:        master
+  reference repository: spwn02/clang-cxx26
+  development branch:   cxx26
+  reference snapshot:   cxx26-2026.10.27
+  toolchain revision:   b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
+```
+
+Individual GitHub Releases retain their own validated provenance in `release-metadata.json`; historical releases must not be retroactively described as built using the newest CI snapshot. Switch releases similarly retain their own release-specific reference metadata.
+
+The release does not vendor or redistribute compiler BMIs, and the non-release-bearing `gcc` compatibility branch never produces parallel release artifacts.
+
+## BMI / PCM policy
+
+Binary module interface artifacts are compiler- and configuration-specific build products.
+
+They are never considered portable release artifacts of Miracle or Switch.
+
+The projects distribute module source and CMake module metadata. A consumer's selected compatible toolchain builds the corresponding BMI/PCM artifacts locally.
+
+## Status language
+
+The reference fork is experimental relative to upstream Clang and the finalized implementation state of C++26.
+
+That does not mean the project should describe it as disposable prototype infrastructure.
+
+The intended description is:
+
+> An actively maintained experimental LLVM/Clang C++26 fork focused on standards coverage, stability, and real-world reflection-heavy applications.
+
+Miracle, Switch, and Nyx use it for serious development and regression validation.
+
+Claims such as "production-ready compiler" should be reserved until a substantially stronger compatibility, platform, ABI, diagnostics, sanitizer, and regression-support bar has been intentionally established.
+
+## Provenance
+
+The fork owes its reflection foundation to Bloomberg's Clang/P2996 project and ultimately to LLVM/Clang/libc++.
+
+That provenance remains explicit even though the project is now `spwn02/clang-cxx26` and has progressed far beyond proposal-only work. The rebrand broadens scope; it does not erase the origin of the reflection implementation or imply Bloomberg endorsement.

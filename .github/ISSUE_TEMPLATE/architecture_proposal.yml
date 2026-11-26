@@ -1,0 +1,64 @@
+name: "Architecture Proposal"
+description: "Propose changing a design contract, invariant, ownership model or subsystem boundary."
+title: "[Design] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, search for an existing report or proposal.
+        Redact credentials, private data, and internal paths from any pasted output.
+        For vulnerabilities, follow [SECURITY.md](https://github.com/spwn02/Miracle/blob/master/SECURITY.md); do **not** publish details here.
+        Submitting an issue does not approve a contract, implementation, priority, or roadmap entry.
+        Read the [Development Protocol v1.0](https://github.com/spwn02/Miracle/blob/master/docs/DEVELOPMENT_PROTOCOL.md). Filing a proposal does **not** amend a locked contract: an explicit decision and canonical contract update are required; an ADR may also be needed.
+  - type: input
+    id: affected-contract
+    attributes:
+      label: "Affected contract or subsystem"
+      description: "Give a contract link/name, or enter `New subsystem` if none exists."
+      placeholder: "docs/contracts/... or New subsystem"
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Problem with the current design"
+      description: "Identify the constraint, defect, performance cost or new requirement."
+      placeholder: "What problem justifies revisiting the architecture?"
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: "Proposed architecture"
+      description: "Explain data flow, ownership, module boundaries, algorithms or other relevant design."
+      placeholder: "Explain the architectural change."
+    validations:
+      required: true
+  - type: textarea
+    id: invariants
+    attributes:
+      label: "Invariants and compatibility"
+      description: "Identify guarantees preserved, changed, or potentially violated."
+      placeholder: "Ownership, lifetimes, API compatibility, invariants."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives and trade-offs"
+      description: "Describe alternatives and their trade-offs; if undecided, state which decisions remain open."
+      placeholder: "Options considered and why they differ."
+    validations:
+      required: true
+  - type: textarea
+    id: migration
+    attributes:
+      label: "Migration or rollout plan"
+      description: "Discuss effects on consumers, existing tests and accepted work."
+      placeholder: "Migration steps if applicable."
+  - type: textarea
+    id: verification
+    attributes:
+      label: "How to validate the change"
+      description: "Suggest tests, benchmark evidence, proofs or integration checks."
+      placeholder: "Validation plan."

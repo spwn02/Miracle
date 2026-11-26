@@ -25,7 +25,7 @@ if(NOT MIRACLE_CAPABILITY_STD_HIVE)
   endif()
 
   target_sources(Miracle PUBLIC FILE_SET miracle_modules TYPE CXX_MODULES FILES
-                                src/public/compat/HivePlf.ixx)
+                                src/public/compat/HivePlf.cppm)
 
   target_include_directories(
     Miracle SYSTEM
@@ -43,7 +43,7 @@ if(NOT MIRACLE_CAPABILITY_STD_HIVE)
     STATUS "Miracle Hive backend: plf::hive (${miracle_plf_hive_revision})")
 else()
   target_sources(Miracle PUBLIC FILE_SET miracle_modules TYPE CXX_MODULES FILES
-                                src/public/compat/HiveNative.ixx)
+                                src/public/compat/HiveNative.cppm)
 
   message(STATUS "Miracle Hive backend: std::hive")
 endif()

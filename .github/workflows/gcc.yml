@@ -17,8 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Validate GCC compatibility
@@ -34,7 +35,7 @@ jobs:
               set -euo pipefail
               pacman -Syu --noconfirm --needed \
                 base-devel ca-certificates cmake git ninja
-              bash ./.github/scripts/validate-gcc.sh
+              bash ./scripts/ci/validate-gcc.sh
             '
 
       - name: Measure GCC convergence
@@ -43,13 +44,13 @@ jobs:
           set -euo pipefail
 
           git fetch --no-tags origin master:refs/remotes/origin/master
-          python3 .github/scripts/report-gcc-convergence.py \
+          python3 scripts/ci/report-gcc-convergence.py \
             --master origin/master \
             --gcc HEAD \
             --output "$RUNNER_TEMP/gcc-convergence.json"
 
       - name: Upload GCC convergence report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: gcc-convergence-${{ github.run_id }}
           path: ${{ runner.temp }}/gcc-convergence.json

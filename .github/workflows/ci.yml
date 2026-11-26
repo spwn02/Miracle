@@ -12,17 +12,69 @@ permissions:
   contents: read
 
 env:
-  CXX26_SNAPSHOT: cxx26-2026.09.04.1
-  CXX26_REVISION: 543a397a185d3038ce505877a64e74b60b279887
-  CXX26_ASSET: clang-cxx26-2026.09.04.1-linux-x86_64
+  CXX26_SNAPSHOT: cxx26-2026.10.27
+  CXX26_REVISION: b56ae4e61cf1f46495f0fb08f2b9fc270aad162c
+  CXX26_ASSET: clang-cxx26-2026.10.27-linux-x86_64
 
 jobs:
   reference:
-    name: Reference C++26 (cxx26-2026.09.04.1)
+    name: Reference C++26 (cxx26-2026.10.27)
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Repository whitespace
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check HEAD^ HEAD
+
+      - name: Validate infrastructure shell syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/github/audit-g2.sh
+          bash -n scripts/github/miracle-project-reconcile-safe.sh
+          bash -n scripts/github/audit-native-project.sh
+          python3 -m py_compile scripts/github/project-item-control.py
+          python3 -m py_compile scripts/github/project-roadmap-filter.py
+          python3 scripts/github/project-roadmap-filter.py --self-test
+          python3 scripts/github/project-item-control.py --self-test
+          python3 -m py_compile scripts/github/audit-g2-provenance.py
+          python3 scripts/github/audit-g2-provenance.py --self-test
+          python3 -m py_compile scripts/github/audit-g6-community.py
+          python3 scripts/github/audit-g6-community.py --self-test
+          python3 -m py_compile scripts/github/audit-g6-release-provenance.py
+          python3 scripts/github/audit-g6-release-provenance.py --self-test
+          python3 -m py_compile scripts/github/project-issue-intake.py
+          python3 scripts/github/project-issue-intake.py --self-test
+          python3 -m py_compile scripts/github/issue-relations.py
+          python3 scripts/github/issue-relations.py --self-test
+          python3 scripts/github/check-workflow-pins.py
+          python3 scripts/github/check-workflow-security.py
+          python3 scripts/github/check-community-surface.py
+          python3 scripts/ci/test-ci-helpers.py
+          python3 scripts/ci/audit-codeql-coverage.py --self-test
+          python3 scripts/ci/check-test-trace.py --self-test
+          python3 scripts/docs/verify-frozen-contracts.py --self-test
+          python3 scripts/docs/verify-frozen-contracts.py
+          python3 scripts/ci/check-docker.py
+          python3 scripts/ci/check-makefile.py
+          python3 scripts/ci/test-build-cache-guard.py
+          python3 -m py_compile scripts/ci/verify-reference-toolchain.py
+          bash -n scripts/ci/verify-container.sh
+          python3 -m py_compile scripts/github/reconcile-rulesets.py
+          python3 -m py_compile scripts/github/audit-security.py
+          python3 - <<'PY'
+          import runpy
+          audit = runpy.run_path("scripts/github/reconcile-rulesets.py")
+          assert len(audit["load_desired"]()) == 2
+          print("PASS: ruleset JSON recipes are complete and valid.")
+          PY
 
       - name: Install build tools
         shell: bash
@@ -34,7 +86,7 @@ jobs:
             ca-certificates curl gh ninja-build python3 python3-venv zstd
 
           python3 -m venv "$RUNNER_TEMP/cmake"
-          "$RUNNER_TEMP/cmake/bin/pip" install --no-cache-dir cmake==4.4.2
+          "$RUNNER_TEMP/cmake/bin/pip" install --no-cache-dir cmake==4.4.3
           echo "$RUNNER_TEMP/cmake/bin" >> "$GITHUB_PATH"
 
       - name: Install pinned reference toolchain
@@ -99,6 +151,7 @@ jobs:
 
           toolchain_root="$install_dir/clang-${CXX26_SNAPSHOT}"
           test -x "$toolchain_root/bin/clang++"
+          test -x "$toolchain_root/bin/clangd"
           test -f "$toolchain_root/share/clang-cxx26/toolchain.cmake"
           test -f "$toolchain_root/share/clang-cxx26/activate.sh"
 
