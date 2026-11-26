@@ -35,6 +35,10 @@ enum class Presentation : u8 {
   Terminal,
 };
 
+} // namespace Miracle
+
+namespace Miracle {
+
 /// Returns the lowercase spelling of a diagnostic severity level.
 [[nodiscard]] constexpr auto severityName(const Severity severity) noexcept -> std::string_view {
   switch (severity) {

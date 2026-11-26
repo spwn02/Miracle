@@ -48,6 +48,9 @@ struct Event final {
   std::string_view key{};
   /// Style applied to `text`.
   Style style{};
+  /// Replace C0/DEL bytes of untrusted runtime `text` by escape spellings (`Text` only; every other kind
+  /// always escapes). Lets a renderer with its own layout reuse the one encoder.
+  bool escape{};
   /// Severity (`Heading` only).
   Severity severity{Severity::Note};
   /// Code (`Heading` only).
@@ -103,7 +106,7 @@ concept SpanWriter = requires(Writer &writer, std::string_view text, const Style
 };
 
 /// Writes text with C0/DEL bytes replaced by escape spellings; every piece carries `style`.
-export template <SpanWriter Writer>
+template <SpanWriter Writer>
 constexpr auto writeEscaped(Writer &writer, const std::string_view text, const Style &style) -> bool {
   usize start{};
   for (usize index{}; index < text.size(); ++index) {
@@ -132,21 +135,6 @@ constexpr auto putPaddedDecimal(Writer &writer, const u64 value, const usize min
     if (not writer.put("0", style))
       return false;
   return writer.put(std::string_view{digits.data(), count}, style);
-}
-
-/// Number of bytes `writeEscaped` produces for `text`; equals `text.size()` when nothing needs escaping.
-export [[nodiscard]] constexpr auto escapedSize(const std::string_view text) noexcept -> usize {
-  usize size{};
-  for (const char character : text) {
-    const auto byte = static_cast<unsigned char>(character);
-    if (needsEscape(byte)) {
-      std::array<char, maxEscapeBytes> spelling{};
-      size += encodeEscape(byte, spelling);
-    } else {
-      ++size;
-    }
-  }
-  return size;
 }
 
 [[nodiscard]] constexpr auto sectionOf(const EventKind kind) noexcept -> Section {
@@ -189,7 +177,7 @@ export [[nodiscard]] constexpr auto escapedSize(const std::string_view text) noe
 /// The one canonical layout algorithm. Header: `severity[code]: summary\n`; context hugs the header; every
 /// later section is preceded by one blank line; each item ends in exactly one LF; text is escaped.
 /// Writes `[prefix` + zero-padded number + `]`; nothing for an empty prefix. The one code encoder.
-export template <SpanWriter Writer>
+template <SpanWriter Writer>
 constexpr auto writeCode(Writer &writer, const CodeView &code, const Style &style) -> bool {
   if (code.prefix.empty())
     return true;
@@ -209,8 +197,10 @@ constexpr auto layout(Writer &writer, RenderState &state, const Event &event) ->
   const Style plain{};
   const Style label = severityStyle(Severity::Note);
 
-  if (event.kind == EventKind::Text)
-    return writer.put(event.text, event.style) ? WriteResult::Written : fail();
+  if (event.kind == EventKind::Text) {
+    const bool ok = event.escape ? writeEscaped(writer, event.text, event.style) : writer.put(event.text, event.style);
+    return ok ? WriteResult::Written : fail();
+  }
 
   if (event.kind == EventKind::Heading) {
     const Style severity = severityStyle(event.severity);
@@ -258,7 +248,7 @@ constexpr auto layout(Writer &writer, RenderState &state, const Event &event) ->
 }
 
 /// Encodes style transitions as SGR sequences around the sink's plain bytes. All state lives in `RenderState`.
-export template <TextSink Sink>
+template <TextSink Sink>
 class AnsiWriter final {
 public:
   constexpr AnsiWriter(Sink &sink, RenderState &state) noexcept

@@ -92,7 +92,6 @@ public:
   DiagnosticRenderer(std::ostream &output, RenderOptions options)
       : sink_(output)
       , state_{.policy = {.presentation = options.presentation, .color = options.color}}
-      , writer_(sink_, state_)
       , options_(options) {
   }
 
@@ -100,7 +99,7 @@ public:
     renderOne(diagnostic, 0, false);
     renderCauses(diagnostic);
     // Console style must be back to default after every diagnostic tree.
-    auto _ = writer_.finish();
+    auto _ = format::finish(sink_, state_);
   }
 
 private:
@@ -112,16 +111,32 @@ private:
 
   /// Writes `text` under `style`; the shared writer owns SGR encoding and plain/terminal suppression.
   auto put(const StringView text, const Style &style = {}) -> void {
-    auto _ = writer_.put(text, style);
+    auto _ = format::emit(sink_, state_, format::Event{.kind = format::EventKind::Text, .text = text, .style = style});
   }
 
   /// Untrusted runtime text (messages, notes, labels, paths, source): control bytes are escaped, never emitted raw.
   auto putText(const StringView text, const Style &style = {}) -> void {
-    auto _ = format::writeEscaped(writer_, text, style);
+    auto _ = format::emit(
+        sink_, state_, format::Event{.kind = format::EventKind::Text, .text = text, .style = style, .escape = true});
   }
 
   auto putNumber(const u64 value, const Style &style = {}) -> void {
     put(std::to_string(value), style);
+  }
+
+  /// Column width of `text` once escaped; measured by running the one encoder into a scratch string.
+  [[nodiscard]] static auto escapedWidth(const StringView text) -> usize {
+    struct Scratch final {
+      usize size{};
+      auto write(const StringView bytes) -> bool {
+        size += bytes.size();
+        return true;
+      }
+    } scratch;
+    format::RenderState state{};
+    auto _ = format::emit(
+        scratch, state, format::Event{.kind = format::EventKind::Text, .text = text, .escape = true});
+    return scratch.size;
   }
 
   auto indent(usize depth) -> void {
@@ -130,12 +145,16 @@ private:
 
   auto renderHeader(const Diagnostic &diagnostic, usize depth) -> void {
     indent(depth);
-    const Style style = format::severityStyle(diagnostic.severity());
-    put(severityName(diagnostic.severity()), style);
-    auto _ = format::writeCode(writer_, diagnostic.code().codeView(), style);
-    put(": ");
-    putText(diagnostic.messageText());
-    put("\n");
+    // The shared grammar writes `severity[code]: summary` and escapes the summary. It is a heading, so it runs on
+    // a state of its own; the surrounding text stays on the renderer's plain-text state.
+    format::RenderState heading{.policy = state_.policy};
+    auto _ = format::emit(sink_,
+        heading,
+        format::Event{.kind = format::EventKind::Heading,
+            .text = diagnostic.messageText(),
+            .severity = diagnostic.severity(),
+            .code = diagnostic.code().codeView()});
+    _ = format::finish(sink_, heading);
   }
 
   auto renderLocation(std::source_location location, usize depth) -> void {
@@ -193,9 +212,9 @@ private:
       const usize markerBegin = std::min(begin, lineEnd) - lineStart;
       const usize markerEnd = std::min(std::max(end, begin + 1UZ), lineEnd) - lineStart;
       renderGutter(depth);
-      put(String(format::escapedSize(line.substr(0, markerBegin)), ' '));
+      put(String(escapedWidth(line.substr(0, markerBegin)), ' '));
       const usize markerLength =
-          std::max(1UZ, markerEnd > markerBegin ? format::escapedSize(line.substr(markerBegin, markerEnd - markerBegin)) : 1);
+          std::max(1UZ, markerEnd > markerBegin ? escapedWidth(line.substr(markerBegin, markerEnd - markerBegin)) : 1);
       put(String(markerLength, spanMarker(span.spanRole())), marker);
       if (not span.labelText().empty()) {
         put(" ", marker);
@@ -313,7 +332,6 @@ private:
 
   StreamSink sink_;
   format::RenderState state_;
-  format::AnsiWriter<StreamSink> writer_;
   RenderOptions options_;
 };
 

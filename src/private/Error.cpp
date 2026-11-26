@@ -79,12 +79,14 @@ auto Error::display(std::ostream &output, ErrorDisplayOptions options) const -> 
   StringSink sink{text};
   format::RenderState state{.policy = {options.colours ? Presentation::Terminal : Presentation::Plain,
                                 options.colours ? ColorMode::Always : ColorMode::Never}};
-  format::AnsiWriter<StringSink> writer{sink, state};
   const auto plain = format::Style{};
+  const auto put = [&](const StringView bytes, const format::Style &style) {
+    return format::emit(sink, state, format::Event{.kind = format::EventKind::Text, .text = bytes, .style = style});
+  };
   const auto render = [&](const Message &message) { return options.locations ? embed(message) : message.message; };
 
   if (messages.size() == 1) {
-    auto _ = writer.put(std::format("Error: {}\n", render(*messages.begin())), plain);
+    auto _ = put(std::format("Error: {}\n", render(*messages.begin())), plain);
     output << text;
     return;
   }
@@ -92,18 +94,18 @@ auto Error::display(std::ostream &output, ErrorDisplayOptions options) const -> 
   bool first = true;
   for (const auto &[index, message] : messages | std::views::reverse | std::views::enumerate) {
     if (not first)
-      auto _ = writer.put("\n", plain);
+      auto _ = put("\n", plain);
     if (index == 0) {
-      auto _ = writer.put(std::format("Error: {}\n\n", render(message)), plain);
-      _ = writer.put("Caused by:", labelStyle);
+      auto _ = put(std::format("Error: {}\n\n", render(message)), plain);
+      _ = put("Caused by:", labelStyle);
     } else {
-      auto _ = writer.put("  ", plain);
-      _ = writer.put(std::format("{:d}:", index - 1), labelStyle);
-      _ = writer.put(std::format(" {}", render(message)), plain);
+      auto _ = put("  ", plain);
+      _ = put(std::format("{:d}:", index - 1), labelStyle);
+      _ = put(std::format(" {}", render(message)), plain);
     }
     first = false;
   }
-  auto _ = writer.finish();
+  auto _ = format::finish(sink, state);
   output << text;
 }
 

@@ -70,8 +70,10 @@ constexpr format::Style rgbStyle{.foreground = format::TerminalColor::trueColor(
 static_assert(std::to_underlying(Severity::Debug) == 0 and std::to_underlying(Severity::Error) == 3);
 static_assert(std::to_underlying(ColorMode::Automatic) == 0 and std::to_underlying(ColorMode::Never) == 2);
 static_assert(std::to_underlying(Presentation::Plain) == 0 and std::to_underlying(Presentation::Terminal) == 1);
-static_assert(severityName(Severity::Debug) == "debug" and severityName(Severity::Note) == "note" and
-              severityName(Severity::Warning) == "warning" and severityName(Severity::Error) == "error");
+static_assert(format::Message{Severity::Debug, format::code("X", 1), "s"}.view() == "debug[X001]: s\n" and
+              format::Message{Severity::Note, format::code("X", 1), "s"}.view() == "note[X001]: s\n" and
+              format::Message{Severity::Warning, format::code("X", 1), "s"}.view() == "warning[X001]: s\n" and
+              format::Message{Severity::Error, format::code("X", 1), "s"}.view() == "error[X001]: s\n");
 
 // --- TerminalColor keeps its tag: an index is never turned into RGB. ---
 static_assert(format::TerminalColor::indexed(1).kind == format::ColorKind::Indexed);

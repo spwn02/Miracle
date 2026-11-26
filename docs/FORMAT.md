@@ -29,7 +29,7 @@ static_assert(orange.toHex() == 0xFF9F43U);
 | `format::Message<C, R, D, S>` | immutable owned text plus style spans; every extension returns a new type with inferred capacity |
 | `format::RenderPolicy`, `render()`, `renderTo()` | plain or ANSI rendering of a message |
 | `format::Event`, `emit()`, `finish()`, `RenderState`, `TextSink`, `WriteResult`, `CodeView`, `Section` | runtime event writer used by `Diagnostics`; one layout and one SGR encoder |
-| `format::AnsiWriter`, `writeCode()`, `writeEscaped()`, `escapedSize()`, `severityStyle()`, `severityName()` | building blocks that renderers (including `Error::display`) share |
+| `Event::escape`, `severityStyle()` | runtime renderers with their own layout (`Error::display`, `Miracle.Diagnostics`) emit `Text` events through `emit`/`finish`; `escape` routes untrusted text through the one encoder, `severityStyle` gives the severity colour |
 
 ```cpp
 constexpr auto message =
