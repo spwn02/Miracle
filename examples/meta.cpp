@@ -30,11 +30,14 @@ auto main() -> int { // NOLINT
   std::println("Transform fields:");
   // Each expansion has a compile-time reflection value; its generated statement runs at runtime.
   template for (constexpr meta::Info field : transformFields) {
-    std::println("  {}: {}", meta::requireName(field), meta::displayName(meta::type(field)));
+    constexpr auto name = meta::requireName(field);
+    constexpr auto typeName = meta::displayName(meta::type(field));
+    std::println("  {}: {}", name, typeName);
   }
 
   std::println("Axes:");
   template for (constexpr meta::Info value : axisValues) {
-    std::println("  {}", meta::requireName(value));
+    constexpr auto name = meta::requireName(value);
+    std::println("  {}", name);
   }
 }
