@@ -126,3 +126,10 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
   5. §6.1 layout: private units are flat (`src/private/Diagnostics.cpp`), spec shows `src/private/diagnostics/Diagnostic.cpp`; Iter partition names follow the spec's recommended SourceViews/Views/Core/SourceFactories variant.
   6. REQ-STR-002 (StaticString messages via Format) is in the owner's uncommitted WIP; not touched.
   7. TEST-FMT-STATIC-003 (dangling consteval message storage) and TEST-STR-* negatives, TEST-COL property tests not re-audited line by line in this pass.
+
+### Color/Format test-matrix audit (2026-11-26)
+- TEST-COL-*: added RGB-001..003, HEX-001, TYPE-002 (structural NTTP), PARSE-002/004..008, HSV-008/009/010 (every sector boundary ±1e-9, `nextafter(360, 0)`, 359.999999), REV-003/004, PROP-001 (10,000 SplitMix64 samples, seed `0x4D6972616375'6C65`, plus tied-channel adversaries; measured max channel error ≤ 1, asserted), PROP-002 (all `#RRGGBB` with zero low byte, 10,000 random, 216 boundary triples; upper and lower case).
+- TEST-REC-COLOR-002: all 4,096 `#RGB` combinations, constexpr.
+- TEST-REC-EVENT-003: sink failure inside an SGR prefix and while writing the final reset → `SinkFailed`, `state.failed`, partial bytes exact.
+- Verified in the isolated tree: `MiracleTests` 104 cases PASS; ctest 100/100.
+- Remaining: TEST-FMT-STATIC-003 (no portable way to assert "invalid consteval pointer lifetime" is rejected without a compiler-specific diagnostic; not added), TEST-STR-* (StaticString WIP is the owner's), PERF rows, §10.5–10.6.

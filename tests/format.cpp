@@ -391,6 +391,28 @@ namespace Tests::formatting {
   Switch::check(sink.bytes == partial);
 }
 
+[[= Switch::test]] auto sinkFailureInsideStyledRunAndReset() -> void {
+  // TEST-REC-EVENT-003: failure in the middle of an SGR prefix, and failure while writing the final reset.
+  {
+    StringSink sink{.failAfter = 6};
+    format::RenderState state{.policy = ansiAlways};
+    Switch::check(format::emit(sink, state, {.kind = format::EventKind::Text, .text = "x", .style = accent}) == format::WriteResult::SinkFailed);
+    Switch::check(state.failed);
+    Switch::check(format::finish(sink, state) == format::WriteResult::SinkFailed);
+    Switch::check(sink.bytes.size() == 6);
+  }
+  {
+    const std::string_view body{"\x1b[1m\x1b[3m\x1b[38;5;14mx"};
+    StringSink sink{.failAfter = body.size() + 2};
+    format::RenderState state{.policy = ansiAlways};
+    Switch::check(format::emit(sink, state, {.kind = format::EventKind::Text, .text = "x", .style = accent}) == format::WriteResult::Written);
+    Switch::check(format::finish(sink, state) == format::WriteResult::SinkFailed);
+    Switch::check(state.failed);
+    Switch::check(sink.bytes == std::string{body} + "\x1b[");
+    Switch::check(format::finish(sink, state) == format::WriteResult::SinkFailed);
+  }
+}
+
 [[= Switch::test]] auto eventViewsAreConsumedImmediately() -> void {
   StringSink sink;
   format::RenderState state;
