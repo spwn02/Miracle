@@ -22,7 +22,7 @@ A milestone commit is an implementation checkpoint, not automatic reviewer accep
 | A-CI-001 | Pinned Clang+CMake Debug/Release and test/compile-fail suite; GCC compatibility separately | PARTIAL — reference Clang Debug (tests preset, -Werror) + Release install; GCC and CI container script NOT RUN |
 | A-PERF-001 | Repeated cold/incremental build and BMI/peak memory results before/after | PARTIAL — cold `tests` build, 5 runs each, HEAD baseline median 38.1 s (37.4–39.1) vs current 39.7 s (37.6–41.8); includes 22 added tests/probes; incremental/BMI/peak RSS recorded in PROGRESS.md (no thresholds claimed); Meta Query stress, granular-import (PERF-04), chained-Message (PERF-06) and render (PERF-07) figures recorded in PROGRESS.md; PERF-08 installed-consumer cold/warm timing recorded |
 | A-SEC-001 | CodeQL inventory counts `.cppm` and `.cpp` accurately; no extraction claims without evidence | NOT RUN |
-| A-OWN-001 | Explicit author sign-off after reviewer finding classification and exceptions | PENDING |
+| A-OWN-001 | Explicit author sign-off after reviewer finding classification and exceptions | SIGNED OFF 2026-11-26 by the author (Spawn), with the deviations in ADR 0001 and the gates not run (GCC, CodeQL, container script, Windows, clangd) recorded as exceptions |
 
 ## Review template
 
