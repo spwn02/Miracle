@@ -34,7 +34,7 @@ endif()
 if(NOT 26 IN_LIST CMAKE_CXX_COMPILER_IMPORT_STD)
   message(
     FATAL_ERROR
-      "Miracle requires toolchain support for C++26 'import std;'. "
+      "Miracle requires toolchain support for C++23 'import std;'. "
       "When Miracle is a subproject, enable CMake's import-std support before "
       "the top-level project() call.")
 endif()
