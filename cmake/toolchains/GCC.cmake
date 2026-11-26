@@ -7,7 +7,9 @@
 set(CMAKE_CXX_COMPILER
     "g++"
     CACHE FILEPATH "GCC C++ compiler")
-set(CMAKE_CXX_FLAGS_INIT "-std=c++26 -freflection")
+set(CMAKE_CXX_FLAGS_INIT "-std=c++26 -freflection -fcontracts")
+# <stacktrace> and <debugging> live in libstdc++exp, which GCC does not link implicitly.
+set(CMAKE_CXX_STANDARD_LIBRARIES_INIT "-lstdc++exp")
 
 # A superproject must enable CMake 4.4's import-std gate before its project()
 # call. Keeping it in the toolchain makes the same file usable for standalone

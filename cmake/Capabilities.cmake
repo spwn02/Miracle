@@ -73,7 +73,7 @@ function(miracle_check_capabilities)
   # These native capabilities may be supplied by a compatibility backend on this
   # branch. They remain probed and reported so the backend has an explicit
   # deletion condition when the toolchain catches up.
-  set(capability_compatibility_managed std_hive)
+  set(capability_compatibility_managed std_hive contracts)
 
   set(capability_import_std_description
       "C++26 import std and standard-library module consumption")
