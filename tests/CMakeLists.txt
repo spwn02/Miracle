@@ -368,6 +368,9 @@ miracle_add_compile_fail_test(
   FormatAppendToDiagnostic compile-fail/format-append-to-diagnostic.cpp "no matching member function for call to 'append'")
 miracle_add_compile_fail_test(
   FormatStaticAssertMessage compile-fail/format-static-assert-message.cpp "static assertion failed: error[FMT007]: bad Iter pipeline")
+miracle_add_compile_fail_test(
+  FormatMessageDanglingStorage compile-fail/format-message-dangling-storage.cpp
+  "pointer to subobject of 'message' is not a constant expression")
 
 miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cpp
