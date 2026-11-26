@@ -241,16 +241,17 @@ Named policy contract:
 ~~~cpp
 struct Identifiable {
     static consteval auto rules() {
-        using namespace Miracle::meta;
-        return rules::all(
+        return Miracle::meta::rules::all(
             IsClass{},
-            rules::exists(rules::fields(), rules::nameIs("id"))
+            Miracle::meta::rules::exists(
+                Miracle::meta::rules::fields(),
+                Miracle::meta::rules::nameIs("id"))
         );
     }
 };
 ~~~
 
-A named policy type exposes static consteval rules() -> a Rule object. Policies may compose named policies via an explicit adapter or by calling Policy::rules(); the exact nested-policy adapter is deferred unless required by milestone 6.2. Do not require inheritance or registration.
+The fully qualified Miracle::meta::rules:: spelling avoids any ambiguity with the enclosing static rules() member name. A named policy type exposes static consteval rules() -> a Rule object. Policies may compose named policies via an explicit adapter or by calling Policy::rules(); the exact nested-policy adapter is deferred unless required by milestone 6.2. Do not require inheritance or registration.
 
 ## 5. Three-valued algebra
 
