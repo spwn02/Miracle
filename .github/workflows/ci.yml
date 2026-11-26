@@ -59,6 +59,7 @@ jobs:
           python3 scripts/github/check-community-surface.py
           python3 scripts/ci/test-ci-helpers.py
           python3 scripts/ci/audit-codeql-coverage.py --self-test
+          python3 scripts/ci/check-test-trace.py --self-test
           python3 scripts/docs/verify-frozen-contracts.py --self-test
           python3 scripts/docs/verify-frozen-contracts.py
           python3 scripts/ci/check-docker.py
