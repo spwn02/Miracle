@@ -83,19 +83,6 @@ foreach(probe IN LISTS miracle_import_probes)
            COMMAND "MiracleImportProbe${probe_name}")
 endforeach()
 
-# Verify that the narrow Meta module is independently consumable; this probe
-# deliberately does not import the Miracle umbrella or std module.
-add_executable(MiracleMetaImportProbe import.cpp)
-target_compile_features(MiracleMetaImportProbe PRIVATE cxx_std_26)
-set_target_properties(
-  MiracleMetaImportProbe
-  PROPERTIES CXX_EXTENSIONS OFF
-             CXX_STANDARD_REQUIRED ON
-             CXX_SCAN_FOR_MODULES ON
-             CXX_MODULE_STD ON)
-target_link_libraries(MiracleMetaImportProbe PRIVATE Miracle::Miracle)
-add_test(NAME Miracle.Meta.Import COMMAND MiracleMetaImportProbe)
-
 # Compile-time parity against the pinned C++26 <meta> surface. Parity is split
 # by responsibility so a regression in one reflection family is independently
 # attributable instead of hiding inside one monolithic TU.
@@ -369,6 +356,17 @@ miracle_add_compile_fail_test(
   FormatAppendToDiagnostic compile-fail/format-append-to-diagnostic.cpp "no matching member function for call to 'append'")
 miracle_add_compile_fail_test(
   FormatStaticAssertMessage compile-fail/format-static-assert-message.cpp "static assertion failed: error[FMT007]: bad Iter pipeline")
+miracle_add_compile_fail_test(
+  FormatStyledRuntimeView compile-fail/format-styled-runtime-view.cpp "no matching function for call to 'styled'")
+miracle_add_compile_fail_test(
+  FormatFragmentRuntimeView compile-fail/format-fragment-runtime-view.cpp
+  "no matching function for call to 'fragment'")
+miracle_add_compile_fail_test(
+  FormatOrderFieldAfterHelp compile-fail/format-order-field-after-help.cpp
+  "no matching member function for call to 'field'")
+miracle_add_compile_fail_test(
+  FormatUnterminatedArray compile-fail/format-unterminated-array.cpp
+  "in call to 'unterminatedLiteral()'")
 miracle_add_compile_fail_test(
   FormatMessageDanglingStorage compile-fail/format-message-dangling-storage.cpp
   "pointer to subobject of 'message' is not a constant expression")

@@ -20,7 +20,8 @@ public:
   /// Builds `<prefix><zero-padded number>`; the number is never truncated.
   constexpr Code(const char (&prefix)[PrefixCharacters + 1], const u64 value) noexcept // NOLINT
       : numeric_(value) {
-    std::ranges::copy_n(static_cast<const char *>(prefix), static_cast<isize>(PrefixCharacters), text_.begin());
+    const std::string_view content = detail::literalView(prefix);
+    std::ranges::copy_n(content.data(), static_cast<isize>(PrefixCharacters), text_.begin());
 
     std::array<char, detail::maxU64Digits> digits{};
     const usize count = detail::encodeDecimal(value, digits);

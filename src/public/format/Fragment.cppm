@@ -4,6 +4,7 @@ import std;
 import Miracle.Numeric;
 
 import :Style;
+import :Text;
 
 // NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 export namespace Miracle::format {
@@ -15,7 +16,8 @@ public:
   /// Copies a string literal without its terminating NUL.
   constexpr Fragment(const char (&text)[Characters + 1], const Style style = {}) noexcept // NOLINT
       : style_(style) {
-    std::ranges::copy_n(static_cast<const char *>(text), static_cast<isize>(Characters), text_.begin());
+    const std::string_view content = detail::literalView(text);
+    std::ranges::copy_n(content.data(), static_cast<isize>(Characters), text_.begin());
   }
 
   /// Copies exactly `Characters` bytes, including embedded NULs.

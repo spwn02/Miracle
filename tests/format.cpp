@@ -5,6 +5,23 @@ import Switch;
 using namespace Miracle;
 
 // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+// API-FMT-003/004/016 and API-FMT-015: trivial value types, no generic formatting hook, render paths may throw.
+static_assert(std::is_trivially_copyable_v<format::Style> and std::is_trivially_copyable_v<format::TerminalColor> and
+              std::is_trivially_copyable_v<format::StyleSpan>);
+static_assert(format::TerminalColor::indexed(3) == format::TerminalColor::indexed(3));
+static_assert(format::TerminalColor::indexed(3) != format::TerminalColor::indexed(4));
+static_assert(format::TerminalColor::defaultColor() != format::TerminalColor::indexed(0));
+static_assert(format::TerminalColor::trueColor(Color::rgb(1, 2, 3)) != format::TerminalColor::trueColor(Color::rgb(1, 2, 4)));
+static_assert(format::Style{} == format::Style{} and format::Style{.bold = true} != format::Style{});
+// INV-REC-CAP-003: only NUL-terminated arrays are string literals; interior NULs are content, and exact byte
+// arrays keep every byte through the `std::array` overload.
+static_assert(format::Message{"a\0b"}.size() == 3 and format::Message{"a\0b"}.view() == std::string_view{"a\0b", 3});
+static_assert(format::fragment("a\0b").size() == 3);
+static_assert(format::fragment(std::array<char, 3>{'a', 'b', 'c'}).view() == "abc");
+static_assert(not std::formattable<decltype(format::Message{"abc"}), char>);
+static_assert(not std::formattable<format::Fragment<3>, char>);
+static_assert(not noexcept(format::render(format::Message{"a"})));
+
 namespace {
 
 constexpr format::Style accent{.foreground = format::TerminalColor::indexed(14), .bold = true, .italic = true};

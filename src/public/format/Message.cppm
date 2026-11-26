@@ -86,7 +86,7 @@ struct Message final {
   constexpr Message(const char (&literal)[N]) noexcept // NOLINT
     requires(not Diagnostic and N - 1 <= Capacity)
   {
-    emitInto(*this, Event{.kind = EventKind::Text, .text = std::string_view{literal, N - 1}}, RenderState{});
+    emitInto(*this, Event{.kind = EventKind::Text, .text = detail::literalView(literal)}, RenderState{});
   }
 
   /// Diagnostic heading from a severity, a code and a literal summary (rendered bold).
@@ -96,7 +96,7 @@ struct Message final {
   {
     emitInto(*this,
         Event{.kind = EventKind::Heading,
-            .text = std::string_view{summary, N - 1},
+            .text = detail::literalView(summary),
             .style = Style{.bold = true},
             .severity = severity,
             .code = code.codeView()},
@@ -153,7 +153,7 @@ struct Message final {
     requires(not Diagnostic)
   {
     using Result = Message<detail::checkedAdd(Capacity, N - 1), Runs, false, Current>;
-    return extendWith<Result>(Event{.kind = EventKind::Text, .text = std::string_view{literal, N - 1}});
+    return extendWith<Result>(Event{.kind = EventKind::Text, .text = detail::literalView(literal)});
   }
 
   /// Appends a styled fragment byte-for-byte; an empty or default-styled fragment adds no style range.
@@ -201,7 +201,7 @@ struct Message final {
         detail::checkedAdd(Runs, 2),
         true,
         Section::Context>;
-    return extendWith<Result>(Event{.kind = EventKind::Context, .text = std::string_view{literal, N - 1}});
+    return extendWith<Result>(Event{.kind = EventKind::Context, .text = detail::literalView(literal)});
   }
 
   /// Adds the single `--> context` line from a styled fragment, e.g. a reflected name copied into an owned fragment.
@@ -227,8 +227,8 @@ struct Message final {
         true,
         Section::Fields>;
     return extendWith<Result>(Event{.kind = EventKind::Field,
-        .text = std::string_view{value, V - 1},
-        .key = std::string_view{key, K - 1}});
+        .text = detail::literalView(value),
+        .key = detail::literalView(key)});
   }
 
   /// Adds a `key: value` line with a styled value. The key must be non-empty.
@@ -242,7 +242,7 @@ struct Message final {
         Section::Fields>;
     return extendWith<Result>(Event{.kind = EventKind::Field,
         .text = value.view(),
-        .key = std::string_view{key, K - 1},
+        .key = detail::literalView(key),
         .style = value.style()});
   }
 
@@ -255,7 +255,7 @@ struct Message final {
         detail::checkedAdd(Runs, 2),
         true,
         Section::Notes>;
-    return extendWith<Result>(Event{.kind = EventKind::Note, .text = std::string_view{literal, N - 1}});
+    return extendWith<Result>(Event{.kind = EventKind::Note, .text = detail::literalView(literal)});
   }
 
   /// Adds a `= note:` line from a styled fragment.
@@ -279,7 +279,7 @@ struct Message final {
         detail::checkedAdd(Runs, 2),
         true,
         Section::Help>;
-    return extendWith<Result>(Event{.kind = EventKind::Help, .text = std::string_view{literal, N - 1}});
+    return extendWith<Result>(Event{.kind = EventKind::Help, .text = detail::literalView(literal)});
   }
 
   /// Adds a `= help:` line from a styled fragment.
