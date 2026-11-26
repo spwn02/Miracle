@@ -124,8 +124,8 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
   3. RESOLVED (owner): Diagnostics now escapes C0/DEL bytes in messages, notes, help, labels, paths and snippet source via `format::writeEscaped` (`\n \r \t \0 \xNN`); snippet carets are computed in escaped columns. Test `untrustedTextIsEscaped`.
   4. RESOLVED (owner): DESIGN.md amended — Format and Color may import `Miracle.Numeric` (alias-only leaf) in addition to Color for Format.
   5. §6.1 layout: private units are flat (`src/private/Diagnostics.cpp`), spec shows `src/private/diagnostics/Diagnostic.cpp`; Iter partition names follow the spec's recommended SourceViews/Views/Core/SourceFactories variant.
-  6. REQ-STR-002 (StaticString messages via Format) is in the owner's uncommitted WIP; not touched.
-  7. TEST-COL property/boundary tests and TEST-REC-COLOR/EVENT rows now covered (see below); TEST-FMT-STATIC-003 is now a compile-fail fixture (`FormatMessageDanglingStorage`, expects "pointer to subobject of 'message' is not a constant expression"); TEST-STR-NEG-001..003 are compile-fail fixtures (`StaticString{UnmatchedOpen,UnmatchedClose,BadPlaceholder,PlaceholderCount,WideFormat,NontrivialChar}`) matching the HEAD messages, which the owner's REQ-STR-002 WIP must keep as substrings; REQ-STR-002 itself (Format-authored messages) remains the owner's WIP.
+  6. RESOLVED (owner: finish it): REQ-STR-002 committed; `Miracle.StaticString` → `Miracle.Format` edge is allowed by the module graph.
+  7. TEST-COL property/boundary tests and TEST-REC-COLOR/EVENT rows now covered (see below); TEST-FMT-STATIC-003 is now a compile-fail fixture (`FormatMessageDanglingStorage`, expects "pointer to subobject of 'message' is not a constant expression"); TEST-STR-NEG-001..003 are compile-fail fixtures (`StaticString{UnmatchedOpen,UnmatchedClose,BadPlaceholder,PlaceholderCount,WideFormat,NontrivialChar}`) matching the HEAD messages, which the owner's REQ-STR-002 WIP must keep as substrings; REQ-STR-002 implemented (owner's `StaticStringError` annotations + `staticStringError()`; stub/leftover removed): fixtures now expect `error[SSTR00x]: <summary>`; verified with 107/107 ctest and 104 test cases.
   8. RESOLVED (owner: yes): `Error::display` now renders through `format::AnsiWriter` (no local SGR bytes). Visible change: chain labels use indexed colour 3 (`ESC[38;5;3m`) instead of `ESC[33m`; spec §5.2 prescribes `38;5;i` for indexed colours, so a short-form special case was not added. `tests/error.cpp` snapshot updated.
 
 ### Color/Format test-matrix audit (2026-11-26)
@@ -133,7 +133,7 @@ Judgment calls to confirm: the `--> context` line follows the heading with no bl
 - TEST-REC-COLOR-002: all 4,096 `#RGB` combinations, constexpr.
 - TEST-REC-EVENT-003: sink failure inside an SGR prefix and while writing the final reset → `SinkFailed`, `state.failed`, partial bytes exact.
 - Verified in the isolated tree: `MiracleTests` 104 cases PASS; ctest 100/100.
-- Remaining: REQ-STR-002 implementation (StaticString WIP is the owner's), PERF rows, §10.5–10.6.
+- Remaining: none in the test matrix (StaticString WIP is the owner's), PERF rows, §10.5–10.6.
 
 ### §10.6 API verification matrix — current status (2026-11-26)
 `IMPLEMENTATION.md` keeps the spec's original "NOT RUN" column (it describes the pre-implementation document). Status against the pinned reference compiler (clang 22.1.8, cxx26-2026.10.27), isolated tree:

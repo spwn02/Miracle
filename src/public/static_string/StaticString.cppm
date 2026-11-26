@@ -2,11 +2,41 @@ export module Miracle.StaticString;
 
 import std;
 import Miracle.Numeric;
+import Miracle.Format;
 
 // NOLINTBEGIN(readability-identifier-naming, cppcoreguidelines-avoid-c-arrays, modernize-avoid-c-arrays)
 namespace Miracle {
 
 struct StaticStringAccess;
+
+enum class StaticStringError : u8 {
+  InvalidCharacterType[[= format::message(Severity::Error,
+      format::code("SSTR", 1),
+      "BasicStaticString requires a trivial standard-layout character type")]],
+  FormatRequiresChar[[= format::message(Severity::Error,
+      format::code("SSTR", 2),
+      "staticFormat currently requires a char format string")]],
+  FormatUnmatchedBraces[[= format::message(Severity::Error,
+      format::code("SSTR", 3),
+      "staticFormat contains an unmatched or unsupported brace sequence")]],
+  FormatInvalidPlaceholderCount[[= format::message(Severity::Error,
+      format::code("SSTR", 4),
+      "staticFormat placeholder count does not match argument count")]],
+};
+
+consteval auto staticStringError(StaticStringError error) -> std::string_view {
+  template for (constexpr std::meta::info enumerator :
+      std::define_static_array(std::meta::enumerators_of(^^StaticStringError))) {
+    if ([:enumerator:] == error) {
+      constexpr std::meta::info annotation = std::meta::annotations_of(enumerator).front();
+      using Annotation = std::remove_cvref_t<typename[:std::meta::type_of(annotation):]>;
+      constexpr Annotation diagnostics = std::meta::extract<Annotation>(std::meta::constant_of(annotation));
+      constexpr const Annotation *stored = std::define_static_object(diagnostics);
+      return stored->view();
+    }
+  }
+  std::unreachable();
+}
 
 }; // namespace Miracle
 
@@ -24,7 +54,7 @@ template <class Char, usize Capacity>
 struct BasicStaticString final {
   static_assert(std::is_trivially_copyable_v<Char> and std::is_trivially_default_constructible_v<Char> and
                     std::is_standard_layout_v<Char>,
-      "BasicStaticString requires a trivial standard-layout character type");
+      staticStringError(StaticStringError::InvalidCharacterType));
 
   /// Character/code-unit type stored by this string.
   using Value = Char;
@@ -33,10 +63,10 @@ struct BasicStaticString final {
   using Size = usize;
 
   /// Sentinel retnred by failed search operations.
-  static constexpr Size npos = std::numeric_limits<Size>::max(); // NOLINT(readability-identifier-naming)
+  static constexpr Size npos = std::numeric_limits<Size>::max();
 
   /// Compile-time storage capacity excluding the terminating zero.
-  static constexpr Size capacityValue = Capacity; // NOLINT(readability-identifier-naming)
+  static constexpr Size capacityValue = Capacity;
 
   /// Structural storage. `storage[length]` is always the terminating zero when the value is produced through
   /// the public API.
@@ -893,12 +923,12 @@ template <BasicStaticString Format, class... Args>
   requires(StaticStringFormatting::Argument<Args> && ...)
 [[nodiscard]] consteval auto staticFormat(Args &&...args) {
   static_assert(std::same_as<typename decltype(Format)::Value, char>,
-      "staticFormat currently requires a char format string");
+      staticStringError(StaticStringError::FormatRequiresChar));
   constexpr usize placeholders = StaticStringFormatting::placeholderCount<Format>();
   static_assert(placeholders != BasicStaticString<char, 0>::npos,
-      "staticFormat contains an unmatched or unsupported brace sequence");
+      staticStringError(StaticStringError::FormatUnmatchedBraces));
   static_assert(
-      placeholders == sizeof...(Args), "staticFormat placeholder count does not match argument count");
+      placeholders == sizeof...(Args), staticStringError(StaticStringError::FormatInvalidPlaceholderCount));
 
   constexpr usize resultCapacity =
       decltype(Format)::capacityValue + (StaticStringFormatting::argumentCapacity<Args>() + ... + 0);
