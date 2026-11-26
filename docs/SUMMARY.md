@@ -29,4 +29,5 @@
 - [Phase M — Technical Implementation Specification v2.2](phases/M/IMPLEMENTATION.md)
 - [Phase M — Progress and verified state](phases/M/PROGRESS.md)
 - [Phase M — Acceptance and verification gates](phases/M/ACCEPTANCE.md)
+- [Phase M — API baseline (M.1 evidence)](phases/M/evidence/M1-API-BASELINE.md)
 - [ADR-0001 — Unified Color/Format presentation](adr/0001-phase-m-unified-format-color.md)
