@@ -428,7 +428,7 @@ public:
     requires((FeatureValue<Requested> or FeatureGroupValue<Requested>) and ...)
   [[nodiscard]] static consteval auto resolve() -> Set {
     constexpr auto report = analyze<Requested...>(BuildFeatures, detectedCapabilities());
-    static_assert(report.succeeded(), detail::diagnostic(static_cast<u64>(report.error), detail::textFragment<report.message>()));
+    static_assert(report.succeeded(), diagnostic(static_cast<u64>(report.error), textFragment<report.message>()));
     return report.features;
   }
 
@@ -437,7 +437,7 @@ public:
     requires((FeatureValue<Requested> or FeatureGroupValue<Requested>) and ...)
   [[nodiscard]] static consteval auto resolveWithCapabilities() -> Set {
     constexpr auto report = analyze<Requested...>(BuildFeatures, Capabilities);
-    static_assert(report.succeeded(), detail::diagnostic(static_cast<u64>(report.error), detail::textFragment<report.message>()));
+    static_assert(report.succeeded(), diagnostic(static_cast<u64>(report.error), textFragment<report.message>()));
     return report.features;
   }
 
@@ -445,7 +445,7 @@ public:
   template <auto BuildFeatures>
   [[nodiscard]] static consteval auto resolveDefaults() -> Set {
     constexpr auto report = analyzeDefaults(BuildFeatures, detectedCapabilities());
-    static_assert(report.succeeded(), detail::diagnostic(static_cast<u64>(report.error), detail::textFragment<report.message>()));
+    static_assert(report.succeeded(), diagnostic(static_cast<u64>(report.error), textFragment<report.message>()));
     return report.features;
   }
 
@@ -453,7 +453,7 @@ public:
   template <auto BuildFeatures, auto Capabilities>
   [[nodiscard]] static consteval auto resolveDefaultsWithCapabilities() -> Set {
     constexpr auto report = analyzeDefaults(BuildFeatures, Capabilities);
-    static_assert(report.succeeded(), detail::diagnostic(static_cast<u64>(report.error), detail::textFragment<report.message>()));
+    static_assert(report.succeeded(), diagnostic(static_cast<u64>(report.error), textFragment<report.message>()));
     return report.features;
   }
 };

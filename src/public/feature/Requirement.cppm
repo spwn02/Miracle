@@ -86,8 +86,8 @@ template <auto Required, auto Set>
 consteval auto requireEnabled() -> void {
   constexpr bool enabled = Set.template contains<Required>();
   static_assert(enabled,
-      detail::diagnostic(7, detail::textFragment<staticFormat<"feature `{}` is not enabled">(Required.name)>())
-          .help(detail::textFragment<staticFormat<"enable `{}` in the active Miracle FeatureSet">(Required.name)>()));
+      diagnostic(7, textFragment<staticFormat<"feature `{}` is not enabled">(Required.name)>())
+          .help(textFragment<staticFormat<"enable `{}` in the active Miracle FeatureSet">(Required.name)>()));
 }
 
 } // namespace Miracle::feature

@@ -365,9 +365,6 @@ miracle_add_compile_fail_test(
   FormatOrderFieldAfterHelp compile-fail/format-order-field-after-help.cpp
   "no matching member function for call to 'field'")
 miracle_add_compile_fail_test(
-  FormatUnterminatedArray compile-fail/format-unterminated-array.cpp
-  "in call to 'unterminatedLiteral()'")
-miracle_add_compile_fail_test(
   FormatCapacityOverflow compile-fail/format-capacity-overflow.cpp
   "format::Message capacity must leave room for the terminating NUL without wrapping")
 miracle_add_compile_fail_test(

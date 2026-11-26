@@ -6,7 +6,7 @@ import Miracle.Format;
 import Miracle.Numeric;
 import Miracle.StaticString;
 
-namespace Miracle::feature::detail {
+namespace Miracle::feature {
 
 /// Owns the exact bytes of a constant `StaticString` as a Format fragment, so a computed report can become part
 /// of a Format-authored `static_assert` message without a dangling view or a guessed capacity.
@@ -31,7 +31,7 @@ template <usize N>
   return format::Message{Severity::Error, format::code("FEA", number), summary}.context("Miracle::feature");
 }
 
-} // namespace Miracle::feature::detail
+} // namespace Miracle::feature
 
 export namespace Miracle::feature {
 

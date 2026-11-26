@@ -8,7 +8,7 @@ import :Style;
 import :Emit;
 import :Message;
 
-namespace Miracle::format::detail {
+namespace Miracle::format {
 
 /// Adapts an output iterator to the `TextSink` protocol. Iterator writes cannot report failure.
 template <class OutputIterator>
@@ -30,7 +30,7 @@ private:
   OutputIterator out_;
 };
 
-} // namespace Miracle::format::detail
+} // namespace Miracle::format
 
 export namespace Miracle::format {
 
@@ -44,9 +44,9 @@ template <class MessageType, class OutputIterator>
   } and std::output_iterator<OutputIterator, char>
 [[nodiscard]] auto renderTo(const MessageType &message, OutputIterator out, const RenderPolicy policy = {})
     -> OutputIterator {
-  detail::IteratorSink<OutputIterator> sink{std::move(out)};
+  IteratorSink<OutputIterator> sink{std::move(out)};
   RenderState state{.policy = policy};
-  detail::AnsiWriter<detail::IteratorSink<OutputIterator>> writer{sink, state};
+  AnsiWriter<IteratorSink<OutputIterator>> writer{sink, state};
 
   const std::string_view text = message.view();
   usize position{};

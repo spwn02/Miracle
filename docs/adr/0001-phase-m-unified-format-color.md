@@ -49,6 +49,7 @@ Owner decisions (see `docs/phases/M/PROGRESS.md`, findings 1-8):
 
 Implementation choices awaiting owner confirmation:
 
-- INV-REC-CAP-003: literal-style overloads reject a `char[N]` that is not NUL-terminated (spec option (b)); exact byte arrays use `fragment(std::array<char, N>)`.
+- INV-REC-CAP-003 (owner decision, 2026-11-26): literal-style overloads accept any `char[N]` and truncate at the first NUL; the last array byte is always the terminator position. This is none of the spec's options (a)-(c) and has no negative test; the unterminated-array compile-fail fixture was removed. Exact byte arrays use `fragment(std::array<char, N>)`.
 - Feature (`FEA`) and Iter (`ITR`) hard errors were moved to Format-authored messages with their original wording as the summary; Meta Query hard errors and `DiagnosticCode` concept failures keep their original text.
-- Exported helpers beyond the spec inventory: `AnsiWriter`, `writeCode`, `writeEscaped`, `escapedSize`, `severityName`, `severityStyle`.
+- Exported helpers beyond the spec inventory (owner chose to hide; kept exported only where `Miracle.Diagnostics` consumes them): `AnsiWriter`, `writeCode`, `writeEscaped`, `escapedSize`, `severityName`, `severityStyle`. Removed: `Message::empty/capacity`, `Code::size/data/view/capacity`.
+- Implementation helpers are unexported declarations in the module namespace; no `detail` namespaces are used.

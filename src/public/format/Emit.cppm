@@ -94,7 +94,7 @@ concept TextSink = requires(Sink &sink, std::string_view text) {
 
 } // namespace Miracle::format
 
-namespace Miracle::format::detail {
+namespace Miracle::format {
 
 /// Receives styled spans; shared by the ANSI byte encoder and the compile-time Message storage.
 template <class Writer>
@@ -103,8 +103,8 @@ concept SpanWriter = requires(Writer &writer, std::string_view text, const Style
 };
 
 /// Writes text with C0/DEL bytes replaced by escape spellings; every piece carries `style`.
-template <SpanWriter Writer>
-constexpr auto putEscaped(Writer &writer, const std::string_view text, const Style &style) -> bool {
+export template <SpanWriter Writer>
+constexpr auto writeEscaped(Writer &writer, const std::string_view text, const Style &style) -> bool {
   usize start{};
   for (usize index{}; index < text.size(); ++index) {
     const auto byte = static_cast<unsigned char>(text[index]);
@@ -132,6 +132,21 @@ constexpr auto putPaddedDecimal(Writer &writer, const u64 value, const usize min
     if (not writer.put("0", style))
       return false;
   return writer.put(std::string_view{digits.data(), count}, style);
+}
+
+/// Number of bytes `writeEscaped` produces for `text`; equals `text.size()` when nothing needs escaping.
+export [[nodiscard]] constexpr auto escapedSize(const std::string_view text) noexcept -> usize {
+  usize size{};
+  for (const char character : text) {
+    const auto byte = static_cast<unsigned char>(character);
+    if (needsEscape(byte)) {
+      std::array<char, maxEscapeBytes> spelling{};
+      size += encodeEscape(byte, spelling);
+    } else {
+      ++size;
+    }
+  }
+  return size;
 }
 
 [[nodiscard]] constexpr auto sectionOf(const EventKind kind) noexcept -> Section {
@@ -174,11 +189,11 @@ constexpr auto putPaddedDecimal(Writer &writer, const u64 value, const usize min
 /// The one canonical layout algorithm. Header: `severity[code]: summary\n`; context hugs the header; every
 /// later section is preceded by one blank line; each item ends in exactly one LF; text is escaped.
 /// Writes `[prefix` + zero-padded number + `]`; nothing for an empty prefix. The one code encoder.
-template <SpanWriter Writer>
-constexpr auto putCode(Writer &writer, const CodeView &code, const Style &style) -> bool {
+export template <SpanWriter Writer>
+constexpr auto writeCode(Writer &writer, const CodeView &code, const Style &style) -> bool {
   if (code.prefix.empty())
     return true;
-  return writer.put("[", style) and putEscaped(writer, code.prefix, style) and
+  return writer.put("[", style) and writeEscaped(writer, code.prefix, style) and
          putPaddedDecimal(writer, code.numeric, code.minimumDigits, style) and writer.put("]", style);
 }
 
@@ -200,8 +215,8 @@ constexpr auto layout(Writer &writer, RenderState &state, const Event &event) ->
   if (event.kind == EventKind::Heading) {
     const Style severity = severityStyle(event.severity);
     bool ok = writer.put(severityName(event.severity), severity);
-    ok = ok and putCode(writer, event.code, severity);
-    ok = ok and writer.put(": ", plain) and putEscaped(writer, event.text, event.style) and
+    ok = ok and writeCode(writer, event.code, severity);
+    ok = ok and writer.put(": ", plain) and writeEscaped(writer, event.text, event.style) and
          writer.put("\n", plain);
     if (not ok)
       return fail();
@@ -218,19 +233,19 @@ constexpr auto layout(Writer &writer, RenderState &state, const Event &event) ->
   switch (event.kind) {
     case EventKind::Context:
       ok = ok and writer.put("  ", plain) and writer.put("-->", label) and writer.put(" ", plain) and
-           putEscaped(writer, event.text, event.style);
+           writeEscaped(writer, event.text, event.style);
       break;
     case EventKind::Field:
-      ok = ok and writer.put("  ", plain) and putEscaped(writer, event.key, plain) and
-           writer.put(": ", plain) and putEscaped(writer, event.text, event.style);
+      ok = ok and writer.put("  ", plain) and writeEscaped(writer, event.key, plain) and
+           writer.put(": ", plain) and writeEscaped(writer, event.text, event.style);
       break;
     case EventKind::Note:
       ok = ok and writer.put("   ", plain) and writer.put("= note:", label) and writer.put(" ", plain) and
-           putEscaped(writer, event.text, event.style);
+           writeEscaped(writer, event.text, event.style);
       break;
     case EventKind::Help:
       ok = ok and writer.put("   ", plain) and writer.put("= help:", label) and writer.put(" ", plain) and
-           putEscaped(writer, event.text, event.style);
+           writeEscaped(writer, event.text, event.style);
       break;
     default: std::unreachable();
   }
@@ -243,7 +258,7 @@ constexpr auto layout(Writer &writer, RenderState &state, const Event &event) ->
 }
 
 /// Encodes style transitions as SGR sequences around the sink's plain bytes. All state lives in `RenderState`.
-template <TextSink Sink>
+export template <TextSink Sink>
 class AnsiWriter final {
 public:
   constexpr AnsiWriter(Sink &sink, RenderState &state) noexcept
@@ -341,50 +356,16 @@ private:
   bool ansi_;
 };
 
-} // namespace Miracle::format::detail
+} // namespace Miracle::format
 
 export namespace Miracle::format {
-
-/// Writes a diagnostic code through any writer with `put(text, style)`; shared by compile-time and runtime paths.
-template <class Writer>
-constexpr auto writeCode(Writer &writer, const CodeView &code, const Style &style) -> bool {
-  return detail::putCode(writer, code, style);
-}
-
-/// Writes untrusted `text` through any writer with `put(text, style)`, replacing C0/DEL bytes by their escape
-/// spellings (`\n`, `\r`, `\t`, `\0`, `\xNN`). Used for runtime diagnostic text so ESC or line breaks cannot forge
-/// terminal output.
-template <class Writer>
-constexpr auto writeEscaped(Writer &writer, const std::string_view text, const Style &style) -> bool {
-  return detail::putEscaped(writer, text, style);
-}
-
-/// Number of bytes `writeEscaped` produces for `text`; equals `text.size()` when nothing needs escaping.
-[[nodiscard]] constexpr auto escapedSize(const std::string_view text) noexcept -> usize {
-  usize size{};
-  for (const char character : text) {
-    const auto byte = static_cast<unsigned char>(character);
-    if (detail::needsEscape(byte)) {
-      std::array<char, detail::maxEscapeBytes> spelling{};
-      size += detail::encodeEscape(byte, spelling);
-    } else {
-      ++size;
-    }
-  }
-  return size;
-}
-
-/// Style-aware byte writer shared by every renderer: encodes style transitions as SGR sequences, honours
-/// `RenderState::policy` and keeps all state in the caller's `RenderState`.
-template <TextSink Sink>
-using AnsiWriter = detail::AnsiWriter<Sink>;
 
 /// Writes one event into `sink` using the shared grammar. Misordered events write nothing and leave `state`
 /// untouched. A sink failure is irreversible. Not `noexcept`: sinks may allocate or throw.
 template <TextSink Sink>
 [[nodiscard]] constexpr auto emit(Sink &sink, RenderState &state, const Event &event) -> WriteResult {
-  detail::AnsiWriter<Sink> writer{sink, state};
-  return detail::layout(writer, state, event);
+  AnsiWriter<Sink> writer{sink, state};
+  return layout(writer, state, event);
 }
 
 /// Resets outstanding ANSI styling. Adds no LF: every grammar line already ends in one.
@@ -392,7 +373,7 @@ template <TextSink Sink>
 [[nodiscard]] constexpr auto finish(Sink &sink, RenderState &state) -> WriteResult {
   if (state.failed)
     return WriteResult::SinkFailed;
-  detail::AnsiWriter<Sink> writer{sink, state};
+  AnsiWriter<Sink> writer{sink, state};
   if (not writer.finish()) {
     state.failed = true;
     return WriteResult::SinkFailed;

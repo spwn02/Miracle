@@ -13,10 +13,13 @@ static_assert(format::TerminalColor::indexed(3) != format::TerminalColor::indexe
 static_assert(format::TerminalColor::defaultColor() != format::TerminalColor::indexed(0));
 static_assert(format::TerminalColor::trueColor(Color::rgb(1, 2, 3)) != format::TerminalColor::trueColor(Color::rgb(1, 2, 4)));
 static_assert(format::Style{} == format::Style{} and format::Style{.bold = true} != format::Style{});
-// INV-REC-CAP-003: only NUL-terminated arrays are string literals; interior NULs are content, and exact byte
-// arrays keep every byte through the `std::array` overload.
-static_assert(format::Message{"a\0b"}.size() == 3 and format::Message{"a\0b"}.view() == std::string_view{"a\0b", 3});
-static_assert(format::fragment("a\0b").size() == 3);
+// INV-REC-CAP-003 (owner decision): character arrays are C text. The first NUL ends the content, the last array
+// byte is always the terminator position, and exact byte arrays keep every byte through the `std::array` overload.
+static_assert(format::Message{"a\0b"}.size() == 1 and format::Message{"a\0b"}.view() == "a");
+static_assert(format::fragment("a\0b").size() == 1 and format::fragment("a\0b").view() == "a");
+constexpr char unterminatedBytes[3] = {'a', 'b', 'c'};
+static_assert(format::Message{unterminatedBytes}.view() == "ab" and format::fragment(unterminatedBytes).view() == "ab");
+static_assert(format::Message{"x"}.append("p\0q").view() == "xp");
 static_assert(format::fragment(std::array<char, 3>{'a', 'b', 'c'}).view() == "abc");
 // TEST-FMT-NUM-004: bool and character types never reach the numeric overload; 128-bit integers cannot be
 // truncated into the 64-bit encoder.
@@ -88,12 +91,12 @@ static_assert(format::fragment(std::array<char, 0>{}).size() == 0);
 static_assert(not std::same_as<decltype(format::fragment("ab")), decltype(format::fragment("abc"))>);
 
 // --- Code: prefix + zero-padded number, width is a minimum, never truncates. ---
-static_assert(format::code<3>("ITR", 4).view() == "ITR004");
-static_assert(format::code<5>("CTR", 7).view() == "CTR00007");
-static_assert(format::code<2>("E", 12345).view() == "E12345");
-static_assert(format::code<0>("E", 0).view() == "E0");
-static_assert(format::code("ITR", 4).view() == "ITR004");
-static_assert(format::code<3>("X", std::numeric_limits<u64>::max()).view() == "X18446744073709551615");
+static_assert(format::Message{Severity::Error, format::code<3>("ITR", 4), "x"}.view() == "error[ITR004]: x\n");
+static_assert(format::Message{Severity::Error, format::code<5>("CTR", 7), "x"}.view() == "error[CTR00007]: x\n");
+static_assert(format::Message{Severity::Error, format::code<2>("E", 12345), "x"}.view() == "error[E12345]: x\n");
+static_assert(format::Message{Severity::Error, format::code<0>("E", 0), "x"}.view() == "error[E0]: x\n");
+static_assert(format::Message{Severity::Error, format::code("ITR", 4), "x"}.view() == "error[ITR004]: x\n");
+static_assert(format::Message{Severity::Error, format::code<3>("X", std::numeric_limits<u64>::max()), "x"}.view() == "error[X18446744073709551615]: x\n");
 static_assert(format::code<3>("ITR", 4).codeView().prefix == "ITR" and format::code<3>("ITR", 4).codeView().numeric == 4);
 
 // --- Plain messages: NUL-terminated at the active size, immutable growth, no phantom runs. ---

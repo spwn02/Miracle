@@ -11,7 +11,7 @@ A milestone commit is an implementation checkpoint, not automatic reviewer accep
 | A-M-002 | Tracked source suffix inventory including generated templates/tests/examples/benchmarks/probes/editor scripts | NOT RUN for final tree |
 | A-COL-001 | Color RGB checked ranges, HEX parse and conversion; HSV sectors/round trips/boundaries | EVIDENCE — `tests/color.cpp` static + runtime, ctest green (author review pending) |
 | A-FMT-001 | Message/Fragment CTAD, sized growth, style runs, `static_assert` constant-expression operand | EVIDENCE — CTAD, capacity, overflow guard, style runs, `static_assert(false, msg)` and dangling-storage fixtures |
-| A-FMT-002 | Source-invariant constructors, monotonic context/field/note/help order with negative builds | EVIDENCE — constructors/order constraints and compile-fail negatives (order, runtime views, unterminated arrays, capacity overflow) |
+| A-FMT-002 | Source-invariant constructors, monotonic context/field/note/help order with negative builds | EVIDENCE — constructors/order constraints and compile-fail negatives (order, runtime views, capacity overflow) |
 | A-FMT-003 | Plain and ANSI fragments, indexed + RGB colors, no ESC in `data()`/`view()` | EVIDENCE — plain/indexed/RGB SGR and no-ESC `view()` tests |
 | A-FMT-004 | Event/TextSink parity with owned Message, invalid order, partial stream failure and reset | EVIDENCE — Event/TextSink parity, invalid order, sink failure, reset tests |
 | A-FMT-005 | Control escaping, exactly one trailing LF, deterministic section layout | EVIDENCE — escaping, single trailing LF, section layout tests (blank-line ambiguity §5.3 vs ALG-FMT-002 awaiting author decision) |

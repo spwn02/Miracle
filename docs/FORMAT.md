@@ -43,7 +43,7 @@ static_assert(false, message);  // the compiler prints the authored body
 
 Rules the types enforce:
 
-- A message never owns more than it needs: capacity and style-run bounds are deduced from literal extents (`char[N]` literals must be NUL-terminated; exact bytes use `fragment(std::array<char, N>)`), and type-level additions are overflow-checked.
+- A message never owns more than it needs: capacity and style-run bounds are deduced from literal extents (a `char[N]` is read as C text: content ends at the first NUL and never exceeds `N - 1` bytes; exact bytes use `fragment(std::array<char, N>)`), and type-level additions are overflow-checked.
 - `data()` and `view()` are always plain text. ANSI appears only when rendering with `Presentation::Terminal` and a `ColorMode` other than `Never`; every styled run ends in a reset.
 - Diagnostic mode follows heading, optional single context, fields, notes, help. Moving backwards is a constraint failure, not a runtime error. The context line hugs the heading; later sections are preceded by one blank line; the message ends with exactly one LF.
 - Control bytes in headings, context, field keys and values, notes and help are escaped (`\n`, `\r`, `\t`, `\0`, `\xNN`); `Text` events and `append` keep their bytes verbatim.

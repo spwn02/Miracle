@@ -4,21 +4,17 @@ import std;
 import Miracle.Numeric;
 
 /// Byte-level encoders shared by the compile-time Message and the runtime emitter. Nothing here allocates.
-namespace Miracle::format::detail {
+namespace Miracle::format {
 
-/// Reaching this means a character array that is not NUL-terminated was passed where a string literal is
-/// required (INV-REC-CAP-003). During constant evaluation it is a compile error; at run time it traps.
-[[noreturn]] constexpr auto unterminatedLiteral() noexcept -> void {
-  __builtin_trap();
-}
-
-/// Views the `N - 1` content bytes of a string literal. A final byte other than NUL means the array is a plain
-/// byte buffer, whose last byte would be silently dropped, so it is rejected instead. Interior NULs are kept.
+/// Views a string literal or character array as C text: the bytes before the first NUL. The last array byte is
+/// the terminator position and is never content, so the view never exceeds `N - 1` bytes and an array without
+/// any NUL is read without passing its end.
 template <usize N>
 [[nodiscard]] constexpr auto literalView(const char (&literal)[N]) noexcept -> std::string_view {
-  if (literal[N - 1] != '\0') [[unlikely]]
-    unterminatedLiteral();
-  return std::string_view{static_cast<const char *>(literal), N - 1};
+  usize length{};
+  while (length + 1 < N and literal[length] != '\0')
+    ++length;
+  return std::string_view{static_cast<const char *>(literal), length};
 }
 
 /// Maximum number of decimal digits of a `u64`.
@@ -64,4 +60,4 @@ constexpr auto encodeEscape(const unsigned char byte, std::array<char, maxEscape
   return bytes * maxEscapeBytes;
 }
 
-} // namespace Miracle::format::detail
+} // namespace Miracle::format
