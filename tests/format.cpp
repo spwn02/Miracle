@@ -187,6 +187,74 @@ consteval auto runsAreOrdered(std::span<const format::StyleSpan> runs, const usi
   return true;
 }
 static_assert(runsAreOrdered(styledMessage.styles(), styledMessage.size()));
+
+// TEST-REC-MSG-002: pseudo-random sequences of plain, styled and empty fragments yield ordered, non-overlapping,
+// non-empty runs that match an independent model (adjacent equal styles coalesce).
+constexpr format::Style otherStyle{.foreground = format::TerminalColor::indexed(2), .underline = true};
+
+consteval auto mix(usize seed, const usize index) -> usize {
+  u64 value = (static_cast<u64>(seed) << 32U) + index + 0x9E3779B97F4A7C15ULL;
+  value = (value ^ (value >> 30U)) * 0xBF58476D1CE4E5B9ULL;
+  value = (value ^ (value >> 27U)) * 0x94D049BB133111EBULL;
+  return static_cast<usize>((value ^ (value >> 31U)) % 6U);
+}
+
+template <usize Seed, usize Index, usize Count>
+consteval auto grow(const auto message) {
+  if constexpr (Index == Count) {
+    return message;
+  } else {
+    constexpr usize kind = mix(Seed, Index);
+    if constexpr (kind == 0)
+      return grow<Seed, Index + 1, Count>(message.append(format::fragment("p")));
+    else if constexpr (kind == 1)
+      return grow<Seed, Index + 1, Count>(message.append(format::styled("ab", accent)));
+    else if constexpr (kind == 2)
+      return grow<Seed, Index + 1, Count>(message.append(format::styled("c", otherStyle)));
+    else if constexpr (kind == 3)
+      return grow<Seed, Index + 1, Count>(message.append(format::styled("", accent)));
+    else if constexpr (kind == 4)
+      return grow<Seed, Index + 1, Count>(message.append(format::fragment("")));
+    else
+      return grow<Seed, Index + 1, Count>(message.append(format::styled("de", accent)));
+  }
+}
+
+consteval auto randomRunsMatchModel(const auto message, const usize seed, const usize count) -> bool {
+  std::string text = "x";
+  std::vector<format::StyleSpan> model;
+  for (usize index{}; index < count; ++index) {
+    std::string_view piece;
+    format::Style style{};
+    switch (mix(seed, index)) {
+      case 0: piece = "p"; break;
+      case 1: piece = "ab"; style = accent; break;
+      case 2: piece = "c"; style = otherStyle; break;
+      case 5: piece = "de"; style = accent; break;
+      default: break;
+    }
+    if (piece.empty())
+      continue;
+    const usize begin = text.size();
+    text += piece;
+    if (style == format::Style{})
+      continue;
+    if (not model.empty() and model.back().end == begin and model.back().style == style)
+      model.back().end = text.size();
+    else
+      model.push_back({.begin = begin, .end = text.size(), .style = style});
+  }
+  const auto runs = message.styles();
+  return message.view() == text and runsAreOrdered(runs, message.size()) and
+         std::ranges::equal(runs, model);
+}
+
+template <usize... Seeds>
+consteval auto allRandomSequences(std::index_sequence<Seeds...>) -> bool {
+  constexpr usize count = 24;
+  return (randomRunsMatchModel(grow<Seeds, 0, count>(format::Message{"x"}), Seeds, count) and ...);
+}
+static_assert(allRandomSequences(std::make_index_sequence<48>{}));
 static_assert(styledMessage.view().substr(styledMessage.styles()[0].begin,
                   styledMessage.styles()[0].end - styledMessage.styles()[0].begin) == "error[ITR004]");
 static_assert(styledMessage.styles()[0].style == format::severityStyle(Severity::Error));
