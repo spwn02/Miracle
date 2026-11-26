@@ -161,6 +161,14 @@ static_assert(cycleReport.message.contains("cycle-a --> cycle-b --> cycle-c --> 
 constexpr auto duplicateReport = duplicateCatalog.analyze<duplicateOne>(feature::buildSet<>);
 static_assert(duplicateReport.error == feature::ResolutionError::DuplicateFeature);
 
+// TEST-FEA-001: an empty catalog resolves to an empty, deterministic result.
+constexpr auto emptyCatalog = feature::catalog<>;
+constexpr auto emptyReport = emptyCatalog.analyze<>(feature::buildSet<>);
+static_assert(emptyReport.succeeded());
+static_assert(emptyReport.features.size() == 0);
+static_assert(emptyReport.features == emptyCatalog.analyze<>(feature::buildSet<>).features);
+static_assert(emptyReport.features.fingerprint() == emptyCatalog.analyze<>(feature::buildSet<>).features.fingerprint());
+
 static_assert(feature::capabilityName(feature::Capability::ReflectionCore) == "reflection_core");
 constexpr auto noCapabilities = feature::CapabilitySet{};
 constexpr auto capabilityReport = features.analyze<reflection>(feature::buildSet<>, noCapabilities);

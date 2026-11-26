@@ -371,7 +371,7 @@ public:
           if (not owner.empty()) {
             append(selectionFailure.message, "feature group `");
             append(selectionFailure.message, owner);
-            append(selectionFailure.message, "` references missing feautre `");
+            append(selectionFailure.message, "` references missing feature `");
           } else {
             append(selectionFailure.message, "requested feature is not in catalog: `");
           }

@@ -29,6 +29,7 @@ add_executable(
   diagnostic.cpp
   error.cpp
   fs.cpp
+  memory-profiling.cpp
   range.cpp
   iter.cpp
   meta/semantics/meta.cpp
