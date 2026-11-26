@@ -6,7 +6,7 @@ import :Types;
 export namespace Miracle::meta {
 
 /// Exact callable wrapper for access testing undr an explicit reflection access context.
-inline constexpr MetaFunction isAccessible{std::meta::is_accessible};
+inline constexpr MetaFunction isAccessible{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::is_accessible(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Caller-sensitive wrapper for `std::meta::current_function`.
 ///
@@ -45,13 +45,12 @@ struct CurrentNamespace final {
 inline constexpr CurrentNamespace currentNamespace;
 
 /// Exact callable wrapper testing whether a class has an inaccessible non-static data member.
-inline constexpr MetaFunction hasInaccessibleNonstaticDataMembers{
-    std::meta::has_inaccessible_nonstatic_data_members};
+inline constexpr MetaFunction hasInaccessibleNonstaticDataMembers{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::has_inaccessible_nonstatic_data_members(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper testing whether a class has an inaccessible base.
-inline constexpr MetaFunction hasInaccessibleBases{std::meta::has_inaccessible_bases};
+inline constexpr MetaFunction hasInaccessibleBases{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::has_inaccessible_bases(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper testing whether any reflected class subobject is inaccessible.
-inline constexpr MetaFunction hasInaccessibleSubobjects{std::meta::has_inaccessible_subobjects};
+inline constexpr MetaFunction hasInaccessibleSubobjects{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::has_inaccessible_subobjects(std::forward<decltype(arguments)>(arguments)...); }};
 
 } // namespace Miracle::meta

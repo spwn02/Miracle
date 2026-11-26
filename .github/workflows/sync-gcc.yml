@@ -50,6 +50,12 @@ jobs:
             exit 1
           fi
 
+          # Re-apply the mechanical GCC rewrites to whatever master just brought in (idempotent).
+          python3 scripts/ci/apply-gcc-compat.py
+          if ! git diff --quiet; then
+            git commit --all --message "build(gcc): reapply GCC compatibility rewrites"
+          fi
+
           git diff --check origin/gcc..HEAD
 
       - name: Validate synchronization candidate on GCC

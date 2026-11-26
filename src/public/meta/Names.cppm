@@ -86,24 +86,22 @@ inline constexpr SourceLocation sourceLocation{};
 /// Exact callable wrapper for `std::meta::identifier_of`; unlike `name`, absence remains a standard semantic
 /// error.
 // C++29 adds token overloads of identifier_of; select the std::meta::info one explicitly.
-inline constexpr MetaFunction identifierOf{
-    static_cast<std::string_view (*)(std::meta::info)>(std::meta::identifier_of)};
+inline constexpr MetaFunction identifierOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::identifier_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::display_string_of`.
-inline constexpr MetaFunction displayStringOf{std::meta::display_string_of};
+inline constexpr MetaFunction displayStringOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::display_string_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact UTF-8 callable wrapper for `std::meta::u8identifier_of`.
-inline constexpr MetaFunction u8IdentifierOf{
-    static_cast<std::u8string_view (*)(std::meta::info)>(std::meta::u8identifier_of)};
+inline constexpr MetaFunction u8IdentifierOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::u8identifier_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact UTF-8 callable wrapper for `std::meta::u8display_string_of`.
-inline constexpr MetaFunction u8DisplayStringOf{std::meta::u8display_string_of};
+inline constexpr MetaFunction u8DisplayStringOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::u8display_string_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::source_location_of`.
-inline constexpr MetaFunction sourceLocationOf{std::meta::source_location_of};
+inline constexpr MetaFunction sourceLocationOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::source_location_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::parent_of`; unlike `parent`, Miracle performs no preflight
 /// diagnostic.
-inline constexpr MetaFunction parentOf{std::meta::parent_of};
+inline constexpr MetaFunction parentOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::parent_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 } // namespace Miracle::meta

@@ -38,56 +38,53 @@ struct RemoveCvref final {
 /// Stateless callable instance of `RemoveCvref`.
 inline constexpr RemoveCvref removeCvref{};
 
-/// Exact binary callable wrapper returning the reflected result of tuple application.
-inline constexpr MetaFunction applyResult{std::meta::apply_result};
-
 /// Exact callable wrapper for removing top-level const qualification from a reflected type.
-inline constexpr MetaFunction removeConst{std::meta::remove_const};
+inline constexpr MetaFunction removeConst{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::remove_const(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for removing top-level volatile qualification from a reflected type.
-inline constexpr MetaFunction removeVolatile{std::meta::remove_volatile};
+inline constexpr MetaFunction removeVolatile{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::remove_volatile(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for adding top-level const qualification to a reflected type.
-inline constexpr MetaFunction addConst{std::meta::add_const};
+inline constexpr MetaFunction addConst{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_const(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for adding top-level volatile qualification to a reflected type.
-inline constexpr MetaFunction addVolatile{std::meta::add_volatile};
+inline constexpr MetaFunction addVolatile{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_volatile(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for adding top-level const and volatile qualification to a reflected type.
-inline constexpr MetaFunction addCv{std::meta::add_cv};
+inline constexpr MetaFunction addCv{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_cv(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for adding an lvalue-reference layer to a reflected type.
-inline constexpr MetaFunction addLvalueReference{std::meta::add_lvalue_reference};
+inline constexpr MetaFunction addLvalueReference{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_lvalue_reference(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for adding an rvalue-reference layer to a reflected type.
-inline constexpr MetaFunction addRvalueReference{std::meta::add_rvalue_reference};
+inline constexpr MetaFunction addRvalueReference{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_rvalue_reference(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for the signed counterpart of a reflected integral/enum type.
-inline constexpr MetaFunction makeSigned{std::meta::make_signed};
+inline constexpr MetaFunction makeSigned{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::make_signed(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for the unsigned counterpart of a reflected integral/enum type.
-inline constexpr MetaFunction makeUnsigned{std::meta::make_unsigned};
+inline constexpr MetaFunction makeUnsigned{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::make_unsigned(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper removing one array extent from a reflected type.
-inline constexpr MetaFunction removeExtent{std::meta::remove_extent};
+inline constexpr MetaFunction removeExtent{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::remove_extent(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper removing every array extent from a reflected type.
-inline constexpr MetaFunction removeAllExtents{std::meta::remove_all_extents};
+inline constexpr MetaFunction removeAllExtents{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::remove_all_extents(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper removing one pointer layer from a reflected type.
-inline constexpr MetaFunction removePointer{std::meta::remove_pointer};
+inline constexpr MetaFunction removePointer{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::remove_pointer(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper adding a pointer layer to a reflected type.
-inline constexpr MetaFunction addPointer{std::meta::add_pointer};
+inline constexpr MetaFunction addPointer{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::add_pointer(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper applying the reflected equivalent of `std::decay_t`.
-inline constexpr MetaFunction decay{std::meta::decay};
+inline constexpr MetaFunction decay{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::decay(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::unwrap_reference`.
-inline constexpr MetaFunction unwrapReference{std::meta::unwrap_reference};
+inline constexpr MetaFunction unwrapReference{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::unwrap_reference(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::unwrap_ref_decay`.
-inline constexpr MetaFunction unwrapRefDecay{std::meta::unwrap_ref_decay};
+inline constexpr MetaFunction unwrapRefDecay{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::unwrap_ref_decay(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Callable wrapper for `std::meta::common_type`.
 struct CommonType final {

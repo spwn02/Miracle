@@ -36,6 +36,6 @@ struct DefineAggregate final {
 inline constexpr DefineAggregate defineAggregate{};
 
 /// Matches data-member specification reflections; exact wrapper for `std::meta::is_data_member_spec`.
-inline constexpr Predicate isDataMemberSpec{std::meta::is_data_member_spec};
+inline constexpr Predicate isDataMemberSpec{[](Info info) consteval -> bool { return std::meta::is_data_member_spec(info); }};
 
 } // namespace Miracle::meta

@@ -19,7 +19,7 @@ struct AnnotationsOf final {
 inline constexpr AnnotationsOf annotationsOf{};
 
 /// Exact callable wrapper for `std::meta::annotations_of_with_type`.
-inline constexpr MetaFunction annotationsOfWithType{std::meta::annotations_of_with_type};
+inline constexpr MetaFunction annotationsOfWithType{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::annotations_of_with_type(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Returns all annotations attached to a reflected entity in source order.
 ///
@@ -49,7 +49,7 @@ template <class A, class T>
 }
 
 /// Matches individual annotation reflections; exact wrapper for `std::meta::is_annotation`.
-inline constexpr Predicate isAnnotation{std::meta::is_annotation};
+inline constexpr Predicate isAnnotation{[](Info info) consteval -> bool { return std::meta::is_annotation(info); }};
 
 /// Matches entities carrying at least one annotation whose annotation object has type `A`.
 ///

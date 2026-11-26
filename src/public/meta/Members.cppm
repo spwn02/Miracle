@@ -7,31 +7,31 @@ import :Cache;
 export namespace Miracle::meta {
 
 /// Exact callable wrapper returning the standard vector representation of template arguments.
-inline constexpr MetaFunction templateArgumentsOf{std::meta::template_arguments_of};
+inline constexpr MetaFunction templateArgumentsOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::template_arguments_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact access-context-aware callable wrapper for `std::meta::members_of`
-inline constexpr MetaFunction membersOf{std::meta::members_of};
+inline constexpr MetaFunction membersOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::members_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact access-context-aware callable wrapper for `std::meta::bases_of`
-inline constexpr MetaFunction basesOf{std::meta::bases_of};
+inline constexpr MetaFunction basesOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::bases_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact access-context-aware callable wrapper for `std::meta::subobjects_of`
-inline constexpr MetaFunction subobjectsOf{std::meta::subobjects_of};
+inline constexpr MetaFunction subobjectsOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::subobjects_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact access-context-aware callable wrapper for `std::meta::static_data_members_of`
-inline constexpr MetaFunction staticDataMembersOf{std::meta::static_data_members_of};
+inline constexpr MetaFunction staticDataMembersOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::static_data_members_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact access-context-aware callable wrapper for `std::meta::nonstatic_data_members_of`
-inline constexpr MetaFunction nonstaticDataMembersOf{std::meta::nonstatic_data_members_of};
+inline constexpr MetaFunction nonstaticDataMembersOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::nonstatic_data_members_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper returning the standard vector representation of enum enumerators.
-inline constexpr MetaFunction enumeratorsOf{std::meta::enumerators_of};
+inline constexpr MetaFunction enumeratorsOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::enumerators_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper returning function-parameter reflections in the standard vector representation.
-inline constexpr MetaFunction parametersOf{std::meta::parameters_of};
+inline constexpr MetaFunction parametersOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::parameters_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper returning the variable associated with a function-parameter reflection.
-inline constexpr MetaFunction variableOf{std::meta::variable_of};
+inline constexpr MetaFunction variableOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::variable_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Returns the direct members of a class, union, or namespace in declaration order.
 ///

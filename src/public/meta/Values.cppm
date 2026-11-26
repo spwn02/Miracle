@@ -36,10 +36,10 @@ template <class T>
 inline constexpr Extract<T> extract{};
 
 /// Exact callable wrapper resolving the object represented by an object reflection.
-inline constexpr MetaFunction objectOf{std::meta::object_of};
+inline constexpr MetaFunction objectOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::object_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Exact callable wrapper for `std::meta::constant_of`.
-inline constexpr MetaFunction constantOf{std::meta::constant_of};
+inline constexpr MetaFunction constantOf{[](auto &&...arguments) consteval -> decltype(auto) { return std::meta::constant_of(std::forward<decltype(arguments)>(arguments)...); }};
 
 /// Callable wrapper for `std::meta::reflect_object`.
 struct ReflectObject final {
