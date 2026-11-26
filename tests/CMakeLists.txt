@@ -373,6 +373,25 @@ miracle_add_compile_fail_test(
   "pointer to subobject of 'message' is not a constant expression")
 
 miracle_add_compile_fail_test(
+  StaticStringUnmatchedOpen compile-fail/static-string-unmatched-open.cpp
+  "staticFormat contains an unmatched or unsupported brace sequence")
+miracle_add_compile_fail_test(
+  StaticStringUnmatchedClose compile-fail/static-string-unmatched-close.cpp
+  "staticFormat contains an unmatched or unsupported brace sequence")
+miracle_add_compile_fail_test(
+  StaticStringBadPlaceholder compile-fail/static-string-bad-placeholder.cpp
+  "staticFormat contains an unmatched or unsupported brace sequence")
+miracle_add_compile_fail_test(
+  StaticStringPlaceholderCount compile-fail/static-string-placeholder-count.cpp
+  "staticFormat placeholder count does not match argument count")
+miracle_add_compile_fail_test(
+  StaticStringWideFormat compile-fail/static-string-wide-format.cpp
+  "staticFormat currently requires a char format string")
+miracle_add_compile_fail_test(
+  StaticStringNontrivialChar compile-fail/static-string-nontrivial-char.cpp
+  "BasicStaticString requires a trivial standard-layout character type")
+
+miracle_add_compile_fail_test(
   IterAdaptiveInvocation compile-fail/iter-adaptive-invocation.cpp
   "Miracle adaptive invocation requires a callable accepting the item directly")
 
